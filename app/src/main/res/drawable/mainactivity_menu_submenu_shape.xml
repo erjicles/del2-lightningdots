@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- default -->
+    <item android:state_pressed="false" android:state_focused="false">
+        <shape android:shape="rectangle">
+        </shape>
+    </item>
+
+    <!-- button focused -->
+    <item android:state_pressed="false" android:state_focused="true">
+        <shape android:shape="rectangle">
+            <solid
+                android:color="@color/app_light_purple_focused" />
+        </shape>
+    </item>
+
+    <!-- button pressed -->
+    <item android:state_pressed="true" android:state_focused="false">
+        <shape android:shape="rectangle">
+            <solid
+                android:color="@color/app_light_purple_selected" />
+        </shape>
+    </item>
+</selector>

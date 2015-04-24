@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Lightning Dots</string>
+    <string name="company_name">Del Squared, LLC</string>
+    <string name="trademark_name">Del Squared</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_test_fs">Test_LightningDots</string>
+
+    <string name="ads_ad_unit_game_interstitials">ca-app-pub-3137388249745402/5514643977</string>
+    <string name="ads_ad_unit_bottom_banner">ca-app-pub-3137388249745402/2671608772</string>
+
+    <!-- Google analytics -->
+    <string name="event_category_buttonclick">BUTTON_CLICK</string>
+    <string name="event_category_settingchange">SETTING_CHANGE</string>
+    <string name="event_actionid_sendfeedback">SEND_FEEDBACK</string>
+    <string name="event_actionid_pickrandomgame_shake">PICK_RANDOM_GAME_SHAKE</string>
+    <string name="event_actionid_pickrandomgame_click">PICK_RANDOM_GAME_CLICK</string>
+    <string name="event_actionid_searchgames">SEARCH_GAMES</string>
+    <string name="event_actionid_pickrandomgame_gameclick">PICK_RANDOM_GAME_GAME_CLICK</string>
+    <string name="event_actionid_searchgames_gameclick">SEARCH_GAMES_GAME_CLICK</string>
+    <string name="event_actionid_settings_savepreferences">TOGGLE_SAVE_PREFERENCES</string>
+    <string name="event_actionid_settings_googleanalytics">TOGGLE_GOOGLE_ANALYTICS</string>
+
+    <!-- Screen names -->
+    <!-- The screen names that will appear in reports -->
+    <string name="ga_screenname_activitymain">LightningDots ActivityMain</string>
+    <string name="ga_screenname_activitygame">LightningDots ActivityGame</string>
+    <string name="ga_screenname_activitysettings">LightningDots ActivitySettings</string>
+    <string name="ga_screenname_activityabout">LightningDots ActivityAbout</string>
+    <string name="ga_screenname_activitytermsofservice">LightningDots ActivityTermsOfService</string>
+    <string name="ga_screenname_activityprivacypolicy">LightningDots ActivityPrivacyPolicy</string>
+
+    <!-- Splash activity -->
+    <string name="title_activity_splash">@string/app_name</string>
+
+    <!-- Accept terms dialog requests -->
+    <string name="request_timeout">3000</string>
+    <string name="request_socket_timeout">5000</string>
+    <string name="versions_url">http://www.delsquaredllc.com/versions.php</string>
+    <string name="json_response_key_termsofservice">tos</string>
+    <string name="json_response_key_privacypolicy">pp</string>
+
+    <!-- Terms of Service -->
+    <string name="terms_of_service_activity_title">Terms of Service</string>
+    <string name="terms_of_service_url">http://www.delsquaredllc.com/terms-of-service</string>
+    <string name="terms_of_service_div_id">div-tos</string>
+    <string name="terms_of_service_version_div_id">div-tos-ver</string>
+    <string name="terms_of_service_filename">legal/TermsofService.txt</string>
+    <string name="terms_of_service_defaultversion">0.00</string>
+
+
+    <!-- Privacy Policy -->
+    <string name="privacy_policy_activity_title">Privacy Policy</string>
+    <string name="privacy_policy_url">http://www.delsquaredllc.com/privacy-policy</string>
+    <string name="privacy_policy_div_id">div-pp</string>
+    <string name="privacy_policy_version_div_id">div-pp-ver</string>
+    <string name="privacy_policy_filename">legal/PrivacyPolicy.txt</string>
+    <string name="privacy_policy_defaultversion">0.00</string>
+
+
+    <!-- Accept terms dialog - no internet -->
+    <string name="dialog_accepttermsnointernet_title">Use Agreement</string>
+    <string name="dialog_accepttermsnointernet_termsurlplaceholder">__tosurl__</string>
+    <string name="dialog_accepttermsnointernet_privacypolicyurlplaceholder">__ppurl__</string>
+    <string name="dialog_accepttermsnointernet_termsplaceholder">__tos__</string>
+    <string name="dialog_accepttermsnointernet_privacypolicyplaceholder">__pp__</string>
+    <string name="dialog_accepttermsnointernet_appnameplaceholder">__appname__</string>
+    <string name="dialog_accepttermsnointernet_welcome"><![CDATA[
+    	Welcome to __appname__!<br /><br />
+    ]]></string>
+    <string name="dialog_accepttermsnointernet_nointernet"><![CDATA[
+        We were unable to connecto to the internet.<br /><br />
+    ]]></string>
+    <string name="dialog_accepttermsnointernet_newversionterms"><![CDATA[
+        We have updated our __tos__.<br /><br />
+    ]]></string>
+    <string name="dialog_accepttermsnointernet_newversionprivacypolicy"><![CDATA[
+        We have updated our __pp__.<br /><br />
+    ]]></string>
+    <string name="dialog_accepttermsnointernet_newversionboth"><![CDATA[
+        We have updated our __tos__ and __pp__.<br /><br />
+    ]]></string>
+    <string name="dialog_accepttermsnointernet_noneaccepted"><![CDATA[]]></string>
+    <string name="dialog_accepttermsnointernet_text"><![CDATA[
+		Please read the <a href="__tosurl__">__tos__</a> and <a href="__ppurl__">__pp__</a> before proceeding.<br /><br />
+		By pressing accept, you acknowledge that you have read and agree to the __tos__ and __pp__.
+	]]></string>
+    <string name="dialog_accepttermsnointernet_accept">Accept</string>
+    <string name="dialog_accepttermsnointernet_checkboxlabel">I have read and accept the Terms of Service and Privacy Policy.</string>
+
+
+
+    <!-- Main activity -->
+    <string name="title_activity_main">@string/app_name</string>
+    <string name="mainactivity_gamemenu_timeattack_title">Time attack</string>
+    <string name="mainactivity_gamemenu_timeattack_description">Strike the ground as many times as you can before time runs out</string>
+    <string name="mainactivity_gamemenu_timeattack_bestscore">Best score: %1$s</string>
+    <string name="mainactivity_gamemenu_ladder_title">Ladder</string>
+    <string name="mainactivity_gamemenu_ladder_description">Test your skill as you ascend to the heavens through increasingly difficult levels</string>
+    <string name="mainactivity_gamemenu_ladder_currentlevel">Current level: %1$s</string>
+    <string name="mainactivity_settingsmenu_settings_title">Settings</string>
+    <string name="mainactivity_settingsmenu_settings_description">Change the game settings</string>
+    <string name="mainactivity_settingsmenu_about_title">About</string>
+    <string name="mainactivity_settingsmenu_about_description">View app info</string>
+    <string name="fragment_main_textview_gamemenu_title">Games</string>
+    <string name="fragment_main_textview_settingsmenu_title">Options</string>
+    <string name="fragment_main_textview_ladder_beat_game">You beat the ladder!</string>
+    <string name="fragment_main_textview_timeattack_achieved_highest_award">You earned %d bolts!</string>
+
+    <!-- Game Activity -->
+    <string name="title_activity_game">@string/app_name</string>
+    <string name="game_text_stopped_tap_to_start">Tap to start</string>
+    <string name="game_text_ended_retry">Tap to retry</string>
+    <string name="game_text_ended_continue">Tap to continue</string>
+    <string name="game_text_ending_game_over">Ending...</string>
+    <string name="game_text_template_start_countdown">%d</string>
+    <string name="game_text_template_timer">%2d</string>
+    <string name="game_text_template_counter">%3d</string>
+    <string name="game_text_template_counter_with_goal" formatted="false">%3d/%d</string>
+    <string name="game_text_level_decrement"><![CDATA[< ]]></string>
+    <string name="game_text_template_current_level">Level %d</string>
+    <string name="game_text_level_increment"><![CDATA[ >]]></string>
+    <string name="game_text_template_fps">FPS: %,.1f</string>
+    <string name="game_text_template_high_score">High score: %d</string>
+    <string name="game_text_new_high_score">New high score!</string>
+    <string name="game_text_level_complete">Level complete!</string>
+    <string name="game_text_level_failed">Level failed</string>
+    <string name="game_text_congratulations">Congratulations!</string>
+    <string name="game_text_beat_last_level">You beat the ladder!</string>
+
+    <!-- Graphics -->
+    <string name="graphics_textkey_default">default</string>
+    <string name="graphics_textkey_start_countdown">start_countdown</string>
+    <string name="graphics_textkey_timer">timer</string>
+    <string name="graphics_textkey_counter">counter</string>
+    <string name="graphics_textkey_counter_goal_achieved">counter_goal_achieved</string>
+    <string name="graphics_textkey_level_decrement">level_decrement</string>
+    <string name="graphics_textkey_level">level</string>
+    <string name="graphics_textkey_level_increment">level_increment</string>
+    <string name="graphics_textkey_new_high_score">new_high_score</string>
+    <string name="graphics_textkey_level_complete">level_complete</string>
+    <string name="graphics_textkey_level_failed">level_failed</string>
+    <string name="graphics_textkey_fps">fps</string>
+    <string name="graphics_textkey_high_score">high_score</string>
+    <string name="graphics_textkey_other">other</string>
+    <string name="graphics_textkey_congratulations">congratulations</string>
+    <string name="graphics_textkey_beat_last_level">beat_last_level</string>
+
+    <!-- Trademark Fragment -->
+    <string name="fragment_trademark_text">&#169;%1$s %2$s</string>
+
+    <!-- Database -->
+    <string name="database_name">LightningDotsDB.db</string>
+
+    <item name="database_version" format="integer" type="string">1</item>
+
+    <!-- Settings activity -->
+    <string name="pref_general_googleanalytics_description">Allow us to collect anonymous statistics about your use of the app (e.g., frequency of use, screens used, etc.)</string>
+    <string name="pref_general_googleanalytics_title">Google analytics</string>
+    <string name="pref_general_googleanalytics_key">allow_google_analytics</string>
+    <string name="fragment_settings_textview_gamehistorymenu_title">Game history</string>
+    <string name="fragment_settings_textview_gamehistorymenu_delete_game_history_warning">Warning: This will reset your high scores and levels unlocked!</string>
+    <string name="fragment_settings_text_dialog_delete_game_history_title">Delete game history</string>
+    <string name="fragment_settings_text_dialog_delete_game_history">Are you sure you want to delete your game history?</string>
+    <string name="fragment_settings_toast_game_history_deleted">Game history deleted</string>
+
+
+    <!-- About activity -->
+    <string name="activity_about_title">Info</string>
+    <string name="activity_about_textview_aboutapp">App info:</string>
+    <string name="activity_about_aboutapp_versionlabel">Current version</string>
+    <string name="activity_about_aboutapp_defaultversion">v1.01</string>
+    <string name="activity_about_legal_legallabel">Legal mumbo jumbo:</string>
+    <string name="activity_about_legal_termsandconditions">Terms of service</string>
+    <string name="activity_about_legal_privacypolicy">Privacy policy</string>
+    <string name="activity_about_aboutapp_copyright">%1$s&#8482;, Copyright &#169; %2$s %3$s</string>
+
+    <!-- Other settings -->
+    <string name="preferences_file_name">LightningDotsPreferences</string>
+    <string name="pref_legal_acceptedtermsversion">preference_legal_acceptedtermsversion</string>
+    <string name="pref_legal_acceptedprivacyversion">preference_legal_acceptedprivacyversion</string>
+    <string name="title_activity_activity_settings">Settings</string>
+
+
+</resources>

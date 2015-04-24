@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context=".AboutActivity">
+	
+	<ScrollView
+	    style="@style/MainScrollView">
+		
+		<LinearLayout 
+		    style="@style/MainLinearLayout">
+
+            <TextView
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/activity_about_textview_aboutapp"/>
+
+            <LinearLayout
+                android:id="@+id/activity_about_linearlayout_appinfomenu"
+                style="@style/MainMenuSection">
+
+                <LinearLayout
+                    android:id="@+id/activity_about_linearlayout_appinfomenu_version"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <TextView android:id="@+id/about_activity_textviewlabel_version"
+                        style="@style/MainMenuSectionSubsectionTitle"
+                        android:text="@string/activity_about_aboutapp_versionlabel" />
+
+                    <TextView android:id="@+id/about_activity_textview_version"
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/activity_about_aboutapp_defaultversion" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/activity_main_menu_vertical_spacer"></LinearLayout>
+
+            <TextView
+                android:id="@+id/activity_about_textview_legalmenu_title"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/activity_about_legal_legallabel"/>
+
+            <LinearLayout
+                android:id="@+id/activity_about_linearlayout_legalmenu"
+                style="@style/MainMenuSection">
+
+                <LinearLayout
+                    android:id="@+id/activity_about_linearlayout_legalmenu_termsandconditions"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/activity_about_legal_termsandconditions"
+                        android:onClick="termsAndConditions"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/app_background_purple"/>
+
+                <LinearLayout
+                    android:id="@+id/activity_about_linearlayout_legalmenu_privacypolicy"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <Button
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/activity_about_legal_privacypolicy"
+                        android:onClick="privacyPolicy"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+		    
+		</LinearLayout>
+		
+	</ScrollView>
+	
+	<View
+        android:layout_width="match_parent"
+		android:layout_height="1dp"
+		android:background="@android:color/darker_gray"/>
+
+	<TextView 
+        android:id="@+id/about_activity_textview_copyright"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/trademark_margin_top"
+        android:text="@string/activity_about_aboutapp_copyright"/>
+	
+	<fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentAdsBottomBanner"
+        android:id="@+id/activity_about_adsfragment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal" />
+
+</LinearLayout>

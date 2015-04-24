@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="game_values_defaultGameTimeLimitMillis">15000</integer>
+    <integer name="game_values_defaultGameTimeLimitTimeAttackMillis">15000</integer>
+    <integer name="game_values_defaultGameTimeLimitAgilityMillis">15000</integer>
+    <integer name="game_values_defaultGameStartingTimeMillis">3000</integer>
+    <integer name="game_values_defaultGameEndingTimeMillis">2000</integer>
+
+    <item name="game_values_defaultInitialTargetRadiusInches" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMinimumTargetRadiusInchesMultiplier" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultInitialTargetSpeedInchesPerSecond" format="float" type="dimen">1.5</item>
+    <item name="game_values_defaultMaximumTargetSpeedMultiplier" format="float" type="dimen">3.0</item>
+    <item name="game_values_defaultMaximumTargetSpeedChangeInchesPerSecondPerSecond" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMaximumTargetDRadiusInchesPerSecond" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultMaximumTargetDRadiusChangeInchesPerSecondPerSecond" format="float" type="dimen">0.1</item>
+    <item name="game_values_defaultMaximumTargetDirectionAngleChangeRadiansPerSecond" format="float" type="dimen">1.5</item>
+    <item name="game_values_defaultProbabilityOfRandomPositionChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomDirectionChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomRadiusChangePerSecond" format="float" type="dimen">0.50</item>
+    <item name="game_values_defaultProbabilityOfRandomDRadiusChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomSpeedChangePerSecond" format="float" type="dimen">0.25</item>
+
+    <bool name="game_values_defaultCanChangePosition">true</bool>
+    <bool name="game_values_defaultCanChangeSpeed">false</bool>
+    <bool name="game_values_defaultCanChangeDirection">false</bool>
+    <bool name="game_values_defaultCanChangeRadius">false</bool>
+    <bool name="game_values_defaultCanChangeDRadius">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangePosition">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeSpeed">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeDirection">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeRadius">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeDRadius">false</bool>
+
+    <item name="game_values_defaultScriptTransitionValue" format="float" type="dimen">0.0</item>
+    <string name="game_values_defaultScriptTransitionContinuity">DEFAULT</string>
+
+    <string name="game_values_defaultScriptTransitionMode">CONSTANT</string>
+    <string name="game_values_defaultScriptTransitionInterval">CONSTANT</string>
+    <string name="game_values_defaultScriptCycleDirection">INCREASING</string>
+
+    <integer-array name="game_values_targetUserClicksAgilityPer15Seconds">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </integer-array>
+
+    <integer-array name="game_values_targetUserClicksTimeAttackPer15Seconds">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>20</item>
+    </integer-array>
+
+</resources>

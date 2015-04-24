@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Agility Constants -->
+    <integer name="agility_timeLimitMillis">30000</integer>
+
+    <!-- Time Attack Constants -->
+    <integer name="timeAttack_timeLimitMillis">30000</integer>
+</resources>

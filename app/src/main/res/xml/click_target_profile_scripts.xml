@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ClickTargetProfileScripts>
+    <ClickTargetProfileScript
+        level="1">
+        <ClickTargetProfile/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="2">
+        <ClickTargetProfile
+            targetCanChangeRadius="true"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="3">
+        <ClickTargetProfile
+            targetCanRandomlyChangeRadius="true"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="4">
+        <ClickTargetProfile
+            targetCanChangeSpeed="true"
+            maximumTargetSpeedMultiplier="3.0"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="5">
+        <ClickTargetProfile
+            initialTargetSpeedMultiplier="2.5"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="6"
+        scriptTransitionMode="CYCLE"
+        scriptTransitionInterval="REGULAR">
+        <ClickTargetProfile
+            scriptTransitionValue="1500.0"
+            scriptTransitionContinuousDirection="CONTINUOUS"
+            scriptTransitionContinuousRadius="CONTINUOUS"
+            targetCanChangeRadius="true"/>
+        <ClickTargetProfile
+            scriptTransitionValue="1500.0"
+            scriptTransitionContinuousDirection="CONTINUOUS"
+            scriptTransitionContinuousRadius="CONTINUOUS"
+            initialTargetSpeedMultiplier="2.5"/>
+    </ClickTargetProfileScript>
+
+</ClickTargetProfileScripts>

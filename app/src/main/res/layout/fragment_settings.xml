@@ -1,0 +1,62 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.delsquared.lightningdots.activities.ActivitySettings$FragmentSettings">
+
+    <ScrollView
+        android:id="@+id/fragment_settings_scrollview_main"
+        style="@style/MainScrollView">
+
+        <LinearLayout
+            android:id="@+id/fragment_settings_linearlayout_main"
+            style="@style/MainLinearLayout">
+
+            <TextView
+                android:id="@+id/fragment_settings_textview_game_history_title"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/fragment_settings_textview_gamehistorymenu_title"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_settings_linearlayout_gamehistorymenu"
+                style="@style/MainMenuSection">
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_linearlayout_gamehistorymenu_delete_game_history"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <Button
+                        android:id="@+id/fragment_settings_button_delete_game_history"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Delete game history"
+                        android:background="@android:drawable/btn_default"
+                        android:onClick="clicked_button_delete_game_history"/>
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/fragment_settings_textview_gamehistorymenu_delete_game_history_warning"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentTrademark"
+        android:id="@+id/fragment_main_fragment_trademark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentAdsBottomBanner"
+        android:id="@+id/fragment_main_fragment_ads_bottom_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

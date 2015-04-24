@@ -1,0 +1,156 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_main_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.delsquared.lightningdots.activities.ActivityMain$FragmentMain">
+
+    <ScrollView
+        android:id="@+id/fragment_main_scrollview_main"
+        style="@style/MainScrollView">
+
+        <LinearLayout
+            android:id="@+id/fragment_main_linearlayout_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/fragment_main_textview_gamemenu_title"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/fragment_main_textview_gamemenu_title"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_main_linearlayout_gamemenu"
+                style="@style/MainMenuSection">
+
+                <LinearLayout
+                    android:id="@+id/fragment_main_linearlayout_gamemenu_ladder"
+                    style="@style/MainMenuSectionSubsectionClickable"
+                    android:onClick="clicked_ladder">
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionTitle"
+                        android:text="@string/mainactivity_gamemenu_ladder_title"/>
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_gamemenu_ladder_description"/>
+
+                    <TextView
+                        android:id="@+id/fragment_main_textview_ladder_current_level"
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_gamemenu_ladder_currentlevel"/>
+
+                    <TextView
+                        android:id="@+id/fragment_main_textview_ladder_beat_game"
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:textColor="@color/green"
+                        android:visibility="gone"
+                        android:text="@string/fragment_main_textview_ladder_beat_game"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/app_background_purple"/>
+
+                <LinearLayout
+                    android:id="@+id/fragment_main_linearlayout_gamemenu_timeattack"
+                    style="@style/MainMenuSectionSubsectionClickable"
+                    android:onClick="clicked_timeAttack">
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionTitle"
+                        android:text="@string/mainactivity_gamemenu_timeattack_title"/>
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_gamemenu_timeattack_description"/>
+
+                    <TextView
+                        android:id="@+id/fragment_main_textview_timeattack_best_score"
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_gamemenu_timeattack_bestscore"/>
+
+                    <TextView
+                        android:id="@+id/fragment_main_textview_timeattack_achieved_highest_award"
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:textColor="@color/green"
+                        android:visibility="gone"
+                        android:text="@string/fragment_main_textview_timeattack_achieved_highest_award"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/activity_main_menu_vertical_spacer"></LinearLayout>
+
+            <TextView
+                android:id="@+id/fragment_main_textview_settingsmenu_title"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/fragment_main_textview_settingsmenu_title"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_main_linearlayout_settingsmenu"
+                style="@style/MainMenuSection">
+
+                <LinearLayout
+                    android:id="@+id/fragment_main_linearlayout_settingsmenu_settings"
+                    style="@style/MainMenuSectionSubsectionClickable"
+                    android:onClick="clicked_settings">
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionTitle"
+                        android:text="@string/mainactivity_settingsmenu_settings_title"/>
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_settingsmenu_settings_description"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/app_background_purple"/>
+
+                <LinearLayout
+                    android:id="@+id/fragment_main_linearlayout_settingsmenu_about"
+                    style="@style/MainMenuSectionSubsectionClickable"
+                    android:onClick="clicked_about">
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionTitle"
+                        android:text="@string/mainactivity_settingsmenu_about_title"/>
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_settingsmenu_about_description"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentTrademark"
+        android:id="@+id/fragment_main_fragment_trademark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentAdsBottomBanner"
+        android:id="@+id/fragment_main_fragment_ads_bottom_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

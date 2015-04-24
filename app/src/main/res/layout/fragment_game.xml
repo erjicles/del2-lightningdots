@@ -1,0 +1,12 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.delsquared.lightningdots.activities.ActivityGame$FragmentGame">
+
+    <com.delsquared.lightningdots.graphics.SurfaceViewGame
+		android:id="@+id/fragment_game_surfaceviewgame"
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"/>
+
+</RelativeLayout>
