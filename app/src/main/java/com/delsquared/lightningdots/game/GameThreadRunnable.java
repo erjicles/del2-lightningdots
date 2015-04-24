@@ -211,7 +211,7 @@ public class GameThreadRunnable implements Runnable {
         }
 
         boolean isNewHighScore = game.getListNewUserClick().size() > currentHighScore
-                && bestGameResult != null
+                && (bestGameResult != null || game.getGameType() == Game.GameType.TIME_ATTACK)
                 && awardLevel > 0;
 
         // Set the game award level
