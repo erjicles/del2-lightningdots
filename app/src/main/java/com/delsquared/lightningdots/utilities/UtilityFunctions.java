@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.TypedValue;
 
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -84,6 +85,40 @@ public class UtilityFunctions {
         globalTracker.send(new HitBuilders.AppViewBuilder().build());
 
 
+    }
+
+    public static float getResourceFloatValue(Context context, int resourceID) {
+        float resultValue = 0.0f;
+
+        // Get the value
+        try {
+            TypedValue typedValueResourceHelper = new TypedValue();
+            context.getResources().getValue(resourceID, typedValueResourceHelper, true);
+            resultValue = typedValueResourceHelper.getFloat();
+        } catch (Exception e) {
+            resultValue = 0.0f;
+        }
+
+        return resultValue;
+    }
+
+    public static double generateRandomValue(double minimumValue, double maximumValue, boolean mirrorAbsoluteValue) {
+
+        // Initialize the result
+        double resultValue = 0.0;
+
+        resultValue = minimumValue + (Math.random() * (maximumValue - minimumValue));
+
+        if (mirrorAbsoluteValue) {
+            resultValue *= getRandomSign();
+        }
+
+        return resultValue;
+
+    }
+
+    public static double getRandomSign() {
+        return (Math.random() <= 0.5) ? -1.0 : 1.0;
     }
 
 }

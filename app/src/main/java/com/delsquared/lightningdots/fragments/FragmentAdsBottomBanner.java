@@ -39,6 +39,7 @@ public class FragmentAdsBottomBanner extends Fragment {
 			    AdRequest adRequest = new AdRequest.Builder()
 			        .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
 			        .addTestDevice("8D7B51BEF3C6133F9AF035FCDF3ADF9A")
+                    .addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18")
 			        .build();
 			    
 			    // Load the ad

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ClickTargetProfileScripts>
+
     <ClickTargetProfileScript
         level="1">
         <ClickTargetProfile/>
@@ -21,7 +22,8 @@
         level="4">
         <ClickTargetProfile
             targetCanChangeSpeed="true"
-            maximumTargetSpeedMultiplier="3.0"/>
+            maximumTargetSpeedMultiplier="3.0"
+            maximumTargetSpeedChangeMultiplier="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -44,6 +46,39 @@
             scriptTransitionContinuousDirection="CONTINUOUS"
             scriptTransitionContinuousRadius="CONTINUOUS"
             initialTargetSpeedMultiplier="2.5"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="7">
+        <ClickTargetProfile
+            initialTargetRadiusMultiplier="0.5"
+            initialTargetSpeedMultiplier="1.5"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="8">
+        <ClickTargetProfile
+            targetCanChangePosition="false"
+            targetCanRandomlyChangePosition="true"
+            probabilityOfRandomPositionChangePerSecond="0.5"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="9">
+        <ClickTargetProfile
+            targetCanChangeDirection="true"
+            targetCanRandomlyChangeDDirection="true"
+            initialTargetSpeedMultiplier="1.5"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="10">
+        <ClickTargetProfile
+            initialTargetSpeedMultiplier="2.0"
+            initialTargetRadiusMultiplier="0.8"
+            minimumTargetRadiusMultiplier="0.4"
+            targetCanChangeRadius="true"
+            maximumTargetDRadiusMultiplier="1.5"/>
     </ClickTargetProfileScript>
 
 </ClickTargetProfileScripts>

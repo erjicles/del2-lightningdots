@@ -8,28 +8,90 @@
 
     <item name="game_values_defaultInitialTargetRadiusInches" format="float" type="dimen">1.0</item>
     <item name="game_values_defaultMinimumTargetRadiusInchesMultiplier" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultMaximumTargetRadiusInchesMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetRadius">false</bool>
+
     <item name="game_values_defaultInitialTargetSpeedInchesPerSecond" format="float" type="dimen">1.5</item>
+    <item name="game_values_defaultMinimumTargetSpeedMultiplier" format="float" type="dimen">1.0</item>
     <item name="game_values_defaultMaximumTargetSpeedMultiplier" format="float" type="dimen">3.0</item>
-    <item name="game_values_defaultMaximumTargetSpeedChangeInchesPerSecondPerSecond" format="float" type="dimen">1.0</item>
-    <item name="game_values_defaultMaximumTargetDRadiusInchesPerSecond" format="float" type="dimen">0.5</item>
-    <item name="game_values_defaultMaximumTargetDRadiusChangeInchesPerSecondPerSecond" format="float" type="dimen">0.1</item>
-    <item name="game_values_defaultMaximumTargetDirectionAngleChangeRadiansPerSecond" format="float" type="dimen">1.5</item>
+    <bool name="game_values_defaultRandomInitialTargetSpeed">false</bool>
+    <item name="game_values_defaultInitialTargetSpeedChangeAbsoluteValueInchesPerSecond" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMinimumTargetSpeedChangeAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
+    <item name="game_values_defaultMaximumTargetSpeedChangeAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetSpeedChange">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetSpeedChangeSign">false</bool>
+
+    <item name="game_values_defaultInitialTargetDRadiusAbsoluteValueInchesPerSecond" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultMinimumTargetDRadiusAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
+    <item name="game_values_defaultMaximumTargetDRadiusAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetDRadius">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetDRadiusSign">false</bool>
+    <item name="game_values_defaultInitialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond" format="float" type="dimen">0.1</item>
+    <item name="game_values_defaultMinimumTargetDRadiusChangeAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
+    <item name="game_values_defaultMaximumTargetDRadiusChangeAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetDRadiusChange">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetDRadiusChangeSign">false</bool>
+
+    <item name="game_values_defaultInitialTargetDirectionAngleRadians" format="float" type="dimen">0.78539816339</item><!-- PI / 4 -->
+    <bool name="game_values_defaultRandomInitialTargetDirectionAngle">true</bool>
+
+    <item name="game_values_defaultInitialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMinimumTargetDirectionAngleChangeAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMaximumTargetDirectionAngleChangeAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetDirectionAngleChange">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetDirectionAngleChangeSign">true</bool>
+
     <item name="game_values_defaultProbabilityOfRandomPositionChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomSpeedChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomDirectionChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomDSpeedChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomDDirectionChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomRadiusChangePerSecond" format="float" type="dimen">0.50</item>
     <item name="game_values_defaultProbabilityOfRandomDRadiusChangePerSecond" format="float" type="dimen">0.25</item>
-    <item name="game_values_defaultProbabilityOfRandomSpeedChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond" format="float" type="dimen">0.25</item>
 
     <bool name="game_values_defaultCanChangePosition">true</bool>
     <bool name="game_values_defaultCanChangeSpeed">false</bool>
     <bool name="game_values_defaultCanChangeDirection">false</bool>
     <bool name="game_values_defaultCanChangeRadius">false</bool>
     <bool name="game_values_defaultCanChangeDRadius">false</bool>
+
     <bool name="game_values_defaultCanRandomlyChangePosition">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeSpeed">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeDirection">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeDSpeed">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeDDirection">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeRadius">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeDRadius">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeD2Radius">false</bool>
+
+    <bool name="game_values_defaultTieRandomPositionChangeToRandomSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomPositionChangeToRandomDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomSpeedChangeToRandomDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomSpeedChangeToRandomDSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomSpeedChangeToRandomDDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomDirectionChangeToRandomSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomDirectionChangeToRandomDSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomDirectionChangeToRandomDDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomRadiusChangeToRandomDRadiusChange">false</bool>
+    <bool name="game_values_defaultTieRandomDRadiusChangeToRandomD2RadiusChange">false</bool>
+    <bool name="game_values_defaultTieRandomRadiusChangeToRandomPositionChange">false</bool>
+    <bool name="game_values_defaultTieRandomRadiusChangeToRandomSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomRadiusChangeToRandomDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomDRadiusChangeToRandomSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomDRadiusChangeToRandomDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomDRadiusChangeToRandomDSpeedChange">false</bool>
+    <bool name="game_values_defaultTieRandomDRadiusChangeToRandomDDirectionChange">false</bool>
+
+    <string name="game_values_defaultBoundaryEffectPositionHorizontal">BOUNCE</string>
+    <string name="game_values_defaultBoundaryEffectPositionVertical">BOUNCE</string>
+    <string name="game_values_defaultBoundaryEffectSpeed">BOUNCE</string>
+    <string name="game_values_defaultBoundaryEffectDirection">PERIODIC</string>
+    <string name="game_values_defaultBoundaryEffectDSpeed">STICK</string>
+    <string name="game_values_defaultBoundaryEffectDDirection">STICK</string>
+    <string name="game_values_defaultBoundaryEffectRadius">BOUNCE</string>
+    <string name="game_values_defaultBoundaryEffectDRadius">STICK</string>
+    <string name="game_values_defaultBoundaryEffectD2Radius">STICK</string>
 
     <item name="game_values_defaultScriptTransitionValue" format="float" type="dimen">0.0</item>
     <string name="game_values_defaultScriptTransitionContinuity">DEFAULT</string>
@@ -39,17 +101,17 @@
     <string name="game_values_defaultScriptCycleDirection">INCREASING</string>
 
     <integer-array name="game_values_targetUserClicksAgilityPer15Seconds">
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>20</item>
+        <item>80</item>
+        <item>92</item>
+        <item>100</item>
+        <item>105</item>
     </integer-array>
 
     <integer-array name="game_values_targetUserClicksTimeAttackPer15Seconds">
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>20</item>
+        <item>85</item>
+        <item>100</item>
+        <item>110</item>
+        <item>115</item>
     </integer-array>
 
 </resources>
