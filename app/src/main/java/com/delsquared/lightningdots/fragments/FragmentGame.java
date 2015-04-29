@@ -218,7 +218,8 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void processEndOfGameAd() {
-        if ((LightningDotsApplication.numberOfGameTransitions - 1) % 3 == 0) {
+        int randomInt = (int) Math.floor(Math.random() * 4.0);
+        if ((LightningDotsApplication.numberOfGameTransitions - randomInt) % 4 == 0) {
             showInterstitialAd();
         }
         LightningDotsApplication.numberOfGameTransitions++;
