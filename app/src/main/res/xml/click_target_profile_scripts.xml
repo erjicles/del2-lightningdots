@@ -66,6 +66,8 @@
     <ClickTargetProfileScript
         level="9">
         <ClickTargetProfile
+            initialTargetRadiusMultiplier="0.8"
+            minimumTargetRadiusMultiplier="0.8"
             targetCanChangeDirection="true"
             targetCanRandomlyChangeDDirection="true"
             initialTargetSpeedMultiplier="1.5"/>

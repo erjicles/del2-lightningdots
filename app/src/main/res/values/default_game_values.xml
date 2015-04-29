@@ -45,7 +45,7 @@
     <item name="game_values_defaultProbabilityOfRandomSpeedChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomDirectionChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomDSpeedChangePerSecond" format="float" type="dimen">0.25</item>
-    <item name="game_values_defaultProbabilityOfRandomDDirectionChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomDDirectionChangePerSecond" format="float" type="dimen">0.75</item>
     <item name="game_values_defaultProbabilityOfRandomRadiusChangePerSecond" format="float" type="dimen">0.50</item>
     <item name="game_values_defaultProbabilityOfRandomDRadiusChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond" format="float" type="dimen">0.25</item>

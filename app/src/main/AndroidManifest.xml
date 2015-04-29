@@ -4,19 +4,23 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <application
-        android:name="com.delsquared.lightningdots.utilities.LightningDotsApplication"
+        android:name=".utilities.LightningDotsApplication"
         android:allowBackup="true"
         android:icon="@drawable/icon_lightningdots"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <meta-data android:name="com.google.android.gms.version"
+        <meta-data
+            android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-        <meta-data android:name="com.google.android.gms.analytics.globalConfigResource"
+        <meta-data
+            android:name="com.google.android.gms.analytics.globalConfigResource"
             android:resource="@xml/tracker_config" />
+
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivitySplash"
+            android:name=".activities.ActivitySplash"
             android:label="@string/title_activity_splash"
             android:noHistory="true"
             android:theme="@style/SplashTheme" >
@@ -27,51 +31,60 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivityMain"
+            android:name=".activities.ActivityMain"
             android:label="@string/title_activity_main" >
         </activity>
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivityGame"
+            android:name=".activities.ActivityGame"
             android:label="@string/title_activity_game"
-            android:parentActivityName="com.delsquared.lightningdots.activities.ActivityMain"
+            android:parentActivityName=".activities.ActivityMain"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivitySettings"
+            android:name=".activities.ActivitySettings"
             android:label="@string/title_activity_activity_settings"
-            android:parentActivityName="com.delsquared.lightningdots.activities.ActivityMain" >
+            android:parentActivityName=".activities.ActivityMain" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.delsquared.lightningdots.activities.ActivityMain" />
         </activity>
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivityAbout"
+            android:name=".activities.ActivityAbout"
             android:label="@string/activity_about_title"
-            android:parentActivityName="com.delsquared.lightningdots.activities.ActivityMain">
+            android:parentActivityName=".activities.ActivityMain" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.delsquared.lightningdots.activities.ActivityMain" />
         </activity>
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivityTermsOfService"
+            android:name=".activities.ActivityTermsOfService"
             android:label="@string/terms_of_service_activity_title"
-            android:parentActivityName="com.delsquared.lightningdots.activities.ActivityAbout">
+            android:parentActivityName=".activities.ActivityAbout" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.delsquared.lightningdots.activities.ActivityAbout" />
         </activity>
         <activity
-            android:name="com.delsquared.lightningdots.activities.ActivityPrivacyPolicy"
+            android:name=".activities.ActivityPrivacyPolicy"
             android:label="@string/privacy_policy_activity_title"
-            android:parentActivityName="com.delsquared.lightningdots.activities.ActivityAbout">
+            android:parentActivityName=".activities.ActivityAbout" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.delsquared.lightningdots.activities.ActivityAbout" />
         </activity>
-        <!--Include the AdActivity configChanges and theme. -->
-        <activity android:name="com.google.android.gms.ads.AdActivity"
+        <!-- Include the AdActivity configChanges and theme. -->
+        <activity
+            android:name="com.google.android.gms.ads.AdActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
             android:theme="@android:style/Theme.Translucent" />
+        <activity
+            android:name=".activities.ActivityStore"
+            android:label="@string/title_activity_activity_store"
+            android:parentActivityName=".activities.ActivityMain" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.delsquared.lightningdots.activities.ActivityMain" />
+        </activity>
     </application>
 
 </manifest>

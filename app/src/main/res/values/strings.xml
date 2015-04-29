@@ -183,6 +183,7 @@
     <string name="pref_legal_acceptedtermsversion">preference_legal_acceptedtermsversion</string>
     <string name="pref_legal_acceptedprivacyversion">preference_legal_acceptedprivacyversion</string>
     <string name="title_activity_activity_settings">Settings</string>
+    <string name="title_activity_activity_store">Lightning Dots Store</string>
 
 
 </resources>
