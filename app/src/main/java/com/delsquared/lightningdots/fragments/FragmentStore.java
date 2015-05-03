@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.billing_utilities.IabHelper;
@@ -60,8 +61,11 @@ public class FragmentStore extends android.support.v4.app.Fragment {
                 , new PurchaseHelper.InterfaceSetupFinishedCallback() {
 
                     @Override
-                    public void onSetupFinished(boolean success) {
+                    public void onSetupFinished(boolean success, IabResult result) {
 
+                        if (!success) {
+                            Toast.makeText(getActivity(), "Problem setting up in-app billing: " + result, Toast.LENGTH_SHORT);
+                        }
                     }
 
                 }
@@ -137,11 +141,19 @@ public class FragmentStore extends android.support.v4.app.Fragment {
         // Get the inventory menu linear layout
         LinearLayout linearLayoutInventory = (LinearLayout) getView().findViewById(R.id.fragment_store_linearlayout_inventorymenu);
 
+        // First clear the linear layouts
+        if (linearLayoutPurchasedItems != null) {
+            linearLayoutPurchasedItems.removeAllViews();
+        }
+        if (linearLayoutInventory != null) {
+            linearLayoutInventory.removeAllViews();
+        }
+
         // ---------- BEGIN Handle Item Remove Ads ---------- //
         try {
 
             SkuDetails skuDetailsRemoveAds = inventory.getSkuDetails(PurchaseHelper.PRODUCT_SKU_REMOVE_ADS);
-            boolean hasPurchaseRemoveAds = LightningDotsApplication.hasPurchasedNoAds;
+            boolean hasPurchaseRemoveAds = purchaseHelper.getHasPurchasedNoAds();
             String titleRemoveAds = skuDetailsRemoveAds.getTitle();
             String descriptionRemoveAds = skuDetailsRemoveAds.getDescription();
             String priceRemoveAds = skuDetailsRemoveAds.getPrice();
@@ -188,6 +200,8 @@ public class FragmentStore extends android.support.v4.app.Fragment {
                             purchaseHelper.launchPurchaseFlow(
                                     PurchaseHelper.PRODUCT_SKU_REMOVE_ADS
                                     , PurchaseHelper.PRODUCT_RC_REQUEST_REMOVE_ADS);
+                            //LightningDotsApplication.setHasPurchasedNoAds(getActivity(), true);
+                            updateUI();
 
                         }
 
@@ -203,6 +217,12 @@ public class FragmentStore extends android.support.v4.app.Fragment {
 
         }
         // ---------- END Handle Item Remove Ads ---------- //
+
+        // Update the bottom banner ad fragment
+        FragmentAdsBottomBanner fragmentAdsBottomBanner = (FragmentAdsBottomBanner) getChildFragmentManager().findFragmentById(R.id.fragment_main_fragment_ads_bottom_banner);
+        if (fragmentAdsBottomBanner != null) {
+            fragmentAdsBottomBanner.toggleAds(!purchaseHelper.getHasPurchasedNoAds());
+        }
 
     }
 

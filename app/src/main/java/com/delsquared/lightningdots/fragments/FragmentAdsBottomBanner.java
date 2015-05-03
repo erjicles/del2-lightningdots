@@ -1,6 +1,8 @@
 package com.delsquared.lightningdots.fragments;
 
+import android.app.Activity;
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,7 @@ import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
-public class FragmentAdsBottomBanner extends Fragment {
+public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -27,22 +29,64 @@ public class FragmentAdsBottomBanner extends Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+
+        // Get the shared preference for removing ads
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+        boolean hasPurchasedNoAds = false;
+        synchronized (LightningDotsApplication.lockSharedPreferences) {
+            if (sharedPref.contains(getString(R.string.pref_product_remove_ads))) {
+                hasPurchasedNoAds = sharedPref.getBoolean(getString(R.string.pref_product_remove_ads), false);
+            }
+        }
+        hasPurchasedNoAds = hasPurchasedNoAds || LightningDotsApplication.hasPurchasedNoAds;
+
+        toggleAds(!hasPurchasedNoAds);
 		
-		// Get the adview
-		View fragmentView = getView();
-		if (fragmentView != null) {
+	}
+	
+	public static FragmentAdsBottomBanner newInstance(boolean addMargins) {
 
-            // Check if the user purchased the no ads item
-            if (LightningDotsApplication.hasPurchasedNoAds) {
+		// Create the new instance
+		FragmentAdsBottomBanner f = new FragmentAdsBottomBanner();
+		
+        return f;
+    }
 
-                // Hide the ads
-                fragmentView.setVisibility(View.GONE);
+    public void toggleAds(boolean toggleOn) {
 
-            } else {
+        // Get the adview
+        View fragmentView = getView();
+        if (fragmentView != null) {
 
-                AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
+            // Get the value for removing ads
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+            boolean hasPurchasedNoAds = false;
+            if (sharedPref.contains(getString(R.string.pref_product_remove_ads))) {
+                hasPurchasedNoAds = sharedPref.getBoolean(getString(R.string.pref_product_remove_ads), false);
+            }
+            hasPurchasedNoAds = hasPurchasedNoAds || LightningDotsApplication.hasPurchasedNoAds;
+            sharedPref.edit()
+                    .putBoolean(
+                            getString(R.string.pref_product_remove_ads)
+                            , hasPurchasedNoAds)
+                    .commit();
+            LightningDotsApplication.hasPurchasedNoAds = hasPurchasedNoAds;
 
-                if (adView != null) {
+            // Get the adview
+            AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
+
+            if (adView != null) {
+
+                // Check if the user purchased the no ads item
+                if (!toggleOn) {
+
+                    // Disable loading ads
+                    adView.setEnabled(false);
+
+                    // Hide the ads
+                    fragmentView.setVisibility(View.GONE);
+
+                } else {
 
                     // Create the ad request
                     AdRequest adRequest = new AdRequest.Builder()
@@ -106,17 +150,9 @@ public class FragmentAdsBottomBanner extends Fragment {
                 }
 
             }
-			
-		}
-		
-	}
-	
-	public static FragmentAdsBottomBanner newInstance(boolean addMargins) {
 
-		// Create the new instance
-		FragmentAdsBottomBanner f = new FragmentAdsBottomBanner();
-		
-        return f;
+        }
+
     }
 
 }

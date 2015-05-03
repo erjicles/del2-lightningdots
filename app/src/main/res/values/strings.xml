@@ -178,6 +178,8 @@
     <string name="activity_about_aboutapp_copyright">%1$s&#8482;, Copyright &#169; %2$s %3$s</string>
 
     <!-- Store activity -->
+    <string name="title_activity_activity_settings">Settings</string>
+    <string name="title_activity_activity_store">Lightning Dots Store</string>
     <string name="fragment_store_textview_inventorymenu_title">Available items</string>
     <string name="fragment_store_textview_purchasedmenu_title">Purchased items</string>
     <string name="menu_item_store_available_default_title">Default item</string>
@@ -195,8 +197,7 @@
     <string name="preferences_file_name">LightningDotsPreferences</string>
     <string name="pref_legal_acceptedtermsversion">preference_legal_acceptedtermsversion</string>
     <string name="pref_legal_acceptedprivacyversion">preference_legal_acceptedprivacyversion</string>
-    <string name="title_activity_activity_settings">Settings</string>
-    <string name="title_activity_activity_store">Lightning Dots Store</string>
+    <string name="pref_product_remove_ads">preference_product_remove_ads</string>
 
 
 </resources>

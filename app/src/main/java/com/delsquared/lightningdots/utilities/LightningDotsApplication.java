@@ -1,6 +1,9 @@
 package com.delsquared.lightningdots.utilities;
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
+import android.content.SharedPreferences;
 
 import com.delsquared.lightningdots.R;
 import com.google.android.gms.analytics.GoogleAnalytics;
@@ -9,6 +12,8 @@ import com.google.android.gms.analytics.Tracker;
 import java.util.HashMap;
 
 public class LightningDotsApplication extends Application {
+
+    public static Object lockSharedPreferences = new Object();
 
     public static boolean hasPurchasedNoAds = false;
 
@@ -80,6 +85,25 @@ public class LightningDotsApplication extends Application {
             returnString += base64EncodedPublicKey[keySequence[i]];
         }
         return returnString;
+    }
+
+    public static void setHasPurchasedNoAds(Context context, boolean hasPurchasedNoAds) {
+
+        LightningDotsApplication.hasPurchasedNoAds = hasPurchasedNoAds;
+
+        // Get the shared preferences reference
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+
+        synchronized (lockSharedPreferences) {
+
+            // Update the shared preferences file
+            sharedPref.edit()
+                    .putBoolean(
+                            context.getString(R.string.pref_product_remove_ads)
+                            , hasPurchasedNoAds)
+                    .commit();
+
+        }
     }
 
 }

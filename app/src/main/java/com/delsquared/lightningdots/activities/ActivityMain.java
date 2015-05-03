@@ -10,10 +10,12 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.billing_utilities.IabResult;
 import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.fragments.AcceptTermsDialog;
 import com.delsquared.lightningdots.fragments.FragmentMain;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.PurchaseHelper;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
@@ -48,7 +50,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                 , new PurchaseHelper.InterfaceSetupFinishedCallback() {
 
                     @Override
-                    public void onSetupFinished(boolean success) {
+                    public void onSetupFinished(boolean success, IabResult result) {
 
                     }
 
@@ -295,14 +297,16 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         // TODO Auto-generated method stub
 
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferences_file_name), MODE_PRIVATE);
-        sharedPref.edit()
-                .putString(
-                        getString(R.string.pref_legal_acceptedtermsversion)
-                        , currentTermsVersion)
-                .putString(
-                        getString(R.string.pref_legal_acceptedprivacyversion)
-                        , currentPrivacyPolicyVersion)
-                .commit();
+        synchronized (LightningDotsApplication.lockSharedPreferences) {
+            sharedPref.edit()
+                    .putString(
+                            getString(R.string.pref_legal_acceptedtermsversion)
+                            , currentTermsVersion)
+                    .putString(
+                            getString(R.string.pref_legal_acceptedprivacyversion)
+                            , currentPrivacyPolicyVersion)
+                    .commit();
+        }
 
     }
 

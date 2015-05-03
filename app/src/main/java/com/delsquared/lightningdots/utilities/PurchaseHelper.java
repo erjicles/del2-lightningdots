@@ -3,8 +3,10 @@ package com.delsquared.lightningdots.utilities;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.billing_utilities.IabHelper;
 import com.delsquared.lightningdots.billing_utilities.IabResult;
 import com.delsquared.lightningdots.billing_utilities.Inventory;
@@ -15,7 +17,7 @@ import java.util.ArrayList;
 public class PurchaseHelper {
 
     public interface InterfaceSetupFinishedCallback {
-        public void onSetupFinished(boolean success);
+        public void onSetupFinished(boolean success, IabResult result);
     }
 
     public interface InterfaceQueryInventoryCallback {
@@ -67,8 +69,8 @@ public class PurchaseHelper {
                     // Oh noes, there was a problem.
                     if (!LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert) {
                         LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert = true;
-                        complain("Problem setting up in-app billing: " + result);
-                        interfaceSetupFinishedCallback.onSetupFinished(false);
+                        //complain("Problem setting up in-app billing: " + result);
+                        interfaceSetupFinishedCallback.onSetupFinished(false, result);
                     }
 
                     return;
@@ -76,7 +78,7 @@ public class PurchaseHelper {
 
                 // Flag the iab helper setup completed
                 iabHelperSetupComplete = true;
-                interfaceSetupFinishedCallback.onSetupFinished(true);
+                interfaceSetupFinishedCallback.onSetupFinished(true, result);
 
                 // Hooray, IAB is fully set up. Now, let's get an inventory of stuff we own.
                 Log.d(LightningDotsApplication.logTag, "Setup successful. Querying inventory.");
@@ -137,7 +139,8 @@ public class PurchaseHelper {
         }
 
         // Do we have the remove-ads upgrade?
-        LightningDotsApplication.hasPurchasedNoAds = inventory.hasPurchase(PRODUCT_SKU_REMOVE_ADS);
+        LightningDotsApplication.setHasPurchasedNoAds(context, getHasPurchasedNoAds());
+
         Log.d(LightningDotsApplication.logTag, "User has " + (LightningDotsApplication.hasPurchasedNoAds ? " " : "not ") + "removed ads.");
 
     }
@@ -208,16 +211,39 @@ public class PurchaseHelper {
             return;
         }
 
+        // Get the shared preferences reference
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+
         // Handle the purchase
         if (purchase.getSku().equals(PRODUCT_SKU_REMOVE_ADS)) {
 
             // The user bought the remove ads item
             Log.d(LightningDotsApplication.logTag, "Purchase is remove ads. Congratulating user.");
             alert("Thank you for supporting independent developers! Say goodbye to those pesky ads!");
-            LightningDotsApplication.hasPurchasedNoAds = true;
+            LightningDotsApplication.setHasPurchasedNoAds(context, true);
 
         }
 
+    }
+
+    public boolean getHasPurchasedNoAds() {
+        boolean result = false;
+
+        // Get the shared preference for removing ads
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+        synchronized (LightningDotsApplication.lockSharedPreferences) {
+            if (sharedPref.contains(context.getString(R.string.pref_product_remove_ads))) {
+                result = sharedPref.getBoolean(context.getString(R.string.pref_product_remove_ads), false);
+            }
+        }
+
+        result = result || LightningDotsApplication.hasPurchasedNoAds;
+
+        if (inventory != null) {
+            result = result || inventory.hasPurchase(PRODUCT_SKU_REMOVE_ADS);
+        }
+
+        return result;
     }
 
 }
