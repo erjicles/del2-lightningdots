@@ -67,23 +67,28 @@ public class UtilityFunctions {
 
     public static void registerScreenView(Activity activity, String screenName) {
 
-        // Get the app tracker.
-        Tracker appTracker = ((LightningDotsApplication) activity.getApplication()).getTracker(
-                LightningDotsApplication.TrackerName.APP_TRACKER);
+        try {
 
-        // Get the global tracker
-        Tracker globalTracker = ((LightningDotsApplication) activity.getApplication()).getTracker(
-                LightningDotsApplication.TrackerName.GLOBAL_TRACKER);
+            // Get the app tracker.
+            Tracker appTracker = ((LightningDotsApplication) activity.getApplication()).getTracker(
+                    LightningDotsApplication.TrackerName.APP_TRACKER);
 
-        // Set screen name.
-        // Where path is a String representing the screen name.
-        appTracker.setScreenName(screenName);
-        globalTracker.setScreenName(screenName);
+            // Get the global tracker
+            Tracker globalTracker = ((LightningDotsApplication) activity.getApplication()).getTracker(
+                    LightningDotsApplication.TrackerName.GLOBAL_TRACKER);
 
-        // Send a screen view.
-        appTracker.send(new HitBuilders.AppViewBuilder().build());
-        globalTracker.send(new HitBuilders.AppViewBuilder().build());
+            // Set screen name.
+            // Where path is a String representing the screen name.
+            appTracker.setScreenName(screenName);
+            globalTracker.setScreenName(screenName);
 
+            // Send a screen view.
+            appTracker.send(new HitBuilders.AppViewBuilder().build());
+            globalTracker.send(new HitBuilders.AppViewBuilder().build());
+
+        } catch (Exception e) {
+
+        }
 
     }
 

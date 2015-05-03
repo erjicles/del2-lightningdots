@@ -400,6 +400,9 @@ public class ClickTargetProfileScriptHelper {
                                         , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_RADIUS
                                         , defaultRandomInitialTargetRadius);
 
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetRadiusInches > initialTargetRadiusInches) minimumTargetRadiusInches = initialTargetRadiusInches * defaultMinimumTargetRadiusInchesMultiplier;
+                        if (maximumTargetRadiusInches < initialTargetRadiusInches) maximumTargetRadiusInches = initialTargetRadiusInches * defaultMaximumTargetRadiusInchesMultiplier;
 
                         // Get speed attributes
                         double initialTargetSpeedInchesPerSecond =
@@ -425,6 +428,10 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_SPEED
                                         , defaultRandomInitialTargetSpeed);
+
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetSpeedInchesPerSecond > initialTargetSpeedInchesPerSecond) minimumTargetSpeedInchesPerSecond = initialTargetSpeedInchesPerSecond * defaultMinimumTargetSpeedMultiplier;
+                        if (maximumTargetSpeedInchesPerSecond < initialTargetSpeedInchesPerSecond) maximumTargetSpeedInchesPerSecond = initialTargetSpeedInchesPerSecond * defaultMaximumTargetSpeedMultiplier;
 
                         // Get speed change attributes
                         double initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond =
@@ -456,6 +463,10 @@ public class ClickTargetProfileScriptHelper {
                                         , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_SPEED_CHANGE_SIGN
                                         , defaultRandomInitialTargetSpeedChangeSign);
 
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond > initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond) minimumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond = initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond * defaultMinimumTargetSpeedChangeAbsoluteValueMultiplier;
+                        if (maximumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond < initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond) maximumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond = initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond * defaultMaximumTargetSpeedChangeAbsoluteValueMultiplier;
+
                         // Get the DRadius attributes
                         double initialTargetDRadiusAbsoluteValueInchesPerSecond =
                                 (double) defaultInitialTargetDRadiusAbsoluteValueInchesPerSecond
@@ -486,6 +497,10 @@ public class ClickTargetProfileScriptHelper {
                                         , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DRADIUS_SIGN
                                         , defaultRandomInitialTargetDRadiusSign);
 
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetDRadiusAbsoluteValueInchesPerSecond > initialTargetDRadiusAbsoluteValueInchesPerSecond) minimumTargetDRadiusAbsoluteValueInchesPerSecond = initialTargetDRadiusAbsoluteValueInchesPerSecond * defaultMinimumTargetDRadiusAbsoluteValueMultiplier;
+                        if (maximumTargetDRadiusAbsoluteValueInchesPerSecond < initialTargetDRadiusAbsoluteValueInchesPerSecond) maximumTargetDRadiusAbsoluteValueInchesPerSecond = initialTargetDRadiusAbsoluteValueInchesPerSecond * defaultMaximumTargetDRadiusAbsoluteValueMultiplier;
+
                         // Get the DRadius Change attributes
                         double initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond =
                                 (double) defaultInitialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
@@ -515,6 +530,11 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DRADIUS_CHANGE_SIGN
                                         , defaultRandomInitialTargetDRadiusChangeSign);
+
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond > initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond) minimumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond = initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond * defaultMinimumTargetDRadiusChangeAbsoluteValueMultiplier;
+                        if (maximumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond < initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond) maximumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond = initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond * defaultMaximumTargetDRadiusChangeAbsoluteValueMultiplier;
+
 
                         // Direction angle
                         double initialTargetDirectionAngleRadians =
@@ -557,6 +577,10 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DIRECTION_ANGLE_CHANGE_SIGN
                                         , defaultRandomInitialTargetDirectionAngleChangeSign);
+
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond > initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond) minimumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond = initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond * defaultMinimumTargetDirectionAngleChangeAbsoluteValueMultiplier;
+                        if (maximumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond < initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond) maximumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond = initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond * defaultMaximumTargetDirectionAngleChangeAbsoluteValueMultiplier;
 
                         // Get the probability attributes
                         double probabilityOfRandomPositionChangePerSecond =

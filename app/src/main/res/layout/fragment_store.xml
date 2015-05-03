@@ -1,12 +1,62 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_store_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.delsquared.lightningdots.activities.ActivityStore$PlaceholderFragment">
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <ScrollView
+        android:id="@+id/fragment_store_scrollview_main"
+        style="@style/MainScrollView">
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/fragment_store_linearlayout_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/fragment_store_textview_inventorymenu_title"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/fragment_store_textview_inventorymenu_title"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_store_linearlayout_inventorymenu"
+                style="@style/MainMenuSection">
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/activity_main_menu_vertical_spacer"></LinearLayout>
+
+            <TextView
+                android:id="@+id/fragment_store_textview_purchasedmenu_title"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/fragment_store_textview_purchasedmenu_title"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_store_linearlayout_purchasedmenu"
+                style="@style/MainMenuSection">
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentTrademark"
+        android:id="@+id/fragment_main_fragment_trademark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <fragment
+        android:name="com.delsquared.lightningdots.fragments.FragmentAdsBottomBanner"
+        android:id="@+id/fragment_main_fragment_ads_bottom_banner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"/>
+
+</LinearLayout>

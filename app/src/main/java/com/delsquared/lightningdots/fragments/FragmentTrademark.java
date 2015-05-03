@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 import java.util.Calendar;
 

@@ -10,9 +10,11 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.fragments.AcceptTermsDialog;
 import com.delsquared.lightningdots.fragments.FragmentMain;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.utilities.PurchaseHelper;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import org.json.JSONObject;
@@ -24,6 +26,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     AcceptTermsDialog termsDialog;
     protected String currentTermsVersion = "";
     protected String currentPrivacyPolicyVersion = "";
+
+    PurchaseHelper purchaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +42,44 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         // Handle showing the accept terms dialog
         toggleAcceptTermsDialog();
 
+        // Setup the purchase helper
+        purchaseHelper = new PurchaseHelper(
+                this
+                , new PurchaseHelper.InterfaceSetupFinishedCallback() {
+
+                    @Override
+                    public void onSetupFinished(boolean success) {
+
+                    }
+
+                }
+                , new PurchaseHelper.InterfaceQueryInventoryCallback() {
+
+                    @Override
+                    public void onQueryInventoryFinished() {
+                    }
+                }
+                , new PurchaseHelper.InterfacePurchaseFinishedCallback() {
+
+                    @Override
+                    public void onPurchaseFinished(Purchase purchase) {
+                    }
+                }
+        );
+
         // Register screen view
         UtilityFunctions.registerScreenView(this, getString(R.string.ga_screenname_activitymain));
 
 	}
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (purchaseHelper != null) {
+            purchaseHelper.onDestroy();
+        }
+        purchaseHelper = null;
+    }
 
     /*
     @Override
@@ -77,6 +115,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
     public void clicked_about(View view) { launchAbout(); }
 
+    public void clicked_store(View view) { launchStore(); }
+
     private void launchGame(int gameType) {
 
         // Start the game activity
@@ -99,6 +139,14 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         // Start the about activity
         Intent aboutActivityIntent = new Intent(this, ActivityAbout.class);
         startActivity(aboutActivityIntent);
+
+    }
+
+    public void launchStore() {
+
+        // Start the store activity
+        Intent intentStoreActivity = new Intent(this, ActivityStore.class);
+        startActivity(intentStoreActivity);
 
     }
 

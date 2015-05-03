@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/MenuItemStore">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/award_transparent"/>
+
+        <TextView
+            android:id="@+id/menu_item_store_title"
+            style="@style/MenuItemStoreTitle"
+            android:text="@string/menu_item_store_available_default_title"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/menu_item_store_description"
+        style="@style/MenuItemStoreText"
+        android:text="@string/menu_item_store_available_default_description"/>
+
+    <TextView
+        android:id="@+id/menu_item_store_price"
+        style="@style/MenuItemStorePrice"
+        android:text="@string/menu_item_store_available_default_price"/>
+
+</LinearLayout>

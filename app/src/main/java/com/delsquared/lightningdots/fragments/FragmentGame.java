@@ -226,6 +226,12 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void showInterstitialAd() {
+
+        // Check if the user has not purchased the nod ads item
+        if (LightningDotsApplication.hasPurchasedNoAds) {
+            return;
+        }
+
         // Show the interstitial if it is ready
         // and if this is a third click. Otherwise, proceed as usual without showing it
         if (gameInterstitialAd != null
@@ -235,6 +241,12 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void loadInterstitialAd() {
+
+        // Check if the user has not purchased the nod ads item
+        if (LightningDotsApplication.hasPurchasedNoAds) {
+            return;
+        }
+
         // Create an interstitial ad. When a natural transition in the app occurs (such as a
         // level ending in a game), show the interstitial. In this simple example, the press of a
         // button is used instead.

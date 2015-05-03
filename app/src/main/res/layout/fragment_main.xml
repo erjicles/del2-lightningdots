@@ -120,6 +120,26 @@
                     android:background="@color/app_background_purple"/>
 
                 <LinearLayout
+                    android:id="@+id/fragment_main_linearlayout_settingsmenu_store"
+                    style="@style/MainMenuSectionSubsectionClickable"
+                    android:onClick="clicked_store">
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionTitle"
+                        android:text="@string/mainactivity_settingsmenu_store_title"/>
+
+                    <TextView
+                        style="@style/MainMenuSectionSubsectionText"
+                        android:text="@string/mainactivity_settingsmenu_store_description"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/app_background_purple"/>
+
+                <LinearLayout
                     android:id="@+id/fragment_main_linearlayout_settingsmenu_about"
                     style="@style/MainMenuSectionSubsectionClickable"
                     android:onClick="clicked_about">

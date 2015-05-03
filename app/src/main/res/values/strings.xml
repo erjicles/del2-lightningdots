@@ -16,13 +16,8 @@
     <string name="event_category_buttonclick">BUTTON_CLICK</string>
     <string name="event_category_settingchange">SETTING_CHANGE</string>
     <string name="event_actionid_sendfeedback">SEND_FEEDBACK</string>
-    <string name="event_actionid_pickrandomgame_shake">PICK_RANDOM_GAME_SHAKE</string>
-    <string name="event_actionid_pickrandomgame_click">PICK_RANDOM_GAME_CLICK</string>
-    <string name="event_actionid_searchgames">SEARCH_GAMES</string>
-    <string name="event_actionid_pickrandomgame_gameclick">PICK_RANDOM_GAME_GAME_CLICK</string>
-    <string name="event_actionid_searchgames_gameclick">SEARCH_GAMES_GAME_CLICK</string>
-    <string name="event_actionid_settings_savepreferences">TOGGLE_SAVE_PREFERENCES</string>
     <string name="event_actionid_settings_googleanalytics">TOGGLE_GOOGLE_ANALYTICS</string>
+    <string name="event_actionid_settings_delete_game_history">DELETE_GAME_HISTORY</string>
 
     <!-- Screen names -->
     <!-- The screen names that will appear in reports -->
@@ -32,6 +27,7 @@
     <string name="ga_screenname_activityabout">LightningDots ActivityAbout</string>
     <string name="ga_screenname_activitytermsofservice">LightningDots ActivityTermsOfService</string>
     <string name="ga_screenname_activityprivacypolicy">LightningDots ActivityPrivacyPolicy</string>
+    <string name="ga_screenname_activitystore">LightningDots ActivityStore</string>
 
     <!-- Splash activity -->
     <string name="title_activity_splash">@string/app_name</string>
@@ -109,6 +105,8 @@
     <string name="fragment_main_textview_settingsmenu_title">Options</string>
     <string name="fragment_main_textview_ladder_beat_game">You beat the ladder!</string>
     <string name="fragment_main_textview_timeattack_achieved_highest_award">You earned %d bolts!</string>
+    <string name="mainactivity_settingsmenu_store_title">Store</string>
+    <string name="mainactivity_settingsmenu_store_description">Browse and purchase extra goodies!</string>
 
     <!-- Game Activity -->
     <string name="title_activity_game">@string/app_name</string>
@@ -162,6 +160,7 @@
     <string name="pref_general_googleanalytics_title">Google analytics</string>
     <string name="pref_general_googleanalytics_key">allow_google_analytics</string>
     <string name="fragment_settings_textview_gamehistorymenu_title">Game history</string>
+    <string name="fragment_settings_button_delete_game_history">Delete game history</string>
     <string name="fragment_settings_textview_gamehistorymenu_delete_game_history_warning">Warning: This will reset your high scores and levels unlocked!</string>
     <string name="fragment_settings_text_dialog_delete_game_history_title">Delete game history</string>
     <string name="fragment_settings_text_dialog_delete_game_history">Are you sure you want to delete your game history?</string>
@@ -177,6 +176,20 @@
     <string name="activity_about_legal_termsandconditions">Terms of service</string>
     <string name="activity_about_legal_privacypolicy">Privacy policy</string>
     <string name="activity_about_aboutapp_copyright">%1$s&#8482;, Copyright &#169; %2$s %3$s</string>
+
+    <!-- Store activity -->
+    <string name="fragment_store_textview_inventorymenu_title">Available items</string>
+    <string name="fragment_store_textview_purchasedmenu_title">Purchased items</string>
+    <string name="menu_item_store_available_default_title">Default item</string>
+    <string name="menu_item_store_available_default_description">Default description</string>
+    <string name="menu_item_store_available_default_price">Default price</string>
+    <string name="menu_item_store_purchased_default_title">Default item</string>
+    <string name="menu_item_store_purchased_default_description">Default description</string>
+
+    <!-- Products -->
+    <string name="product_remove_ads_title">Remove ads</string>
+    <string name="product_remove_ads_price">$0.99</string>
+    <string name="product_remove_ads_description">Remove ads</string>
 
     <!-- Other settings -->
     <string name="preferences_file_name">LightningDotsPreferences</string>

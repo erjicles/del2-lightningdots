@@ -87,4 +87,33 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+
+    <style name="MenuItemStore">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/activity_vertical_margin</item>
+        <item name="android:layout_marginBottom">@dimen/activity_vertical_margin</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:background">@drawable/mainactivity_menu_submenu_shape</item>
+        <item name="android:textColor">@color/DarkOrange</item>
+    </style>
+
+    <style name="MenuItemStoreAvailable" parent="MenuItemStore">
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="MenuItemStoreText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/DarkCyan</item>
+    </style>
+
+    <style name="MenuItemStoreTitle" parent="MenuItemStoreText">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="MenuItemStorePrice" parent="MenuItemStoreTitle">
+        <item name="android:textColor">@color/yellow</item>
+    </style>
+
 </resources>

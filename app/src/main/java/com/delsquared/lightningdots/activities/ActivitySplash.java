@@ -141,6 +141,8 @@ public class ActivitySplash extends Activity {
                     // Reset the result string
                     jsonResultString = "";
 
+                } finally {
+
                 }
 
             }
