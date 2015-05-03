@@ -229,18 +229,21 @@ public class PurchaseHelper {
     public boolean getHasPurchasedNoAds() {
         boolean result = false;
 
-        // Get the shared preference for removing ads
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
-        synchronized (LightningDotsApplication.lockSharedPreferences) {
-            if (sharedPref.contains(context.getString(R.string.pref_product_remove_ads))) {
-                result = sharedPref.getBoolean(context.getString(R.string.pref_product_remove_ads), false);
+        if (inventory != null && iabHelperSetupComplete) {
+
+            result = inventory.hasPurchase(PRODUCT_SKU_REMOVE_ADS);
+
+        } else {
+
+            // Get the shared preference for removing ads
+            SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+            synchronized (LightningDotsApplication.lockSharedPreferences) {
+                if (sharedPref.contains(context.getString(R.string.pref_product_remove_ads))) {
+                    result = sharedPref.getBoolean(context.getString(R.string.pref_product_remove_ads), false);
+                }
             }
-        }
 
-        result = result || LightningDotsApplication.hasPurchasedNoAds;
-
-        if (inventory != null) {
-            result = result || inventory.hasPurchase(PRODUCT_SKU_REMOVE_ADS);
+            result = result || LightningDotsApplication.hasPurchasedNoAds;
         }
 
         return result;
