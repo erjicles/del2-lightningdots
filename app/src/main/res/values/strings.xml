@@ -187,8 +187,10 @@
     <string name="menu_item_store_available_default_price">Default price</string>
     <string name="menu_item_store_purchased_default_title">Default item</string>
     <string name="menu_item_store_purchased_default_description">Default description</string>
+    <string name="menu_item_store_available_tap_to_buy">Tap to buy</string>
 
     <!-- Products -->
+
     <string name="product_remove_ads_title">Remove ads</string>
     <string name="product_remove_ads_price">$0.99</string>
     <string name="product_remove_ads_description">Remove ads</string>

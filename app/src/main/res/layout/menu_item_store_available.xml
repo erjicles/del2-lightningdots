@@ -11,12 +11,20 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/award_transparent"/>
+            android:src="@drawable/store_bolt_transparent"/>
 
         <TextView
             android:id="@+id/menu_item_store_title"
             style="@style/MenuItemStoreTitle"
             android:text="@string/menu_item_store_available_default_title"/>
+
+        <TextView
+            android:id="@+id/menu_item_store_price"
+            style="@style/MenuItemStorePrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/menu_item_store_available_default_price"/>
 
     </LinearLayout>
 
@@ -26,8 +34,9 @@
         android:text="@string/menu_item_store_available_default_description"/>
 
     <TextView
-        android:id="@+id/menu_item_store_price"
-        style="@style/MenuItemStorePrice"
-        android:text="@string/menu_item_store_available_default_price"/>
+        android:id="@+id/menu_item_store_tap_to_buy"
+        style="@style/MenuItemStoreText"
+        android:textColor="@color/Orange"
+        android:text="@string/menu_item_store_available_tap_to_buy"/>
 
 </LinearLayout>

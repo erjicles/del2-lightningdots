@@ -11,7 +11,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/award_yellow"/>
+            android:src="@drawable/store_bolt_yellow"/>
         
         <TextView
             android:id="@+id/menu_item_store_title"
