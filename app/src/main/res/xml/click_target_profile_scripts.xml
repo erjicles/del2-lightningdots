@@ -148,4 +148,90 @@
             initialTargetRadiusMultiplier="0.65"/>
     </ClickTargetProfileScript>
 
+    <ClickTargetProfileScript
+        level="16"
+        scriptTransitionMode="CYCLE"
+        scriptTransitionInterval="RANDOM">
+        <ClickTargetProfile
+            scriptTransitionValue="0.65"
+            scriptTransitionContinuousRadius="CONTINUOUS"
+            scriptTransitionContinuousSpeed="CONTINUOUS"
+            initialTargetSpeedMultiplier="1.75"
+            targetCanRandomlyChangeDirection="true"
+            probabilityOfRandomDirectionChangePerSecond="0.65"
+            tieRandomDirectionChangeToRandomSpeedChange="true"/>
+        <ClickTargetProfile
+            scriptTransitionValue="0.65"
+            scriptTransitionContinuousRadius="DISCONTINUOUS"
+            scriptTransitionContinuousSpeed="CONTINUOUS"
+            initialTargetRadiusMultiplier="0.75"
+            maximumTargetRadiusMultiplier="0.80"
+            minimumTargetRadiusMultiplier="0.40"
+            targetCanChangeRadius="true"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="17">
+        <ClickTargetProfile
+            initialTargetSpeedMultiplier="2.0"
+            minimumTargetSpeedMultiplier="1.5"
+            maximumTargetSpeedMultiplier="2.5"
+            initialTargetRadiusMultiplier="0.80"
+            minimumTargetRadiusMultiplier="0.65"
+            maximumTargetRadiusMultiplier="0.90"
+            targetCanChangeSpeed="true"
+            targetCanChangeDirection="true"
+            targetCanChangeRadius="true"
+            targetCanRandomlyChangeSpeed="true"
+            probabilityOfRandomSpeedChangePerSecond="0.50"
+            tieRandomSpeedChangeToRandomDirectionChange="true"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="18">
+        <ClickTargetProfile
+            initialTargetSpeedMultiplier="2.25"
+            minimumTargetSpeedMultiplier="1.50"
+            maximumTargetSpeedMultiplier="3.0"
+            initialTargetRadiusMultiplier="0.80"
+            targetCanRandomlyChangePosition="true"
+            probabilityOfRandomPositionChangePerSecond="0.70"
+            tieRandomPositionChangeToRandomDirectionChange="true"
+            targetCanRandomlyChangeSpeed="true"
+            probabilityOfRandomSpeedChangePerSecond="0.60"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="19">
+        <ClickTargetProfile
+            initialTargetRadiusMultiplier="0.50"
+            initialTargetSpeedMultiplier="2.5"
+            initialTargetDRadiusMultiplier="2.0"
+            targetCanChangeRadius="true"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="20"
+        scriptTransitionMode="CYCLE"
+        scriptTransitionInterval="REGULAR">
+        <ClickTargetProfile
+            scriptTransitionValue="1000.0"
+            scriptTransitionContinuousRadius="DISCONTINUOUS"
+            scriptTransitionContinuousSpeed="DISCONTINUOUS"
+            initialTargetRadiusMultiplier="0.40"
+            initialTargetSpeedMultiplier="1.25"/>
+        <ClickTargetProfile
+            scriptTransitionValue="1000.0"
+            scriptTransitionContinuousRadius="DISCONTINUOUS"
+            scriptTransitionContinuousSpeed="DISCONTINUOUS"
+            initialTargetSpeedMultiplier="2.75"
+            initialTargetRadiusMultiplier="0.90"/>
+        <ClickTargetProfile
+            scriptTransitionValue="1000.0"
+            scriptTransitionContinuousRadius="DISCONTINUOUS"
+            scriptTransitionContinuousSpeed="DISCONTINUOUS"
+            targetCanChangeRadius="true"
+            initialTargetDRadiusMultiplier="2.5"/>
+    </ClickTargetProfileScript>
+
 </ClickTargetProfileScripts>

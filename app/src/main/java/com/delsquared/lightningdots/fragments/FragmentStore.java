@@ -186,9 +186,9 @@ public class FragmentStore extends android.support.v4.app.Fragment {
                     TextView textViewDescription = (TextView) availableAdsView.findViewById(R.id.menu_item_store_description);
                     TextView textViewPrice = (TextView) availableAdsView.findViewById(R.id.menu_item_store_price);
 
-                    textViewTitle.setText(R.string.product_remove_ads_title);
-                    textViewDescription.setText(R.string.product_remove_ads_description);
-                    textViewPrice.setText(R.string.product_remove_ads_price);
+                    textViewTitle.setText(titleRemoveAds);
+                    textViewDescription.setText(descriptionRemoveAds);
+                    textViewPrice.setText(priceRemoveAds);
 
                     linearLayoutInventory.setOnClickListener(new View.OnClickListener() {
 
