@@ -50,6 +50,15 @@
     <item name="game_values_defaultProbabilityOfRandomDRadiusChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond" format="float" type="dimen">0.25</item>
 
+    <string name="game_values_defaultRandomChangeIntervalPosition">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalSpeed">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalDirection">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalDSpeed">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalDDirection">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalRadius">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalDRadius">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalD2Radius">RANDOM</string>
+
     <bool name="game_values_defaultCanChangePosition">true</bool>
     <bool name="game_values_defaultCanChangeSpeed">false</bool>
     <bool name="game_values_defaultCanChangeDirection">false</bool>

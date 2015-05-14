@@ -9,6 +9,16 @@ public class PositionVector {
         X2 = 0.0;
         X3 = 0.0;
     }
+    public PositionVector(double X1) {
+        this.X1 = X1;
+        this.X2 = 0.0;
+        this.X3 = 0.0;
+    }
+    public PositionVector(double X1, double X2) {
+        this.X1 = X1;
+        this.X2 = X2;
+        this.X3 = 0.0;
+    }
     public PositionVector(double X1, double X2, double X3) {
         this.X1 = X1;
         this.X2 = X2;

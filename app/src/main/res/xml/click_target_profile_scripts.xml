@@ -15,7 +15,9 @@
     <ClickTargetProfileScript
         level="3">
         <ClickTargetProfile
-            targetCanRandomlyChangeRadius="true"/>
+            targetCanRandomlyChangeRadius="true"
+            randomChangeIntervalRadius="REGULAR"
+            probabilityOfRandomRadiusChangePerSecond="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -60,7 +62,8 @@
         <ClickTargetProfile
             targetCanChangePosition="false"
             targetCanRandomlyChangePosition="true"
-            probabilityOfRandomPositionChangePerSecond="0.5"/>
+            randomChangeIntervalPosition="REGULAR"
+            probabilityOfRandomPositionChangePerSecond="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -88,7 +91,8 @@
         <ClickTargetProfile
             initialTargetSpeedMultiplier="1.5"
             targetCanRandomlyChangeDirection="true"
-            probabilityOfRandomDirectionChangePerSecond="0.50"/>
+            randomChangeIntervalDirection="REGULAR"
+            probabilityOfRandomDirectionChangePerSecond="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -106,7 +110,9 @@
             scriptTransitionContinuousSpeed="CONTINUOUS"
             scriptTransitionContinuousDirection="CONTINUOUS"
             targetCanChangeDirection="true"
-            targetCanRandomlyChangeDirection="true"/>
+            targetCanRandomlyChangeDirection="true"
+            randomChangeIntervalDirection="REGULAR"
+            probabilityOfRandomDirectionChangePerSecond="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -125,6 +131,8 @@
             scriptTransitionContinuousSpeed="DISCONTINUOUS"
             initialTargetRadiusMultiplier="0.75"
             targetCanRandomlyChangeRadius="true"
+            randomChangeIntervalRadius="REGULAR"
+            probabilityOfRandomRadiusChangePerSecond="1.5"
             initialTargetSpeedMultiplier="1.5"/>
     </ClickTargetProfileScript>
 
@@ -142,7 +150,8 @@
         level="15">
         <ClickTargetProfile
             targetCanRandomlyChangeSpeed="true"
-            probabilityOfRandomSpeedChangePerSecond="0.65"
+            randomChangeIntervalSpeed="REGULAR"
+            probabilityOfRandomSpeedChangePerSecond="1.0"
             targetCanRandomlyChangeDirection="true"
             probabilityOfRandomDirectionChangePerSecond="0.50"
             initialTargetRadiusMultiplier="0.65"/>
@@ -158,7 +167,8 @@
             scriptTransitionContinuousSpeed="CONTINUOUS"
             initialTargetSpeedMultiplier="1.75"
             targetCanRandomlyChangeDirection="true"
-            probabilityOfRandomDirectionChangePerSecond="0.65"
+            randomChangeIntervalDirection="REGULAR"
+            probabilityOfRandomDirectionChangePerSecond="1.0"
             tieRandomDirectionChangeToRandomSpeedChange="true"/>
         <ClickTargetProfile
             scriptTransitionValue="0.65"
@@ -183,7 +193,8 @@
             targetCanChangeDirection="true"
             targetCanChangeRadius="true"
             targetCanRandomlyChangeSpeed="true"
-            probabilityOfRandomSpeedChangePerSecond="0.50"
+            randomChangeIntervalSpeed="REGULAR"
+            probabilityOfRandomSpeedChangePerSecond="1.5"
             tieRandomSpeedChangeToRandomDirectionChange="true"/>
     </ClickTargetProfileScript>
 

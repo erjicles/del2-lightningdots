@@ -68,6 +68,15 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_DRADIUS_CHANGE_PER_SECOND = "probabilityOfRandomDRadiusChangePerSecond";
     private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_D2RADIUS_CHANGE_PER_SECOND = "probabilityOfRandomD2RadiusChangePerSecond";
 
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_POSITION = "randomChangeIntervalPosition";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_SPEED = "randomChangeIntervalSpeed";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DIRECTION = "randomChangeIntervalDirection";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DSPEED = "randomChangeIntervalDSpeed";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DDIRECTION = "randomChangeIntervalDDirection";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_RADIUS = "randomChangeIntervalRadius";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DRADIUS = "randomChangeIntervalDRadius";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2RADIUS = "randomChangeIntervalD2Radius";
+
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_POSITION = "targetCanChangePosition";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_SPEED = "targetCanChangeSpeed";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_DIRECTION = "targetCanChangeDirection";
@@ -149,6 +158,11 @@ public class ClickTargetProfileScriptHelper {
             add("INCREASING");
             add("DECREASING");
     }};
+    public static final ArrayList<String> randomChangeIntervalValues = new ArrayList<String>() {{
+            add("CONSTANT");
+            add("REGULAR");
+            add("RANDOM");
+    }};
 
     public static int getHighestScriptedLevel(
             Context context
@@ -189,11 +203,7 @@ public class ClickTargetProfileScriptHelper {
                 currentXmlEvent = xmlResourceParser.next();
             }
 
-        } catch (XmlPullParserException e) {
-            int blah = 0;
-        } catch (IOException e) {
-            int blah = 0;
-        } catch (Exception e) {
+        } catch (XmlPullParserException|IOException e) {
             int blah = 0;
         }
 
@@ -255,6 +265,16 @@ public class ClickTargetProfileScriptHelper {
         float defaultProbabilityOfRandomRadiusChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRadiusChangePerSecond);
         float defaultProbabilityOfRandomDRadiusChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRadiusChangePerSecond);
         float defaultProbabilityOfRandomD2RadiusChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond);
+
+        // Random change intervals
+        String defaultRandomChangeIntervalStringPosition = context.getString(R.string.game_values_defaultRandomChangeIntervalPosition);
+        String defaultRandomChangeIntervalStringSpeed = context.getString(R.string.game_values_defaultRandomChangeIntervalSpeed);
+        String defaultRandomChangeIntervalStringDirection = context.getString(R.string.game_values_defaultRandomChangeIntervalDirection);
+        String defaultRandomChangeIntervalStringDSpeed = context.getString(R.string.game_values_defaultRandomChangeIntervalDSpeed);
+        String defaultRandomChangeIntervalStringDDirection = context.getString(R.string.game_values_defaultRandomChangeIntervalDDirection);
+        String defaultRandomChangeIntervalStringRadius = context.getString(R.string.game_values_defaultRandomChangeIntervalRadius);
+        String defaultRandomChangeIntervalStringDRadius = context.getString(R.string.game_values_defaultRandomChangeIntervalDRadius);
+        String defaultRandomChangeIntervalStringD2Radius = context.getString(R.string.game_values_defaultRandomChangeIntervalD2Radius);
 
         // Can do things
         boolean defaultCanChangePosition = context.getResources().getBoolean(R.bool.game_values_defaultCanChangePosition);
@@ -625,6 +645,65 @@ public class ClickTargetProfileScriptHelper {
                                         , defaultProbabilityOfRandomD2RadiusChangePerSecond);
 
 
+                        // Random change intervals
+                        String randomChangeIntervalStringPosition =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_POSITION) == null) ?
+                                        defaultRandomChangeIntervalStringPosition
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_POSITION);
+                        String randomChangeIntervalStringSpeed =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_SPEED) == null) ?
+                                        defaultRandomChangeIntervalStringSpeed
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_SPEED);
+                        String randomChangeIntervalStringDirection =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DIRECTION) == null) ?
+                                        defaultRandomChangeIntervalStringDirection
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DIRECTION);
+                        String randomChangeIntervalStringDSpeed =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DSPEED) == null) ?
+                                        defaultRandomChangeIntervalStringDSpeed
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DSPEED);
+                        String randomChangeIntervalStringDDirection =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DDIRECTION) == null) ?
+                                        defaultRandomChangeIntervalStringDDirection
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DDIRECTION);
+                        String randomChangeIntervalStringRadius =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_RADIUS) == null) ?
+                                        defaultRandomChangeIntervalStringRadius
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_RADIUS);
+                        String randomChangeIntervalStringDRadius =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DRADIUS) == null) ?
+                                        defaultRandomChangeIntervalStringDRadius
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DRADIUS);
+                        String randomChangeIntervalStringD2Radius =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2RADIUS) == null) ?
+                                        defaultRandomChangeIntervalStringD2Radius
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2RADIUS);
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringPosition)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalSpeed =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringSpeed)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalDirection =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringDirection)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalDSpeed =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringDSpeed)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalDDirection =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringDDirection)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalRadius =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringRadius)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalDRadius =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringDRadius)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalD2Radius =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringD2Radius)];
+
+
                         // Value changes
                         boolean canChangePosition =
                                 xmlResourceParser.getAttributeBooleanValue(
@@ -915,75 +994,185 @@ public class ClickTargetProfileScriptHelper {
                                 ClickTargetProfile.TRANSITION_CONTINUITY.values()[
                                         scriptTransitionContinuityValues.indexOf(transitionContinuityDRadiusChangeString)];
 
+                        // Target position values
+                        ClickTargetProfile.ProfileVariableValues targetPositionHorizontalValuesInches =
+                        new ClickTargetProfile.ProfileVariableValues(
+                                0.0
+                                , 0.0
+                                , 0.0
+                                , false
+                                , false
+                                , false
+                                , canChangePosition
+                                , canRandomlyChangePosition
+                                , randomChangeIntervalPosition
+                                , probabilityOfRandomPositionChangePerSecond
+                                , boundaryEffectPositionHorizontal
+                                , transitionContinuityPosition
+                        );
+                        ClickTargetProfile.ProfileVariableValues targetPositionVerticalValuesInches =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        0.0
+                                        , 0.0
+                                        , 0.0
+                                        , false
+                                        , false
+                                        , false
+                                        , canChangePosition
+                                        , canRandomlyChangePosition
+                                        , randomChangeIntervalPosition
+                                        , probabilityOfRandomPositionChangePerSecond
+                                        , boundaryEffectPositionVertical
+                                        , transitionContinuityPosition
+                                );
+
+                        // Target speed values
+                        ClickTargetProfile.ProfileVariableValues targetSpeedValuesInchesPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetSpeedInchesPerSecond
+                                        , initialTargetSpeedInchesPerSecond
+                                        , maximumTargetSpeedInchesPerSecond
+                                        , randomInitialTargetSpeed
+                                        , false
+                                        , false
+                                        , canChangeSpeed
+                                        , canRandomlyChangeSpeed
+                                        , randomChangeIntervalSpeed
+                                        , probabilityOfRandomSpeedChangePerSecond
+                                        , boundaryEffectSpeed
+                                        , transitionContinuitySpeed
+                                );
+
+                        // Target direction values
+                        ClickTargetProfile.ProfileVariableValues targetDirectionAngleValuesRadians =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        0.0
+                                        , initialTargetDirectionAngleRadians
+                                        , 2.0 * Math.PI
+                                        , randomInitialTargetDirectionAngle
+                                        , false
+                                        , false
+                                        , canChangeDirection
+                                        , canRandomlyChangeDirection
+                                        , randomChangeIntervalDirection
+                                        , probabilityOfRandomDirectionChangePerSecond
+                                        , boundaryEffectDirection
+                                        , transitionContinuityDirection
+                                );
+
+                        // Target DSpeed values
+                        ClickTargetProfile.ProfileVariableValues targetDSpeedValuesInchesPerSecondPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
+                                        , initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
+                                        , maximumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
+                                        , randomInitialTargetSpeedChange
+                                        , true
+                                        , randomInitialTargetSpeedChangeSign
+                                        , false
+                                        , canRandomlyChangeDSpeed
+                                        , randomChangeIntervalDSpeed
+                                        , probabilityOfRandomDSpeedChangePerSecond
+                                        , boundaryEffectDSpeed
+                                        , transitionContinuitySpeedChange
+                                );
+
+                        // Target DDirection values
+                        ClickTargetProfile.ProfileVariableValues targetDDirectionValuesRadiansPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
+                                        , initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
+                                        , maximumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
+                                        , randomInitialTargetDirectionAngleChange
+                                        , true
+                                        , randomInitialTargetDirectionAngleChangeSign
+                                        , false
+                                        , canRandomlyChangeDDirection
+                                        , randomChangeIntervalDDirection
+                                        , probabilityOfRandomDDirectionChangePerSecond
+                                        , boundaryEffectDDirection
+                                        , transitionContinuityDirectionChange
+                                );
+
+                        // Target radius values
+                        ClickTargetProfile.ProfileVariableValues targetRadiusValuesInches =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetRadiusInches
+                                        , initialTargetRadiusInches
+                                        , maximumTargetRadiusInches
+                                        , randomInitialTargetRadius
+                                        , false
+                                        , false
+                                        , canChangeRadius
+                                        , canRandomlyChangeRadius
+                                        , randomChangeIntervalRadius
+                                        , probabilityOfRandomRadiusChangePerSecond
+                                        , boundaryEffectRadius
+                                        , transitionContinuityRadius
+                                );
+
+                        // Target DRadius values
+                        ClickTargetProfile.ProfileVariableValues targetDRadiusValuesInchesPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetDRadiusAbsoluteValueInchesPerSecond
+                                        , initialTargetDRadiusAbsoluteValueInchesPerSecond
+                                        , maximumTargetDRadiusAbsoluteValueInchesPerSecond
+                                        , randomInitialTargetDRadius
+                                        , true
+                                        , randomInitialTargetDRadiusSign
+                                        , canChangeDRadius
+                                        , canRandomlyChangeDRadius
+                                        , randomChangeIntervalDRadius
+                                        , probabilityOfRandomDRadiusChangePerSecond
+                                        , boundaryEffectDRadius
+                                        , transitionContinuityDRadius
+                                );
+
+                        // Target D2Radius values
+                        ClickTargetProfile.ProfileVariableValues targetD2RadiusValuesInchesPerSecondPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
+                                        , initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
+                                        , maximumTargetDRadiusAbsoluteValueInchesPerSecond
+                                        , randomInitialTargetDRadiusChange
+                                        , true
+                                        , randomInitialTargetDRadiusSign
+                                        , false
+                                        , canRandomlyChangeD2Radius
+                                        , randomChangeIntervalD2Radius
+                                        , probabilityOfRandomD2RadiusChangePerSecond
+                                        , boundaryEffectD2Radius
+                                        , transitionContinuityDRadiusChange
+                                );
+
 
                         // Create a new click target profile
                         ClickTargetProfile currentClickTargetProfile = new ClickTargetProfile(
-                                // Target radius values
-                                minimumTargetRadiusInches
-                                , initialTargetRadiusInches
-                                , maximumTargetRadiusInches
-                                , randomInitialTargetRadius
+
+                                // Target position values
+                                targetPositionHorizontalValuesInches
+                                , targetPositionVerticalValuesInches
 
                                 // Target speed values
-                                , minimumTargetSpeedInchesPerSecond
-                                , initialTargetSpeedInchesPerSecond
-                                , maximumTargetSpeedInchesPerSecond
-                                , randomInitialTargetSpeed
-                                , minimumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
-                                , initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
-                                , maximumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
-                                , randomInitialTargetSpeedChange
-                                , randomInitialTargetSpeedChangeSign
-
-                                // Target radius change values
-                                , minimumTargetDRadiusAbsoluteValueInchesPerSecond
-                                , initialTargetDRadiusAbsoluteValueInchesPerSecond
-                                , maximumTargetDRadiusAbsoluteValueInchesPerSecond
-                                , randomInitialTargetDRadius
-                                , randomInitialTargetDRadiusSign
-                                , minimumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
-                                , initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
-                                , maximumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
-                                , randomInitialTargetDRadiusChange
-                                , randomInitialTargetDRadiusChangeSign
+                                , targetSpeedValuesInchesPerSecond
 
                                 // Target direction values
-                                , initialTargetDirectionAngleRadians
-                                , randomInitialTargetDirectionAngle
+                                , targetDirectionAngleValuesRadians
 
-                                // Target direction change values
-                                , minimumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
-                                , initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
-                                , maximumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
-                                , randomInitialTargetDirectionAngleChange
-                                , randomInitialTargetDirectionAngleChangeSign
+                                // Target DSpeed values
+                                , targetDSpeedValuesInchesPerSecondPerSecond
 
-                                // Random change values
-                                , probabilityOfRandomPositionChangePerSecond
-                                , probabilityOfRandomSpeedChangePerSecond
-                                , probabilityOfRandomDirectionChangePerSecond
-                                , probabilityOfRandomDSpeedChangePerSecond
-                                , probabilityOfRandomDDirectionChangePerSecond
-                                , probabilityOfRandomRadiusChangePerSecond
-                                , probabilityOfRandomDRadiusChangePerSecond
-                                , probabilityOfRandomD2RadiusChangePerSecond
+                                // Target DDirection values
+                                , targetDDirectionValuesRadiansPerSecond
 
-                                // Variable change values
-                                , canChangePosition
-                                , canChangeSpeed
-                                , canChangeDirection
-                                , canChangeRadius
-                                , canChangeDRadius
+                                // Target radius values
+                                , targetRadiusValuesInches
 
-                                // Random change booleans
-                                , canRandomlyChangePosition
-                                , canRandomlyChangeSpeed
-                                , canRandomlyChangeDirection
-                                , canRandomlyChangeDSpeed
-                                , canRandomlyChangeDDirection
-                                , canRandomlyChangeRadius
-                                , canRandomlyChangeDRadius
-                                , canRandomlyChangeD2Radius
+                                // Target DRadius values
+                                , targetDRadiusValuesInchesPerSecond
+
+                                // Target D2Radius values
+                                , targetD2RadiusValuesInchesPerSecondPerSecond
 
                                 // Tie random changes to other random changes
                                 , tieRandomPositionChangeToRandomSpeedChange
@@ -1003,27 +1192,7 @@ public class ClickTargetProfileScriptHelper {
                                 , tieRandomDRadiusChangeToRandomDirectionChange
                                 , tieRandomDRadiusChangeToRandomDSpeedChange
                                 , tieRandomDRadiusChangeToRandomDDirectionChange
-
-                                // Boundary effect values
-                                , boundaryEffectPositionHorizontal
-                                , boundaryEffectPositionVertical
-                                , boundaryEffectSpeed
-                                , boundaryEffectDirection
-                                , boundaryEffectDSpeed
-                                , boundaryEffectDDirection
-                                , boundaryEffectRadius
-                                , boundaryEffectDRadius
-                                , boundaryEffectD2Radius
-
-                                // Script transition values
-                                , transitionContinuityPosition
-                                , transitionContinuitySpeed
-                                , transitionContinuityDirection
-                                , transitionContinuitySpeedChange
-                                , transitionContinuityDirectionChange
-                                , transitionContinuityRadius
-                                , transitionContinuityDRadius
-                                , transitionContinuityDRadiusChange);
+                        );
 
                         // Add the current click target profile to the click target profile list
                         arrayListTransitionValue.add(scriptTransitionValue);
@@ -1057,11 +1226,7 @@ public class ClickTargetProfileScriptHelper {
             //Release resources associated with the parser
             xmlResourceParser.close();
 
-        } catch (XmlPullParserException e) {
-            int blah = 0;
-        } catch (IOException e) {
-            int blah = 0;
-        } catch (Exception e) {
+        } catch (XmlPullParserException|IOException e) {
             int blah = 0;
         }
 

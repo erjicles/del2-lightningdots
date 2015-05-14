@@ -11,7 +11,7 @@ public class GameType {
 	public static final String TABLE_GAMETYPE_COLUMNNAME_NAME = "name";
 
 	// Database creation SQL statement
-	private static final String DATABASE_CREATE_TABLE_GAMERESULTS =
+	private static final String DATABASE_CREATE_TABLE_GAMERETYPE =
 			"CREATE TABLE \""
 			+ TABLENAME_GAMETYPE
 			+ "\" (\""
@@ -57,7 +57,7 @@ public class GameType {
 			+ ") VALUES (" + Integer.toString(Game.GameType.AGILITY.ordinal()) + ", 'Agility');";
 
 	public static void onCreate(SQLiteDatabase database) {
-		database.execSQL(DATABASE_CREATE_TABLE_GAMERESULTS);
+		database.execSQL(DATABASE_CREATE_TABLE_GAMERETYPE);
 		database.execSQL(DATABASE_CREATE_INDEX_UNIQUE_gametypes_gametype);
 		database.execSQL(DATABASE_INSERT_GAMETYPE_TIMEATTACK);
 		database.execSQL(DATABASE_INSERT_GAMETYPE_ENDURANCE);
@@ -66,7 +66,6 @@ public class GameType {
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 								 int newVersion) {
-		database.execSQL("DROP TABLE IF EXISTS " + DATABASE_CREATE_TABLE_GAMERESULTS);
-		onCreate(database);
+
 	}
 }

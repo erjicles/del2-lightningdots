@@ -197,6 +197,9 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     public void setCurrentGameLevel(int currentGameLevel) {
         this.currentGameLevel = currentGameLevel;
+        if (currentGameType == Game.GameType.TIME_ATTACK.ordinal()) {
+            this.currentGameLevel = 1;
+        }
         loadGameResultHighScoreCurrentLevel();
     }
 

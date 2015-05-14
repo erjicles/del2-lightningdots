@@ -95,6 +95,7 @@ public class SurfaceViewGame
 
         Log.d("lightningdots", "SurfaceViewGame surfaceChanged()");
 		surfaceViewGameThreadRunnable.setSurfaceSize(width, height);
+        gameThreadRunnable.setCanvasWidthAndHeight(true, width, height);
 
     }
 

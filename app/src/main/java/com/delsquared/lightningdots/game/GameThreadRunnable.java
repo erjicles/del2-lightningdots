@@ -30,6 +30,9 @@ public class GameThreadRunnable implements Runnable {
 	private int gameLevel = 1;
     private int highestScriptedLevel = 1;
 
+    double canvasWidth = 1.0;
+    double canvasHeight = 1.0;
+
 	public GameThreadRunnable(
             Context context
             , int gameType
@@ -84,12 +87,18 @@ public class GameThreadRunnable implements Runnable {
 
     }
 
-    public synchronized  void setGameLevel(int gameLevel) {
+    public synchronized void setGameLevel(int gameLevel) {
         if (game.getGameState() == Game.GameState.STOPPED) {
             long currentTimeMillis = SystemClock.elapsedRealtime();
             this.gameLevel = gameLevel;
             initializeGame(currentTimeMillis);
         }
+    }
+
+    public synchronized void setCanvasWidthAndHeight(boolean toggleNew, double canvasWidth, double canvasHeight) {
+        this.canvasWidth = canvasWidth;
+        this.canvasHeight = canvasHeight;
+        game.setCanvasWidthAndHeight(canvasWidth, canvasHeight);
     }
 
 	public void initializeGame(long currentTimeMillis) {
@@ -300,15 +309,11 @@ public class GameThreadRunnable implements Runnable {
 		// Get the surface view game thread shared data
 		SurfaceViewGameThreadSharedData surfaceViewGameThreadSharedData = game.surfaceViewGameThreadSharedData;
 
-		// Get shared data
-		int canvasWidth = surfaceViewGameThreadSharedData.getCanvasWidth();
-		int canvasHeight = surfaceViewGameThreadSharedData.getCanvasHeight();
-
 		// Set shared data
 		updateGameThreadSharedData(currentTimeMillis);
 
 		// Process the new time in the game
-		game.processNewTime(context, currentTimeMillis, canvasWidth, canvasHeight);
+		game.processNewTime(context, currentTimeMillis);
 
 		switch (game.getGameState()) {
 

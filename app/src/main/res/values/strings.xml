@@ -153,7 +153,7 @@
     <!-- Database -->
     <string name="database_name">LightningDotsDB.db</string>
 
-    <item name="database_version" format="integer" type="string">1</item>
+    <item name="database_version" format="integer" type="string">2</item>
 
     <!-- Settings activity -->
     <string name="pref_general_googleanalytics_description">Allow us to collect anonymous statistics about your use of the app (e.g., frequency of use, screens used, etc.)</string>

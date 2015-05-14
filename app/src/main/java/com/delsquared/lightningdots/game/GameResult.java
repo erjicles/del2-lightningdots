@@ -62,6 +62,8 @@ public class GameResult {
 	public static final String TABLE_GAMERESULTS_COLUMNNAME_USERCLICKS = "user_clicks";
 	public static final String TABLE_GAMERESULTS_COLUMNNAME_GAMETIMESTAMP = "game_timestamp";
 
+	public static final String TABLENAME_TEMP_GAMERESULT = "gameresults_temp";
+
 	// Database creation SQL statement
 	private static final String DATABASE_CREATE_TABLE_GAMERESULTS =
 			"CREATE TABLE \""
@@ -125,8 +127,22 @@ public class GameResult {
 
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 								 int newVersion) {
-		database.execSQL("DROP TABLE IF EXISTS " + DATABASE_CREATE_TABLE_GAMERESULTS);
-		onCreate(database);
+		//database.execSQL("DROP TABLE IF EXISTS " + DATABASE_CREATE_TABLE_GAMERESULTS);
+		//onCreate(database);
+        if (oldVersion == 1) {
+
+            // Update all time attack games to same level
+            String updateString =
+                    "UPDATE " + TABLENAME_GAMERESULTS + " "
+                    + "SET " + TABLE_GAMERESULTS_COLUMNNAME_GAMELEVEL + " = ? "
+                    + "WHERE " + GameResult.TABLE_GAMERESULTS_COLUMNNAME_GAMETYPE + " = ?";
+            database.execSQL(
+                    updateString
+                    , new String[] {
+                            Integer.toString(1)
+                            , Integer.toString(Game.GameType.TIME_ATTACK.ordinal())
+                    });
+        }
 	}
 
 

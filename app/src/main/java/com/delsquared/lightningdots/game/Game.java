@@ -44,6 +44,9 @@ public class Game {
 	private ArrayList<UserClick> listNewUserClick = new ArrayList<UserClick>();
 	private ArrayList<UserClick> listValidUserClick = new ArrayList<UserClick>();
 
+	private double canvasWidth = 1.0;
+	private double canvasHeight = 1.0;
+
 	public Game() {
 		this.gameType = GameType.AGILITY;
 		this.gameState = GameState.STOPPED;
@@ -101,9 +104,7 @@ public class Game {
 		this.clickTarget = new ClickTarget(
                 context
                 , gameLevelDefinition.clickTargetProfileScript
-                , 0.0
                 , canvasWidthPixels
-                , 0.0
                 , canvasHeightPixels);
 
 		listUserClick.clear();
@@ -205,7 +206,15 @@ public class Game {
         mapValidUserClick.put(newUserClickIndex, userClick);
     }
 
-	public void processNewTime(Context context, long currentTimeMillis, int canvasWidth, int canvasHeight) {
+	public void setCanvasWidthAndHeight(double canvasWidth, double canvasHeight) {
+		this.canvasWidth = canvasWidth;
+		this.canvasHeight = canvasHeight;
+		if (clickTarget != null) {
+			clickTarget.setCanvasWidthAndHeight(canvasWidth, canvasHeight);
+		}
+	}
+
+	public void processNewTime(Context context, long currentTimeMillis) {
 
 		// Process the new time for the start timer
 		startingTimer.processNewTime(currentTimeMillis);
@@ -223,11 +232,11 @@ public class Game {
 			// Move the target
 			clickTarget.processElapsedTimeMillis(
 					context
-					, timeElapsedSinceLastUpdateMillis
-					, radiusPixels / 2
-					, radiusPixels / 2
-					, (double) canvasWidth - (radiusPixels / 2)
-					, (double) canvasHeight - (radiusPixels / 2));
+					, timeElapsedSinceLastUpdateMillis);
+					//, radiusPixels / 2
+					//, radiusPixels / 2
+					//, (double) canvasWidth - (radiusPixels / 2)
+					//, (double) canvasHeight - (radiusPixels / 2));
 
 		}
 
@@ -307,23 +316,8 @@ public class Game {
 		// Check if the game type is agility
 		if (gameType == Game.GameType.AGILITY) {
 
-            PositionVector XPixels = clickTarget.getXPixels();
-
-            if (XPixels == null) {
-
-                isInsideTarget = false;
-
-            } else {
-
-                // Determine if the click is within the target
-                float targetX = (float) XPixels.X1;
-                float targetY = (float) XPixels.X2;
-                float targetRadius = (float) clickTarget.getRadiusPixels();
-                float dx = targetX - clickX;
-                float dy = targetY - clickY;
-                isInsideTarget = (dx * dx) + (dy * dy) <= (targetRadius * targetRadius);
-
-            }
+            // Determine if the click is within the target
+			isInsideTarget = clickTarget.pointIsInsideTarget(clickX, clickY);
 
 		}
 

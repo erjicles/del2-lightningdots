@@ -25,6 +25,7 @@ public class PositionEvolver {
 
     private boolean canRandomlyChangePosition = false;
     private double probabilityOfRandomPositionChangePerSecond = 0.00;
+    private RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition = RANDOM_CHANGE_INTERVAL.CONSTANT;
 
     private boolean canRandomlyChangeX1 = false;
     private boolean canRandomlyChangeX2 = false;
@@ -32,6 +33,9 @@ public class PositionEvolver {
     private double probabilityOfRandomChangePerSecondX1 = 0.00;
     private double probabilityOfRandomChangePerSecondX2 = 0.00;
     private double probabilityOfRandomChangePerSecondX3 = 0.00;
+    private RANDOM_CHANGE_INTERVAL randomChangeIntervalX1 = RANDOM_CHANGE_INTERVAL.CONSTANT;
+    private RANDOM_CHANGE_INTERVAL randomChangeIntervalX2 = RANDOM_CHANGE_INTERVAL.CONSTANT;
+    private RANDOM_CHANGE_INTERVAL randomChangeIntervalX3 = RANDOM_CHANGE_INTERVAL.CONSTANT;
 
     private boolean tieNewRandomX1ToNewRandomX2 = false;
     private boolean tieNewRandomX2ToNewRandomX1 = false;
@@ -44,6 +48,11 @@ public class PositionEvolver {
     private BOUNDARY_EFFECT boundaryEffectX1;
     private BOUNDARY_EFFECT boundaryEffectX2;
     private BOUNDARY_EFFECT boundaryEffectX3;
+
+    private double totalTimeElapsedSinceLastRandomChangePositionSeconds = 0;
+    private double totalTimeElapsedSinceLastRandomChangeX1Seconds = 0;
+    private double totalTimeElapsedSinceLastRandomChangeX2Seconds = 0;
+    private double totalTimeElapsedSinceLastRandomChangeX3Seconds = 0;
 
     public PositionEvolver(
             PositionVector X
@@ -63,12 +72,16 @@ public class PositionEvolver {
             , boolean mirrorAbsoluteValueBoundariesX3
             , boolean canRandomlyChangePosition
             , double probabilityOfRandomPositionChangePerSecond
+            , RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition
             , boolean canRandomlyChangeX1
             , boolean canRandomlyChangeX2
             , boolean canRandomlyChangeX3
             , double probabilityOfRandomChangePerSecondX1
             , double probabilityOfRandomChangePerSecondX2
             , double probabilityOfRandomChangePerSecondX3
+            , RANDOM_CHANGE_INTERVAL randomChangeIntervalX1
+            , RANDOM_CHANGE_INTERVAL randomChangeIntervalX2
+            , RANDOM_CHANGE_INTERVAL randomChangeIntervalX3
             , boolean tieNewRandomX1ToNewRandomX2
             , boolean tieNewRandomX2ToNewRandomX1
             , boolean tieNewRandomX1ToNewRandomDX1
@@ -103,6 +116,7 @@ public class PositionEvolver {
 
         this.canRandomlyChangePosition = canRandomlyChangePosition;
         this.probabilityOfRandomPositionChangePerSecond = probabilityOfRandomPositionChangePerSecond;
+        this.randomChangeIntervalPosition = randomChangeIntervalPosition;
 
         this.canRandomlyChangeX1 = canRandomlyChangeX1;
         this.canRandomlyChangeX2 = canRandomlyChangeX2;
@@ -110,6 +124,9 @@ public class PositionEvolver {
         this.probabilityOfRandomChangePerSecondX1 = probabilityOfRandomChangePerSecondX1;
         this.probabilityOfRandomChangePerSecondX2 = probabilityOfRandomChangePerSecondX2;
         this.probabilityOfRandomChangePerSecondX3 = probabilityOfRandomChangePerSecondX3;
+        this.randomChangeIntervalX1 = randomChangeIntervalX1;
+        this.randomChangeIntervalX2 = randomChangeIntervalX2;
+        this.randomChangeIntervalX3 = randomChangeIntervalX3;
 
         this.tieNewRandomX1ToNewRandomX2 = tieNewRandomX1ToNewRandomX2;
         this.tieNewRandomX2ToNewRandomX1 = tieNewRandomX2ToNewRandomX1;
@@ -188,6 +205,19 @@ public class PositionEvolver {
         }
         return new PositionVector();
     }
+
+    public double getMinimumX1() { return minimumX1; }
+    public double getMinimumX2() { return minimumX2; }
+    public double getMinimumX3() { return minimumX3; }
+    public double getMaximumX1() { return maximumX1; }
+    public double getMaximumX2() { return maximumX2; }
+    public double getMaximumX3() { return maximumX3; }
+    public boolean getMirrorAbsoluteValueBoundariesX1() { return mirrorAbsoluteValueBoundariesX1; }
+    public boolean getMirrorAbsoluteValueBoundariesX2() { return mirrorAbsoluteValueBoundariesX2; }
+    public boolean getMirrorAbsoluteValueBoundariesX3() { return mirrorAbsoluteValueBoundariesX3; }
+    public BOUNDARY_EFFECT getBoundaryEffectX1() { return boundaryEffectX1; }
+    public BOUNDARY_EFFECT getBoundaryEffectX2() { return boundaryEffectX2; }
+    public BOUNDARY_EFFECT getBoundaryEffectX3() { return boundaryEffectX3; }
 
     public void setBoundaryValues(
             double minimumX1
@@ -307,43 +337,100 @@ public class PositionEvolver {
         boolean generateNewRandomX2 = false;
         boolean generateNewRandomX3 = false;
 
+        totalTimeElapsedSinceLastRandomChangePositionSeconds += dt;
+        totalTimeElapsedSinceLastRandomChangeX1Seconds += dt;
+        totalTimeElapsedSinceLastRandomChangeX2Seconds += dt;
+        totalTimeElapsedSinceLastRandomChangeX3Seconds += dt;
+
         if (canRandomlyChangePosition) {
 
-            // Q = 1 - (1 - p)^(1 / N)
-            // Q = probability of change in partial unit
-            // P = probability of change in one unit
-            // N = number of partial units in one unit
-            // N = 1 second / time elapsed since last update in seconds
-            double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomPositionChangePerSecond, dt);
-            double positionChangeCheck = Math.random();
-            if (positionChangeCheck < probabilityThreshold) {
-                generateNewRandomX1 = evolveX1;
-                generateNewRandomX2 = evolveX2;
-                generateNewRandomX3 = evolveX3;
+            if (randomChangeIntervalPosition == RANDOM_CHANGE_INTERVAL.REGULAR) {
+
+                if (totalTimeElapsedSinceLastRandomChangePositionSeconds >= probabilityOfRandomPositionChangePerSecond) {
+                    generateNewRandomX1 = evolveX1;
+                    generateNewRandomX2 = evolveX2;
+                    generateNewRandomX3 = evolveX3;
+                    totalTimeElapsedSinceLastRandomChangePositionSeconds = 0.0;
+                }
+
+            } else if (randomChangeIntervalPosition == RANDOM_CHANGE_INTERVAL.RANDOM) {
+
+                // Q = 1 - (1 - p)^(1 / N)
+                // Q = probability of change in partial unit
+                // P = probability of change in one unit
+                // N = number of partial units in one unit
+                // N = 1 second / time elapsed since last update in seconds
+                double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomPositionChangePerSecond, dt);
+                double positionChangeCheck = Math.random();
+                if (positionChangeCheck < probabilityThreshold) {
+                    generateNewRandomX1 = evolveX1;
+                    generateNewRandomX2 = evolveX2;
+                    generateNewRandomX3 = evolveX3;
+                }
+
             }
 
         } else {
 
             if (canRandomlyChangeX1) {
-                double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX1, dt);
-                double changeCheckX1 = Math.random();
-                if (changeCheckX1 < probabilityThreshold) {
-                    generateNewRandomX1 = evolveX1;
+
+                if (randomChangeIntervalX1 == RANDOM_CHANGE_INTERVAL.REGULAR) {
+
+                    if (totalTimeElapsedSinceLastRandomChangeX1Seconds >= probabilityOfRandomChangePerSecondX1) {
+                        generateNewRandomX1 = evolveX1;
+                        totalTimeElapsedSinceLastRandomChangeX1Seconds = 0.0;
+                    }
+
+                } else if (randomChangeIntervalX1 == RANDOM_CHANGE_INTERVAL.RANDOM) {
+
+                    double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX1, dt);
+                    double changeCheckX1 = Math.random();
+                    if (changeCheckX1 < probabilityThreshold) {
+                        generateNewRandomX1 = evolveX1;
+                    }
+
                 }
+
             }
             if (canRandomlyChangeX2) {
-                double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX2, dt);
-                double changeCheckX2 = Math.random();
-                if (changeCheckX2 < probabilityThreshold) {
-                    generateNewRandomX2 = evolveX2;
+
+                if (randomChangeIntervalX2 == RANDOM_CHANGE_INTERVAL.REGULAR) {
+
+                    if (totalTimeElapsedSinceLastRandomChangeX2Seconds >= probabilityOfRandomChangePerSecondX2) {
+                        generateNewRandomX2 = evolveX2;
+                        totalTimeElapsedSinceLastRandomChangeX2Seconds = 0;
+                    }
+
+                } else if (randomChangeIntervalX2 == RANDOM_CHANGE_INTERVAL.RANDOM) {
+
+                    double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX2, dt);
+                    double changeCheckX2 = Math.random();
+                    if (changeCheckX2 < probabilityThreshold) {
+                        generateNewRandomX2 = evolveX2;
+                    }
+
                 }
+
             }
             if (canRandomlyChangeX3) {
-                double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX3, dt);
-                double changeCheckX3 = Math.random();
-                if (changeCheckX3 < probabilityThreshold) {
-                    generateNewRandomX3 = evolveX3;
+
+                if (randomChangeIntervalX3 == RANDOM_CHANGE_INTERVAL.REGULAR) {
+
+                    if (totalTimeElapsedSinceLastRandomChangeX3Seconds >= probabilityOfRandomChangePerSecondX3) {
+                        generateNewRandomX3 = evolveX3;
+                        totalTimeElapsedSinceLastRandomChangeX3Seconds = 0;
+                    }
+
+                } else if (randomChangeIntervalX3 == RANDOM_CHANGE_INTERVAL.RANDOM) {
+
+                    double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX3, dt);
+                    double changeCheckX3 = Math.random();
+                    if (changeCheckX3 < probabilityThreshold) {
+                        generateNewRandomX3 = evolveX3;
+                    }
+
                 }
+
             }
 
         }
@@ -450,7 +537,58 @@ public class PositionEvolver {
 
     }
 
-    private int checkBoundaryReached(
+    public static int checkBoundaryReachedNoDX(
+            double X
+            , double minimumX
+            , double maximumX
+            , boolean mirrorAbsoluteValueBoundariesX) {
+
+        // Initialize if we reached a boundary
+        int boundaryReached = 0;
+
+        // Check if the boundaries are absolute values that are mirrored positive and negative
+        if (mirrorAbsoluteValueBoundariesX) {
+
+            double negativeMinimumX = -1.0 * maximumX;
+            double negativeMaximumX = -1.0 * minimumX;
+
+            if (X <= negativeMinimumX) {
+                boundaryReached = -2;
+            }
+
+            if (X >= maximumX) {
+                boundaryReached = 2;
+            }
+
+            if (X >= negativeMaximumX && X <= minimumX) {
+
+                double middleValue = negativeMaximumX + ((minimumX - negativeMaximumX) / 2.0);
+
+                if (X <= middleValue) {
+                    boundaryReached = -1;
+                } else {
+                    boundaryReached = 1;
+                }
+
+            }
+
+        } else {
+
+            if (X <= minimumX) {
+                boundaryReached = -1;
+            }
+
+            if (X >= maximumX) {
+                boundaryReached = 1;
+            }
+
+        }
+
+        return boundaryReached;
+
+    }
+
+    public static int checkBoundaryReached(
             double X
             , double DX
             , double minimumX
@@ -554,7 +692,7 @@ public class PositionEvolver {
         , PERIODIC_REFLECTIVE
     }
 
-    private BoundaryHandlerValues processBoundary(
+    public static BoundaryHandlerValues processBoundary(
             int boundaryReached
             , double currentValue
             , double minimumValue
@@ -667,6 +805,7 @@ public class PositionEvolver {
                     newValue = (typeOfBoundaryReached == 1) ?
                             maximumValueToUse - remainingOverflow
                             : minimumValueToUse + remainingOverflow;
+                    bounce = true;
                 }
 
                 break;
@@ -679,7 +818,7 @@ public class PositionEvolver {
                 bounce);
     }
 
-    private class BoundaryHandlerValues {
+    public static class BoundaryHandlerValues {
         public final double newValue;
         public final boolean bounceValue;
 
@@ -690,6 +829,12 @@ public class PositionEvolver {
             this.bounceValue = bounceValue;
         }
 
+    }
+
+    public enum RANDOM_CHANGE_INTERVAL {
+        CONSTANT
+        , REGULAR
+        , RANDOM
     }
 
 }

@@ -777,11 +777,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 					|| gameState == Game.GameState.PAUSED) {
 
 				// Draw the target
-				canvas.drawCircle(
-						(float)clickTargetSnapshot.getXPixels().X1
-						, (float)clickTargetSnapshot.getXPixels().X2
-						, (float)clickTargetSnapshot.getRadiusPixels().X1
-						, paintTarget);
+                clickTargetSnapshot.draw(canvas, paintTarget);
 
 			}
 
