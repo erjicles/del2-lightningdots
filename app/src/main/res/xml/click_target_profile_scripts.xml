@@ -245,4 +245,73 @@
             initialTargetDRadiusMultiplier="2.5"/>
     </ClickTargetProfileScript>
 
+    <ClickTargetProfileScript
+        level="21"
+        scriptTransitionMode="CYCLE"
+        scriptTransitionInterval="REGULAR">
+        <ClickTargetProfile
+            scriptTransitionValue="500.0"
+            targetCanRandomlyChangePosition="true"
+            randomChangeIntervalPosition="REGULAR"
+            probabilityOfRandomPositionChangePerSecond="0.1"
+            initialTargetRadiusMultiplier="0.65"
+            initialTargetSpeedMultiplier="1.5"
+            targetTieRandomPositionChangeToRandomDirectionChange="true"/>
+        <ClickTargetProfile
+            scriptTransitionValue="3000.0"
+            scriptTransitionContinuousRadius="CONTINUOUS"
+            scriptTransitionContinuousSpeed="CONTINUOUS"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="22">
+        <ClickTargetProfile
+            targetBoundaryEffectPositionHorizontal="PERIODIC"
+            targetBoundaryEffectPositionVertical="PERIODIC"
+            initialTargetRadiusMultiplier="0.7"
+            initialTargetSpeedMultiplier="1.5"
+            targetCanRandomlyChangeDirection="true"
+            probabilityOfRandomDirectionChangePerSecond="0.35"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="23">
+        <ClickTargetProfile
+            targetBoundaryEffectPositionHorizontal="PERIODIC_REFLECTIVE"
+            targetBoundaryEffectPositionVertical="PERIODIC_REFLECTIVE"
+            initialTargetRadiusMultiplier="0.7"
+            minimumTargetRadiusMultiplier="0.5"
+            maximumTargetRadiusMultiplier="0.8"
+            targetCanChangeRadius="true"
+            initialTargetSpeedMultiplier="1.75"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="24"
+        scriptTransitionMode="CYCLE"
+        scriptTransitionInterval="REGULAR">
+        <ClickTargetProfile
+            scriptTransitionValue="4000.0"
+            targetCanRandomlyChangeDirection="true"
+            randomChangeIntervalDirection="REGULAR"
+            probabilityOfRandomDirectionChangePerSecond="0.5"
+            initialTargetSpeedMultiplier="1.75"
+            initialTargetRadiusMultiplier="0.7"/>
+        <ClickTargetProfile
+            scriptTransitionValue="1000.0"
+            initialTargetSpeedMultiplier="4.0"
+            targetBoundaryEffectPositionHorizontal="PERIODIC"
+            targetBoundaryEffectPositionVertical="PERIODIC"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="25">
+        <ClickTargetProfile
+            targetCanChangeSpeed="true"
+            maximumTargetSpeedMultiplier="4.0"
+            maximumTargetSpeedChangeMultiplier="2.0"
+            initialTargetRadiusMultiplier="0.8"
+            targetBoundaryEffectPositionHorizontal="PERIODIC"/>
+    </ClickTargetProfileScript>
+
 </ClickTargetProfileScripts>

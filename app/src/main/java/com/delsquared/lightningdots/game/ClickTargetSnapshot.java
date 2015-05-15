@@ -71,4 +71,37 @@ public class ClickTargetSnapshot {
 
     }
 
+    public boolean pointIsInsideTarget(double pointX, double pointY) {
+
+        boolean returnValue = false;
+
+        //if (positionEvolverXPixels == null)
+        //    return false;
+
+        // Determine if the point is within the target
+        double targetX = XPixels.X1;
+        double targetY = XPixels.X2;
+
+        double dx = targetX - pointX;
+        double dy = targetY - pointY;
+        double radius = RadiusPixels.X1;
+        returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
+
+        if (!returnValue) {
+
+            // Loop through the list
+            for (PositionVector currentSecondaryPoint : arrayListSecondaryPoints) {
+
+                dx = currentSecondaryPoint.X1 - pointX;
+                dy = currentSecondaryPoint.X2 - pointY;
+                returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
+
+                if (returnValue) break;
+            }
+
+        }
+
+        return returnValue;
+    }
+
 }

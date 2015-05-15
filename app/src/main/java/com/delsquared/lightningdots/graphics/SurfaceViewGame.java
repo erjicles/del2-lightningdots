@@ -47,8 +47,10 @@ public class SurfaceViewGame
 
 	private Context context;
 
-    //private int gameType;
-    //private int gameLevel;
+    // For swipes
+    private float touchX1;
+    private float touchX2;
+    private static final int MINIMUM_SWIPE_DISTANCE = 150;
 
     public SurfaceViewGame(Context context) {
         super(context);
@@ -120,19 +122,26 @@ public class SurfaceViewGame
 
     }
 
+
 	@Override
 	public boolean onTouchEvent(MotionEvent motionEvent){
-        Game gameInstance = Game.getInstance();
-		if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-            boolean gameThreadTouchProcessResult =
-                    surfaceViewGameThreadRunnable.processDownTouch(motionEvent);
-            if (gameThreadTouchProcessResult == false) {
-                gameThreadRunnable.processDownTouch(motionEvent);
-            }
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+            touchX1 = motionEvent.getX();
+
 		} else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
 		} else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
-
+            touchX2 = motionEvent.getX();
+            float deltaX = touchX2 - touchX1;
+            if (Math.abs(deltaX) > MINIMUM_SWIPE_DISTANCE) {
+                surfaceViewGameThreadRunnable.processSwipe(deltaX);
+            } else {
+                boolean gameThreadTouchProcessResult =
+                        surfaceViewGameThreadRunnable.processDownTouch(motionEvent);
+                if (gameThreadTouchProcessResult == false) {
+                    gameThreadRunnable.processDownTouch(motionEvent);
+                }
+            }
 		}
 		return true;
 	}

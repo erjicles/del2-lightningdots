@@ -1153,6 +1153,51 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
 	}
 
+    public void processSwipe(float deltaX) {
+
+        // Get the game snapshot
+        GameSnapshot gameSnapshot = game.gameSnapshot;
+
+        if (gameSnapshot != null
+                && gameSnapshot.getGameType() == Game.GameType.AGILITY) {
+
+            Game.GameState gameState = gameSnapshot.getGameState();
+            switch (gameState) {
+
+                case STOPPED:
+                    // Check for left swipe
+                    if (deltaX > 0.0) {
+
+                        // Send the message to decrement the level
+                        Message message = handler.obtainMessage();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(
+                                SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel
+                                , SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel);
+                        message.setData(bundle);
+                        handler.sendMessage(message);
+
+                    } else {
+
+                        // Send the message to increment the level
+                        Message message = handler.obtainMessage();
+                        Bundle bundle = new Bundle();
+                        bundle.putString(
+                                SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel
+                                , SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel);
+                        message.setData(bundle);
+                        handler.sendMessage(message);
+
+                    }
+                    break;
+
+                default:
+            }
+
+        }
+
+    }
+
     public boolean processDownTouch(MotionEvent motionEvent) {
         boolean result = false;
 

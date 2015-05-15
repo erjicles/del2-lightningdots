@@ -316,8 +316,21 @@ public class Game {
 		// Check if the game type is agility
 		if (gameType == Game.GameType.AGILITY) {
 
+            if (gameSnapshot != null) {
+
+                // Get the current click target snapshot
+                ClickTargetSnapshot currentClickTargetSnapshot = gameSnapshot.getCurrentClickTargetSnapshot();
+
+                if (currentClickTargetSnapshot != null) {
+
+                    isInsideTarget = currentClickTargetSnapshot.pointIsInsideTarget(clickX, clickY);
+
+                }
+
+            }
+
             // Determine if the click is within the target
-			isInsideTarget = clickTarget.pointIsInsideTarget(clickX, clickY);
+            //isInsideTarget = clickTarget.pointIsInsideTarget(clickX, clickY);
 
 		}
 
