@@ -3,6 +3,7 @@ package com.delsquared.lightningdots.game;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
+import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionVector;
 
@@ -13,59 +14,72 @@ public class ClickTargetSnapshot {
 	private final PositionVector XPixels;
     private final PositionVector DXdtPixelsPerMilliPolar;
     private final PositionVector RadiusPixels;
-    private final ArrayList<PositionVector> arrayListSecondaryPoints;
+    private final ArrayList<PositionVector> arrayListCenterPoints;
+    private final Polygon polygonTargetShape;
 
 	public ClickTargetSnapshot() {
         XPixels = new PositionVector();
         DXdtPixelsPerMilliPolar = new PositionVector();
         RadiusPixels = new PositionVector();
-        arrayListSecondaryPoints = new ArrayList<>();
+        arrayListCenterPoints = new ArrayList<>();
+        polygonTargetShape = null;
 	}
 
 	public ClickTargetSnapshot(
 			PositionVector XPixels
 			, PositionVector DXdtPixelsPerMilliPolar
 			, PositionVector RadiusPixels
-            , ArrayList<PositionVector> arrayListSecondaryPoints
+            , ArrayList<PositionVector> arrayListCenterPoints
+            , Polygon polygonTargetShape
 	) {
 		this.XPixels = XPixels;
         this.DXdtPixelsPerMilliPolar = DXdtPixelsPerMilliPolar;
         this.RadiusPixels = RadiusPixels;
-        this.arrayListSecondaryPoints = arrayListSecondaryPoints;
+        this.arrayListCenterPoints = arrayListCenterPoints;
+        this.polygonTargetShape = polygonTargetShape;
 	}
 
 	public PositionVector getXPixels() { return XPixels; }
     public PositionVector getDXdtPixelsPerMilliPolar() { return DXdtPixelsPerMilliPolar; }
     public PositionVector getRadiusPixels() { return RadiusPixels; }
-    public ArrayList<PositionVector> getArrayListSecondaryPoints() { return this.arrayListSecondaryPoints; }
+    public ArrayList<PositionVector> getArrayListCenterPoints() { return this.arrayListCenterPoints; }
+    public Polygon getPolygonTargetShape() { return polygonTargetShape; }
 
     public boolean equals(ClickTargetSnapshot otherClickTargetSnapshot) {
 
         return XPixels.equals(otherClickTargetSnapshot.getXPixels())
                 && DXdtPixelsPerMilliPolar.equals(otherClickTargetSnapshot.getDXdtPixelsPerMilliPolar())
                 && RadiusPixels.equals(otherClickTargetSnapshot.getRadiusPixels())
-                && arrayListSecondaryPoints.equals(otherClickTargetSnapshot.getArrayListSecondaryPoints());
+                && arrayListCenterPoints.equals(otherClickTargetSnapshot.getArrayListCenterPoints())
+                && polygonTargetShape.equals(otherClickTargetSnapshot.getPolygonTargetShape());
 
     }
 
     public void draw(Canvas canvas, Paint paintTarget) {
 
-        // Draw primary target
-        canvas.drawCircle(
-                (float) XPixels.X1
-                , (float) XPixels.X2
-                , (float) RadiusPixels.X1
-                , paintTarget);
+        // Loop through the center points to draw
+        for (PositionVector currentPoint : arrayListCenterPoints) {
 
-        // Loop through the secondary points to draw
-        for (PositionVector currentPoint : arrayListSecondaryPoints) {
+            // Check if the target is a polygon
+            if (polygonTargetShape != null) {
 
-            // Draw the current point
-            canvas.drawCircle(
-                    (float) currentPoint.X1
-                    , (float) currentPoint.X2
-                    , (float) RadiusPixels.X1
-                    , paintTarget);
+                // Duplicate and translate the polygon
+                Polygon currentPolygon = polygonTargetShape.duplicate();
+                currentPolygon.setCenterPoint(currentPoint);
+
+                // Draw the current polygon
+                currentPolygon.draw(canvas, paintTarget);
+
+            } else { // The target is a circle
+
+                // Draw the current point
+                canvas.drawCircle(
+                        (float) currentPoint.X1
+                        , (float) currentPoint.X2
+                        , (float) RadiusPixels.X1
+                        , paintTarget);
+
+            }
 
         }
 
@@ -75,29 +89,32 @@ public class ClickTargetSnapshot {
 
         boolean returnValue = false;
 
-        //if (positionEvolverXPixels == null)
-        //    return false;
+        // Get the list of center points
+        ArrayList<PositionVector> arrayListCenterPoints = getArrayListCenterPoints();
 
-        // Determine if the point is within the target
-        double targetX = XPixels.X1;
-        double targetY = XPixels.X2;
+        // Loop through the center points
+        for (PositionVector currentCenterPoint : arrayListCenterPoints) {
 
-        double dx = targetX - pointX;
-        double dy = targetY - pointY;
-        double radius = RadiusPixels.X1;
-        returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
+            // Check if the target is a polygon
+            if (polygonTargetShape != null) {
 
-        if (!returnValue) {
+                // Translate the polygon to the current center point
+                Polygon currentPolygon = polygonTargetShape.duplicate();
+                currentPolygon.setCenterPoint(currentCenterPoint);
 
-            // Loop through the list
-            for (PositionVector currentSecondaryPoint : arrayListSecondaryPoints) {
+                // Check if the point is inside the polygon
+                returnValue = currentPolygon.pointIsInsidePolygon(pointX, pointY);
 
-                dx = currentSecondaryPoint.X1 - pointX;
-                dy = currentSecondaryPoint.X2 - pointY;
-                returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
+            } else { // The target is a circle
 
-                if (returnValue) break;
+                double dx = currentCenterPoint.X1 - pointX;
+                double dy = currentCenterPoint.X2 - pointY;
+
+                returnValue = (dx * dx) + (dy * dy) <= (RadiusPixels.X1 * RadiusPixels.X1);
+
             }
+
+            if (returnValue) break;
 
         }
 

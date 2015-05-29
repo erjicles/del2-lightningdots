@@ -9,6 +9,8 @@ import android.util.TypedValue;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import java.util.ArrayList;
+
 public class UtilityFunctions {
 
     public static boolean getHasInternetConnection(Context context) {
@@ -124,6 +126,57 @@ public class UtilityFunctions {
 
     public static double getRandomSign() {
         return (Math.random() <= 0.5) ? -1.0 : 1.0;
+    }
+
+    public boolean pointIsLeftOfEdge() {
+        boolean result = false;
+
+        return result;
+    }
+
+    // isLeft(): tests if a point is Left|On|Right of an infinite line.
+    //    Input:  three points P0, P1, and P2
+    //    Return: >0 for P2 left of the line through P0 and P1
+    //            =0 for P2  on the line
+    //            <0 for P2  right of the line
+    //    See: Algorithm 1 "Area of Triangles and Polygons"
+    public static double pointIsLeftOfEdge(PositionVector P0, PositionVector P1, PositionVector P2) {
+        return ( (P1.X1 - P0.X1) * (P2.X2 - P0.X2) )
+                - ( (P2.X1 -  P0.X1) * (P1.X2 - P0.X2) );
+    }
+
+    // wn_PnPoly(): winding number test for a point in a polygon
+    //      Input:   P = a point,
+    //               V[] = vertex points of a polygon V[n+1] with V[n]=V[0]
+    //      Return:  wn = the winding number (=0 only when P is outside)
+    // http://geomalgorithms.com/a03-_inclusion.html
+    public static int wn_PnPoly(PositionVector P, ArrayList<PositionVector> V)
+    {
+
+        // the  winding number counter
+        int    wn = 0;
+
+        // loop through all edges of the polygon
+        for (int i = 0; i < V.size() - 1; i++) {    // edge from V[i] to  V[i+1]
+            PositionVector V1 = V.get(i);
+            PositionVector V2 = V.get(i+1);
+            if (V1.X2 <= P.X2) {                    // start y <= P.y
+                if (V2.X2 > P.X2) {                 // an upward crossing
+                    if (pointIsLeftOfEdge(V1, V2, P) > 0) {    // P left of  edge
+                        ++wn;                       // have  a valid up intersect
+                    }
+                }
+            }
+            else {                                  // start y > P.y (no test needed)
+                if (V2.X2 <= P.X2) {                // a downward crossing
+                    if (pointIsLeftOfEdge(V1, V2, P) < 0) {    // P right of  edge
+                        --wn;                       // have  a valid down intersect
+                    }
+                }
+            }
+        }
+
+        return wn;
     }
 
 }

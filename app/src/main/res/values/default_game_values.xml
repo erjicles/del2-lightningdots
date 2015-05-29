@@ -32,6 +32,19 @@
     <bool name="game_values_defaultRandomInitialTargetDRadiusChange">false</bool>
     <bool name="game_values_defaultRandomInitialTargetDRadiusChangeSign">false</bool>
 
+    <item name="game_values_defaultInitialTargetRotationAngleRadians" format="float" type="dimen">0.0</item><!-- PI / 4 -->
+    <bool name="game_values_defaultRandomInitialTargetRotationAngle">false</bool>
+    <item name="game_values_defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultMinimumTargetDRotationAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
+    <item name="game_values_defaultMaximumTargetDRotationAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetDRotation">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetDRotationSign">false</bool>
+    <item name="game_values_defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond" format="float" type="dimen">0.1</item>
+    <item name="game_values_defaultMinimumTargetD2RotationAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
+    <item name="game_values_defaultMaximumTargetD2RotationAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultRandomInitialTargetD2Rotation">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetD2RotationSign">false</bool>
+
     <item name="game_values_defaultInitialTargetDirectionAngleRadians" format="float" type="dimen">0.78539816339</item><!-- PI / 4 -->
     <bool name="game_values_defaultRandomInitialTargetDirectionAngle">true</bool>
 
@@ -49,6 +62,9 @@
     <item name="game_values_defaultProbabilityOfRandomRadiusChangePerSecond" format="float" type="dimen">0.50</item>
     <item name="game_values_defaultProbabilityOfRandomDRadiusChangePerSecond" format="float" type="dimen">0.25</item>
     <item name="game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomRotationChangePerSecond" format="float" type="dimen">0.50</item>
+    <item name="game_values_defaultProbabilityOfRandomDRotationChangePerSecond" format="float" type="dimen">0.25</item>
+    <item name="game_values_defaultProbabilityOfRandomD2RotationChangePerSecond" format="float" type="dimen">0.25</item>
 
     <string name="game_values_defaultRandomChangeIntervalPosition">RANDOM</string>
     <string name="game_values_defaultRandomChangeIntervalSpeed">RANDOM</string>
@@ -58,12 +74,17 @@
     <string name="game_values_defaultRandomChangeIntervalRadius">RANDOM</string>
     <string name="game_values_defaultRandomChangeIntervalDRadius">RANDOM</string>
     <string name="game_values_defaultRandomChangeIntervalD2Radius">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalRotation">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalDRotation">RANDOM</string>
+    <string name="game_values_defaultRandomChangeIntervalD2Rotation">RANDOM</string>
 
     <bool name="game_values_defaultCanChangePosition">true</bool>
     <bool name="game_values_defaultCanChangeSpeed">false</bool>
     <bool name="game_values_defaultCanChangeDirection">false</bool>
     <bool name="game_values_defaultCanChangeRadius">false</bool>
     <bool name="game_values_defaultCanChangeDRadius">false</bool>
+    <bool name="game_values_defaultCanChangeRotation">false</bool>
+    <bool name="game_values_defaultCanChangeDRotation">false</bool>
 
     <bool name="game_values_defaultCanRandomlyChangePosition">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeSpeed">false</bool>
@@ -73,6 +94,9 @@
     <bool name="game_values_defaultCanRandomlyChangeRadius">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeDRadius">false</bool>
     <bool name="game_values_defaultCanRandomlyChangeD2Radius">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeRotation">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeDRotation">false</bool>
+    <bool name="game_values_defaultCanRandomlyChangeD2Rotation">false</bool>
 
     <bool name="game_values_defaultTieRandomPositionChangeToRandomSpeedChange">false</bool>
     <bool name="game_values_defaultTieRandomPositionChangeToRandomDirectionChange">false</bool>
@@ -91,6 +115,8 @@
     <bool name="game_values_defaultTieRandomDRadiusChangeToRandomDirectionChange">false</bool>
     <bool name="game_values_defaultTieRandomDRadiusChangeToRandomDSpeedChange">false</bool>
     <bool name="game_values_defaultTieRandomDRadiusChangeToRandomDDirectionChange">false</bool>
+    <bool name="game_values_defaultTieRandomRotationChangeToRandomDRotationChange">false</bool>
+    <bool name="game_values_defaultTieRandomDRotationChangeToRandomD2RotationChange">false</bool>
 
     <string name="game_values_defaultBoundaryEffectPositionHorizontal">BOUNCE</string>
     <string name="game_values_defaultBoundaryEffectPositionVertical">BOUNCE</string>
@@ -101,6 +127,9 @@
     <string name="game_values_defaultBoundaryEffectRadius">BOUNCE</string>
     <string name="game_values_defaultBoundaryEffectDRadius">STICK</string>
     <string name="game_values_defaultBoundaryEffectD2Radius">STICK</string>
+    <string name="game_values_defaultBoundaryEffectRotation">PERIODIC</string>
+    <string name="game_values_defaultBoundaryEffectDRotation">STICK</string>
+    <string name="game_values_defaultBoundaryEffectD2Rotation">STICK</string>
 
     <item name="game_values_defaultScriptTransitionValue" format="float" type="dimen">0.0</item>
     <string name="game_values_defaultScriptTransitionContinuity">DEFAULT</string>
@@ -108,6 +137,8 @@
     <string name="game_values_defaultScriptTransitionMode">CONSTANT</string>
     <string name="game_values_defaultScriptTransitionInterval">CONSTANT</string>
     <string name="game_values_defaultScriptCycleDirection">INCREASING</string>
+
+    <string name="game_values_defaultTargetShape">CIRCLE</string>
 
     <integer-array name="game_values_targetUserClicksAgilityPer15Seconds">
         <item>80</item>

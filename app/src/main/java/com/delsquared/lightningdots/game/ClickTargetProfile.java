@@ -2,6 +2,8 @@ package com.delsquared.lightningdots.game;
 
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 
+import java.util.ArrayList;
+
 public class ClickTargetProfile {
 
     // Target position values
@@ -29,6 +31,15 @@ public class ClickTargetProfile {
     // Target D2Radius values
     public final ProfileVariableValues targetD2RadiusValuesInchesPerSecondPerSecond;
 
+    // Target rotation values
+    public final ProfileVariableValues targetRotationValuesRadians;
+
+    // Target DRotation values
+    public final ProfileVariableValues targetDRotationValuesRadiansPerSecond;
+
+    // Target D2Rotation values
+    public final ProfileVariableValues targetD2RotationValuesRadiansPerSecondPerSecond;
+
     // Tie random changes to other random changes
     public final boolean tieRandomPositionChangeToRandomSpeedChange;
     public final boolean tieRandomPositionChangeToRandomDirectionChange;
@@ -47,6 +58,10 @@ public class ClickTargetProfile {
     public final boolean tieRandomDRadiusChangeToRandomDirectionChange;
     public final boolean tieRandomDRadiusChangeToRandomDSpeedChange;
     public final boolean tieRandomDRadiusChangeToRandomDDirectionChange;
+    public final boolean tieRandomRotationChangeToRandomDRotationChange;
+    public final boolean tieRandomDRotationChangeToRandomD2RotationChange;
+
+    public final String targetShape;
 
     public ClickTargetProfile(
 
@@ -75,6 +90,15 @@ public class ClickTargetProfile {
             // Target D2Radius values
             , ProfileVariableValues targetD2RadiusValuesInchesPerSecondPerSecond
 
+            // Target rotation values
+            , ProfileVariableValues targetRotationValuesRadians
+
+            // Target DRotation values
+            , ProfileVariableValues targetDRotationValuesRadiansPerSecond
+
+            // Target D2Rotation values
+            , ProfileVariableValues targetD2RotationValuesRadiansPerSecondPerSecond
+
             // Tie random changes to other random changes
             , boolean tieRandomPositionChangeToRandomSpeedChange
             , boolean tieRandomPositionChangeToRandomDirectionChange
@@ -93,6 +117,11 @@ public class ClickTargetProfile {
             , boolean tieRandomDRadiusChangeToRandomDirectionChange
             , boolean tieRandomDRadiusChangeToRandomDSpeedChange
             , boolean tieRandomDRadiusChangeToRandomDDirectionChange
+            , boolean tieRandomRotationChangeToRandomDRotationChange
+            , boolean tieRandomDRotationChangeToRandomD2RotationChange
+
+            // Polygon type
+            , String targetShape
 
     ) {
 
@@ -121,6 +150,15 @@ public class ClickTargetProfile {
         // Target D2Radius values
         this.targetD2RadiusValuesInchesPerSecondPerSecond = targetD2RadiusValuesInchesPerSecondPerSecond;
 
+        // Target rotation values
+        this.targetRotationValuesRadians = targetRotationValuesRadians;
+
+        // Target DRotation values
+        this.targetDRotationValuesRadiansPerSecond = targetDRotationValuesRadiansPerSecond;
+
+        // Target D2Rotation values
+        this.targetD2RotationValuesRadiansPerSecondPerSecond = targetD2RotationValuesRadiansPerSecondPerSecond;
+
         // Tie random changes to other random changes
         this.tieRandomPositionChangeToRandomSpeedChange = tieRandomPositionChangeToRandomSpeedChange;
         this.tieRandomPositionChangeToRandomDirectionChange = tieRandomPositionChangeToRandomDirectionChange;
@@ -139,6 +177,11 @@ public class ClickTargetProfile {
         this.tieRandomDRadiusChangeToRandomDirectionChange = tieRandomDRadiusChangeToRandomDirectionChange;
         this.tieRandomDRadiusChangeToRandomDSpeedChange = tieRandomDRadiusChangeToRandomDSpeedChange;
         this.tieRandomDRadiusChangeToRandomDDirectionChange = tieRandomDRadiusChangeToRandomDDirectionChange;
+        this.tieRandomRotationChangeToRandomDRotationChange = tieRandomRotationChangeToRandomDRotationChange;
+        this.tieRandomDRotationChangeToRandomD2RotationChange = tieRandomDRotationChangeToRandomD2RotationChange;
+
+        // Polygon type
+        this.targetShape = targetShape;
 
     }
 

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.TypedValue;
 
+import com.delsquared.lightningdots.utilities.Polygon;
+import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionVector;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
@@ -16,6 +18,7 @@ public class ClickTarget {
     private ClickTargetProfileScript clickTargetProfileScript;
     private PositionEvolver positionEvolverXPixels;
 	private PositionEvolver positionEvolverRadiusPixels;
+    private Polygon polygonTargetShape = null;
 
     private double canvasWidth = 1.0;
     private double canvasHeight = 1.0;
@@ -129,15 +132,18 @@ public class ClickTarget {
         return positionEvolverRadiusPixels.getX().X1;
     }
 
-    public ArrayList<PositionVector> getArrayListSecondaryPoints() {
+    public ArrayList<PositionVector> getArrayListCenterPoints() {
 
         // Initialize the result
-        ArrayList<PositionVector> arrayListSecondaryPoints = new ArrayList<>();
+        ArrayList<PositionVector> arrayListCenterPoints = new ArrayList<>();
 
         // Check if the position evolver exists
         if (positionEvolverXPixels == null) {
-            return arrayListSecondaryPoints;
+            return arrayListCenterPoints;
         }
+
+        // Add the true center point
+        arrayListCenterPoints.add(new PositionVector(positionEvolverXPixels.getX()));
 
         // Check if either X or Y has periodic boundary effect
         // If not, then there won't be any secondary points
@@ -262,40 +268,40 @@ public class ClickTarget {
 
             if (minimumBoundaryReachedX) {
                 // newTargetX1, targetY;
-                arrayListSecondaryPoints.add(new PositionVector(newTargetX1, targetY));
+                arrayListCenterPoints.add(new PositionVector(newTargetX1, targetY));
             }
             if (maximumBoundaryReachedX) {
                 //newTargetX2, targetY;
-                arrayListSecondaryPoints.add(new PositionVector(newTargetX2, targetY));
+                arrayListCenterPoints.add(new PositionVector(newTargetX2, targetY));
             }
             if (minimumBoundaryReachedY) {
                 //targetX, newTargetY1;
-                arrayListSecondaryPoints.add(new PositionVector(targetX, newTargetY1));
+                arrayListCenterPoints.add(new PositionVector(targetX, newTargetY1));
             }
             if (maximumBoundaryReachedY) {
                 //targetX, newTargetY2;
-                arrayListSecondaryPoints.add(new PositionVector(targetX, newTargetY2));
+                arrayListCenterPoints.add(new PositionVector(targetX, newTargetY2));
             }
             if (minimumBoundaryReachedX && minimumBoundaryReachedY) {
                 //newTargetX1, newTargetY1;
-                arrayListSecondaryPoints.add(new PositionVector(newTargetX1, newTargetY1));
+                arrayListCenterPoints.add(new PositionVector(newTargetX1, newTargetY1));
             }
             if (minimumBoundaryReachedX && maximumBoundaryReachedY) {
                 //newTargetX1, newTargetY2;
-                arrayListSecondaryPoints.add(new PositionVector(newTargetX1, newTargetY2));
+                arrayListCenterPoints.add(new PositionVector(newTargetX1, newTargetY2));
             }
             if (maximumBoundaryReachedX && minimumBoundaryReachedY) {
                 //newTargetX2, newTargetY1;
-                arrayListSecondaryPoints.add(new PositionVector(newTargetX2, newTargetY1));
+                arrayListCenterPoints.add(new PositionVector(newTargetX2, newTargetY1));
             }
             if (maximumBoundaryReachedX && maximumBoundaryReachedY) {
                 //newTargetX2, newTargetY2;
-                arrayListSecondaryPoints.add(new PositionVector(newTargetX2, newTargetY2));
+                arrayListCenterPoints.add(new PositionVector(newTargetX2, newTargetY2));
             }
 
         }
 
-        return arrayListSecondaryPoints;
+        return arrayListCenterPoints;
 
     }
 
@@ -312,29 +318,35 @@ public class ClickTarget {
         if (positionEvolverXPixels == null)
             return false;
 
-        // Determine if the point is within the target
-        double targetX = positionEvolverXPixels.getX().X1;
-        double targetY = positionEvolverXPixels.getX().X2;
-
-        double dx = targetX - pointX;
-        double dy = targetY - pointY;
+        // Get the target radius
         double radius = getRadiusPixels();
-        returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
 
-        if (!returnValue) {
+        // Get the list of center points
+        ArrayList<PositionVector> arrayListCenterPoints = getArrayListCenterPoints();
 
-            // Get the list of secondary target points
-            ArrayList<PositionVector> arrayListSecondaryPoints = getArrayListSecondaryPoints();
+        // Loop through the center points
+        for (PositionVector currentCenterPoint : arrayListCenterPoints) {
 
-            // Loop through the list
-            for (PositionVector currentSecondaryPoint : arrayListSecondaryPoints) {
+            // Check if the target is a polygon
+            if (polygonTargetShape != null) {
 
-                dx = currentSecondaryPoint.X1 - pointX;
-                dy = currentSecondaryPoint.X2 - pointY;
+                // Translate the polygon to the current center point
+                Polygon currentPolygon = polygonTargetShape.duplicate();
+                currentPolygon.setCenterPoint(currentCenterPoint);
+
+                // Check if the point is inside the polygon
+                returnValue = currentPolygon.pointIsInsidePolygon(pointX, pointY);
+
+            } else { // The target is a circle
+
+                double dx = currentCenterPoint.X1 - pointX;
+                double dy = currentCenterPoint.X2 - pointY;
+
                 returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
 
-                if (returnValue) break;
             }
+
+            if (returnValue) break;
 
         }
 
@@ -388,6 +400,15 @@ public class ClickTarget {
             positionEvolverXPixels.evolveTime(timeElapsedSinceLastUpdateSeconds, true, true, true);
             positionEvolverRadiusPixels.evolveTime(timeElapsedSinceLastUpdateSeconds, true, true, true);
 
+            // Update the polygon
+            if (polygonTargetShape != null) {
+                polygonTargetShape.setProperties(
+                        new PositionVector(positionEvolverXPixels.getX())
+                        , positionEvolverRadiusPixels.getX().X1
+                        , positionEvolverRadiusPixels.getX().X2
+                );
+            }
+
         }
 
         // Process the click target profile transition
@@ -418,7 +439,9 @@ public class ClickTarget {
                 targetX
                 , targetDX
                 , targetRadiusX
-                , getArrayListSecondaryPoints());
+                , getArrayListCenterPoints()
+                , polygonTargetShape
+        );
 	}
 
     public void transitionClickTargetProfile(
@@ -440,6 +463,9 @@ public class ClickTarget {
         boolean continuousRadius = false;
         boolean continuousDRadius = false;
         boolean continuousD2Radius = false;
+        boolean continuousRotation = false;
+        boolean continuousDRotation = false;
+        boolean continuousD2Rotation = false;
 
         // If we are not initializing the click target, then determine the continuity of the values
         // (if we are initializing, then all need to be discontinuously initialized)
@@ -518,6 +544,30 @@ public class ClickTarget {
                     break;
                 case DISCONTINUOUS:
                     continuousD2Radius = false;
+                    break;
+            }
+            switch (clickTargetProfile.targetRotationValuesRadians.transitionContinuity) {
+                case CONTINUOUS:
+                    continuousRotation = true;
+                    break;
+                case DISCONTINUOUS:
+                    continuousRotation = false;
+                    break;
+            }
+            switch (clickTargetProfile.targetDRotationValuesRadiansPerSecond.transitionContinuity) {
+                case CONTINUOUS:
+                    continuousDRotation = true;
+                    break;
+                case DISCONTINUOUS:
+                    continuousDRotation = false;
+                    break;
+            }
+            switch (clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.transitionContinuity) {
+                case CONTINUOUS:
+                    continuousD2Rotation = true;
+                    break;
+                case DISCONTINUOUS:
+                    continuousD2Rotation = false;
                     break;
             }
 
@@ -952,26 +1002,50 @@ public class ClickTarget {
                 , PositionEvolver.BOUNDARY_EFFECT.STICK
         );
 
-        double targetDRadiusChangePixels = 0.0;
+        double targetD2RadiusPixels = 0.0;
+        double targetD2RotationRadians = 0.0;
         // D2Radius
         if (!initializeClickTarget && continuousD2Radius) {
             if (positionEvolverRadiusPixels != null
                     && positionEvolverRadiusPixels.getPositionEvolverDXdt() != null
                     && positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
                 PositionEvolver positionEvolverDRadiusChangePixels = positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt();
-                targetDRadiusChangePixels = positionEvolverDRadiusChangePixels.getX().X1;
+                targetD2RadiusPixels = positionEvolverDRadiusChangePixels.getX().X1;
             }
         } else {
             if (clickTargetProfile.targetDRadiusValuesInchesPerSecond.canChange) {
                 if (clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.randomInitialValue) {
-                    targetDRadiusChangePixels = UtilityFunctions.generateRandomValue(
+                    targetD2RadiusPixels = UtilityFunctions.generateRandomValue(
                             minimumTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond
                             , maximumTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond
                             , true);
                 } else {
-                    targetDRadiusChangePixels = initialTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond;
+                    targetD2RadiusPixels = initialTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond;
                     if (clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.randomInitialSign) {
-                        targetDRadiusChangePixels *= UtilityFunctions.getRandomSign();
+                        targetD2RadiusPixels *= UtilityFunctions.getRandomSign();
+                    }
+                }
+            }
+        }
+        // D2Rotation
+        if (!initializeClickTarget && continuousD2Rotation) {
+            if (positionEvolverRadiusPixels != null
+                    && positionEvolverRadiusPixels.getPositionEvolverDXdt() != null
+                    && positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
+                PositionEvolver positionEvolverD2RadiusPixels = positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt();
+                targetD2RotationRadians = positionEvolverD2RadiusPixels.getX().X2;
+            }
+        } else {
+            if (clickTargetProfile.targetDRotationValuesRadiansPerSecond.canChange) {
+                if (clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.randomInitialValue) {
+                    targetD2RotationRadians = UtilityFunctions.generateRandomValue(
+                            clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.minimumValue
+                            , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.maximumValue
+                            , true);
+                } else {
+                    targetD2RotationRadians = clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.initialValue;
+                    if (clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.randomInitialSign) {
+                        targetD2RotationRadians *= UtilityFunctions.getRandomSign();
                     }
                 }
             }
@@ -981,10 +1055,10 @@ public class ClickTarget {
 
                 // Initial position and coordinate system
                 new PositionVector(
-                        targetDRadiusChangePixels
-                        , 0.0
+                        targetD2RadiusPixels
+                        , targetD2RotationRadians
                         , 0.0)
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN_2D
 
                 // Is constant X1, X2, X3
                 , true
@@ -996,37 +1070,37 @@ public class ClickTarget {
 
                 // Minimum X1, X2, X3
                 , minimumTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond
-                , 0.0
+                , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.minimumValue
                 , 0.0
 
                 // Maximum X1, X2, X3
                 , maximumTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond
-                , 0.0
+                , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.maximumValue
                 , 0.0
 
                 // Mirror absolute value boundaries
                 , true
-                , false
+                , true
                 , false
 
                 // Can randomly change position
-                , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.canRandomlyChange
-                , (clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.canRandomlyChange) ? clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.randomChangeIntervalValue : 0.0
-                , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.randomChangeInterval
+                , false
+                , 0.0
+                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
 
                 // Can change X1, X2, X3
-                , false
-                , false
+                , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.canRandomlyChange
+                , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.canRandomlyChange
                 , false
 
                 // Probability of change X1, X2, X3
-                , 0.0
-                , 0.0
+                , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.randomChangeIntervalValue
+                , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.randomChangeIntervalValue
                 , 0.0
 
                 // Random change interval
-                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
-                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
+                , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.randomChangeInterval
+                , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.randomChangeInterval
                 , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
 
                 // Tie random new X1, X2, X3 to new random DX1, DX2, DX3
@@ -1040,11 +1114,12 @@ public class ClickTarget {
 
                 // Bounces on boundary
                 , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.boundaryEffect
                 , PositionEvolver.BOUNDARY_EFFECT.STICK
         );
 
         double targetDRadiusPixels = 0.0;
+        double targetDRotationRadians = 0.0;
         // DRadius
         if (!initializeClickTarget && continuousDRadius) {
             if (positionEvolverRadiusPixels != null
@@ -1067,19 +1142,42 @@ public class ClickTarget {
                 }
             }
         }
+        // DRotation
+        if (!initializeClickTarget && continuousDRotation) {
+            if (positionEvolverRadiusPixels != null
+                    && positionEvolverRadiusPixels.getPositionEvolverDXdt() != null) {
+                PositionEvolver positionEvolverDRadiusPixels = positionEvolverRadiusPixels.getPositionEvolverDXdt();
+                targetDRotationRadians = positionEvolverDRadiusPixels.getX().X2;
+            }
+        } else {
+            if (clickTargetProfile.targetRotationValuesRadians.canChange) {
+                if (clickTargetProfile.targetDRotationValuesRadiansPerSecond.randomInitialValue) {
+                    targetDRotationRadians =
+                            UtilityFunctions.generateRandomValue(
+                                    clickTargetProfile.targetDRotationValuesRadiansPerSecond.minimumValue
+                                    , clickTargetProfile.targetDRotationValuesRadiansPerSecond.maximumValue
+                                    , true);
+                } else {
+                    targetDRotationRadians = clickTargetProfile.targetDRotationValuesRadiansPerSecond.initialValue;
+                    if (clickTargetProfile.targetDRotationValuesRadiansPerSecond.randomInitialSign) {
+                        targetDRotationRadians *= UtilityFunctions.getRandomSign();
+                    }
+                }
+            }
+        }
 
         PositionEvolver targetDRadiusDtPixels = new PositionEvolver(
 
                 // Initial position and coordinate system
                 new PositionVector(
                         targetDRadiusPixels
-                        , 0.0
+                        , targetDRotationRadians
                         , 0.0)
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN_2D
 
                 // Is constant X1, X2, X3
                 , !clickTargetProfile.targetDRadiusValuesInchesPerSecond.canChange
-                , true
+                , !clickTargetProfile.targetDRotationValuesRadiansPerSecond.canChange
                 , true
 
                 // PositionEvolver dXdt
@@ -1087,37 +1185,37 @@ public class ClickTarget {
 
                 // Minimum X1, X2, X3
                 , minimumTargetDRadiusAbsoluteValuePixelsPerSecond
-                , 0.0
+                , clickTargetProfile.targetDRotationValuesRadiansPerSecond.minimumValue
                 , 0.0
 
                 // Maximum X1, X2, X3
                 , maximumTargetDRadiusAbsoluteValuePixelsPerSecond
-                , 0.0
+                , clickTargetProfile.targetDRotationValuesRadiansPerSecond.maximumValue
                 , 0.0
 
                 // Mirror absolute value boundaries
                 , true
-                , false
+                , true
                 ,false
 
                 // Can randomly change position
-                , clickTargetProfile.targetDRadiusValuesInchesPerSecond.canRandomlyChange
-                , clickTargetProfile.targetDRadiusValuesInchesPerSecond.randomChangeIntervalValue
-                , clickTargetProfile.targetDRadiusValuesInchesPerSecond.randomChangeInterval
+                , false
+                , 0.0
+                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
 
                 // Can change X1, X2, X3
-                , false
-                , false
+                , clickTargetProfile.targetDRadiusValuesInchesPerSecond.canRandomlyChange
+                , clickTargetProfile.targetDRotationValuesRadiansPerSecond.canRandomlyChange
                 , false
 
                 // Probability of change X1, X2, X3
-                , 0.0
-                , 0.0
+                , clickTargetProfile.targetDRadiusValuesInchesPerSecond.randomChangeIntervalValue
+                , clickTargetProfile.targetDRotationValuesRadiansPerSecond.randomChangeIntervalValue
                 , 0.0
 
                 // Random change interval
-                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
-                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
+                , clickTargetProfile.targetDRadiusValuesInchesPerSecond.randomChangeInterval
+                , clickTargetProfile.targetDRotationValuesRadiansPerSecond.randomChangeInterval
                 , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
 
                 // Tie new random X1, X2, X3 to new random DX1, DX2, DX3
@@ -1126,17 +1224,18 @@ public class ClickTarget {
                 , clickTargetProfile.tieRandomDRadiusChangeToRandomD2RadiusChange
                 , false
                 , false
-                , false
+                , clickTargetProfile.tieRandomDRotationChangeToRandomD2RotationChange
                 , false
 
                 // Bounces on boundary
                 , clickTargetProfile.targetDRadiusValuesInchesPerSecond.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , clickTargetProfile.targetDRotationValuesRadiansPerSecond.boundaryEffect
                 , PositionEvolver.BOUNDARY_EFFECT.STICK
         );
 
 
         double radiusPixels = 0.0;
+        double rotationRadians = 0.0;
         // Radius
         if (!initializeClickTarget && continuousRadius) {
             if (positionEvolverRadiusPixels != null) {
@@ -1152,19 +1251,34 @@ public class ClickTarget {
                 radiusPixels = initialTargetRadiusPixels;
             }
         }
+        // Rotation
+        if (!initializeClickTarget && continuousRotation) {
+            if (positionEvolverRadiusPixels != null) {
+                rotationRadians = positionEvolverRadiusPixels.getX().X2;
+            }
+        } else {
+            if (clickTargetProfile.targetRotationValuesRadians.randomInitialValue) {
+                rotationRadians = UtilityFunctions.generateRandomValue(
+                        clickTargetProfile.targetRotationValuesRadians.minimumValue
+                        , clickTargetProfile.targetRotationValuesRadians.maximumValue
+                        , false);
+            } else {
+                rotationRadians = clickTargetProfile.targetRotationValuesRadians.initialValue;
+            }
+        }
 
         PositionEvolver targetRadiusPixels = new PositionEvolver(
 
                 // Initial position and coordinate system
                 new PositionVector(
                         radiusPixels
-                        , 0.0
+                        , rotationRadians
                         , 0.0)
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN_2D
 
                 // X1, X2, X3 are constant
                 , !clickTargetProfile.targetRadiusValuesInches.canChange
-                , true
+                , !clickTargetProfile.targetRotationValuesRadians.canChange
                 , true
 
                 // Position evolver DXdt
@@ -1172,12 +1286,12 @@ public class ClickTarget {
 
                 // Minimum X1, X2, X3
                 , minimumTargetRadiusPixels
-                , 0.0
+                , clickTargetProfile.targetRotationValuesRadians.minimumValue
                 , 0.0
 
                 // Maximum X1, X2, X3
                 , maximumTargetRadiusPixels
-                , 0.0
+                , clickTargetProfile.targetRotationValuesRadians.maximumValue
                 , 0.0
 
                 // Mirror absolute value boundaries
@@ -1186,23 +1300,23 @@ public class ClickTarget {
                 , false
 
                 // Can randomly change position
-                , clickTargetProfile.targetRadiusValuesInches.canRandomlyChange
-                , clickTargetProfile.targetRadiusValuesInches.randomChangeIntervalValue
-                , clickTargetProfile.targetRadiusValuesInches.randomChangeInterval
+                , false
+                , 0.0
+                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
 
                 // Can randomly change X1, X2, X3
-                , false
-                , false
+                , clickTargetProfile.targetRadiusValuesInches.canRandomlyChange
+                , clickTargetProfile.targetRotationValuesRadians.canRandomlyChange
                 , false
 
                 // Probability of change X1, X2, X3
-                , 0.0
-                , 0.0
+                , clickTargetProfile.targetRadiusValuesInches.randomChangeIntervalValue
+                , clickTargetProfile.targetRotationValuesRadians.randomChangeIntervalValue
                 , 0.0
 
                 // Random change interval
-                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
-                , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
+                , clickTargetProfile.targetRadiusValuesInches.randomChangeInterval
+                , clickTargetProfile.targetRotationValuesRadians.randomChangeInterval
                 , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
 
                 // Tie new random X1, X2, X3 to new random DX1, DX2, DX3
@@ -1211,17 +1325,35 @@ public class ClickTarget {
                 , clickTargetProfile.tieRandomRadiusChangeToRandomDRadiusChange
                 , false
                 , false
-                , false
+                , clickTargetProfile.tieRandomRotationChangeToRandomDRotationChange
                 , false
 
                 // Bounces on boundary
                 , clickTargetProfile.targetRadiusValuesInches.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , clickTargetProfile.targetRotationValuesRadians.boundaryEffect
                 , PositionEvolver.BOUNDARY_EFFECT.STICK
         );
 
         positionEvolverXPixels = targetXPixels;
         positionEvolverRadiusPixels = targetRadiusPixels;
+
+        // Get the polygon
+        polygonTargetShape = PolygonHelper.getPolygon(context, clickTargetProfile.targetShape);
+
+        // Check if we have a polygon
+        if (polygonTargetShape != null) {
+
+            // Set the polygon's properties
+            polygonTargetShape.setProperties(
+                    new PositionVector(
+                            XPixels
+                            , YPixels
+                    )
+                    , radiusPixels
+                    , rotationRadians
+            );
+
+        }
 
     }
 

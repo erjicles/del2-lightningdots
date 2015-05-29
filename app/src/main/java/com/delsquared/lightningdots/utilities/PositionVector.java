@@ -25,6 +25,12 @@ public class PositionVector {
         this.X3 = X3;
     }
 
+    public PositionVector(PositionVector positionVector) {
+        this.X1 = positionVector.X1;
+        this.X2 = positionVector.X2;
+        this.X3 = positionVector.X3;
+    }
+
     public boolean equals(PositionVector otherPositionVector) {
         return X1 == otherPositionVector.X1
                 && X2 == otherPositionVector.X2

@@ -13,6 +13,10 @@
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
+  <component name="ProjectResources">
+    <resource url="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/" location="$PROJECT_DIR$/app/src/main/res/xml/schema_click_target_profile_scripts.xsd" />
+    <resource url="http://www.delsquaredllc.com/lightningdots/clicktargetshapedefinitions/" location="$PROJECT_DIR$/app/src/main/res/xml/schema_click_target_shape_definitions.xsd" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

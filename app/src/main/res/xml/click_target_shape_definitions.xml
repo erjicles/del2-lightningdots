@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ClickTargetShapeDefinitions xmlns="http://www.delsquaredllc.com/lightningdots/clicktargetshapedefinitions/">
+
+    <ClickTargetShape name="SQUARE">
+        <!-- sqrt(2)/2:   0.70710678118 -->
+        <Vertex x="-0.70710678118"  y="0.70710678118"/>
+        <Vertex x="0.70710678118"   y="0.70710678118"/>
+        <Vertex x="0.70710678118"   y="-0.70710678118"/>
+        <Vertex x="-0.70710678118"  y="-0.70710678118"/>
+        <Vertex x="-0.70710678118"  y="0.70710678118"/>
+    </ClickTargetShape>
+
+    <ClickTargetShape name="TRIANGLE_EQUILATERAL">
+        <!-- sin(pi/3):   0.86602540378 -->
+        <Vertex x="0.0"             y="-1.0" />
+        <Vertex x="0.86602540378"   y="0.5" />
+        <Vertex x="-0.86602540378"  y="0.5" />
+        <Vertex x="0.0"             y="-1.0" />
+    </ClickTargetShape>
+    
+    <ClickTargetShape name="STAR_5_POINTS">
+        <!--
+            (0, -1), (s1, -c1), (s2, c2), (-s2, c2), (-s1, -c1)
+            c1 = cos(2pi / 5) = 0.30901699437
+            c2 = cos(pi / 5) = 0.80901699437
+            s1 = sin(2pi / 5) = 0.95105651629
+            s2 = sin(4pi / 5) = 0.58778525229
+
+            c1/2 = 0.15450849718
+            c2/2 = 0.40450849718
+            s1/2 = 0.47552825814
+            s2/2 = 0.29389262614
+
+            Inner points: flip y values, half values, and start at 4th vertex:
+            (-s2/2, -c2/2), (-s1/2, c1/2), (0, 0.5), (s1/2, c1/2), (s2/2, -c2/2)
+        -->
+        <Vertex x="0.0"             y="-1.0" />
+        <Vertex x="0.29389262614"   y="-0.40450849718" />
+        <Vertex x="0.95105651629"   y="-0.30901699437" />
+        <Vertex x="0.47552825814"   y="0.15450849718" />
+        <Vertex x="0.58778525229"   y="0.80901699437" />
+        <Vertex x="0.0"             y="0.5" />
+        <Vertex x="-0.58778525229"  y="0.80901699437" />
+        <Vertex x="-0.47552825814"  y="0.15450849718" />
+        <Vertex x="-0.95105651629"  y="-0.30901699437" />
+        <Vertex x="-0.29389262614"  y="-0.40450849718" />
+        <Vertex x="0.0"             y="-1.0" />
+    </ClickTargetShape>
+
+</ClickTargetShapeDefinitions>

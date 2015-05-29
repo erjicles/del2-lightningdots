@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ClickTargetProfileScripts>
+<ClickTargetProfileScripts xmlns="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/">
 
     <ClickTargetProfileScript
         level="1">
-        <ClickTargetProfile/>
+        <ClickTargetProfile targetShape="STAR_5_POINTS" targetCanChangeRotation="true"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -25,7 +25,7 @@
         <ClickTargetProfile
             targetCanChangeSpeed="true"
             maximumTargetSpeedMultiplier="3.0"
-            maximumTargetSpeedChangeMultiplier="1.5"/>
+            maximumTargetSpeedChangeAbsoluteValueMultiplier="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -83,7 +83,7 @@
             initialTargetRadiusMultiplier="0.8"
             minimumTargetRadiusMultiplier="0.4"
             targetCanChangeRadius="true"
-            maximumTargetDRadiusMultiplier="1.5"/>
+            maximumTargetDRadiusAbsoluteValueMultiplier="1.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -169,7 +169,7 @@
             targetCanRandomlyChangeDirection="true"
             randomChangeIntervalDirection="REGULAR"
             probabilityOfRandomDirectionChangePerSecond="1.0"
-            tieRandomDirectionChangeToRandomSpeedChange="true"/>
+            targetTieRandomDirectionChangeToRandomSpeedChange="true"/>
         <ClickTargetProfile
             scriptTransitionValue="0.65"
             scriptTransitionContinuousRadius="DISCONTINUOUS"
@@ -195,7 +195,7 @@
             targetCanRandomlyChangeSpeed="true"
             randomChangeIntervalSpeed="REGULAR"
             probabilityOfRandomSpeedChangePerSecond="1.5"
-            tieRandomSpeedChangeToRandomDirectionChange="true"/>
+            targetTieRandomSpeedChangeToRandomDirectionChange="true"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -207,7 +207,7 @@
             initialTargetRadiusMultiplier="0.80"
             targetCanRandomlyChangePosition="true"
             probabilityOfRandomPositionChangePerSecond="0.70"
-            tieRandomPositionChangeToRandomDirectionChange="true"
+            targetTieRandomPositionChangeToRandomDirectionChange="true"
             targetCanRandomlyChangeSpeed="true"
             probabilityOfRandomSpeedChangePerSecond="0.60"/>
     </ClickTargetProfileScript>
@@ -217,7 +217,7 @@
         <ClickTargetProfile
             initialTargetRadiusMultiplier="0.50"
             initialTargetSpeedMultiplier="2.5"
-            initialTargetDRadiusMultiplier="2.0"
+            initialTargetDRadiusAbsoluteValueMultiplier="2.0"
             targetCanChangeRadius="true"/>
     </ClickTargetProfileScript>
 
@@ -242,7 +242,7 @@
             scriptTransitionContinuousRadius="DISCONTINUOUS"
             scriptTransitionContinuousSpeed="DISCONTINUOUS"
             targetCanChangeRadius="true"
-            initialTargetDRadiusMultiplier="2.5"/>
+            initialTargetDRadiusAbsoluteValueMultiplier="2.5"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -309,9 +309,34 @@
         <ClickTargetProfile
             targetCanChangeSpeed="true"
             maximumTargetSpeedMultiplier="4.0"
-            maximumTargetSpeedChangeMultiplier="2.0"
+            maximumTargetSpeedChangeAbsoluteValueMultiplier="2.0"
             initialTargetRadiusMultiplier="0.8"
             targetBoundaryEffectPositionHorizontal="PERIODIC"/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="26">
+        <ClickTargetProfile/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="27">
+        <ClickTargetProfile/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="28">
+        <ClickTargetProfile/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="29">
+        <ClickTargetProfile/>
+    </ClickTargetProfileScript>
+
+    <ClickTargetProfileScript
+        level="30">
+        <ClickTargetProfile/>
     </ClickTargetProfileScript>
 
 </ClickTargetProfileScripts>

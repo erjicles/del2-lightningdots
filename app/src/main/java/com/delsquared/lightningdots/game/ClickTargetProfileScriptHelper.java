@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
@@ -50,6 +51,20 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DRADIUS_CHANGE = "randomInitialTargetDRadiusChange";
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DRADIUS_CHANGE_SIGN = "randomInitialTargetDRadiusChangeSign";
 
+    private static final String ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_ROTATION_ANGLE_RADIANS = "initialTargetRotationAngleRadians";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_ROTATION_ANGLE = "randomInitialTargetRotationAngle";
+    private static final String ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_DROTATION_ABSOLUTE_VALUE_MULTIPLIER = "initialTargetDRotationAbsoluteValueMultiplier";
+    private static final String ATTRIBUTE_NAME_PROFILE_MINIMUM_TARGET_DROTATION_ABSOLUTE_VALUE_MULTIPLIER = "minimumTargetDRotationAbsoluteValueMultiplier";
+    private static final String ATTRIBUTE_NAME_PROFILE_MAXIMUM_TARGET_DROTATION_ABSOLUTE_VALUE_MULTIPLIER = "maximumTargetDRotationAbsoluteValueMultiplier";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DROTATION = "randomInitialTargetDRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DROTATION_SIGN = "randomInitialTargetDRotationSign";
+    private static final String ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_D2ROTATION_ABSOLUTE_VALUE_MULTIPLIER = "initialTargetD2RotationAbsoluteValueMultiplier";
+    private static final String ATTRIBUTE_NAME_PROFILE_MINIMUM_TARGET_D2ROTATION_ABSOLUTE_VALUE_MULTIPLIER = "minimumTargetD2RotationAbsoluteValueMultiplier";
+    private static final String ATTRIBUTE_NAME_PROFILE_MAXIMUM_TARGET_D2ROTATION_ABSOLUTE_VALUE_MULTIPLIER = "maximumTargetD2RotationAbsoluteValueMultiplier";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_D2ROTATION = "randomInitialTargetD2Rotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_D2ROTATION_SIGN = "randomInitialTargetD2RotationSign";
+
+
     private static final String ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_DIRECTION_ANGLE_RADIANS = "initialTargetDirectionAngleRadians";
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DIRECTION_ANGLE = "randomInitialTargetDirectionAngle";
 
@@ -67,6 +82,9 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_RADIUS_CHANGE_PER_SECOND = "probabilityOfRandomRadiusChangePerSecond";
     private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_DRADIUS_CHANGE_PER_SECOND = "probabilityOfRandomDRadiusChangePerSecond";
     private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_D2RADIUS_CHANGE_PER_SECOND = "probabilityOfRandomD2RadiusChangePerSecond";
+    private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_ROTATION_CHANGE_PER_SECOND = "probabilityOfRandomRotationChangePerSecond";
+    private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_DROTATION_CHANGE_PER_SECOND = "probabilityOfRandomDRotationChangePerSecond";
+    private static final String ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_D2ROTATION_CHANGE_PER_SECOND = "probabilityOfRandomD2RotationChangePerSecond";
 
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_POSITION = "randomChangeIntervalPosition";
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_SPEED = "randomChangeIntervalSpeed";
@@ -76,12 +94,17 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_RADIUS = "randomChangeIntervalRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DRADIUS = "randomChangeIntervalDRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2RADIUS = "randomChangeIntervalD2Radius";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_ROTATION = "randomChangeIntervalRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DROTATION = "randomChangeIntervalDRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2ROTATION = "randomChangeIntervalD2Rotation";
 
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_POSITION = "targetCanChangePosition";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_SPEED = "targetCanChangeSpeed";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_DIRECTION = "targetCanChangeDirection";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_RADIUS = "targetCanChangeRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_DRADIUS = "targetCanChangeDRadius";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_ROTATION = "targetCanChangeRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_DROTATION = "targetCanChangeDRotation";
 
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_POSITION = "targetCanRandomlyChangePosition";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_SPEED = "targetCanRandomlyChangeSpeed";
@@ -91,6 +114,9 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_RADIUS = "targetCanRandomlyChangeRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_DRADIUS = "targetCanRandomlyChangeDRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_D2RADIUS = "targetCanRandomlyChangeD2Radius";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_ROTATION = "targetCanRandomlyChangeRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_DROTATION = "targetCanRandomlyChangeDRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_D2ROTATION = "targetCanRandomlyChangeD2Rotation";
 
 
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_POSITION_CHANGE_TO_RANDOM_SPEED_CHANGE = "targetTieRandomPositionChangeToRandomSpeedChange";
@@ -110,6 +136,8 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_DRADIUS_CHANGE_TO_RANDOM_DIRECTION_CHANGE = "targetTieRandomDRadiusChangeToRandomDirectionChange";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_DRADIUS_CHANGE_TO_RANDOM_DSPEED_CHANGE = "targetTieRandomDRadiusChangeToRandomDSpeedChange";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_DRADIUS_CHANGE_TO_RANDOM_DDIRECTION_CHANGE = "targetTieRandomDRadiusChangeToRandomDDirectionChange";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_ROTATION_CHANGE_TO_RANDOM_DROTATION_CHANGE = "targetTieRandomRotationChangeToRandomDRotationChange";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_DROTATION_CHANGE_TO_RANDOM_D2ROTATION_CHANGE = "targetTieRandomDRotationChangeToRandomD2RotationChange";
 
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_POSITION_HORIZONTAL = "targetBoundaryEffectPositionHorizontal";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_POSITION_VERTICAL = "targetBoundaryEffectPositionVertical";
@@ -120,6 +148,9 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_RADIUS = "targetBoundaryEffectRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_DRADIUS = "targetBoundaryEffectDRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2RADIUS = "targetBoundaryEffectD2Radius";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_ROTATION = "targetBoundaryEffectRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_DROTATION = "targetBoundaryEffectDRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2ROTATION = "targetBoundaryEffectD2Rotation";
 
     private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_VALUE = "scriptTransitionValue";
     private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_POSITION = "scriptTransitionContinuousPosition";
@@ -130,38 +161,43 @@ public class ClickTargetProfileScriptHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_RADIUS = "scriptTransitionContinuousRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DRADIUS = "scriptTransitionContinuousDRadius";
     private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DRADIUS_CHANGE = "scriptTransitionContinuousDRadiusChange";
+    private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_ROTATION = "scriptTransitionContinuousRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DROTATION = "scriptTransitionContinuousDRotation";
+    private static final String ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_D2ROTATION = "scriptTransitionContinuousD2Rotation";
+
+    private static final String ATTRIBUTE_NAME_PROFILE_TARGET_SHAPE = "targetShape";
 
     private static final ArrayList<String> boundaryEffectValues = new ArrayList<String>(){{
-            add("STICK");
-            add("BOUNCE");
-            add("PERIODIC");
-            add("PERIODIC_REFLECTIVE");
+        add("STICK");
+        add("BOUNCE");
+        add("PERIODIC");
+        add("PERIODIC_REFLECTIVE");
     }};
 
     private static final ArrayList<String> scriptTransitionContinuityValues = new ArrayList<String>(){{
-            add("CONTINUOUS");
-            add("DISCONTINUOUS");
-            add("DEFAULT");
+        add("CONTINUOUS");
+        add("DISCONTINUOUS");
+        add("DEFAULT");
     }};
 
     private static final ArrayList<String> scriptTransitionModeValues = new ArrayList<String>(){{
-            add("CONSTANT");
-            add("CYCLE");
-            add("RANDOM");
+        add("CONSTANT");
+        add("CYCLE");
+        add("RANDOM");
     }};
     public static final ArrayList<String> scriptTransitionIntervalValues = new ArrayList<String>() {{
-            add("CONSTANT");
-            add("REGULAR");
-            add("RANDOM");
+        add("CONSTANT");
+        add("REGULAR");
+        add("RANDOM");
     }};
     public static final ArrayList<String> scriptCycleDirectionValues = new ArrayList<String>() {{
-            add("INCREASING");
-            add("DECREASING");
+        add("INCREASING");
+        add("DECREASING");
     }};
     public static final ArrayList<String> randomChangeIntervalValues = new ArrayList<String>() {{
-            add("CONSTANT");
-            add("REGULAR");
-            add("RANDOM");
+        add("CONSTANT");
+        add("REGULAR");
+        add("RANDOM");
     }};
 
     public static int getHighestScriptedLevel(
@@ -245,6 +281,20 @@ public class ClickTargetProfileScriptHelper {
         boolean defaultRandomInitialTargetDRadiusChange = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetDRadiusChange);
         boolean defaultRandomInitialTargetDRadiusChangeSign = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetDRadiusChangeSign);
 
+        // Rotation angle
+        float defaultInitialTargetRotationAngleRadians = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetRotationAngleRadians);
+        boolean defaultRandomInitialTargetRotationAngle = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetRotationAngle);
+        float defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond);
+        float defaultMinimumTargetDRotationAbsoluteValueMultiplier = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultMinimumTargetDRotationAbsoluteValueMultiplier);
+        float defaultMaximumTargetDRotationAbsoluteValueMultiplier = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultMaximumTargetDRotationAbsoluteValueMultiplier);
+        boolean defaultRandomInitialTargetDRotation = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetDRotation);
+        boolean defaultRandomInitialTargetDRotationSign = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetDRotationSign);
+        float defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond);
+        float defaultMinimumTargetD2RotationAbsoluteValueMultiplier = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultMinimumTargetD2RotationAbsoluteValueMultiplier);
+        float defaultMaximumTargetD2RotationAbsoluteValueMultiplier = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultMaximumTargetD2RotationAbsoluteValueMultiplier);
+        boolean defaultRandomInitialTargetD2Rotation = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetD2Rotation);
+        boolean defaultRandomInitialTargetD2RotationSign = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetD2RotationSign);
+
         // Direction angle
         float defaultInitialTargetDirectionAngleRadians = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDirectionAngleRadians);
         boolean defaultRandomInitialTargetDirectionAngle = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialTargetDirectionAngle);
@@ -265,6 +315,9 @@ public class ClickTargetProfileScriptHelper {
         float defaultProbabilityOfRandomRadiusChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRadiusChangePerSecond);
         float defaultProbabilityOfRandomDRadiusChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRadiusChangePerSecond);
         float defaultProbabilityOfRandomD2RadiusChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond);
+        float defaultProbabilityOfRandomRotationChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRotationChangePerSecond);
+        float defaultProbabilityOfRandomDRotationChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRotationChangePerSecond);
+        float defaultProbabilityOfRandomD2RotationChangePerSecond = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RotationChangePerSecond);
 
         // Random change intervals
         String defaultRandomChangeIntervalStringPosition = context.getString(R.string.game_values_defaultRandomChangeIntervalPosition);
@@ -275,6 +328,9 @@ public class ClickTargetProfileScriptHelper {
         String defaultRandomChangeIntervalStringRadius = context.getString(R.string.game_values_defaultRandomChangeIntervalRadius);
         String defaultRandomChangeIntervalStringDRadius = context.getString(R.string.game_values_defaultRandomChangeIntervalDRadius);
         String defaultRandomChangeIntervalStringD2Radius = context.getString(R.string.game_values_defaultRandomChangeIntervalD2Radius);
+        String defaultRandomChangeIntervalStringRotation = context.getString(R.string.game_values_defaultRandomChangeIntervalRotation);
+        String defaultRandomChangeIntervalStringDRotation = context.getString(R.string.game_values_defaultRandomChangeIntervalDRotation);
+        String defaultRandomChangeIntervalStringD2Rotation = context.getString(R.string.game_values_defaultRandomChangeIntervalD2Rotation);
 
         // Can do things
         boolean defaultCanChangePosition = context.getResources().getBoolean(R.bool.game_values_defaultCanChangePosition);
@@ -282,6 +338,8 @@ public class ClickTargetProfileScriptHelper {
         boolean defaultCanChangeDirection = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeDirection);
         boolean defaultCanChangeRadius = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeRadius);
         boolean defaultCanChangeDRadius = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeDRadius);
+        boolean defaultCanChangeRotation = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeRotation);
+        boolean defaultCanChangeDRotation = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeDRotation);
 
         // Can randomly do things
         boolean defaultCanRandomlyChangePosition = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangePosition);
@@ -292,6 +350,9 @@ public class ClickTargetProfileScriptHelper {
         boolean defaultCanRandomlyChangeRadius = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeRadius);
         boolean defaultCanRandomlyChangeDRadius = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDRadius);
         boolean defaultCanRandomlyChangeD2Radius = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeD2Radius);
+        boolean defaultCanRandomlyChangeRotation = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeRotation);
+        boolean defaultCanRandomlyChangeDRotation = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDRotation);
+        boolean defaultCanRandomlyChangeD2Rotation = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeD2Rotation);
 
         // Tie random changes to other random changes
         boolean defaultTieRandomPositionChangeToRandomSpeedChange = context.getResources().getBoolean(R.bool.game_values_defaultTieRandomPositionChangeToRandomSpeedChange);
@@ -311,6 +372,8 @@ public class ClickTargetProfileScriptHelper {
         boolean defaultTieRandomDRadiusChangeToRandomDirectionChange = context.getResources().getBoolean(R.bool.game_values_defaultTieRandomDRadiusChangeToRandomDirectionChange);
         boolean defaultTieRandomDRadiusChangeToRandomDSpeedChange = context.getResources().getBoolean(R.bool.game_values_defaultTieRandomDRadiusChangeToRandomDSpeedChange);
         boolean defaultTieRandomDRadiusChangeToRandomDDirectionChange = context.getResources().getBoolean(R.bool.game_values_defaultTieRandomDRadiusChangeToRandomDDirectionChange);
+        boolean defaultTieRandomRotationChangeToRandomDRotationChange = context.getResources().getBoolean(R.bool.game_values_defaultTieRandomRotationChangeToRandomDRotationChange);
+        boolean defaultTieRandomDRotationChangeToRandomD2RotationChange = context.getResources().getBoolean(R.bool.game_values_defaultTieRandomDRotationChangeToRandomD2RotationChange);
 
         // Boundary effects
         String defaultBoundaryEffectPositionHorizontalString = context.getString(R.string.game_values_defaultBoundaryEffectPositionHorizontal);
@@ -322,6 +385,9 @@ public class ClickTargetProfileScriptHelper {
         String defaultBoundaryEffectRadiusString = context.getString(R.string.game_values_defaultBoundaryEffectRadius);
         String defaultBoundaryEffectDRadiusString = context.getString(R.string.game_values_defaultBoundaryEffectDRadius);
         String defaultBoundaryEffectD2RadiusString = context.getString(R.string.game_values_defaultBoundaryEffectD2Radius);
+        String defaultBoundaryEffectRotationString = context.getString(R.string.game_values_defaultBoundaryEffectRotation);
+        String defaultBoundaryEffectDRotationString = context.getString(R.string.game_values_defaultBoundaryEffectDRotation);
+        String defaultBoundaryEffectD2RotationString = context.getString(R.string.game_values_defaultBoundaryEffectD2Rotation);
 
         // Transition continuity
         String defaultScriptTransitionContinuity = context.getString(R.string.game_values_defaultScriptTransitionContinuity);
@@ -331,6 +397,9 @@ public class ClickTargetProfileScriptHelper {
         String defaultScriptTransitionInterval = context.getString(R.string.game_values_defaultScriptTransitionInterval);
         String defaultScriptCycleDirection = context.getString(R.string.game_values_defaultScriptCycleDirection);
         float defaultScriptTransitionValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultScriptTransitionValue);
+
+        // Target shape
+        String defaultTargetShape = PolygonHelper.CLICK_TARGET_SHAPES.get(0);
 
         // Initialize the variables
         ClickTargetProfileScript resultClickTargetProfileScript = null;
@@ -556,6 +625,87 @@ public class ClickTargetProfileScriptHelper {
                         if (maximumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond < initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond) maximumTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond = initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond * defaultMaximumTargetDRadiusChangeAbsoluteValueMultiplier;
 
 
+                        // Get rotation attributes
+                        double initialTargetRotationAngleRadians =
+                                (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_ROTATION_ANGLE_RADIANS
+                                        , defaultInitialTargetRotationAngleRadians);
+                        boolean randomInitialTargetRotationAngle =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_ROTATION_ANGLE
+                                        , defaultRandomInitialTargetRotationAngle);
+
+                        // DRotation Angle
+                        double initialTargetDRotationAbsoluteValueRadiansPerSecond =
+                                (double) defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond
+                                        * (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_DROTATION_ABSOLUTE_VALUE_MULTIPLIER
+                                        , 1.0f);
+                        double minimumTargetDRotationAbsoluteValueRadiansPerSecond =
+                                (double) defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond
+                                        * (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_MINIMUM_TARGET_DROTATION_ABSOLUTE_VALUE_MULTIPLIER
+                                        , defaultMinimumTargetDRotationAbsoluteValueMultiplier);
+                        double maximumTargetDRotationAbsoluteValueRadiansPerSecond =
+                                (double) defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond
+                                        * (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_MAXIMUM_TARGET_DROTATION_ABSOLUTE_VALUE_MULTIPLIER
+                                        , defaultMaximumTargetDRotationAbsoluteValueMultiplier);
+                        boolean randomInitialTargetDRotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DROTATION
+                                        , defaultRandomInitialTargetDRotation);
+                        boolean randomInitialTargetDRotationSign =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_DROTATION_SIGN
+                                        , defaultRandomInitialTargetDRotationSign);
+
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetDRotationAbsoluteValueRadiansPerSecond > initialTargetDRotationAbsoluteValueRadiansPerSecond) minimumTargetDRotationAbsoluteValueRadiansPerSecond = initialTargetDRotationAbsoluteValueRadiansPerSecond * defaultMinimumTargetDRotationAbsoluteValueMultiplier;
+                        if (maximumTargetDRotationAbsoluteValueRadiansPerSecond < initialTargetDRotationAbsoluteValueRadiansPerSecond) maximumTargetDRotationAbsoluteValueRadiansPerSecond = initialTargetDRotationAbsoluteValueRadiansPerSecond * defaultMaximumTargetDRotationAbsoluteValueMultiplier;
+
+                        // D2Rotation
+                        double initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond =
+                                (double) defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
+                                        * (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_INITIAL_TARGET_D2ROTATION_ABSOLUTE_VALUE_MULTIPLIER
+                                        , 1.0f);
+                        double minimumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond =
+                                (double) defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
+                                        * (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_MINIMUM_TARGET_D2ROTATION_ABSOLUTE_VALUE_MULTIPLIER
+                                        , defaultMinimumTargetD2RotationAbsoluteValueMultiplier);
+                        double maximumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond =
+                                (double) defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
+                                        * (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_MAXIMUM_TARGET_D2ROTATION_ABSOLUTE_VALUE_MULTIPLIER
+                                        , defaultMaximumTargetD2RotationAbsoluteValueMultiplier);
+                        boolean randomInitialTargetD2Rotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_D2ROTATION
+                                        , defaultRandomInitialTargetD2Rotation);
+                        boolean randomInitialTargetD2RotationSign =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_RANDOM_INITIAL_TARGET_D2ROTATION_SIGN
+                                        , defaultRandomInitialTargetD2RotationSign);
+
+                        // Make sure the minimum and maximum values are valid
+                        if (minimumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond > initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond) minimumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond = initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond * defaultMinimumTargetD2RotationAbsoluteValueMultiplier;
+                        if (maximumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond < initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond) maximumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond = initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond * defaultMaximumTargetD2RotationAbsoluteValueMultiplier;
+
+
                         // Direction angle
                         double initialTargetDirectionAngleRadians =
                                 (double) xmlResourceParser.getAttributeFloatValue(
@@ -643,6 +793,21 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_D2RADIUS_CHANGE_PER_SECOND
                                         , defaultProbabilityOfRandomD2RadiusChangePerSecond);
+                        double probabilityOfRandomRotationChangePerSecond =
+                                (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_ROTATION_CHANGE_PER_SECOND
+                                        , defaultProbabilityOfRandomRotationChangePerSecond);
+                        double probabilityOfRandomDRotationChangePerSecond =
+                                (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_DROTATION_CHANGE_PER_SECOND
+                                        , defaultProbabilityOfRandomDRotationChangePerSecond);
+                        double probabilityOfRandomD2RotationChangePerSecond =
+                                (double) xmlResourceParser.getAttributeFloatValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_PROBABILITY_OF_RANDOM_D2ROTATION_CHANGE_PER_SECOND
+                                        , defaultProbabilityOfRandomD2RotationChangePerSecond);
 
 
                         // Random change intervals
@@ -678,6 +843,18 @@ public class ClickTargetProfileScriptHelper {
                                 (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2RADIUS) == null) ?
                                         defaultRandomChangeIntervalStringD2Radius
                                         : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2RADIUS);
+                        String randomChangeIntervalStringRotation =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_ROTATION) == null) ?
+                                        defaultRandomChangeIntervalStringRotation
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_ROTATION);
+                        String randomChangeIntervalStringDRotation =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DROTATION) == null) ?
+                                        defaultRandomChangeIntervalStringDRotation
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_DROTATION);
+                        String randomChangeIntervalStringD2Rotation =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2ROTATION) == null) ?
+                                        defaultRandomChangeIntervalStringD2Rotation
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_RANDOM_CHANGE_INTERVAL_D2ROTATION);
                         PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition =
                                 PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
                                         randomChangeIntervalValues.indexOf(randomChangeIntervalStringPosition)];
@@ -702,6 +879,15 @@ public class ClickTargetProfileScriptHelper {
                         PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalD2Radius =
                                 PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
                                         randomChangeIntervalValues.indexOf(randomChangeIntervalStringD2Radius)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalRotation =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringRotation)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalDRotation =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringDRotation)];
+                        PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeIntervalD2Rotation =
+                                PositionEvolver.RANDOM_CHANGE_INTERVAL.values()[
+                                        randomChangeIntervalValues.indexOf(randomChangeIntervalStringD2Rotation)];
 
 
                         // Value changes
@@ -730,6 +916,16 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_DRADIUS
                                         , defaultCanChangeDRadius);
+                        boolean canChangeRotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_ROTATION
+                                        , defaultCanChangeRotation);
+                        boolean canChangeDRotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_CHANGE_DROTATION
+                                        , defaultCanChangeDRotation);
 
 
                         // Random value changes
@@ -773,6 +969,21 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_D2RADIUS
                                         , canChangeDRadius);
+                        boolean canRandomlyChangeRotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_ROTATION
+                                        , defaultCanRandomlyChangeRotation);
+                        boolean canRandomlyChangeDRotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_DROTATION
+                                        , defaultCanRandomlyChangeDRotation);
+                        boolean canRandomlyChangeD2Rotation =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_D2ROTATION
+                                        , canChangeDRotation);
 
                         // Tie random changes to other random changes
                         boolean tieRandomPositionChangeToRandomSpeedChange =
@@ -860,6 +1071,16 @@ public class ClickTargetProfileScriptHelper {
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_DRADIUS_CHANGE_TO_RANDOM_DDIRECTION_CHANGE
                                         , defaultTieRandomDRadiusChangeToRandomDDirectionChange);
+                        boolean tieRandomRotationChangeToRandomDRotationChange =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_ROTATION_CHANGE_TO_RANDOM_DROTATION_CHANGE
+                                        , defaultTieRandomRotationChangeToRandomDRotationChange);
+                        boolean tieRandomDRotationChangeToRandomD2RotationChange =
+                                xmlResourceParser.getAttributeBooleanValue(
+                                        null
+                                        , ATTRIBUTE_NAME_PROFILE_TARGET_TIE_RANDOM_DROTATION_CHANGE_TO_RANDOM_D2ROTATION_CHANGE
+                                        , defaultTieRandomDRotationChangeToRandomD2RotationChange);
 
                         // Get the boundary effect values
                         String boundaryEffectPositionHorizontalString =
@@ -898,6 +1119,18 @@ public class ClickTargetProfileScriptHelper {
                                 (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2RADIUS) == null) ?
                                         defaultBoundaryEffectD2RadiusString
                                         : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2RADIUS);
+                        String boundaryEffectRotationString =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_ROTATION) == null) ?
+                                        defaultBoundaryEffectRotationString
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_ROTATION);
+                        String boundaryEffectDRotationString =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_DROTATION) == null) ?
+                                        defaultBoundaryEffectDRotationString
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_DROTATION);
+                        String boundaryEffectD2RotationString =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2ROTATION) == null) ?
+                                        defaultBoundaryEffectD2RotationString
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2ROTATION);
 
                         PositionEvolver.BOUNDARY_EFFECT boundaryEffectPositionHorizontal =
                                 PositionEvolver.BOUNDARY_EFFECT.values()[
@@ -926,6 +1159,15 @@ public class ClickTargetProfileScriptHelper {
                         PositionEvolver.BOUNDARY_EFFECT boundaryEffectD2Radius =
                                 PositionEvolver.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectD2RadiusString)];
+                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectRotation =
+                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                                        boundaryEffectValues.indexOf(boundaryEffectRotationString)];
+                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectDRotation =
+                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                                        boundaryEffectValues.indexOf(boundaryEffectDRotationString)];
+                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectD2Rotation =
+                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                                        boundaryEffectValues.indexOf(boundaryEffectD2RotationString)];
 
 
                         // Get the transition value
@@ -968,6 +1210,18 @@ public class ClickTargetProfileScriptHelper {
                                 (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DRADIUS_CHANGE) == null) ?
                                     defaultScriptTransitionContinuity
                                     : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DRADIUS_CHANGE);
+                        String transitionContinuityRotationString =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_ROTATION) == null) ?
+                                        defaultScriptTransitionContinuity
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_ROTATION);
+                        String transitionContinuityDRotationString =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DROTATION) == null) ?
+                                        defaultScriptTransitionContinuity
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_DROTATION);
+                        String transitionContinuityD2RotationString =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_D2ROTATION) == null) ?
+                                        defaultScriptTransitionContinuity
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TRANSITION_CONTINUOUS_D2ROTATION);
 
                         ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuityPosition =
                                 ClickTargetProfile.TRANSITION_CONTINUITY.values()[
@@ -993,6 +1247,21 @@ public class ClickTargetProfileScriptHelper {
                         ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuityDRadiusChange =
                                 ClickTargetProfile.TRANSITION_CONTINUITY.values()[
                                         scriptTransitionContinuityValues.indexOf(transitionContinuityDRadiusChangeString)];
+                        ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuityRotation =
+                                ClickTargetProfile.TRANSITION_CONTINUITY.values()[
+                                        scriptTransitionContinuityValues.indexOf(transitionContinuityRotationString)];
+                        ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuityDRotation =
+                                ClickTargetProfile.TRANSITION_CONTINUITY.values()[
+                                        scriptTransitionContinuityValues.indexOf(transitionContinuityDRotationString)];
+                        ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuityD2Rotation =
+                                ClickTargetProfile.TRANSITION_CONTINUITY.values()[
+                                        scriptTransitionContinuityValues.indexOf(transitionContinuityD2RotationString)];
+
+                        // Target shape
+                        String targetShape =
+                                (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_SHAPE) == null) ?
+                                        defaultTargetShape
+                                        : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_SHAPE);
 
                         // Target position values
                         ClickTargetProfile.ProfileVariableValues targetPositionHorizontalValuesInches =
@@ -1145,6 +1414,57 @@ public class ClickTargetProfileScriptHelper {
                                         , transitionContinuityDRadiusChange
                                 );
 
+                        // Target rotation values
+                        ClickTargetProfile.ProfileVariableValues targetRotationValuesRadians =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        0.0
+                                        , initialTargetRotationAngleRadians
+                                        , 2.0 * Math.PI
+                                        , randomInitialTargetRotationAngle
+                                        , false
+                                        , false
+                                        , canChangeRotation
+                                        , canRandomlyChangeRotation
+                                        , randomChangeIntervalRotation
+                                        , probabilityOfRandomRotationChangePerSecond
+                                        , boundaryEffectRotation
+                                        , transitionContinuityRotation
+                                );
+
+                        // Target DRotation values
+                        ClickTargetProfile.ProfileVariableValues targetDRotationValuesRadiansPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetDRotationAbsoluteValueRadiansPerSecond
+                                        , initialTargetDRotationAbsoluteValueRadiansPerSecond
+                                        , maximumTargetDRotationAbsoluteValueRadiansPerSecond
+                                        , randomInitialTargetDRotation
+                                        , true
+                                        , randomInitialTargetDRotationSign
+                                        , canChangeDRotation
+                                        , canRandomlyChangeDRotation
+                                        , randomChangeIntervalDRotation
+                                        , probabilityOfRandomDRotationChangePerSecond
+                                        , boundaryEffectDRotation
+                                        , transitionContinuityDRotation
+                                );
+
+                        // Target D2Rotation values
+                        ClickTargetProfile.ProfileVariableValues targetD2RotationValuesRadiansPerSecondPerSecond =
+                                new ClickTargetProfile.ProfileVariableValues(
+                                        minimumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
+                                        , initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
+                                        , maximumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
+                                        , randomInitialTargetD2Rotation
+                                        , true
+                                        , randomInitialTargetD2RotationSign
+                                        , false
+                                        , canRandomlyChangeD2Rotation
+                                        , randomChangeIntervalD2Rotation
+                                        , probabilityOfRandomD2RotationChangePerSecond
+                                        , boundaryEffectD2Rotation
+                                        , transitionContinuityD2Rotation
+                                );
+
 
                         // Create a new click target profile
                         ClickTargetProfile currentClickTargetProfile = new ClickTargetProfile(
@@ -1174,6 +1494,15 @@ public class ClickTargetProfileScriptHelper {
                                 // Target D2Radius values
                                 , targetD2RadiusValuesInchesPerSecondPerSecond
 
+                                // Target rotation values
+                                , targetRotationValuesRadians
+
+                                // Target DRotation values
+                                , targetDRotationValuesRadiansPerSecond
+
+                                // Target D2Rotation values
+                                , targetD2RotationValuesRadiansPerSecondPerSecond
+
                                 // Tie random changes to other random changes
                                 , tieRandomPositionChangeToRandomSpeedChange
                                 , tieRandomPositionChangeToRandomDirectionChange
@@ -1192,6 +1521,11 @@ public class ClickTargetProfileScriptHelper {
                                 , tieRandomDRadiusChangeToRandomDirectionChange
                                 , tieRandomDRadiusChangeToRandomDSpeedChange
                                 , tieRandomDRadiusChangeToRandomDDirectionChange
+                                , tieRandomRotationChangeToRandomDRotationChange
+                                , tieRandomDRotationChangeToRandomD2RotationChange
+
+                                // Target shape
+                                , targetShape
                         );
 
                         // Add the current click target profile to the click target profile list

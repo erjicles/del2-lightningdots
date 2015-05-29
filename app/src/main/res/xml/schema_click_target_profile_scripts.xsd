@@ -1,0 +1,221 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
+    elementFormDefault="qualified"
+    xmlns="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+>
+  <xs:simpleType name="trueOrFalse">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="true"/>
+      <xs:enumeration value="false"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="levelInteger">
+    <xs:restriction base="xs:integer">
+      <xs:minInclusive value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="transitionMode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONSTANT"/>
+      <xs:enumeration value="CYCLE"/>
+      <xs:enumeration value="RANDOM"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="transitionInterval">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONSTANT"/>
+      <xs:enumeration value="REGULAR"/>
+      <xs:enumeration value="RANDOM"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="cycleDirection">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="INCREASING"/>
+      <xs:enumeration value="DECREASING"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="boundaryEffect">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="STICK"/>
+      <xs:enumeration value="BOUNCE"/>
+      <xs:enumeration value="PERIODIC"/>
+      <xs:enumeration value="PERIODIC_REFLECTIVE"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="transitionContinuity">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CONTINUOUS"/>
+      <xs:enumeration value="DISCONTINUOUS"/>
+      <xs:enumeration value="DEFAULT"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:simpleType name="targetShape">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CIRCLE"/>
+      <xs:enumeration value="SQUARE"/>
+      <xs:enumeration value="TRIANGLE_EQUILATERAL"/>
+      <xs:enumeration value="STAR_5_POINTS"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="clickTargetProfile">
+    <xs:attribute name="initialTargetRadiusMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetRadiusMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetRadiusMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetRadius" type="trueOrFalse"/>
+
+    <xs:attribute name="initialTargetSpeedMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetSpeedMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetSpeedMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetSpeed" type="trueOrFalse"/>
+    <xs:attribute name="initialTargetSpeedChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetSpeedChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetSpeedChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetSpeedChangeSign" type="trueOrFalse"/>
+    
+    <xs:attribute name="initialTargetDRadiusAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetDRadiusAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetDRadiusAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetDRadius" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetDRadiusSign" type="trueOrFalse"/>
+    <xs:attribute name="initialTargetDRadiusChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetDRadiusChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetDRadiusChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetDRadiusChange" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetDRadiusChangeSign" type="trueOrFalse"/>
+    
+    <xs:attribute name="initialTargetRotationAngleRadians" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetRotationAngle" type="trueOrFalse"/>
+    <xs:attribute name="initialTargetDRotationAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetDRotationAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetDRotationAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetDRotation" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetDRotationSign" type="trueOrFalse"/>
+    <xs:attribute name="initialTargetD2RotationAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetD2RotationAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetD2RotationAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetD2Rotation" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetD2RotationSign" type="trueOrFalse"/>
+    
+    <xs:attribute name="initialTargetDirectionAngleRadians" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetDirectionAngle" type="trueOrFalse"/>
+    
+    <xs:attribute name="initialTargetDirectionAngleChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="minimumTargetDirectionAngleChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="maximumTargetDirectionAngleChangeAbsoluteValueMultiplier" type="xs:float"/>
+    <xs:attribute name="randomInitialTargetDirectionAngleChange" type="trueOrFalse"/>
+    <xs:attribute name="randomInitialTargetDirectionAngleChangeSign" type="trueOrFalse"/>
+    
+    <xs:attribute name="probabilityOfRandomPositionChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomSpeedChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomDirectionChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomDSpeedChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomDDirectionChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomRadiusChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomDRadiusChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomD2RadiusChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomRotationChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomDRotationChangePerSecond" type="xs:float"/>
+    <xs:attribute name="probabilityOfRandomD2RotationChangePerSecond" type="xs:float"/>
+
+    <xs:attribute name="randomChangeIntervalPosition" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalSpeed" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalDirection" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalDSpeed" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalDDirection" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalRadius" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalDRadius" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalD2Radius" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalRotation" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalDRotation" type="transitionInterval"/>
+    <xs:attribute name="randomChangeIntervalD2Rotation" type="transitionInterval"/>
+    
+    <xs:attribute name="targetCanChangePosition" type="trueOrFalse"/>
+    <xs:attribute name="targetCanChangeSpeed" type="trueOrFalse"/>
+    <xs:attribute name="targetCanChangeDirection" type="trueOrFalse"/>
+    <xs:attribute name="targetCanChangeRadius" type="trueOrFalse"/>
+    <xs:attribute name="targetCanChangeDRadius" type="trueOrFalse"/>
+    <xs:attribute name="targetCanChangeRotation" type="trueOrFalse"/>
+    <xs:attribute name="targetCanChangeDRotation" type="trueOrFalse"/>
+    
+    <xs:attribute name="targetCanRandomlyChangePosition" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeSpeed" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeDirection" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeDSpeed" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeDDirection" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeRadius" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeDRadius" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeD2Radius" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeRotation" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeDRotation" type="trueOrFalse"/>
+    <xs:attribute name="targetCanRandomlyChangeD2Rotation" type="trueOrFalse"/>
+    
+    <xs:attribute name="targetTieRandomPositionChangeToRandomSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomPositionChangeToRandomDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomSpeedChangeToRandomDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomSpeedChangeToRandomDSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomSpeedChangeToRandomDDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDirectionChangeToRandomSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDirectionChangeToRandomDSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDirectionChangeToRandomDDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomRadiusChangeToRandomDRadiusChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDRadiusChangeToRandomD2RadiusChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomRadiusChangeToRandomPositionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomRadiusChangeToRandomSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomRadiusChangeToRandomDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDRadiusChangeToRandomSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDRadiusChangeToRandomDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDRadiusChangeToRandomDSpeedChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDRadiusChangeToRandomDDirectionChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomRotationChangeToRandomDRotationChange" type="trueOrFalse"/>
+    <xs:attribute name="targetTieRandomDRotationChangeToRandomD2RotationChange" type="trueOrFalse"/>
+
+    <xs:attribute name="targetBoundaryEffectPositionHorizontal" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectPositionVertical" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectSpeed" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectDirection" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectDSpeed" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectDDirection" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectRadius" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectDRadius" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectD2Radius" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectRotation" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectDRotation" type="boundaryEffect"/>
+    <xs:attribute name="targetBoundaryEffectD2Rotation" type="boundaryEffect"/>
+    
+    <xs:attribute name="scriptTransitionValue" type="xs:float"/>
+    <xs:attribute name="scriptTransitionContinuousPosition" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousSpeed" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousDirection" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousSpeedChange" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousDirectionChange" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousRadius" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousDRadius" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousDRadiusChange" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousRotation" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousDRotation" type="transitionContinuity"/>
+    <xs:attribute name="scriptTransitionContinuousD2Rotation" type="transitionContinuity"/>
+
+    <xs:attribute name="targetShape" type="targetShape"/>
+    
+  </xs:complexType>
+  <xs:complexType name="clickTargetProfileScript">
+    <xs:sequence>
+      <xs:element name="ClickTargetProfile" type="clickTargetProfile" minOccurs="1" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="level" type="xs:int" use="required"/>
+    <xs:attribute name="scriptTransitionMode" type="transitionMode"/>
+    <xs:attribute name="scriptTransitionInterval" type="transitionInterval"/>
+    <xs:attribute name="scriptCycleDirection" type="cycleDirection"/>
+    <xs:attribute name="initialClickTargetProfile" type="xs:integer"/>
+  </xs:complexType>
+  <xs:element name="ClickTargetProfileScripts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ClickTargetProfileScript" type="clickTargetProfileScript" minOccurs="0" maxOccurs="unbounded">
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

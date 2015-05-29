@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.delsquaredllc.com/lightningdots/clicktargetshapedefinitions/"
+    elementFormDefault="qualified"
+    xmlns="http://www.delsquaredllc.com/lightningdots/clicktargetshapedefinitions/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    >
+    <xs:complexType name="vertex">
+        <xs:attribute name="x" type="xs:float" use="required"/>
+        <xs:attribute name="y" type="xs:float" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="clickTargetShape">
+        <xs:sequence>
+            <xs:element name="Vertex" type="vertex" minOccurs="4" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:element name="ClickTargetShapeDefinitions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="ClickTargetShape" type="clickTargetShape" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

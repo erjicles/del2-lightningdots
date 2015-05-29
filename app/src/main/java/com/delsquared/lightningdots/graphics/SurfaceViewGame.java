@@ -125,24 +125,30 @@ public class SurfaceViewGame
 
 	@Override
 	public boolean onTouchEvent(MotionEvent motionEvent){
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-            touchX1 = motionEvent.getX();
+        if (Game.getInstance().gameSnapshot.getGameState() == Game.GameState.RUNNING) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+               gameThreadRunnable.processDownTouch(motionEvent);
+            }
+        } else {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                touchX1 = motionEvent.getX();
 
-		} else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
 
-		} else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
-            touchX2 = motionEvent.getX();
-            float deltaX = touchX2 - touchX1;
-            if (Math.abs(deltaX) > MINIMUM_SWIPE_DISTANCE) {
-                surfaceViewGameThreadRunnable.processSwipe(deltaX);
-            } else {
-                boolean gameThreadTouchProcessResult =
-                        surfaceViewGameThreadRunnable.processDownTouch(motionEvent);
-                if (gameThreadTouchProcessResult == false) {
-                    gameThreadRunnable.processDownTouch(motionEvent);
+            } else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
+                touchX2 = motionEvent.getX();
+                float deltaX = touchX2 - touchX1;
+                if (Math.abs(deltaX) > MINIMUM_SWIPE_DISTANCE) {
+                    surfaceViewGameThreadRunnable.processSwipe(deltaX);
+                } else {
+                    boolean gameThreadTouchProcessResult =
+                            surfaceViewGameThreadRunnable.processDownTouch(motionEvent);
+                    if (gameThreadTouchProcessResult == false) {
+                        gameThreadRunnable.processDownTouch(motionEvent);
+                    }
                 }
             }
-		}
+        }
 		return true;
 	}
 
