@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 
+import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -103,6 +105,12 @@ public class LightningDotsApplication extends Application {
                             , hasPurchasedNoAds)
                     .commit();
 
+        }
+    }
+
+    public static void logDebugMessage(String message) {
+        if (BuildConfig.DEBUG) {
+            Log.d(logTag, message);
         }
     }
 
