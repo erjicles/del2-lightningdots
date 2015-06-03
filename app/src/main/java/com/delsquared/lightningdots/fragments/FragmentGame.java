@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.database.LoaderHelperGameResult;
 import com.delsquared.lightningdots.game.ClickTargetProfileScriptHelper;
@@ -18,6 +19,8 @@ import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+
+import java.util.Date;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -99,7 +102,8 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     public void onPause() {
 
         super.onPause();
-        Log.d("lightningdots", "FragmentGame onPause()");
+
+        LightningDotsApplication.logDebugMessage("FragmentGame onPause()");
     }
 
     @Override
@@ -107,7 +111,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
         super.onResume();
 
-        Log.d("lightningdots", "FragmentGame onResume()");
+        LightningDotsApplication.logDebugMessage("FragmentGame onResume()");
 
         // Get the fragment view
         View fragmentView = getView();
@@ -209,6 +213,24 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
                 loaderHelperGameResult.loadBestSuccessfulRun(
                         currentGameType
                         , (int) Game.getInstance().getGameTimeLimitMillis());
+
+        // Check if we are in debug mode and should allow all levels
+        if (BuildConfig.DEBUG
+                && getResources().getBoolean(R.bool.activity_game_allow_all_levels)) {
+
+            // Set the highest result to the highest level
+            gameResultHighScoreOverall = new GameResult(
+                    0
+                    , currentGameType
+                    , highestScriptedLevel
+                    , (int) Game.getInstance().getGameTimeLimitMillis()
+                    , true
+                    , 1
+                    , 0
+                    , new Date()
+            );
+
+        }
     }
 
     public void loadGameResultHighScoreCurrentLevel() {
@@ -267,7 +289,15 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
         // Optionally populate the ad request builder.
         adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-        adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
+
+        // Check if we are in debug mode
+        if (BuildConfig.DEBUG) {
+
+            // Add specific devices to test device list
+            adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
+
+        }
+
 
         // Start loading the ad now so that it is ready by the time the user is ready to go to
         // the next level.
