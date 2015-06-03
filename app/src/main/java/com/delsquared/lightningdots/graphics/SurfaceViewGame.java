@@ -14,6 +14,7 @@ import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.game.GameThreadRunnable;
 import com.delsquared.lightningdots.game.InterfaceGameCallback;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class SurfaceViewGame
 		extends SurfaceView
@@ -88,14 +89,14 @@ public class SurfaceViewGame
 	@Override
     public void surfaceCreated(SurfaceHolder holder) {
 
-        Log.d("lightningdots", "SurfaceViewGame surfaceCreated()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceCreated()");
         startThreads();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
 
-        Log.d("lightningdots", "SurfaceViewGame surfaceChanged()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceChanged()");
 		surfaceViewGameThreadRunnable.setSurfaceSize(width, height);
         gameThreadRunnable.setCanvasWidthAndHeight(true, width, height);
 
@@ -107,7 +108,7 @@ public class SurfaceViewGame
 	 */
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
-        Log.d("lightningdots", "SurfaceViewGame onWindowFocusChanged()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame onWindowFocusChanged()");
         if (!hasWindowFocus) {
             pauseThreads();
         } else {
@@ -117,7 +118,7 @@ public class SurfaceViewGame
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        Log.d("lightningdots", "SurfaceViewGame surfaceDestroyed()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceDestroyed()");
         stopThreads();
 
     }
@@ -154,7 +155,7 @@ public class SurfaceViewGame
 
     private void startThreads() {
 
-        Log.d("lightningdots", "SurfaceViewGame startThreads()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame startThreads()");
 
         SurfaceHolder surfaceHolder = getHolder();
 
@@ -305,7 +306,7 @@ public class SurfaceViewGame
     }
 
     private void stopThreads() {
-        Log.d("lightningdots", "SurfaceViewGame stopThreads()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame stopThreads()");
         boolean retryGameThread = true;
         boolean retrySurfaceViewGameThread = true;
         gameThreadRunnable.setThreadIsRunning(false);
@@ -326,7 +327,7 @@ public class SurfaceViewGame
     }
 
     public void pauseThreads() {
-        Log.d("lightningdots", "SurfaceViewGame pauseThreads()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame pauseThreads()");
         if (gameThreadRunnable != null) {
             gameThreadRunnable.setThreadIsPaused(true);
         }
@@ -336,7 +337,7 @@ public class SurfaceViewGame
     }
 
     public void resumeThreads() {
-        Log.d("lightningdots", "SurfaceViewGame resumeThreads()");
+        LightningDotsApplication.logDebugMessage("SurfaceViewGame resumeThreads()");
         if (surfaceViewGameThreadRunnable != null) {
             surfaceViewGameThreadRunnable.setThreadIsPaused(false);
         }
