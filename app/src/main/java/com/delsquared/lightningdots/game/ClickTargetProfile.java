@@ -196,13 +196,12 @@ public class ClickTargetProfile {
         public final double initialValue;
         public final double maximumValue;
         public final boolean randomInitialValue;
-        public final boolean absoluteValuedValues;
         public final boolean randomInitialSign;
         public final boolean canChange;
         public final boolean canRandomlyChange;
         public final PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeInterval;
         public final double randomChangeIntervalValue;
-        public final PositionEvolver.BOUNDARY_EFFECT boundaryEffect;
+        public final PositionEvolver.BoundaryEffect boundaryEffect;
         public final TRANSITION_CONTINUITY transitionContinuity;
 
         public ProfileVariableValues(
@@ -210,19 +209,17 @@ public class ClickTargetProfile {
                 , double initialValue
                 , double maximumValue
                 , boolean randomInitialValue
-                , boolean absoluteValuedValues
                 , boolean randomInitialSign
                 , boolean canChange
                 , boolean canRandomlyChange
                 , PositionEvolver.RANDOM_CHANGE_INTERVAL randomChangeInterval
                 , double randomChangeIntervalValue
-                , PositionEvolver.BOUNDARY_EFFECT boundaryEffect
+                , PositionEvolver.BoundaryEffect boundaryEffect
                 , TRANSITION_CONTINUITY transitionContinuity) {
             this.minimumValue = minimumValue;
             this.initialValue = initialValue;
             this.maximumValue = maximumValue;
             this.randomInitialValue = randomInitialValue;
-            this.absoluteValuedValues = absoluteValuedValues;
             this.randomInitialSign = randomInitialSign;
             this.canChange = canChange;
             this.canRandomlyChange = canRandomlyChange;

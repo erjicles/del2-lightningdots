@@ -948,12 +948,12 @@ public class ClickTargetProfileScriptHelper {
                                 xmlResourceParser.getAttributeBooleanValue(
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_DSPEED
-                                        , canChangeSpeed);
+                                        , defaultCanRandomlyChangeDSpeed);
                         boolean canRandomlyChangeDDirection =
                                 xmlResourceParser.getAttributeBooleanValue(
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_DDIRECTION
-                                        , canChangeDirection);
+                                        , defaultCanRandomlyChangeDDirection);
                         boolean canRandomlyChangeRadius =
                                 xmlResourceParser.getAttributeBooleanValue(
                                         null
@@ -968,7 +968,7 @@ public class ClickTargetProfileScriptHelper {
                                 xmlResourceParser.getAttributeBooleanValue(
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_D2RADIUS
-                                        , canChangeDRadius);
+                                        , defaultCanRandomlyChangeD2Radius);
                         boolean canRandomlyChangeRotation =
                                 xmlResourceParser.getAttributeBooleanValue(
                                         null
@@ -983,7 +983,7 @@ public class ClickTargetProfileScriptHelper {
                                 xmlResourceParser.getAttributeBooleanValue(
                                         null
                                         , ATTRIBUTE_NAME_PROFILE_TARGET_CAN_RANDOMLY_CHANGE_D2ROTATION
-                                        , canChangeDRotation);
+                                        , defaultCanRandomlyChangeD2Rotation);
 
                         // Tie random changes to other random changes
                         boolean tieRandomPositionChangeToRandomSpeedChange =
@@ -1132,42 +1132,103 @@ public class ClickTargetProfileScriptHelper {
                                         defaultBoundaryEffectD2RotationString
                                         : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_TARGET_BOUNDARY_EFFECT_D2ROTATION);
 
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectPositionHorizontal =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectPositionHorizontal =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectPositionHorizontalString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectPositionVertical =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectPositionVertical =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectPositionVerticalString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectSpeed =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectSpeed =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectSpeedString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectDirection =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectDirection =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectDirectionString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectDSpeed =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectDSpeed =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectDSpeedString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectDDirection =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectDDirection =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectDDirectionString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectRadius =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectRadius =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectRadiusString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectDRadius =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectDRadius =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectDRadiusString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectD2Radius =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectD2Radius =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectD2RadiusString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectRotation =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectRotation =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectRotationString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectDRotation =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectDRotation =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectDRotationString)];
-                        PositionEvolver.BOUNDARY_EFFECT boundaryEffectD2Rotation =
-                                PositionEvolver.BOUNDARY_EFFECT.values()[
+                        PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundary_effectD2Rotation =
+                                PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.values()[
                                         boundaryEffectValues.indexOf(boundaryEffectD2RotationString)];
+
+                        PositionEvolver.BoundaryEffect boundaryEffectPositionHorizontal =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectPositionHorizontal
+                                        , false
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectPositionVertical =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectPositionVertical
+                                        , false
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectSpeed =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectSpeed
+                                        , false
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectDirection =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectDirection
+                                        , false
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectDSpeed =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectDSpeed
+                                        , true
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectDDirection =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectDDirection
+                                        , true
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectRadius =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectRadius
+                                        , false
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectDRadius =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectDRadius
+                                        , true
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectD2Radius =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectD2Radius
+                                        , true
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectRotation =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectRotation
+                                        , false
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectDRotation =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectDRotation
+                                        , true
+                                );
+                        PositionEvolver.BoundaryEffect boundaryEffectD2Rotation =
+                                new PositionEvolver.BoundaryEffect(
+                                        boundary_effectD2Rotation
+                                        , true
+                                );
 
 
                         // Get the transition value
@@ -1271,7 +1332,6 @@ public class ClickTargetProfileScriptHelper {
                                 , 0.0
                                 , false
                                 , false
-                                , false
                                 , canChangePosition
                                 , canRandomlyChangePosition
                                 , randomChangeIntervalPosition
@@ -1284,7 +1344,6 @@ public class ClickTargetProfileScriptHelper {
                                         0.0
                                         , 0.0
                                         , 0.0
-                                        , false
                                         , false
                                         , false
                                         , canChangePosition
@@ -1303,7 +1362,6 @@ public class ClickTargetProfileScriptHelper {
                                         , maximumTargetSpeedInchesPerSecond
                                         , randomInitialTargetSpeed
                                         , false
-                                        , false
                                         , canChangeSpeed
                                         , canRandomlyChangeSpeed
                                         , randomChangeIntervalSpeed
@@ -1320,7 +1378,6 @@ public class ClickTargetProfileScriptHelper {
                                         , 2.0 * Math.PI
                                         , randomInitialTargetDirectionAngle
                                         , false
-                                        , false
                                         , canChangeDirection
                                         , canRandomlyChangeDirection
                                         , randomChangeIntervalDirection
@@ -1336,7 +1393,6 @@ public class ClickTargetProfileScriptHelper {
                                         , initialTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
                                         , maximumTargetSpeedChangeAbsoluteValueInchesPerSecondPerSecond
                                         , randomInitialTargetSpeedChange
-                                        , true
                                         , randomInitialTargetSpeedChangeSign
                                         , false
                                         , canRandomlyChangeDSpeed
@@ -1353,7 +1409,6 @@ public class ClickTargetProfileScriptHelper {
                                         , initialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
                                         , maximumTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond
                                         , randomInitialTargetDirectionAngleChange
-                                        , true
                                         , randomInitialTargetDirectionAngleChangeSign
                                         , false
                                         , canRandomlyChangeDDirection
@@ -1371,7 +1426,6 @@ public class ClickTargetProfileScriptHelper {
                                         , maximumTargetRadiusInches
                                         , randomInitialTargetRadius
                                         , false
-                                        , false
                                         , canChangeRadius
                                         , canRandomlyChangeRadius
                                         , randomChangeIntervalRadius
@@ -1387,7 +1441,6 @@ public class ClickTargetProfileScriptHelper {
                                         , initialTargetDRadiusAbsoluteValueInchesPerSecond
                                         , maximumTargetDRadiusAbsoluteValueInchesPerSecond
                                         , randomInitialTargetDRadius
-                                        , true
                                         , randomInitialTargetDRadiusSign
                                         , canChangeDRadius
                                         , canRandomlyChangeDRadius
@@ -1404,7 +1457,6 @@ public class ClickTargetProfileScriptHelper {
                                         , initialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond
                                         , maximumTargetDRadiusAbsoluteValueInchesPerSecond
                                         , randomInitialTargetDRadiusChange
-                                        , true
                                         , randomInitialTargetDRadiusSign
                                         , false
                                         , canRandomlyChangeD2Radius
@@ -1422,7 +1474,6 @@ public class ClickTargetProfileScriptHelper {
                                         , 2.0 * Math.PI
                                         , randomInitialTargetRotationAngle
                                         , false
-                                        , false
                                         , canChangeRotation
                                         , canRandomlyChangeRotation
                                         , randomChangeIntervalRotation
@@ -1438,7 +1489,6 @@ public class ClickTargetProfileScriptHelper {
                                         , initialTargetDRotationAbsoluteValueRadiansPerSecond
                                         , maximumTargetDRotationAbsoluteValueRadiansPerSecond
                                         , randomInitialTargetDRotation
-                                        , true
                                         , randomInitialTargetDRotationSign
                                         , canChangeDRotation
                                         , canRandomlyChangeDRotation
@@ -1455,7 +1505,6 @@ public class ClickTargetProfileScriptHelper {
                                         , initialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
                                         , maximumTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond
                                         , randomInitialTargetD2Rotation
-                                        , true
                                         , randomInitialTargetD2RotationSign
                                         , false
                                         , canRandomlyChangeD2Rotation

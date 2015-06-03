@@ -2,6 +2,8 @@ package com.delsquared.lightningdots.utilities;
 
 public class PositionEvolver {
 
+    private String name;
+
     private PositionVector X = new PositionVector(0.0, 0.0, 0.0);
 
     private MODE mode = MODE.CARTESIAN_3D;
@@ -18,10 +20,6 @@ public class PositionEvolver {
     private double maximumX1 = Double.POSITIVE_INFINITY;
     private double maximumX2 = Double.POSITIVE_INFINITY;
     private double maximumX3 = Double.POSITIVE_INFINITY;
-
-    private boolean mirrorAbsoluteValueBoundariesX1 = false;
-    private boolean mirrorAbsoluteValueBoundariesX2 = false;
-    private boolean mirrorAbsoluteValueBoundariesX3 = false;
 
     private boolean canRandomlyChangePosition = false;
     private double probabilityOfRandomPositionChangePerSecond = 0.00;
@@ -45,9 +43,9 @@ public class PositionEvolver {
     private boolean tieNewRandomX2ToNewRandomDX2 = false;
     private boolean tieNewRandomX3ToNewRandomDX3 = false;
 
-    private BOUNDARY_EFFECT boundaryEffectX1;
-    private BOUNDARY_EFFECT boundaryEffectX2;
-    private BOUNDARY_EFFECT boundaryEffectX3;
+    private BoundaryEffect boundaryEffectX1;
+    private BoundaryEffect boundaryEffectX2;
+    private BoundaryEffect boundaryEffectX3;
 
     private double totalTimeElapsedSinceLastRandomChangePositionSeconds = 0;
     private double totalTimeElapsedSinceLastRandomChangeX1Seconds = 0;
@@ -55,7 +53,8 @@ public class PositionEvolver {
     private double totalTimeElapsedSinceLastRandomChangeX3Seconds = 0;
 
     public PositionEvolver(
-            PositionVector X
+            String name
+            , PositionVector X
             , MODE mode
             , boolean isConstantX1
             , boolean isConstantX2
@@ -67,9 +66,6 @@ public class PositionEvolver {
             , double maximumX1
             , double maximumX2
             , double maximumX3
-            , boolean mirrorAbsoluteValueBoundariesX1
-            , boolean mirrorAbsoluteValueBoundariesX2
-            , boolean mirrorAbsoluteValueBoundariesX3
             , boolean canRandomlyChangePosition
             , double probabilityOfRandomPositionChangePerSecond
             , RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition
@@ -89,9 +85,11 @@ public class PositionEvolver {
             , boolean tieNewRandomX2ToNewRandomDX1
             , boolean tieNewRandomX2ToNewRandomDX2
             , boolean tieNewRandomX3ToNewRandomDX3
-            , BOUNDARY_EFFECT boundaryEffectX1
-            , BOUNDARY_EFFECT boundaryEffectX2
-            , BOUNDARY_EFFECT boundaryEffectX3) {
+            , BoundaryEffect boundaryEffectX1
+            , BoundaryEffect boundaryEffectX2
+            , BoundaryEffect boundaryEffectX3) {
+
+        this.name = name;
 
         this.X = X;
 
@@ -109,10 +107,6 @@ public class PositionEvolver {
         this.maximumX1 = maximumX1;
         this.maximumX2 = maximumX2;
         this.maximumX3 = maximumX3;
-
-        this.mirrorAbsoluteValueBoundariesX1 = mirrorAbsoluteValueBoundariesX1;
-        this.mirrorAbsoluteValueBoundariesX2 = mirrorAbsoluteValueBoundariesX2;
-        this.mirrorAbsoluteValueBoundariesX3 = mirrorAbsoluteValueBoundariesX3;
 
         this.canRandomlyChangePosition = canRandomlyChangePosition;
         this.probabilityOfRandomPositionChangePerSecond = probabilityOfRandomPositionChangePerSecond;
@@ -140,6 +134,8 @@ public class PositionEvolver {
         this.boundaryEffectX2 = boundaryEffectX2;
         this.boundaryEffectX3 = boundaryEffectX3;
     }
+
+    public String getName() { return name; }
 
     public PositionVector getX() { return X; }
 
@@ -212,12 +208,9 @@ public class PositionEvolver {
     public double getMaximumX1() { return maximumX1; }
     public double getMaximumX2() { return maximumX2; }
     public double getMaximumX3() { return maximumX3; }
-    public boolean getMirrorAbsoluteValueBoundariesX1() { return mirrorAbsoluteValueBoundariesX1; }
-    public boolean getMirrorAbsoluteValueBoundariesX2() { return mirrorAbsoluteValueBoundariesX2; }
-    public boolean getMirrorAbsoluteValueBoundariesX3() { return mirrorAbsoluteValueBoundariesX3; }
-    public BOUNDARY_EFFECT getBoundaryEffectX1() { return boundaryEffectX1; }
-    public BOUNDARY_EFFECT getBoundaryEffectX2() { return boundaryEffectX2; }
-    public BOUNDARY_EFFECT getBoundaryEffectX3() { return boundaryEffectX3; }
+    public BoundaryEffect getBoundaryEffectX1() { return boundaryEffectX1; }
+    public BoundaryEffect getBoundaryEffectX2() { return boundaryEffectX2; }
+    public BoundaryEffect getBoundaryEffectX3() { return boundaryEffectX3; }
 
     public void setBoundaryValues(
             double minimumX1
@@ -261,21 +254,21 @@ public class PositionEvolver {
             if (generateNewRandomX1) {
                 newX1 = minimumX1 + (Math.random() * (maximumX1 - minimumX1));
 
-                if (mirrorAbsoluteValueBoundariesX1) {
+                if (boundaryEffectX1.mirrorAbsoluteValueBoundaries) {
                     newX1 *= (Math.random() <= 0.5) ? 1 : -1;
                 }
             }
             if (generateNewRandomX2) {
                 newX2 = minimumX2 + (Math.random() * (maximumX2 - minimumX2));
 
-                if (mirrorAbsoluteValueBoundariesX2) {
+                if (boundaryEffectX2.mirrorAbsoluteValueBoundaries) {
                     newX2 *= (Math.random() <= 0.5) ? 1 : -1;
                 }
             }
             if (generateNewRandomX3) {
                 newX3 = minimumX3 + (Math.random() * (maximumX3 - minimumX3));
 
-                if (mirrorAbsoluteValueBoundariesX3) {
+                if (boundaryEffectX3.mirrorAbsoluteValueBoundaries) {
                     newX3 *= (Math.random() <= 0.5) ? 1 : -1;
                 }
             }
@@ -478,9 +471,9 @@ public class PositionEvolver {
         double newX2 = X.X2 + dX2;
         double newX3 = X.X3 + dX3;
 
-        int boundaryReachedX1 = checkBoundaryReached(newX1, dX1, minimumX1, maximumX1, isConstantX1, mirrorAbsoluteValueBoundariesX1);
-        int boundaryReachedX2 = checkBoundaryReached(newX2, dX2, minimumX2, maximumX2, isConstantX2, mirrorAbsoluteValueBoundariesX2);
-        int boundaryReachedX3 = checkBoundaryReached(newX3, dX2, minimumX3, maximumX3, isConstantX3, mirrorAbsoluteValueBoundariesX3);
+        int boundaryReachedX1 = checkBoundaryReached(newX1, dX1, minimumX1, maximumX1, isConstantX1, boundaryEffectX1);
+        int boundaryReachedX2 = checkBoundaryReached(newX2, dX2, minimumX2, maximumX2, isConstantX2, boundaryEffectX2);
+        int boundaryReachedX3 = checkBoundaryReached(newX3, dX2, minimumX3, maximumX3, isConstantX3, boundaryEffectX3);
 
         boolean bounceX1 = false;
         boolean bounceX2 = false;
@@ -492,19 +485,21 @@ public class PositionEvolver {
                     , newX1
                     , minimumX1
                     , maximumX1
-                    , mirrorAbsoluteValueBoundariesX1
                     , boundaryEffectX1);
             newX1 = boundaryHandlerValues.newValue;
             bounceX1 = boundaryHandlerValues.bounceValue;
         }
 
         if (boundaryReachedX2 != 0) {
+            if (name == "dRadiusdt") {
+                int flag = 0;
+                flag++;
+            }
             BoundaryHandlerValues boundaryHandlerValues = processBoundary(
                     boundaryReachedX2
                     , newX2
                     , minimumX2
                     , maximumX2
-                    , mirrorAbsoluteValueBoundariesX2
                     , boundaryEffectX2);
             newX2 = boundaryHandlerValues.newValue;
             bounceX2 = boundaryHandlerValues.bounceValue;
@@ -516,7 +511,6 @@ public class PositionEvolver {
                     , newX3
                     , minimumX3
                     , maximumX3
-                    , mirrorAbsoluteValueBoundariesX3
                     , boundaryEffectX3);
             newX3 = boundaryHandlerValues.newValue;
             bounceX3 = boundaryHandlerValues.bounceValue;
@@ -541,13 +535,13 @@ public class PositionEvolver {
             double X
             , double minimumX
             , double maximumX
-            , boolean mirrorAbsoluteValueBoundariesX) {
+            , BoundaryEffect boundaryEffectX) {
 
         // Initialize if we reached a boundary
         int boundaryReached = 0;
 
         // Check if the boundaries are absolute values that are mirrored positive and negative
-        if (mirrorAbsoluteValueBoundariesX) {
+        if (boundaryEffectX.mirrorAbsoluteValueBoundaries) {
 
             double negativeMinimumX = -1.0 * maximumX;
             double negativeMaximumX = -1.0 * minimumX;
@@ -594,13 +588,13 @@ public class PositionEvolver {
             , double minimumX
             , double maximumX
             , boolean isConstantX
-            , boolean mirrorAbsoluteValueBoundariesX) {
+            , BoundaryEffect boundaryEffectX) {
 
         // Initialize if we reached a boundary
         int boundaryReached = 0;
 
         // Check if the boundaries are absolute values that are mirrored positive and negative
-        if (mirrorAbsoluteValueBoundariesX) {
+        if (boundaryEffectX.mirrorAbsoluteValueBoundaries) {
 
             double negativeMinimumX = -1.0 * maximumX;
             double negativeMaximumX = -1.0 * minimumX;
@@ -685,20 +679,74 @@ public class PositionEvolver {
         , SPHERICAL_3D
     }
 
-    public enum BOUNDARY_EFFECT {
-        STICK
-        , BOUNCE
-        , PERIODIC
-        , PERIODIC_REFLECTIVE
+    public static class BoundaryEffect {
+
+        public final BOUNDARY_EFFECT boundaryEffect;
+        public final boolean mirrorAbsoluteValueBoundaries;
+        public final boolean bounceOnInternalBoundary;
+
+        public BoundaryEffect() {
+            this.boundaryEffect = BOUNDARY_EFFECT.STICK;
+            this.mirrorAbsoluteValueBoundaries = false;
+            this.bounceOnInternalBoundary = false;
+        }
+
+        public BoundaryEffect(BOUNDARY_EFFECT boundaryEffect) {
+            this.boundaryEffect = boundaryEffect;
+            this.mirrorAbsoluteValueBoundaries = false;
+            this.bounceOnInternalBoundary = false;
+        }
+
+        public BoundaryEffect(
+                BOUNDARY_EFFECT boundaryEffect
+                , boolean mirrorAbsoluteValueBoundaries) {
+            this.boundaryEffect = boundaryEffect;
+            this.mirrorAbsoluteValueBoundaries = mirrorAbsoluteValueBoundaries;
+            this.bounceOnInternalBoundary = false;
+        }
+
+        public BoundaryEffect(
+                BOUNDARY_EFFECT boundaryEffect
+                , boolean mirrorAbsoluteValueBoundaries
+                , boolean bounceOnInternalBoundary) {
+            this.boundaryEffect = boundaryEffect;
+            this.mirrorAbsoluteValueBoundaries = mirrorAbsoluteValueBoundaries;
+            this.bounceOnInternalBoundary = bounceOnInternalBoundary;
+        }
+
+        public enum BOUNDARY_EFFECT {
+            STICK
+            , BOUNCE
+            , PERIODIC
+            , PERIODIC_REFLECTIVE
+        }
+
     }
+
+
 
     public static BoundaryHandlerValues processBoundary(
             int boundaryReached
             , double currentValue
             , double minimumValue
             , double maximumValue
-            , boolean mirrorAbsoluteValueBoundaries
-            , BOUNDARY_EFFECT boundaryEffect) {
+            , BoundaryEffect boundaryEffect) {
+
+        // Check the extremal case where the min = max
+        if (minimumValue == maximumValue) {
+            double newValue = minimumValue;
+            if (boundaryEffect.mirrorAbsoluteValueBoundaries
+                    && (boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                    || boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
+                    || boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE)) {
+                newValue *= -1.0;
+            }
+            return new BoundaryHandlerValues(
+                    newValue
+                    , boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                    || boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE
+            );
+        }
 
         double newValue = currentValue;
         boolean bounce = false;
@@ -710,7 +758,7 @@ public class PositionEvolver {
         double maximumValueToUse = maximumValue;
         double otherRegionMinimumValue = -1.0 * maximumValue;
         double otherRegionMaximumValue = -1.0 * minimumValue;
-        if (mirrorAbsoluteValueBoundaries) {
+        if (boundaryEffect.mirrorAbsoluteValueBoundaries) {
             double negativeMinimumValue = -1.0 * maximumValue;
             double negativeMaximumValue = -1.0 * minimumValue;
             switch (boundaryReached) {
@@ -745,7 +793,7 @@ public class PositionEvolver {
 
         int numberOfBoundariesReached = (int) Math.floor(boundaryOverflow / valueRange) + 1;
 
-        switch (boundaryEffect) {
+        switch (boundaryEffect.boundaryEffect) {
             case STICK:
                 newValue = (typeOfBoundaryReached == -1) ? minimumValueToUse : maximumValueToUse;
                 break;
@@ -764,7 +812,7 @@ public class PositionEvolver {
                 break;
 
             case PERIODIC:
-                if (mirrorAbsoluteValueBoundaries) {
+                if (boundaryEffect.mirrorAbsoluteValueBoundaries) {
 
                     if (numberOfBoundariesReached % 2 == 1) {
 

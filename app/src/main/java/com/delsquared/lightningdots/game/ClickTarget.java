@@ -28,7 +28,8 @@ public class ClickTarget {
         clickTargetProfileScript = new ClickTargetProfileScript();
 
         positionEvolverXPixels = new PositionEvolver(
-                new PositionVector(0.0, 0.0, 0.0)
+                ""
+                , new PositionVector(0.0, 0.0, 0.0)
                 , PositionEvolver.MODE.CARTESIAN_2D
                 , true
                 , true
@@ -41,9 +42,6 @@ public class ClickTarget {
                 , 0.0
                 , 0.0
                 , false
-                , false
-                , false
-                , false
                 , 0.0
                 , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
                 , false
@@ -62,11 +60,12 @@ public class ClickTarget {
                 , false
                 , false
                 , false
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
-                , PositionEvolver.BOUNDARY_EFFECT.STICK);
+                , new PositionEvolver.BoundaryEffect()
+                , new PositionEvolver.BoundaryEffect()
+                , new PositionEvolver.BoundaryEffect());
         positionEvolverRadiusPixels = new PositionEvolver(
-                new PositionVector(0.0, 0.0, 0.0)
+                ""
+                , new PositionVector(0.0, 0.0, 0.0)
                 , PositionEvolver.MODE.ONE_DIMENSION
                 , true
                 , true
@@ -79,9 +78,6 @@ public class ClickTarget {
                 , 0.0
                 , 0.0
                 , false
-                , false
-                , false
-                , false
                 , 0.0
                 , PositionEvolver.RANDOM_CHANGE_INTERVAL.CONSTANT
                 , false
@@ -100,9 +96,9 @@ public class ClickTarget {
                 , false
                 , false
                 , false
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
-                , PositionEvolver.BOUNDARY_EFFECT.STICK);
+                , new PositionEvolver.BoundaryEffect()
+                , new PositionEvolver.BoundaryEffect()
+                , new PositionEvolver.BoundaryEffect());
     }
 
 	public ClickTarget(
@@ -147,10 +143,10 @@ public class ClickTarget {
 
         // Check if either X or Y has periodic boundary effect
         // If not, then there won't be any secondary points
-        if (positionEvolverXPixels.getBoundaryEffectX1() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC
-                || positionEvolverXPixels.getBoundaryEffectX1() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE
-                || positionEvolverXPixels.getBoundaryEffectX2() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC
-                || positionEvolverXPixels.getBoundaryEffectX2() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+        if (positionEvolverXPixels.getBoundaryEffectX1().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
+                || positionEvolverXPixels.getBoundaryEffectX1().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE
+                || positionEvolverXPixels.getBoundaryEffectX2().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
+                || positionEvolverXPixels.getBoundaryEffectX2().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
 
             double targetX = positionEvolverXPixels.getX().X1;
             double targetY = positionEvolverXPixels.getX().X2;
@@ -181,7 +177,7 @@ public class ClickTarget {
 
             if (minimumBoundaryReachedX || maximumBoundaryReachedX) {
 
-                if (positionEvolverXPixels.getBoundaryEffectX1() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC) {
+                if (positionEvolverXPixels.getBoundaryEffectX1().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC) {
 
                     if (minimumBoundaryReachedX) {
                         double overflow = (minimumX - radiusMinimumX) % widthX;
@@ -193,7 +189,7 @@ public class ClickTarget {
                         newTargetX2 = minimumX + overflow - radius;
                     }
 
-                } else if (positionEvolverXPixels.getBoundaryEffectX1() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+                } else if (positionEvolverXPixels.getBoundaryEffectX1().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
 
                     if (minimumBoundaryReachedX) {
                         double boundaryOverflow = minimumX - radiusMinimumX;
@@ -225,7 +221,7 @@ public class ClickTarget {
 
             if (minimumBoundaryReachedY || maximumBoundaryReachedY) {
 
-                if (positionEvolverXPixels.getBoundaryEffectX2() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC) {
+                if (positionEvolverXPixels.getBoundaryEffectX2().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC) {
 
                     if (minimumBoundaryReachedY) {
                         double overflow = (minimumY - radiusMinimumY) % heightY;
@@ -237,7 +233,7 @@ public class ClickTarget {
                         newTargetY2 = minimumY + overflow - radius;
                     }
 
-                } else if (positionEvolverXPixels.getBoundaryEffectX2() == PositionEvolver.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+                } else if (positionEvolverXPixels.getBoundaryEffectX2().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
 
                     if (minimumBoundaryReachedY) {
                         double boundaryOverflow = minimumY - radiusMinimumY;
@@ -366,13 +362,13 @@ public class ClickTarget {
         double minimumY = 0.0;
         double maximumY = canvasHeight;
 
-        if (positionEvolverXPixels.getBoundaryEffectX1() == PositionEvolver.BOUNDARY_EFFECT.BOUNCE
-                || positionEvolverXPixels.getBoundaryEffectX1() == PositionEvolver.BOUNDARY_EFFECT.STICK) {
+        if (positionEvolverXPixels.getBoundaryEffectX1().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                || positionEvolverXPixels.getBoundaryEffectX1().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
             minimumX = radius / 2.0;
             maximumX = canvasWidth - (radius / 2.0);
         }
-        if (positionEvolverXPixels.getBoundaryEffectX2() == PositionEvolver.BOUNDARY_EFFECT.BOUNCE
-                || positionEvolverXPixels.getBoundaryEffectX2() == PositionEvolver.BOUNDARY_EFFECT.STICK) {
+        if (positionEvolverXPixels.getBoundaryEffectX2().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                || positionEvolverXPixels.getBoundaryEffectX2().boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
             minimumY = radius / 2.0;
             maximumY = canvasHeight - (radius / 2.0);
         }
@@ -402,6 +398,10 @@ public class ClickTarget {
 
             // Update the polygon
             if (polygonTargetShape != null) {
+                if (Double.isNaN(positionEvolverRadiusPixels.getX().X2)) {
+                    int blah = 0;
+                    blah++;
+                }
                 polygonTargetShape.setProperties(
                         new PositionVector(positionEvolverXPixels.getX())
                         , positionEvolverRadiusPixels.getX().X1
@@ -426,19 +426,39 @@ public class ClickTarget {
 	public ClickTargetSnapshot getClickTargetSnapshot() {
         PositionVector targetX = new PositionVector();
         PositionVector targetDX = new PositionVector();
+        PositionVector targetD2X = new PositionVector();
         PositionVector targetRadiusX = new PositionVector();
+        PositionVector targetDRadius = new PositionVector();
+        PositionVector targetD2Radius = new PositionVector();
         if (positionEvolverXPixels != null) {
             targetX = positionEvolverXPixels.getX();
-            targetDX = positionEvolverXPixels.getDXdt();
+            if (positionEvolverXPixels.getDXdt() != null) {
+                targetDX = positionEvolverXPixels.getDXdt();
+            }
+            if (positionEvolverXPixels.getPositionEvolverDXdt() != null
+                    && positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
+                targetD2X = positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt().getX();
+            }
+
         }
         if (positionEvolverRadiusPixels != null) {
             targetRadiusX = positionEvolverRadiusPixels.getX();
+            if (positionEvolverRadiusPixels.getDXdt() != null) {
+                targetDRadius = positionEvolverRadiusPixels.getDXdt();
+            }
+            if (positionEvolverRadiusPixels.getPositionEvolverDXdt() != null
+                    && positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
+                targetD2Radius = positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt().getX();
+            }
         }
 
 		return new ClickTargetSnapshot(
                 targetX
                 , targetDX
+                , targetD2X
                 , targetRadiusX
+                , targetDRadius
+                , targetD2Radius
                 , getArrayListCenterPoints()
                 , polygonTargetShape
         );
@@ -661,13 +681,13 @@ public class ClickTarget {
         double maximumPixelsX = canvasWidth;
         double minimumPixelsY = 0.0;
         double maximumPixelsY = canvasHeight;
-        if (clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.BOUNCE
-                || clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.STICK) {
+        if (clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                || clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
             minimumPixelsX = initialTargetRadiusPixels / 2.0;
             maximumPixelsX = canvasWidth - (initialTargetRadiusPixels / 2.0);
         }
-        if (clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.BOUNCE
-                || clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.STICK) {
+        if (clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                || clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
             minimumPixelsY = initialTargetRadiusPixels / 2.0;
             maximumPixelsY = canvasHeight - (initialTargetRadiusPixels / 2.0);
         }
@@ -737,8 +757,11 @@ public class ClickTarget {
 
         PositionEvolver targetD2Xdt2Pixels = new PositionEvolver(
 
+                // Name
+                "d2Xdt2"
+
                 // Initial position and coordinate system
-                new PositionVector(
+                , new PositionVector(
                         targetSpeedChangePixelsPerSecondPerSecond
                         , targetDirectionAngleChangeRadiansPerSecond
                         , 0.0)
@@ -761,11 +784,6 @@ public class ClickTarget {
                 , maximumTargetSpeedChangeAbsoluteValuePixelsPerSecondPerSecond
                 , clickTargetProfile.targetDDirectionValuesRadiansPerSecond.maximumValue
                 , 0.0
-
-                // Mirror absolute value boundaries
-                , true
-                , true
-                , false
 
                 // Can randomly change position
                 , false
@@ -796,10 +814,10 @@ public class ClickTarget {
                 , false
                 , false
 
-                // Bounces on boundary value
+                // Boundary effect
                 , clickTargetProfile.targetDSpeedValuesInchesPerSecondPerSecond.boundaryEffect
                 , clickTargetProfile.targetDDirectionValuesRadiansPerSecond.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , new PositionEvolver.BoundaryEffect()
         );
 
         double targetSpeedPixelsPerSecond = 0.0;
@@ -847,8 +865,11 @@ public class ClickTarget {
 
         PositionEvolver targetDXdtPixels = new PositionEvolver(
 
+                // Name
+                "dXdt"
+
                 // Initial position and coordinate system
-                new PositionVector(
+                , new PositionVector(
                         targetSpeedPixelsPerSecond
                         , targetDirectionAngleRadians
                         , 0.0)
@@ -871,11 +892,6 @@ public class ClickTarget {
                 , maximumTargetSpeedPixelsPerSecond
                 , Math.PI * 2.0
                 , 0.0
-
-                // Mirror absolute value boundaries
-                , false
-                , false
-                , false
 
                 // Random position changes
                 , false
@@ -906,10 +922,10 @@ public class ClickTarget {
                 , clickTargetProfile.tieRandomDirectionChangeToRandomDDirectionChange
                 , false
 
-                // Bounces on boundary value
+                // Boundary effect
                 , clickTargetProfile.targetSpeedValuesInchesPerSecond.boundaryEffect
                 , clickTargetProfile.targetDirectionAngleValuesRadians.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , new PositionEvolver.BoundaryEffect()
         );
 
         double XPixels = 0.0;
@@ -923,22 +939,26 @@ public class ClickTarget {
             XPixels = minimumPixelsX + (width / 2.0);
             YPixels = minimumPixelsY + (height / 2.0);
 
-            if (clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.PERIODIC
-                    || clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+            if (clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
+                    || clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
                 minimumPixelsX = 0.0;
                 maximumPixelsX = width;
             }
 
-            if (clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.PERIODIC
-                    || clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect == PositionEvolver.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+            if (clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
+                    || clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
                 minimumPixelsY = 0.0;
                 maximumPixelsY = height;
             }
         }
 
         PositionEvolver targetXPixels = new PositionEvolver(
+
+                // Name
+                "X"
+
                 // Initial position and coordinate system
-                new PositionVector(
+                , new PositionVector(
                         XPixels
                         , YPixels
                         , 0.0)
@@ -961,11 +981,6 @@ public class ClickTarget {
                 , maximumPixelsX
                 , maximumPixelsY
                 , 0.0
-
-                // Mirror absolute value boundaries
-                , false
-                , false
-                , false
 
                 // Can randomly change position
                 , clickTargetProfile.targetPositionHorizontalValuesInches.canRandomlyChange
@@ -996,10 +1011,10 @@ public class ClickTarget {
                 , clickTargetProfile.tieRandomPositionChangeToRandomDirectionChange
                 , false
 
-                // Bounces on boundary value
+                // Boundary effect
                 , clickTargetProfile.targetPositionHorizontalValuesInches.boundaryEffect
                 , clickTargetProfile.targetPositionVerticalValuesInches.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , new PositionEvolver.BoundaryEffect()
         );
 
         double targetD2RadiusPixels = 0.0;
@@ -1053,8 +1068,11 @@ public class ClickTarget {
 
         PositionEvolver targetD2RadiusDt2Pixels = new PositionEvolver(
 
+                // Name
+                "d2Radiusdt2"
+
                 // Initial position and coordinate system
-                new PositionVector(
+                , new PositionVector(
                         targetD2RadiusPixels
                         , targetD2RotationRadians
                         , 0.0)
@@ -1077,11 +1095,6 @@ public class ClickTarget {
                 , maximumTargetDRadiusChangeAbsoluteValuePixelsPerSecondPerSecond
                 , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.maximumValue
                 , 0.0
-
-                // Mirror absolute value boundaries
-                , true
-                , true
-                , false
 
                 // Can randomly change position
                 , false
@@ -1112,10 +1125,10 @@ public class ClickTarget {
                 , false
                 , false
 
-                // Bounces on boundary
+                // Boundary effect
                 , clickTargetProfile.targetD2RadiusValuesInchesPerSecondPerSecond.boundaryEffect
                 , clickTargetProfile.targetD2RotationValuesRadiansPerSecondPerSecond.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , new PositionEvolver.BoundaryEffect()
         );
 
         double targetDRadiusPixels = 0.0;
@@ -1160,7 +1173,8 @@ public class ClickTarget {
                 } else {
                     targetDRotationRadians = clickTargetProfile.targetDRotationValuesRadiansPerSecond.initialValue;
                     if (clickTargetProfile.targetDRotationValuesRadiansPerSecond.randomInitialSign) {
-                        targetDRotationRadians *= UtilityFunctions.getRandomSign();
+                        double randomSign = UtilityFunctions.getRandomSign();
+                        targetDRotationRadians *= randomSign;
                     }
                 }
             }
@@ -1168,8 +1182,11 @@ public class ClickTarget {
 
         PositionEvolver targetDRadiusDtPixels = new PositionEvolver(
 
+                // Name
+                "dRadiusdt"
+
                 // Initial position and coordinate system
-                new PositionVector(
+                , new PositionVector(
                         targetDRadiusPixels
                         , targetDRotationRadians
                         , 0.0)
@@ -1192,11 +1209,6 @@ public class ClickTarget {
                 , maximumTargetDRadiusAbsoluteValuePixelsPerSecond
                 , clickTargetProfile.targetDRotationValuesRadiansPerSecond.maximumValue
                 , 0.0
-
-                // Mirror absolute value boundaries
-                , true
-                , true
-                ,false
 
                 // Can randomly change position
                 , false
@@ -1227,10 +1239,10 @@ public class ClickTarget {
                 , clickTargetProfile.tieRandomDRotationChangeToRandomD2RotationChange
                 , false
 
-                // Bounces on boundary
+                // Boundary effect
                 , clickTargetProfile.targetDRadiusValuesInchesPerSecond.boundaryEffect
                 , clickTargetProfile.targetDRotationValuesRadiansPerSecond.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , new PositionEvolver.BoundaryEffect()
         );
 
 
@@ -1269,8 +1281,11 @@ public class ClickTarget {
 
         PositionEvolver targetRadiusPixels = new PositionEvolver(
 
+                // Name
+                "radius"
+
                 // Initial position and coordinate system
-                new PositionVector(
+                , new PositionVector(
                         radiusPixels
                         , rotationRadians
                         , 0.0)
@@ -1293,11 +1308,6 @@ public class ClickTarget {
                 , maximumTargetRadiusPixels
                 , clickTargetProfile.targetRotationValuesRadians.maximumValue
                 , 0.0
-
-                // Mirror absolute value boundaries
-                , false
-                , false
-                , false
 
                 // Can randomly change position
                 , false
@@ -1328,10 +1338,10 @@ public class ClickTarget {
                 , clickTargetProfile.tieRandomRotationChangeToRandomDRotationChange
                 , false
 
-                // Bounces on boundary
+                // Boundary effect
                 , clickTargetProfile.targetRadiusValuesInches.boundaryEffect
                 , clickTargetProfile.targetRotationValuesRadians.boundaryEffect
-                , PositionEvolver.BOUNDARY_EFFECT.STICK
+                , new PositionEvolver.BoundaryEffect()
         );
 
         positionEvolverXPixels = targetXPixels;
