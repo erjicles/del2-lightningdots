@@ -8,13 +8,16 @@ android {
         applicationId "com.delsquared.lightningdots"
         minSdkVersion 15
         targetSdkVersion 22
-        versionCode 7
-        versionName "1.07"
+        versionCode 8
+        versionName "1.08"
     }
     buildTypes {
         release {
-			minifyEnabled true
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+        debug {
+            debuggable false
         }
     }
 }

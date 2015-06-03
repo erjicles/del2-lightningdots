@@ -3,7 +3,7 @@
 
     <ClickTargetProfileScript
         level="1">
-        <ClickTargetProfile targetShape="STAR_5_POINTS" targetCanChangeRotation="true"/>
+        <ClickTargetProfile/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
@@ -195,6 +195,9 @@
             targetCanRandomlyChangeSpeed="true"
             randomChangeIntervalSpeed="REGULAR"
             probabilityOfRandomSpeedChangePerSecond="1.5"
+            targetCanRandomlyChangeDDirection="true"
+            randomChangeIntervalDDirection="RANDOM"
+            probabilityOfRandomDDirectionChangePerSecond="0.5"
             targetTieRandomSpeedChangeToRandomDirectionChange="true"/>
     </ClickTargetProfileScript>
 
@@ -316,27 +319,67 @@
 
     <ClickTargetProfileScript
         level="26">
-        <ClickTargetProfile/>
+        <ClickTargetProfile
+            targetShape="SQUARE"
+            initialTargetRadiusMultiplier="0.75"
+            initialTargetSpeedMultiplier="1.75"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
         level="27">
-        <ClickTargetProfile/>
+        <ClickTargetProfile
+            targetShape="TRIANGLE_EQUILATERAL"
+            initialTargetRadiusMultiplier="0.8"
+            minimumTargetRadiusMultiplier="0.5"
+            maximumTargetRadiusMultiplier="0.8"
+            initialTargetSpeedMultiplier="2.0"
+            targetCanChangeRadius="true"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
         level="28">
-        <ClickTargetProfile/>
+        <ClickTargetProfile
+            targetShape="TRIANGLE_EQUILATERAL"
+            initialTargetRadiusMultiplier="0.8"
+            initialTargetSpeedMultiplier="2.0"
+            targetCanChangeRotation="true"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
-        level="29">
-        <ClickTargetProfile/>
+        level="29"
+        scriptTransitionMode="CYCLE"
+        scriptTransitionInterval="REGULAR">
+        <ClickTargetProfile
+            scriptTransitionValue="2500.0"
+            targetShape="SQUARE"
+            initialTargetRadiusMultiplier="0.6"
+            initialTargetSpeedMultiplier="1.75"
+            targetCanChangeRotation="true"
+            targetBoundaryEffectPositionHorizontal="PERIODIC"
+            scriptTransitionContinuousRotation="CONTINUOUS"
+            scriptTransitionContinuousDirection="CONTINUOUS"/>
+        <ClickTargetProfile
+            scriptTransitionValue="2500.0"
+            targetShape="TRIANGLE_EQUILATERAL"
+            initialTargetRadiusMultiplier="0.6"
+            initialTargetSpeedMultiplier="1.75"
+            targetCanChangeRotation="true"
+            targetBoundaryEffectPositionVertical="PERIODIC"
+            scriptTransitionContinuousRotation="CONTINUOUS"
+            scriptTransitionContinuousDirection="CONTINUOUS"/>
     </ClickTargetProfileScript>
 
     <ClickTargetProfileScript
         level="30">
-        <ClickTargetProfile/>
+        <ClickTargetProfile
+            targetShape="STAR_5_POINTS"
+            targetCanChangeRotation="true"
+            targetCanChangeRadius="true"
+            initialTargetDRotationAbsoluteValueMultiplier="1.0"
+            minimumTargetDRotationAbsoluteValueMultiplier="0.0"
+            maximumTargetDRotationAbsoluteValueMultiplier="5.0"
+            initialTargetD2RotationAbsoluteValueMultiplier="4.0"
+            targetCanChangeDRotation="true"/>
     </ClickTargetProfileScript>
 
 </ClickTargetProfileScripts>

@@ -34,16 +34,16 @@
 
     <item name="game_values_defaultInitialTargetRotationAngleRadians" format="float" type="dimen">0.0</item><!-- PI / 4 -->
     <bool name="game_values_defaultRandomInitialTargetRotationAngle">false</bool>
-    <item name="game_values_defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond" format="float" type="dimen">1.0</item>
     <item name="game_values_defaultMinimumTargetDRotationAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
-    <item name="game_values_defaultMaximumTargetDRotationAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMaximumTargetDRotationAbsoluteValueMultiplier" format="float" type="dimen">2.0</item>
     <bool name="game_values_defaultRandomInitialTargetDRotation">false</bool>
-    <bool name="game_values_defaultRandomInitialTargetDRotationSign">false</bool>
-    <item name="game_values_defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond" format="float" type="dimen">0.1</item>
+    <bool name="game_values_defaultRandomInitialTargetDRotationSign">true</bool>
+    <item name="game_values_defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond" format="float" type="dimen">0.5</item>
     <item name="game_values_defaultMinimumTargetD2RotationAbsoluteValueMultiplier" format="float" type="dimen">0.0</item>
-    <item name="game_values_defaultMaximumTargetD2RotationAbsoluteValueMultiplier" format="float" type="dimen">1.0</item>
+    <item name="game_values_defaultMaximumTargetD2RotationAbsoluteValueMultiplier" format="float" type="dimen">1.5</item>
     <bool name="game_values_defaultRandomInitialTargetD2Rotation">false</bool>
-    <bool name="game_values_defaultRandomInitialTargetD2RotationSign">false</bool>
+    <bool name="game_values_defaultRandomInitialTargetD2RotationSign">true</bool>
 
     <item name="game_values_defaultInitialTargetDirectionAngleRadians" format="float" type="dimen">0.78539816339</item><!-- PI / 4 -->
     <bool name="game_values_defaultRandomInitialTargetDirectionAngle">true</bool>
@@ -128,7 +128,7 @@
     <string name="game_values_defaultBoundaryEffectDRadius">STICK</string>
     <string name="game_values_defaultBoundaryEffectD2Radius">STICK</string>
     <string name="game_values_defaultBoundaryEffectRotation">PERIODIC</string>
-    <string name="game_values_defaultBoundaryEffectDRotation">STICK</string>
+    <string name="game_values_defaultBoundaryEffectDRotation">BOUNCE</string>
     <string name="game_values_defaultBoundaryEffectD2Rotation">STICK</string>
 
     <item name="game_values_defaultScriptTransitionValue" format="float" type="dimen">0.0</item>
