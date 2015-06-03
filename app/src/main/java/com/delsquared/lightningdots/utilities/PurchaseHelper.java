@@ -61,7 +61,7 @@ public class PurchaseHelper {
         iabHelper.enableDebugLogging(true);
 
         // Setup the purchasing helper
-        Log.d(LightningDotsApplication.logTag, "Creating IAB helper.");
+        LightningDotsApplication.logDebugMessage("Creating IAB helper.");
         iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
             public void onIabSetupFinished(IabResult result) {
 
@@ -81,7 +81,7 @@ public class PurchaseHelper {
                 interfaceSetupFinishedCallback.onSetupFinished(true, result);
 
                 // Hooray, IAB is fully set up. Now, let's get an inventory of stuff we own.
-                Log.d(LightningDotsApplication.logTag, "Setup successful. Querying inventory.");
+                LightningDotsApplication.logDebugMessage("Setup successful. Querying inventory.");
                 queryInventory();
 
             }
@@ -109,13 +109,13 @@ public class PurchaseHelper {
 
             public void onQueryInventoryFinished(IabResult result, Inventory inventoryResult) {
 
-                Log.d(LightningDotsApplication.logTag, "Query inventory finished.");
+                LightningDotsApplication.logDebugMessage("Query inventory finished.");
                 if (result.isFailure()) {
                     complain("Failed to query inventory: " + result);
                     return;
                 }
 
-                Log.d(LightningDotsApplication.logTag, "Query inventory was successful.");
+                LightningDotsApplication.logDebugMessage("Query inventory was successful.");
 
                 // Set the inventory
                 inventory = inventoryResult;
@@ -141,7 +141,7 @@ public class PurchaseHelper {
         // Do we have the remove-ads upgrade?
         LightningDotsApplication.setHasPurchasedNoAds(context, getHasPurchasedNoAds());
 
-        Log.d(LightningDotsApplication.logTag, "User has " + (LightningDotsApplication.hasPurchasedNoAds ? " " : "not ") + "removed ads.");
+        LightningDotsApplication.logDebugMessage("User has " + (LightningDotsApplication.hasPurchasedNoAds ? " " : "not ") + "removed ads.");
 
     }
 
@@ -163,7 +163,7 @@ public class PurchaseHelper {
         AlertDialog.Builder bld = new AlertDialog.Builder(context);
         bld.setMessage(message);
         bld.setNeutralButton("OK", null);
-        Log.d(LightningDotsApplication.logTag, "Showing alert dialog: " + message);
+        LightningDotsApplication.logDebugMessage("Showing alert dialog: " + message);
         bld.create().show();
     }
 
@@ -184,7 +184,7 @@ public class PurchaseHelper {
 
                     public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
 
-                        Log.d(LightningDotsApplication.logTag, "Purchase finished: " + result + ", purchase: " + purchase);
+                        LightningDotsApplication.logDebugMessage("Purchase finished: " + result + ", purchase: " + purchase);
                         if (result.isFailure()) {
                             // Oh noes!
                             complain("Error purchasing: " + result);
@@ -192,7 +192,7 @@ public class PurchaseHelper {
                             return;
                         }
 
-                        Log.d(LightningDotsApplication.logTag, "Purchase successful.");
+                        LightningDotsApplication.logDebugMessage("Purchase successful.");
 
                         // Process the purchase
                         processSuccessfulPurchase(purchase);
@@ -218,7 +218,7 @@ public class PurchaseHelper {
         if (purchase.getSku().equals(PRODUCT_SKU_REMOVE_ADS)) {
 
             // The user bought the remove ads item
-            Log.d(LightningDotsApplication.logTag, "Purchase is remove ads. Congratulating user.");
+            LightningDotsApplication.logDebugMessage("Purchase is remove ads. Congratulating user.");
             alert("Thank you for supporting independent developers! Say goodbye to those pesky ads!");
             LightningDotsApplication.setHasPurchasedNoAds(context, true);
 
