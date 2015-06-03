@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.google.android.gms.ads.AdListener;
@@ -88,12 +89,20 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
 
                 } else {
 
+                    // Create the ad request builder
+                    AdRequest.Builder adRequestBuilder = new AdRequest.Builder()
+                            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+
+                    // Check if we are in debug mode
+                    if (BuildConfig.DEBUG) {
+
+                        // Add specific devices to test device list
+                        adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
+
+                    }
+
                     // Create the ad request
-                    AdRequest adRequest = new AdRequest.Builder()
-                            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                            .addTestDevice("8D7B51BEF3C6133F9AF035FCDF3ADF9A")
-                            .addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18")
-                            .build();
+                    AdRequest adRequest = adRequestBuilder.build();
 
                     // Load the ad
                     adView.loadAd(adRequest);
