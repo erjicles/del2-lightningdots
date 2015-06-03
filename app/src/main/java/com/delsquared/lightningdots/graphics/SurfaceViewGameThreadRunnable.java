@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -14,6 +15,7 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
+import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.game.ClickTargetSnapshot;
 import com.delsquared.lightningdots.game.Game;
@@ -90,6 +92,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 	private float textOtherTextHeightFactor = 0.05f;
     private float textCongratulationsHeightFactor = 0.05f;
     private float textBeatLastLevelHeighFactor = 0.05f;
+    private float textClickTargetPropertiesHeightFactor = 0.025f;
 
 	private int borderWidth = 1;
 	private int borderPadding = 1;
@@ -112,16 +115,6 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
     private int bitmapAwardFullWidth = 1;
     private int bitmapAwardFullHeight = 1;
 
-    /*
-    // Text literals
-	private String textGameReadyToStart1;
-	private String textGameReadyToStart2;
-	private String textGameEnded1;
-	private String textGameEnded2;
-    private String textNewHighScore;
-    private String textLevelComplete;
-    */
-
     public SurfaceViewGameThreadRunnable(
             SurfaceHolder surfaceHolder
             , Context context
@@ -129,9 +122,6 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         this.surfaceHolder = surfaceHolder;
         this.context = context;
 		this.game = Game.getInstance();
-        //this.lockThreadIsPaused = new Object();
-        //this.threadIsPaused = false;
-        //this.threadIsPaused = false;
         this.handler = handler;
 
 		canvasWidth = 1;
@@ -432,6 +422,126 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 context.getString(R.string.graphics_textkey_beat_last_level)
                 , textHandlerBeatLastLevel);
 
+        // Create the click target properties X text handler
+        Paint paintClickTargetPropertiesX = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesX.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesX.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesX.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesX = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_X)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesX
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_X)
+                , textHandlerClickTargetPropertiesX
+        );
+
+        // Create the click target properties dX text handler
+        Paint paintClickTargetPropertiesdX = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesdX.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesdX.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesdX.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesdX = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_dX)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesdX
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_dX)
+                , textHandlerClickTargetPropertiesdX
+        );
+
+        // Create the click target properties d2X text handler
+        Paint paintClickTargetPropertiesd2X = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesd2X.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesd2X.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesd2X.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesd2X = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_d2X)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesd2X
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_d2X)
+                , textHandlerClickTargetPropertiesd2X
+        );
+
+        // Create the click target properties radius text handler
+        Paint paintClickTargetPropertiesRadius = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesRadius.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesRadius.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesRadius.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesRadius = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_Radius)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesRadius
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_Radius)
+                , textHandlerClickTargetPropertiesRadius
+        );
+
+        // Create the click target properties dRadius text handler
+        Paint paintClickTargetPropertiesdRadius = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesdRadius.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesdRadius.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesdRadius.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesdRadius = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_dRadius)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesdRadius
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_dRadius)
+                , textHandlerClickTargetPropertiesdRadius
+        );
+
+        // Create the click target properties d2Radius text handler
+        Paint paintClickTargetPropertiesd2Radius = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesd2Radius.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesd2Radius.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesd2Radius.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesd2Radius = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_d2Radius)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesd2Radius
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_d2Radius)
+                , textHandlerClickTargetPropertiesd2Radius
+        );
+
         // Get the award bitmaps
         bitmapAwardEmpty = BitmapFactory.decodeResource(context.getResources(), R.drawable.award_black);
         bitmapAwardFull = BitmapFactory.decodeResource(context.getResources(), R.drawable.award_yellow);
@@ -439,16 +549,6 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         bitmapAwardEmptyWidth = bitmapAwardEmpty.getWidth();
         bitmapAwardFullHeight = bitmapAwardFull.getHeight();
         bitmapAwardFullWidth = bitmapAwardFull.getWidth();
-
-        /*
-		// Get the literal message strings
-		textGameReadyToStart1 = context.getString(R.string.game_readytostart_message1);
-		textGameReadyToStart2 = context.getString(R.string.game_readytostart_message2);
-		textGameEnded1 = context.getString(R.string.game_ended_message1);
-		textGameEnded2 = context.getString(R.string.game_ended_message2);
-        textNewHighScore = context.getString(R.string.game_text_new_high_score);
-        textLevelComplete = context.getString(R.string.game_text_level_complete);
-        */
 
     }
 
@@ -568,6 +668,9 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         boolean isNewHighScore = gameSnapshot.getIsNewHighScore();
 		ClickTargetSnapshot clickTargetSnapshot = gameSnapshot.getCurrentClickTargetSnapshot();
 
+        // Get global app seettings
+        boolean showClickTargetProperties = context.getResources().getBoolean(R.bool.activity_game_show_click_target_properties);
+
         //Calculate the framerate
         double framerate = currentAverageTimeBetweenFramesMillis;
         if (currentAverageTimeBetweenFramesMillis != 0.0) {
@@ -620,6 +723,18 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_congratulations));
         SurfaceViewTextHandler textHandlerBeatLastLevel =
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_beat_last_level));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesX =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_X));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesdX =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_dX));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesd2X =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2X));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesRadius =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_Radius));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesdRadius =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_dRadius));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesd2Radius =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2Radius));
 
         // Set the text
         textHandlerStartCountdown.setText(
@@ -654,6 +769,55 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 String.format(
                         context.getString(R.string.game_text_template_high_score)
                         , currentLevelHighScore));
+
+        // Check if we are in debug mode and should show the click target properties
+        if (BuildConfig.DEBUG
+                && showClickTargetProperties) {
+
+            textHandlerClickTargetPropertiesX.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_X)
+                            , clickTargetSnapshot.getXPixels().X1
+                            , clickTargetSnapshot.getXPixels().X2
+                    )
+            );
+            textHandlerClickTargetPropertiesdX.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_dX)
+                            , clickTargetSnapshot.getDXdtPixelsPerMilliPolar().X1
+                            , clickTargetSnapshot.getDXdtPixelsPerMilliPolar().X2
+                    )
+            );
+            textHandlerClickTargetPropertiesd2X.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_d2X)
+                            , clickTargetSnapshot.getD2Xdt2PixelsPolar().X1
+                            , clickTargetSnapshot.getD2Xdt2PixelsPolar().X2
+                    )
+            );
+            textHandlerClickTargetPropertiesRadius.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_Radius)
+                            , clickTargetSnapshot.getRadiusPixels().X1
+                            , clickTargetSnapshot.getRadiusPixels().X2
+                    )
+            );
+            textHandlerClickTargetPropertiesdRadius.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_dRadius)
+                            , clickTargetSnapshot.getDRadiusPixels().X1
+                            , clickTargetSnapshot.getDRadiusPixels().X2
+                    )
+            );
+            textHandlerClickTargetPropertiesd2Radius.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_d2Radius)
+                            , clickTargetSnapshot.getD2RadiusPixels().X1
+                            , clickTargetSnapshot.getD2RadiusPixels().X2
+                    )
+            );
+
+        }
 
         // The status text
         switch (gameState) {
@@ -802,6 +966,20 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
         // FPS Text
         textHandlerFPS.drawText(canvas);
+
+        // Check if we are in debug mode and should show the click target properties
+        if (BuildConfig.DEBUG
+                && showClickTargetProperties) {
+
+            // Draw click target properties
+            textHandlerClickTargetPropertiesX.drawText(canvas);
+            textHandlerClickTargetPropertiesdX.drawText(canvas);
+            textHandlerClickTargetPropertiesd2X.drawText(canvas);
+            textHandlerClickTargetPropertiesRadius.drawText(canvas);
+            textHandlerClickTargetPropertiesdRadius.drawText(canvas);
+            textHandlerClickTargetPropertiesd2Radius.drawText(canvas);
+
+        }
 
         // Level Text
         if (gameType == Game.GameType.AGILITY) {
@@ -1006,6 +1184,18 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_congratulations));
             SurfaceViewTextHandler textHandlerBeatLastLevel =
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_beat_last_level));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesX =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_X));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesdX =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_dX));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesd2X =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2X));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesRadius =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_Radius));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesdRadius =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_dRadius));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesd2Radius =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2Radius));
 
             // Recalculate the text heights
             textHandlerStartCountdown.recalculateTextHeight(height);
@@ -1023,6 +1213,12 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerOther.recalculateTextHeight(height);
             textHandlerCongratulations.recalculateTextHeight(height);
             textHandlerBeatLastLevel.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesX.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesdX.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesd2X.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesRadius.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesdRadius.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesd2Radius.recalculateTextHeight(height);
 
             // Recalculate the text positions
             textHandlerStartCountdown.setPosition(
@@ -1063,6 +1259,45 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerFPS.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding);
+            textHandlerClickTargetPropertiesd2Radius.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+            );
+            textHandlerClickTargetPropertiesdRadius.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
+            );
+            textHandlerClickTargetPropertiesRadius.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
+            );
+            textHandlerClickTargetPropertiesd2X.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesRadius.getTextHeight() - textLineSpacing
+            );
+            textHandlerClickTargetPropertiesdX.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesRadius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2X.getTextHeight() - textLineSpacing
+            );
+            textHandlerClickTargetPropertiesX.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesRadius.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesd2X.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesdX.getTextHeight() - textLineSpacing
+            );
             textHandlerHighScore.setPosition(
                     borderWidth + borderPadding
                     , borderWidth + borderPadding + textHandlerTimer.getTextHeight()

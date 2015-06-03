@@ -128,6 +128,12 @@
     <string name="game_text_level_failed">Level failed</string>
     <string name="game_text_congratulations">Congratulations!</string>
     <string name="game_text_beat_last_level">You beat the ladder!</string>
+    <string name="game_text_template_click_target_properties_X" formatted="false">X: %8.2f, --Y: %8.2f</string>
+    <string name="game_text_template_click_target_properties_dX" formatted="false">S: %8.2f, --D: %8.2f</string>
+    <string name="game_text_template_click_target_properties_d2X" formatted="false">dS: %8.2f, -dD: %8.2f</string>
+    <string name="game_text_template_click_target_properties_Radius" formatted="false">R: %8.2f, Rot: %8.2f</string>
+    <string name="game_text_template_click_target_properties_dRadius" formatted="false">dR: %8.2f, dRo: %8.2f</string>
+    <string name="game_text_template_click_target_properties_d2Radius" formatted="false">d2R: %8.2f, d2R: %8.2f</string>
 
     <!-- Graphics -->
     <string name="graphics_textkey_default">default</string>
@@ -146,6 +152,12 @@
     <string name="graphics_textkey_other">other</string>
     <string name="graphics_textkey_congratulations">congratulations</string>
     <string name="graphics_textkey_beat_last_level">beat_last_level</string>
+    <string name="graphics_textkey_click_target_properties_X">click_target_properties_X</string>
+    <string name="graphics_textkey_click_target_properties_dX">click_target_properties_dX</string>
+    <string name="graphics_textkey_click_target_properties_d2X">click_target_properties_d2X</string>
+    <string name="graphics_textkey_click_target_properties_Radius">click_target_properties_Radius</string>
+    <string name="graphics_textkey_click_target_properties_dRadius">click_target_properties_dRadius</string>
+    <string name="graphics_textkey_click_target_properties_d2Radius">click_target_properties_d2Radius</string>
 
     <!-- Trademark Fragment -->
     <string name="fragment_trademark_text">&#169;%1$s %2$s</string>
