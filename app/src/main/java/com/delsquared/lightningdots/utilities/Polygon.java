@@ -203,6 +203,15 @@ public class Polygon {
     }
 
     public boolean pointIsInsidePolygon(double pointX, double pointY) {
+
+        // First check if the point is outside the bounding circle
+        double dx = pointX - centerX;
+        double dy = pointY - centerY;
+        if ((dx*dx) + (dy*dy) > (radius * radius)) {
+            return false;
+        }
+
+        // The point is inside the bounding circle, check if it's inside the polygon
         int windingNumber = UtilityFunctions.wn_PnPoly(new PositionVector(pointX, pointY), arrayListCurrentVertices);
         return windingNumber != 0;
     }
