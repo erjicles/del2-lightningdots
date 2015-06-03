@@ -94,12 +94,12 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
                             .addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
 
                     // Check if we are in debug mode
-                    if (BuildConfig.DEBUG) {
+                    //if (BuildConfig.DEBUG) {
 
-                        // Add specific devices to test device list
-                        adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
+                    // Add specific devices to test device list
+                    adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
 
-                    }
+                    //}
 
                     // Create the ad request
                     AdRequest adRequest = adRequestBuilder.build();

@@ -291,12 +291,12 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
 
         // Check if we are in debug mode
-        if (BuildConfig.DEBUG) {
+        //if (BuildConfig.DEBUG) {
 
-            // Add specific devices to test device list
-            adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
+        // Add specific devices to test device list
+        adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
 
-        }
+        //}
 
 
         // Start loading the ad now so that it is ready by the time the user is ready to go to
