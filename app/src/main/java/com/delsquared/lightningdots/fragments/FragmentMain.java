@@ -7,12 +7,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.database.LoaderHelperGameResult;
-import com.delsquared.lightningdots.game.ClickTargetProfileScriptHelper;
+import com.delsquared.lightningdots.game.LevelDefinitionLadderHelper;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
-import com.delsquared.lightningdots.utilities.PurchaseHelper;
 
 public class FragmentMain extends android.support.v4.app.Fragment {
 
@@ -61,7 +59,7 @@ public class FragmentMain extends android.support.v4.app.Fragment {
         textViewTimeAttackBestScore.setText(bestScoreTimeAttackString);
 
         // Get the highest scripted level for ladder games
-        int highestScriptedLevel = ClickTargetProfileScriptHelper.getHighestScriptedLevel(getActivity(), Game.GameType.AGILITY);
+        int highestScriptedLevel = LevelDefinitionLadderHelper.getHighestScriptedLevel(getActivity());
         // Get the highest level achieved for ladder games
         int currentLevelAgility = 0;
         GameResult bestGameResultAgility = loaderHelperGameResult.loadBestSuccessfulRun(

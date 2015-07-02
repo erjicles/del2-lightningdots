@@ -11,65 +11,100 @@ import java.util.ArrayList;
 
 public class ClickTargetSnapshot {
 
+    private final String name;
 	private final PositionVector XPixels;
-    private final PositionVector DXdtPixelsPerMilliPolar;
+    private final PositionVector DXdtPixelsPerSecondPolar;
     private final PositionVector D2Xdt2PixelsPolar;
     private final PositionVector RadiusPixels;
     private final PositionVector DRadiusPixels;
     private final PositionVector D2RadiusPixels;
+    private final PositionVector RotationRadians;
+    private final PositionVector DRotationRadians;
+    private final PositionVector D2RotationRadians;
     private final ArrayList<PositionVector> arrayListCenterPoints;
     private final Polygon polygonTargetShape;
+    private final boolean isClickable;
+    private final ClickTarget.VISIBILITY visibility;
 
 	public ClickTargetSnapshot() {
+        name = "";
         XPixels = new PositionVector();
-        DXdtPixelsPerMilliPolar = new PositionVector();
+        DXdtPixelsPerSecondPolar = new PositionVector();
         D2Xdt2PixelsPolar = new PositionVector();
         RadiusPixels = new PositionVector();
         DRadiusPixels = new PositionVector();
         D2RadiusPixels = new PositionVector();
+        RotationRadians = new PositionVector();
+        DRotationRadians = new PositionVector();
+        D2RotationRadians = new PositionVector();
         arrayListCenterPoints = new ArrayList<>();
         polygonTargetShape = null;
+        isClickable = true;
+        visibility = ClickTarget.VISIBILITY.VISIBLE;
 	}
 
 	public ClickTargetSnapshot(
-			PositionVector XPixels
-			, PositionVector DXdtPixelsPerMilliPolar
+            String name
+			, PositionVector XPixels
+			, PositionVector DXdtPixelsPerSecondPolar
             , PositionVector D2Xdt2PixelsPolar
 			, PositionVector RadiusPixels
             , PositionVector DRadiusPixels
             , PositionVector D2RadiusPixels
+            , PositionVector RotationRadians
+            , PositionVector DRotationRadians
+            , PositionVector D2RotationRadians
             , ArrayList<PositionVector> arrayListCenterPoints
             , Polygon polygonTargetShape
+            , boolean isClickable
+            , ClickTarget.VISIBILITY visibility
 	) {
+        this.name = name;
 		this.XPixels = XPixels;
-        this.DXdtPixelsPerMilliPolar = DXdtPixelsPerMilliPolar;
+        this.DXdtPixelsPerSecondPolar = DXdtPixelsPerSecondPolar;
         this.D2Xdt2PixelsPolar = D2Xdt2PixelsPolar;
         this.RadiusPixels = RadiusPixels;
         this.DRadiusPixels = DRadiusPixels;
         this.D2RadiusPixels = D2RadiusPixels;
+        this.RotationRadians = RotationRadians;
+        this.DRotationRadians = DRotationRadians;
+        this.D2RotationRadians = D2RotationRadians;
         this.arrayListCenterPoints = arrayListCenterPoints;
         this.polygonTargetShape = polygonTargetShape;
+        this.isClickable = isClickable;
+        this.visibility = visibility;
 	}
 
+    public String getName() { return name; }
 	public PositionVector getXPixels() { return XPixels; }
-    public PositionVector getDXdtPixelsPerMilliPolar() { return DXdtPixelsPerMilliPolar; }
+    public PositionVector getDXdtPixelsPerSecondPolar() { return DXdtPixelsPerSecondPolar; }
     public PositionVector getD2Xdt2PixelsPolar() { return D2Xdt2PixelsPolar; }
     public PositionVector getRadiusPixels() { return RadiusPixels; }
     public PositionVector getDRadiusPixels() { return DRadiusPixels; }
     public PositionVector getD2RadiusPixels() { return D2RadiusPixels; }
+    public PositionVector getRotationRadians() { return RotationRadians; }
+    public PositionVector getDRotationRadians() { return DRotationRadians; }
+    public PositionVector getD2RotationRadians() { return D2RotationRadians; }
     public ArrayList<PositionVector> getArrayListCenterPoints() { return this.arrayListCenterPoints; }
     public Polygon getPolygonTargetShape() { return polygonTargetShape; }
+    public boolean getIsClickable() { return isClickable; }
+    public ClickTarget.VISIBILITY getVisibility() { return visibility; }
 
     public boolean equals(ClickTargetSnapshot otherClickTargetSnapshot) {
 
         return XPixels.equals(otherClickTargetSnapshot.getXPixels())
-                && DXdtPixelsPerMilliPolar.equals(otherClickTargetSnapshot.getDXdtPixelsPerMilliPolar())
+                && DXdtPixelsPerSecondPolar.equals(otherClickTargetSnapshot.getDXdtPixelsPerSecondPolar())
                 && D2Xdt2PixelsPolar.equals(otherClickTargetSnapshot.getD2Xdt2PixelsPolar())
                 && RadiusPixels.equals(otherClickTargetSnapshot.getRadiusPixels())
                 && DRadiusPixels.equals(otherClickTargetSnapshot.getDRadiusPixels())
                 && D2RadiusPixels.equals(otherClickTargetSnapshot.getD2RadiusPixels())
+                && RotationRadians.equals(otherClickTargetSnapshot.getRotationRadians())
+                && DRotationRadians.equals(otherClickTargetSnapshot.getDRotationRadians())
+                && D2RotationRadians.equals(otherClickTargetSnapshot.getD2RotationRadians())
                 && arrayListCenterPoints.equals(otherClickTargetSnapshot.getArrayListCenterPoints())
-                && polygonTargetShape.equals(otherClickTargetSnapshot.getPolygonTargetShape());
+                && polygonTargetShape.equals(otherClickTargetSnapshot.getPolygonTargetShape())
+                && isClickable == otherClickTargetSnapshot.getIsClickable()
+                && visibility == otherClickTargetSnapshot.getVisibility();
 
     }
 
@@ -92,9 +127,9 @@ public class ClickTargetSnapshot {
 
                 // Draw the current point
                 canvas.drawCircle(
-                        (float) currentPoint.X1
-                        , (float) currentPoint.X2
-                        , (float) RadiusPixels.X1
+                        (float) currentPoint.getValue(0)
+                        , (float) currentPoint.getValue(1)
+                        , (float) RadiusPixels.getValue(0)
                         , paintTarget);
 
             }
@@ -125,10 +160,10 @@ public class ClickTargetSnapshot {
 
             } else { // The target is a circle
 
-                double dx = currentCenterPoint.X1 - pointX;
-                double dy = currentCenterPoint.X2 - pointY;
+                double dx = currentCenterPoint.getValue(0) - pointX;
+                double dy = currentCenterPoint.getValue(1) - pointY;
 
-                returnValue = (dx * dx) + (dy * dy) <= (RadiusPixels.X1 * RadiusPixels.X1);
+                returnValue = (dx * dx) + (dy * dy) <= (RadiusPixels.getValue(0) * RadiusPixels.getValue(0));
 
             }
 

@@ -1,53 +1,69 @@
 package com.delsquared.lightningdots.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class ClickTargetProfileScript {
 
-    private SCRIPT_TRANSITION_MODE scriptTransitionMode;
-    private SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval;
-    private SCRIPT_CYCLE_DIRECTION scriptCycleDirection;
-    private ArrayList<Double> arrayListTransitionValue;
-    private ArrayList<ClickTargetProfile> arrayListClickTargetProfile;
-    private int currentClickTargetProfileIndex = -1;
-    private long totalTimeElapsedSinceLastTransitionMillis = 0;
+    private final SCRIPT_TRANSITION_MODE scriptTransitionMode;
+    private final SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval;
+    private final SCRIPT_CYCLE_DIRECTION scriptCycleDirection;
+    private final String initialClickTargetProfileName;
+    private final ArrayList<String> arrayListClickTargetNames;
+    private final HashMap<String, ClickTargetProfile> mapClickTargetProfiles;
+    private String currentClickTargetProfileName = "";
+    private double totalTimeElapsedSinceLastTransitionSeconds = 0.0;
 
     public ClickTargetProfileScript() {
         scriptTransitionMode = SCRIPT_TRANSITION_MODE.CONSTANT;
         scriptTransitionInterval = SCRIPT_TRANSITION_INTERVAL.CONSTANT;
         scriptCycleDirection = SCRIPT_CYCLE_DIRECTION.INCREASING;
-        arrayListTransitionValue = new ArrayList<Double>();
-        arrayListClickTargetProfile = new ArrayList<ClickTargetProfile>();
+        initialClickTargetProfileName = "";
+        arrayListClickTargetNames = new ArrayList<>();
+        mapClickTargetProfiles = new HashMap<>();
     }
 
     public ClickTargetProfileScript(
             SCRIPT_TRANSITION_MODE scriptTransitionMode
             , SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval
             , SCRIPT_CYCLE_DIRECTION scriptCycleDirection
-            , ArrayList<Double> arrayListTransitionValue
-            , ArrayList<ClickTargetProfile> arrayListClickTargetProfile
-            , int currentClickTargetProfileIndex) {
+            , String initialClickTargetProfileName
+            , ArrayList<String> arrayListClickTargetNames
+            , HashMap<String, ClickTargetProfile> mapClickTargetProfiles) {
         this.scriptTransitionMode = scriptTransitionMode;
         this.scriptTransitionInterval = scriptTransitionInterval;
         this.scriptCycleDirection = scriptCycleDirection;
-        this.arrayListTransitionValue = arrayListTransitionValue;
-        this.arrayListClickTargetProfile = arrayListClickTargetProfile;
-        this.currentClickTargetProfileIndex = currentClickTargetProfileIndex;
+        this.initialClickTargetProfileName = initialClickTargetProfileName;
+        this.arrayListClickTargetNames = arrayListClickTargetNames;
+        this.mapClickTargetProfiles = mapClickTargetProfiles;
+
+        // Check if the initial click target profile name is not in the list
+        if (!mapClickTargetProfiles.containsKey(initialClickTargetProfileName)) {
+            // Set the initial click target profile name to the first name in the list
+            if (arrayListClickTargetNames.size() > 0) {
+                initialClickTargetProfileName = arrayListClickTargetNames.get(0);
+            }
+        }
+        currentClickTargetProfileName = initialClickTargetProfileName;
     }
 
-    public int getCurrentClickTargetProfileIndex() {
-        return this.currentClickTargetProfileIndex;
+    private void resetCurrentClickTargetProfileName() {
+        if (!mapClickTargetProfiles.containsKey(currentClickTargetProfileName)) {
+            if (arrayListClickTargetNames.size() > 0) {
+                currentClickTargetProfileName = arrayListClickTargetNames.get(0);
+            }
+        }
     }
 
     public ClickTargetProfile getCurrentClickTargetProfile() {
-        try {
-            if (currentClickTargetProfileIndex > -1) {
-                return arrayListClickTargetProfile.get(currentClickTargetProfileIndex);
+        if (mapClickTargetProfiles.containsKey(currentClickTargetProfileName)) {
+            return mapClickTargetProfiles.get(currentClickTargetProfileName);
+        } else {
+            resetCurrentClickTargetProfileName();
+            if (mapClickTargetProfiles.containsKey(currentClickTargetProfileName)) {
+                return mapClickTargetProfiles.get(currentClickTargetProfileName);
             }
-        } catch (Exception e) {
-
         }
-
         return null;
     }
 
@@ -63,37 +79,49 @@ public class ClickTargetProfileScript {
         return this.scriptCycleDirection;
     }
 
-    public void setCurrentClickTargetProfileIndex(int newIndex) {
-        this.currentClickTargetProfileIndex = newIndex;
+    public void setCurrentClickTargetProfileName(String newName) {
+        if (mapClickTargetProfiles.containsKey(newName)) {
+            this.currentClickTargetProfileName = newName;
+        }
     }
 
-    public boolean processTransition(long timeElapsedSinceLastUpdateMillis) {
+    public boolean processTransition(double timeElapsedSinceLastUpdateSeconds) {
 
-        if (arrayListClickTargetProfile.size() == 0) {
+        // Check if the map does not contain the current click target name
+        if (!mapClickTargetProfiles.containsKey(currentClickTargetProfileName)) {
             return false;
         }
 
+        // Get the current ClickTargetProfile
+        ClickTargetProfile currentClickTargetProfile = mapClickTargetProfiles.get(currentClickTargetProfileName);
+
+        // Check if the current click target is null
+        if (currentClickTargetProfile == null) {
+            return false;
+        }
+
+        // Initialize the flag for performing a transition
         boolean performTransition = false;
 
         // Add the time elapsed to the total time elapsed since the last transition
-        totalTimeElapsedSinceLastTransitionMillis += timeElapsedSinceLastUpdateMillis;
+        totalTimeElapsedSinceLastTransitionSeconds += timeElapsedSinceLastUpdateSeconds;
 
         // Make sure the mode isn't constant
         if (scriptTransitionMode != SCRIPT_TRANSITION_MODE.CONSTANT &&
                 scriptTransitionInterval != SCRIPT_TRANSITION_INTERVAL.CONSTANT) {
 
-            double currentTransitionValue = arrayListTransitionValue.get(currentClickTargetProfileIndex);
+            // Get the transition value for the current click target
+            double currentTransitionValue = currentClickTargetProfile.scriptTransitionValue;
 
             switch (scriptTransitionInterval) {
 
                 case REGULAR:
-                    if (totalTimeElapsedSinceLastTransitionMillis >= currentTransitionValue) {
+                    if (totalTimeElapsedSinceLastTransitionSeconds >= currentTransitionValue) {
                         performTransition = true;
                     }
                     break;
 
                 case RANDOM:
-                    double timeElapsedSinceLastUpdateSeconds = (double) timeElapsedSinceLastUpdateMillis / 1000.0;
                     double probabilityThreshold =
                             1.0 - Math.pow(1.0 - currentTransitionValue, timeElapsedSinceLastUpdateSeconds);
                     double transitionCheck = Math.random();
@@ -109,7 +137,10 @@ public class ClickTargetProfileScript {
             if (performTransition == true) {
 
                 // Reset the total time elapsed since the last transition
-                totalTimeElapsedSinceLastTransitionMillis = 0;
+                totalTimeElapsedSinceLastTransitionSeconds = 0.0;
+
+                // Get the index of the current click target name
+                int currentClickTargetNameIndex = arrayListClickTargetNames.indexOf(currentClickTargetProfileName);
 
                 switch (scriptTransitionMode) {
 
@@ -118,23 +149,22 @@ public class ClickTargetProfileScript {
 
                             case INCREASING:
                                 // Check if we have reached the last index
-                                if (currentClickTargetProfileIndex >= arrayListClickTargetProfile.size() - 1) {
-                                    // Reset to index 0
-                                    currentClickTargetProfileIndex = 0;
+                                if (currentClickTargetNameIndex >= arrayListClickTargetNames.size() - 1) {
+                                    currentClickTargetNameIndex = 0;
                                 } else {
                                     // Increment the index
-                                    currentClickTargetProfileIndex++;
+                                    currentClickTargetNameIndex++;
                                 }
                                 break;
 
                             case DECREASING:
                                 // Check if we have reached the min index
-                                if (currentClickTargetProfileIndex <= 0) {
+                                if (currentClickTargetNameIndex <= 0) {
                                     // Reset index to max
-                                    currentClickTargetProfileIndex = arrayListClickTargetProfile.size() - 1;
+                                    currentClickTargetNameIndex = arrayListClickTargetNames.size() - 1;
                                 } else {
                                     // Decrement the index
-                                    currentClickTargetProfileIndex--;
+                                    currentClickTargetNameIndex--;
                                 }
                                 break;
                         }
@@ -142,15 +172,18 @@ public class ClickTargetProfileScript {
                         break;
 
                     case RANDOM:
-                        double randomValue = Math.random() * (double)arrayListClickTargetProfile.size();
+                        double randomValue = Math.random() * (double)arrayListClickTargetNames.size();
                         int newIndex = (int) Math.floor(randomValue);
-                        if (newIndex == arrayListClickTargetProfile.size()) {
-                            newIndex = arrayListClickTargetProfile.size() - 1;
+                        if (newIndex == arrayListClickTargetNames.size()) {
+                            newIndex = arrayListClickTargetNames.size() - 1;
                         }
-                        currentClickTargetProfileIndex = newIndex;
+                        currentClickTargetNameIndex = newIndex;
                         break;
 
                 }
+
+                // Set the new ClickTargetProfile name
+                currentClickTargetProfileName = arrayListClickTargetNames.get(currentClickTargetNameIndex);
 
             }
 

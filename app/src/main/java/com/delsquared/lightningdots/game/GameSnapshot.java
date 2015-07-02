@@ -1,6 +1,7 @@
 package com.delsquared.lightningdots.game;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class GameSnapshot {
 
@@ -14,8 +15,7 @@ public class GameSnapshot {
     private final boolean isLevelComplete;
     private final int awardLevel;
     private final boolean isNewHighScore;
-	private final ClickTargetSnapshot currentClickTargetSnapshot;
-	//String fpsText = "Avg time: " + currentAverageTimeBetweenFrames + ", Delay time: " + currentGameProcessingDelayTime;
+    private final HashMap<String, ClickTargetSnapshot> mapClickTargetSnapshots;
 
 	public GameSnapshot() {
 		gameType = Game.GameType.AGILITY;
@@ -28,7 +28,7 @@ public class GameSnapshot {
         isLevelComplete = false;
         awardLevel = 0;
         isNewHighScore = false;
-		currentClickTargetSnapshot = new ClickTargetSnapshot();
+		mapClickTargetSnapshots = new HashMap<>();
 	}
 
 	public GameSnapshot(
@@ -42,7 +42,7 @@ public class GameSnapshot {
             , boolean isLevelComplete
             , int awardLevel
             , boolean isNewHighScore
-			, ClickTargetSnapshot currentClickTargetSnapshot
+			, HashMap<String, ClickTargetSnapshot> mapClickTargetSnapshots
 	) {
 		this.gameType = gameType;
 		this.gameLevel = gameLevel;
@@ -54,7 +54,7 @@ public class GameSnapshot {
         this.isLevelComplete = isLevelComplete;
         this.awardLevel = awardLevel;
         this.isNewHighScore = isNewHighScore;
-		this.currentClickTargetSnapshot = currentClickTargetSnapshot;
+		this.mapClickTargetSnapshots = mapClickTargetSnapshots;
 	}
 
 	public Game.GameType getGameType() { return gameType; }
@@ -67,7 +67,7 @@ public class GameSnapshot {
     public boolean getIsLevelComplete() { return isLevelComplete; }
     public int getAwardLevel() { return awardLevel; }
     public boolean getIsNewHighScore() { return isNewHighScore; }
-	public ClickTargetSnapshot getCurrentClickTargetSnapshot() { return currentClickTargetSnapshot; }
+    public HashMap<String, ClickTargetSnapshot> getMapClickTargetSnapshots() { return mapClickTargetSnapshots; }
 
     public boolean equals(GameSnapshot otherGameSnapshot) {
 
@@ -82,7 +82,7 @@ public class GameSnapshot {
         if (this.isLevelComplete != otherGameSnapshot.getIsLevelComplete()) return false;
         if (this.awardLevel != otherGameSnapshot.getAwardLevel()) return false;
         if (this.isNewHighScore != otherGameSnapshot.getIsNewHighScore()) return false;
-        if (this.currentClickTargetSnapshot.equals(otherGameSnapshot.getCurrentClickTargetSnapshot()) == false) return false;
+        if (this.mapClickTargetSnapshots.equals(otherGameSnapshot.getMapClickTargetSnapshots()) == false) return false;
 
         return true;
 

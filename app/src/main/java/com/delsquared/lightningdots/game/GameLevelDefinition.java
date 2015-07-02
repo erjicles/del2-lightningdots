@@ -8,18 +8,23 @@ public class GameLevelDefinition {
 
     public final ArrayList<Integer> arrayListTargetUserClicks;
 
-    public final ClickTargetProfileScript clickTargetProfileScript;
+    public final LevelDefinitionLadder levelDefinitionLadder;
 
+    public GameLevelDefinition() {
+        gameTimeLimitMillis = 15000;
+        arrayListTargetUserClicks = new ArrayList<>();
+        levelDefinitionLadder = new LevelDefinitionLadder();
+    }
 
     public GameLevelDefinition(
             long gameTimeLimitMillis
             , ArrayList<Integer> arrayListTargetUserClicks
-            , ClickTargetProfileScript clickTargetProfileScript
+            , LevelDefinitionLadder levelDefinitionLadder
 
     ) {
         this.gameTimeLimitMillis = gameTimeLimitMillis;
         this.arrayListTargetUserClicks = arrayListTargetUserClicks;
-        this.clickTargetProfileScript = clickTargetProfileScript;
+        this.levelDefinitionLadder = levelDefinitionLadder;
 
     }
 

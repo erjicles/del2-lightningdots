@@ -6,6 +6,10 @@
     <integer name="game_values_defaultGameStartingTimeMillis">3000</integer>
     <integer name="game_values_defaultGameEndingTimeMillis">2000</integer>
 
+    <bool name="game_values_defaultRandomInitialTargetPosition">false</bool>
+    <item name="game_values_defaultInitialTargetPositionHorizontal" format="float" type="dimen">-1.0</item>
+    <item name="game_values_defaultInitialTargetPositionVertical" format="float" type="dimen">-1.0</item>
+
     <item name="game_values_defaultInitialTargetRadiusInches" format="float" type="dimen">1.0</item>
     <item name="game_values_defaultMinimumTargetRadiusInchesMultiplier" format="float" type="dimen">0.5</item>
     <item name="game_values_defaultMaximumTargetRadiusInchesMultiplier" format="float" type="dimen">1.0</item>
@@ -139,6 +143,9 @@
     <string name="game_values_defaultScriptCycleDirection">INCREASING</string>
 
     <string name="game_values_defaultTargetShape">CIRCLE</string>
+
+    <bool name="game_values_defaultTargetIsClickable">true</bool>
+    <string name="game_values_defaultTargetVisibility">VISIBLE</string>
 
     <integer-array name="game_values_targetUserClicksAgilityPer15Seconds">
         <item>80</item>

@@ -59,7 +59,7 @@ public class Polygon {
             , double rotationAngle) {
 
         // Determine which calculations are needed
-        boolean recalculateCenter = centerX != centerPosition.X1 || centerY != centerPosition.X2;
+        boolean recalculateCenter = centerX != centerPosition.getValue(0) || centerY != centerPosition.getValue(1);
         boolean recalculateRadius = this.radius != radius;
         boolean recalculateRotationAngle = this.rotationAngle != rotationAngle;
 
@@ -81,9 +81,8 @@ public class Polygon {
             arrayListScaledVertices = new ArrayList<>();
             for (PositionVector currentUnitVertex : arrayListUnitVertices) {
                 PositionVector currentVertex = new PositionVector(
-                        this.radius * currentUnitVertex.X1
-                        , this.radius * currentUnitVertex.X2
-                        , this.radius * currentUnitVertex.X3
+                        this.radius * currentUnitVertex.getValue(0)
+                        , this.radius * currentUnitVertex.getValue(1)
                 );
                 arrayListScaledVertices.add(currentVertex);
             }
@@ -99,15 +98,15 @@ public class Polygon {
                 && !recalculateRadius
                 && !recalculateRotationAngle) {
 
-            double dx = centerPosition.X1 - centerX;
-            double dy = centerPosition.X2 - centerY;
+            double dx = centerPosition.getValue(0) - centerX;
+            double dy = centerPosition.getValue(1) - centerY;
 
             // Calculate the new vertices and store them in a temporary list
             ArrayList<PositionVector> temporaryVertices = new ArrayList<>();
             for (PositionVector currentVertex : arrayListCurrentVertices) {
                 PositionVector newVertex = new PositionVector(
-                        currentVertex.X1 + dx
-                        , currentVertex.X2 + dy
+                        currentVertex.getValue(0) + dx
+                        , currentVertex.getValue(1) + dy
                         , 0.0
                 );
                 temporaryVertices.add(newVertex);
@@ -117,14 +116,14 @@ public class Polygon {
             arrayListCurrentVertices = temporaryVertices;
 
             // Set the new center position
-            this.centerX = centerPosition.X1;
-            this.centerY = centerPosition.X2;
+            this.centerX = centerPosition.getValue(0);
+            this.centerY = centerPosition.getValue(1);
 
         } else {
 
             if (recalculateCenter) {
-                this.centerX = centerPosition.X1;
-                this.centerY = centerPosition.X2;
+                this.centerX = centerPosition.getValue(0);
+                this.centerY = centerPosition.getValue(1);
             }
 
             // Recalculate the vertices
@@ -149,8 +148,8 @@ public class Polygon {
         arrayListCurrentVertices = new ArrayList<>();
         for (PositionVector currentScaledVertex : arrayListScaledVertices) {
             PositionVector currentVertex = new PositionVector(
-                    centerX + ((currentScaledVertex.X1 * rotationAngleCosine) - (currentScaledVertex.X2 * rotationAngleSine))
-                    , centerY + ((currentScaledVertex.X1 * rotationAngleSine) + (currentScaledVertex.X2 * rotationAngleCosine))
+                    centerX + ((currentScaledVertex.getValue(0) * rotationAngleCosine) - (currentScaledVertex.getValue(1) * rotationAngleSine))
+                    , centerY + ((currentScaledVertex.getValue(0) * rotationAngleSine) + (currentScaledVertex.getValue(1) * rotationAngleCosine))
                     , 0.0
             );
             arrayListCurrentVertices.add(currentVertex);
@@ -176,16 +175,16 @@ public class Polygon {
 
                 // Move the path to the current vertex
                 currentPath.moveTo(
-                        (float) currentVertex.X1
-                        , (float) currentVertex.X2
+                        (float) currentVertex.getValue(0)
+                        , (float) currentVertex.getValue(1)
                 );
 
             } else {
 
                 // Create line to the current vertex
                 currentPath.lineTo(
-                        (float) currentVertex.X1
-                        , (float) currentVertex.X2
+                        (float) currentVertex.getValue(0)
+                        , (float) currentVertex.getValue(1)
                 );
 
             }

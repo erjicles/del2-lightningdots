@@ -1,182 +1,84 @@
 package com.delsquared.lightningdots.utilities;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
+
 public class PositionEvolver {
 
     private String name;
 
-    private PositionVector X = new PositionVector(0.0, 0.0, 0.0);
+    private ArrayList<PositionEvolverVariable> X = new ArrayList<>();
+    private PositionEvolver positionEvolverDXdt = null;
 
     private MODE mode = MODE.CARTESIAN_3D;
 
-    private boolean isConstantX1 = true;
-    private boolean isConstantX2 = true;
-    private boolean isConstantX3 = true;
-    private PositionEvolver positionEvolverDXdt = null;
-
-    private double minimumX1 = Double.NEGATIVE_INFINITY;
-    private double minimumX2 = Double.NEGATIVE_INFINITY;
-    private double minimumX3 = Double.NEGATIVE_INFINITY;
-
-    private double maximumX1 = Double.POSITIVE_INFINITY;
-    private double maximumX2 = Double.POSITIVE_INFINITY;
-    private double maximumX3 = Double.POSITIVE_INFINITY;
-
-    private boolean canRandomlyChangePosition = false;
-    private double probabilityOfRandomPositionChangePerSecond = 0.00;
-    private RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition = RANDOM_CHANGE_INTERVAL.CONSTANT;
-
-    private boolean canRandomlyChangeX1 = false;
-    private boolean canRandomlyChangeX2 = false;
-    private boolean canRandomlyChangeX3 = false;
-    private double probabilityOfRandomChangePerSecondX1 = 0.00;
-    private double probabilityOfRandomChangePerSecondX2 = 0.00;
-    private double probabilityOfRandomChangePerSecondX3 = 0.00;
-    private RANDOM_CHANGE_INTERVAL randomChangeIntervalX1 = RANDOM_CHANGE_INTERVAL.CONSTANT;
-    private RANDOM_CHANGE_INTERVAL randomChangeIntervalX2 = RANDOM_CHANGE_INTERVAL.CONSTANT;
-    private RANDOM_CHANGE_INTERVAL randomChangeIntervalX3 = RANDOM_CHANGE_INTERVAL.CONSTANT;
-
-    private boolean tieNewRandomX1ToNewRandomX2 = false;
-    private boolean tieNewRandomX2ToNewRandomX1 = false;
-    private boolean tieNewRandomX1ToNewRandomDX1 = false;
-    private boolean tieNewRandomX1ToNewRandomDX2 = false;
-    private boolean tieNewRandomX2ToNewRandomDX1 = false;
-    private boolean tieNewRandomX2ToNewRandomDX2 = false;
-    private boolean tieNewRandomX3ToNewRandomDX3 = false;
-
-    private BoundaryEffect boundaryEffectX1;
-    private BoundaryEffect boundaryEffectX2;
-    private BoundaryEffect boundaryEffectX3;
-
+    private RandomChangeEffect randomChangeEffect;
     private double totalTimeElapsedSinceLastRandomChangePositionSeconds = 0;
-    private double totalTimeElapsedSinceLastRandomChangeX1Seconds = 0;
-    private double totalTimeElapsedSinceLastRandomChangeX2Seconds = 0;
-    private double totalTimeElapsedSinceLastRandomChangeX3Seconds = 0;
 
     public PositionEvolver(
+
             String name
-            , PositionVector X
-            , MODE mode
-            , boolean isConstantX1
-            , boolean isConstantX2
-            , boolean isConstantX3
+
+            , ArrayList<PositionEvolverVariable> X
             , PositionEvolver positionEvolverDXdt
-            , double minimumX1
-            , double minimumX2
-            , double minimumX3
-            , double maximumX1
-            , double maximumX2
-            , double maximumX3
-            , boolean canRandomlyChangePosition
-            , double probabilityOfRandomPositionChangePerSecond
-            , RANDOM_CHANGE_INTERVAL randomChangeIntervalPosition
-            , boolean canRandomlyChangeX1
-            , boolean canRandomlyChangeX2
-            , boolean canRandomlyChangeX3
-            , double probabilityOfRandomChangePerSecondX1
-            , double probabilityOfRandomChangePerSecondX2
-            , double probabilityOfRandomChangePerSecondX3
-            , RANDOM_CHANGE_INTERVAL randomChangeIntervalX1
-            , RANDOM_CHANGE_INTERVAL randomChangeIntervalX2
-            , RANDOM_CHANGE_INTERVAL randomChangeIntervalX3
-            , boolean tieNewRandomX1ToNewRandomX2
-            , boolean tieNewRandomX2ToNewRandomX1
-            , boolean tieNewRandomX1ToNewRandomDX1
-            , boolean tieNewRandomX1ToNewRandomDX2
-            , boolean tieNewRandomX2ToNewRandomDX1
-            , boolean tieNewRandomX2ToNewRandomDX2
-            , boolean tieNewRandomX3ToNewRandomDX3
-            , BoundaryEffect boundaryEffectX1
-            , BoundaryEffect boundaryEffectX2
-            , BoundaryEffect boundaryEffectX3) {
+
+            , MODE mode
+
+            , RandomChangeEffect randomChangeEffect) {
 
         this.name = name;
 
         this.X = X;
+        this.positionEvolverDXdt = positionEvolverDXdt;
 
         this.mode = mode;
 
-        this.isConstantX1 = isConstantX1;
-        this.isConstantX2 = isConstantX2;
-        this.isConstantX3 = isConstantX3;
-        this.positionEvolverDXdt = positionEvolverDXdt;
+        this.randomChangeEffect = randomChangeEffect;
+        this.totalTimeElapsedSinceLastRandomChangePositionSeconds = 0;
 
-        this.minimumX1 = minimumX1;
-        this.minimumX2 = minimumX2;
-        this.minimumX3 = minimumX3;
-
-        this.maximumX1 = maximumX1;
-        this.maximumX2 = maximumX2;
-        this.maximumX3 = maximumX3;
-
-        this.canRandomlyChangePosition = canRandomlyChangePosition;
-        this.probabilityOfRandomPositionChangePerSecond = probabilityOfRandomPositionChangePerSecond;
-        this.randomChangeIntervalPosition = randomChangeIntervalPosition;
-
-        this.canRandomlyChangeX1 = canRandomlyChangeX1;
-        this.canRandomlyChangeX2 = canRandomlyChangeX2;
-        this.canRandomlyChangeX3 = canRandomlyChangeX3;
-        this.probabilityOfRandomChangePerSecondX1 = probabilityOfRandomChangePerSecondX1;
-        this.probabilityOfRandomChangePerSecondX2 = probabilityOfRandomChangePerSecondX2;
-        this.probabilityOfRandomChangePerSecondX3 = probabilityOfRandomChangePerSecondX3;
-        this.randomChangeIntervalX1 = randomChangeIntervalX1;
-        this.randomChangeIntervalX2 = randomChangeIntervalX2;
-        this.randomChangeIntervalX3 = randomChangeIntervalX3;
-
-        this.tieNewRandomX1ToNewRandomX2 = tieNewRandomX1ToNewRandomX2;
-        this.tieNewRandomX2ToNewRandomX1 = tieNewRandomX2ToNewRandomX1;
-        this.tieNewRandomX1ToNewRandomDX1 = tieNewRandomX1ToNewRandomDX1;
-        this.tieNewRandomX1ToNewRandomDX2 = tieNewRandomX1ToNewRandomDX2;
-        this.tieNewRandomX2ToNewRandomDX1 = tieNewRandomX2ToNewRandomDX1;
-        this.tieNewRandomX2ToNewRandomDX2 = tieNewRandomX2ToNewRandomDX2;
-        this.tieNewRandomX3ToNewRandomDX3 = tieNewRandomX3ToNewRandomDX3;
-
-        this.boundaryEffectX1 = boundaryEffectX1;
-        this.boundaryEffectX2 = boundaryEffectX2;
-        this.boundaryEffectX3 = boundaryEffectX3;
     }
 
     public String getName() { return name; }
 
-    public PositionVector getX() { return X; }
+    public PositionVector getX() {
+
+        ArrayList<Double> resultX = new ArrayList<Double>();
+
+        // Loop through the variables
+        for (PositionEvolverVariable currentVariable : X) {
+            resultX.add(currentVariable.getValue());
+        }
+
+        return new PositionVector(resultX);
+    }
 
     public PositionVector getX(MODE convertToMode) {
 
         if (this.mode == convertToMode) {
-            return X;
+            return getX();
         }
 
         else if (this.mode == MODE.POLAR_2D
                 && convertToMode == MODE.CARTESIAN_2D) {
-            // x = X1 * cos(X2)
-            // y = X1 * sin(X2)
+            double X1 = X.get(0).getValue();
+            double X2 = X.get(1).getValue();
             return new PositionVector(
-                    X.X1 * Math.cos(X.X2)
-                    , X.X1 * Math.sin(X.X2)
-                    , 0.0
+                    X1 * Math.cos(X2)
+                    , X1 * Math.sin(X2)
             );
         }
 
         else if (this.mode == MODE.SPHERICAL_3D
                 && convertToMode == MODE.CARTESIAN_3D) {
-            // x = X1 * cos(X2) * sin(X3)
-            // y = X1 * sin(X2) * sin(X3)
-            // z = X1 * cos(X3)
-            double sinX3 = Math.sin(X.X3);
+            double X1 = X.get(0).getValue();
+            double X2 = X.get(1).getValue();
+            double X3 = X.get(2).getValue();
+            double sinX3 = Math.sin(X3);
             return new PositionVector(
-                    X.X1 * Math.cos(X.X2) * sinX3
-                    , X.X1 * Math.sin(X.X2) * sinX3
-                    , X.X1 * Math.cos(X.X3)
-            );
-        }
-
-        else if (this.mode == MODE.CARTESIAN_2D
-                && convertToMode == MODE.POLAR_2D) {
-            // r = sqrt(X1^2 + X2^2)
-            // phi = atan2(X2/X1)
-            return new PositionVector(
-                    Math.sqrt((X.X1 * X.X1) + (X.X2 * X.X2))
-                    , Math.atan2(X.X2, X.X1)
-                    , 0.0
+                    X1 * Math.cos(X2) * sinX3
+                    , X1 * Math.sin(X2) * sinX3
+                    , X1 * Math.cos(X3)
             );
         }
 
@@ -202,224 +104,186 @@ public class PositionEvolver {
         return new PositionVector();
     }
 
-    public double getMinimumX1() { return minimumX1; }
-    public double getMinimumX2() { return minimumX2; }
-    public double getMinimumX3() { return minimumX3; }
-    public double getMaximumX1() { return maximumX1; }
-    public double getMaximumX2() { return maximumX2; }
-    public double getMaximumX3() { return maximumX3; }
-    public BoundaryEffect getBoundaryEffectX1() { return boundaryEffectX1; }
-    public BoundaryEffect getBoundaryEffectX2() { return boundaryEffectX2; }
-    public BoundaryEffect getBoundaryEffectX3() { return boundaryEffectX3; }
+    public double getMinimumValue(String variableName) {
 
-    public void setBoundaryValues(
-            double minimumX1
-            , double minimumX2
-            , double minimumX3
-            , double maximumX1
-            , double maximumX2
-            , double maximumX3) {
-        this.minimumX1 = minimumX1;
-        this.minimumX2 = minimumX2;
-        this.minimumX3 = minimumX3;
-        this.maximumX1 = maximumX1;
-        this.maximumX2 = maximumX2;
-        this.maximumX3 = maximumX3;
+        // Loop through the variables
+        for (PositionEvolverVariable currentVariable : X) {
+
+            // Check if we found the variable
+            if (currentVariable.getName().contentEquals(variableName)) {
+
+                // Set the boundary value
+                return currentVariable.getMinimumValue();
+
+            }
+        }
+
+        return 0.0;
+
+    }
+    public double getMaximumValue(String variableName) {
+
+        // Loop through the variables
+        for (PositionEvolverVariable currentVariable : X) {
+
+            // Check if we found the variable
+            if (currentVariable.getName().contentEquals(variableName)) {
+
+                // Set the boundary value
+                return currentVariable.getMaximumValue();
+
+            }
+        }
+
+        return 0.0;
+
+    }
+    public BoundaryEffect getBoundaryEffect(String variableName) {
+
+        // Loop through the variables
+        for (PositionEvolverVariable currentVariable : X) {
+
+            // Check if we found the variable
+            if (currentVariable.getName().contentEquals(variableName)) {
+
+                // Set the boundary value
+                return currentVariable.getBoundaryEffect();
+
+            }
+        }
+
+        return new BoundaryEffect();
+
     }
 
-    public void generateNewRandomPosition(
-            boolean generateNewRandomX1
-            , boolean generateNewRandomX2
-            , boolean generateNewRandomX3) {
+    public void setBoundaryValues(
+            String variableName
+            , double minimumValue
+            , double maximumValue) {
 
-        if (generateNewRandomX1
-                || generateNewRandomX2
-                || generateNewRandomX3) {
+        // Loop through the variables
+        for (PositionEvolverVariable currentVariable : X) {
 
-            if (generateNewRandomX1) {
-                if (tieNewRandomX1ToNewRandomX2) {
-                    generateNewRandomX2 = true;
-                }
+            // Check if we found the variable
+            if (currentVariable.getName().contentEquals(variableName)) {
+
+                // Set the boundary value
+                currentVariable.setBoundaryValues(minimumValue, maximumValue);
+                break;
             }
+        }
 
-            if (generateNewRandomX2) {
-                if (tieNewRandomX2ToNewRandomX1) {
-                    generateNewRandomX1 = true;
-                }
-            }
+    }
 
-            double newX1 = X.X1;
-            double newX2 = X.X2;
-            double newX3 = X.X3;
-            if (generateNewRandomX1) {
-                newX1 = minimumX1 + (Math.random() * (maximumX1 - minimumX1));
+    public void generateNewRandomPosition(HashMap<String, Boolean> generateNewRandomValues) {
 
-                if (boundaryEffectX1.mirrorAbsoluteValueBoundaries) {
-                    newX1 *= (Math.random() <= 0.5) ? 1 : -1;
-                }
-            }
-            if (generateNewRandomX2) {
-                newX2 = minimumX2 + (Math.random() * (maximumX2 - minimumX2));
+        // Loop through the variables
+        for (PositionEvolverVariable positionEvolverVariable : X) {
 
-                if (boundaryEffectX2.mirrorAbsoluteValueBoundaries) {
-                    newX2 *= (Math.random() <= 0.5) ? 1 : -1;
-                }
-            }
-            if (generateNewRandomX3) {
-                newX3 = minimumX3 + (Math.random() * (maximumX3 - minimumX3));
+            // Check if we should generate a new random variable
+            if (generateNewRandomValues.containsKey(positionEvolverVariable.getName())) {
 
-                if (boundaryEffectX3.mirrorAbsoluteValueBoundaries) {
-                    newX3 *= (Math.random() <= 0.5) ? 1 : -1;
-                }
-            }
-            X = new PositionVector(newX1, newX2, newX3);
-
-            if (positionEvolverDXdt != null) {
-
-                boolean generateNewRandomDX1 = false;
-                boolean generateNewRandomDX2 = false;
-                boolean generateNewRandomDX3 = false;
-
-                if (generateNewRandomX1) {
-                    if (tieNewRandomX1ToNewRandomDX1) {
-                        generateNewRandomDX1 = true;
-                    }
-                    if (tieNewRandomX1ToNewRandomDX2) {
-                        generateNewRandomDX2 = true;
-                    }
-                }
-                if (generateNewRandomX2) {
-                    if (tieNewRandomX2ToNewRandomDX1) {
-                        generateNewRandomDX1 = true;
-                    }
-                    if (tieNewRandomX2ToNewRandomDX2) {
-                        generateNewRandomDX2 = true;
-                    }
-                }
-                if (generateNewRandomX3 && tieNewRandomX3ToNewRandomDX3) {
-                    generateNewRandomDX3 = true;
-
-                    if (tieNewRandomX3ToNewRandomDX3) {
-                        generateNewRandomDX3 = true;
-                    }
-                }
-
-                if (generateNewRandomDX1
-                        || generateNewRandomDX2
-                        || generateNewRandomDX3) {
-
-                    positionEvolverDXdt.generateNewRandomPosition(
-                            generateNewRandomDX1
-                            , generateNewRandomDX2
-                            , generateNewRandomDX3);
-                }
+                // Generate the new random value
+                positionEvolverVariable.randomizeValue();
 
             }
 
         }
 
+        // Generate new random values for dX
+        if (positionEvolverDXdt != null) {
+            positionEvolverDXdt.generateNewRandomPosition(generateNewRandomValues);
+        }
+
     }
 
-    public void evolveTime(
+    public ArrayList<String> checkRandomChanges(
             double dt
-            , boolean evolveX1
-            , boolean evolveX2
-            , boolean evolveX3) {
+            , HashMap<String, Boolean> mapEvolveVariables) {
 
-        boolean generateNewRandomX1 = false;
-        boolean generateNewRandomX2 = false;
-        boolean generateNewRandomX3 = false;
+        // Initialize the list of variables that should randomly change
+        ArrayList<String> arrayListGenerateNewRandomValues = new ArrayList<>();
 
+        // -------------------- BEGIN Check for random changes -------------------- //
+
+        // Increment the total time since last global random change
         totalTimeElapsedSinceLastRandomChangePositionSeconds += dt;
-        totalTimeElapsedSinceLastRandomChangeX1Seconds += dt;
-        totalTimeElapsedSinceLastRandomChangeX2Seconds += dt;
-        totalTimeElapsedSinceLastRandomChangeX3Seconds += dt;
 
-        if (canRandomlyChangePosition) {
+        // Increment the total time since last random change for each variable
+        for (PositionEvolverVariable positionEvolverVariable : X) {
+            positionEvolverVariable.incrementTotalTimeElapsedSinceLastRandomChangeSeconds(dt);
+        }
 
-            if (randomChangeIntervalPosition == RANDOM_CHANGE_INTERVAL.REGULAR) {
+        // Check if we can make global random changes
+        if (randomChangeEffect.canRandomlyChange) {
 
-                if (totalTimeElapsedSinceLastRandomChangePositionSeconds >= probabilityOfRandomPositionChangePerSecond) {
-                    generateNewRandomX1 = evolveX1;
-                    generateNewRandomX2 = evolveX2;
-                    generateNewRandomX3 = evolveX3;
+            // Check if we should make global random changes at regular intervals
+            if (randomChangeEffect.randomChangeInterval == RandomChangeEffect.RANDOM_CHANGE_INTERVAL.REGULAR) {
+
+                // Check if we have exceeded the global random change timer
+                if (totalTimeElapsedSinceLastRandomChangePositionSeconds >= randomChangeEffect.randomChangeValue) {
+
+                    // Loop through the variables
+                    for (PositionEvolverVariable positionEvolverVariable : X) {
+
+                        // Get the variable name
+                        String variableName = positionEvolverVariable.getName();
+
+                        // Set the generate new random value flag
+                        boolean generateNewRandomValue = true;
+                        if (mapEvolveVariables.containsKey(variableName)) {
+                            generateNewRandomValue = mapEvolveVariables.get(variableName);
+                        }
+
+                        // Check if we should generate a new random value
+                        if (generateNewRandomValue) {
+
+                            // Add the variable name to the list
+                            arrayListGenerateNewRandomValues.add(variableName);
+
+                        }
+
+                    }
+
+                    // Reset the global random change timer
                     totalTimeElapsedSinceLastRandomChangePositionSeconds = 0.0;
+
                 }
 
-            } else if (randomChangeIntervalPosition == RANDOM_CHANGE_INTERVAL.RANDOM) {
+            }
+
+            // Check if we should make global random changes at random intervals
+            else if (randomChangeEffect.randomChangeInterval == RandomChangeEffect.RANDOM_CHANGE_INTERVAL.RANDOM) {
 
                 // Q = 1 - (1 - p)^(1 / N)
                 // Q = probability of change in partial unit
                 // P = probability of change in one unit
                 // N = number of partial units in one unit
                 // N = 1 second / time elapsed since last update in seconds
-                double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomPositionChangePerSecond, dt);
+                double probabilityThreshold = 1.0 - Math.pow(1.0 - randomChangeEffect.randomChangeValue, dt);
                 double positionChangeCheck = Math.random();
                 if (positionChangeCheck < probabilityThreshold) {
-                    generateNewRandomX1 = evolveX1;
-                    generateNewRandomX2 = evolveX2;
-                    generateNewRandomX3 = evolveX3;
-                }
 
-            }
+                    // Loop through the variables
+                    for (PositionEvolverVariable positionEvolverVariable : X) {
 
-        } else {
+                        // Get the variable name
+                        String variableName = positionEvolverVariable.getName();
 
-            if (canRandomlyChangeX1) {
+                        // Set the generate new random value flag
+                        boolean generateNewRandomValue = true;
+                        if (mapEvolveVariables.containsKey(variableName)) {
+                            generateNewRandomValue = mapEvolveVariables.get(variableName);
+                        }
 
-                if (randomChangeIntervalX1 == RANDOM_CHANGE_INTERVAL.REGULAR) {
+                        // Check if we should generate a new random value
+                        if (generateNewRandomValue) {
 
-                    if (totalTimeElapsedSinceLastRandomChangeX1Seconds >= probabilityOfRandomChangePerSecondX1) {
-                        generateNewRandomX1 = evolveX1;
-                        totalTimeElapsedSinceLastRandomChangeX1Seconds = 0.0;
-                    }
+                            // Add the generate new random value flag to the map
+                            arrayListGenerateNewRandomValues.add(variableName);
 
-                } else if (randomChangeIntervalX1 == RANDOM_CHANGE_INTERVAL.RANDOM) {
+                        }
 
-                    double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX1, dt);
-                    double changeCheckX1 = Math.random();
-                    if (changeCheckX1 < probabilityThreshold) {
-                        generateNewRandomX1 = evolveX1;
-                    }
-
-                }
-
-            }
-            if (canRandomlyChangeX2) {
-
-                if (randomChangeIntervalX2 == RANDOM_CHANGE_INTERVAL.REGULAR) {
-
-                    if (totalTimeElapsedSinceLastRandomChangeX2Seconds >= probabilityOfRandomChangePerSecondX2) {
-                        generateNewRandomX2 = evolveX2;
-                        totalTimeElapsedSinceLastRandomChangeX2Seconds = 0;
-                    }
-
-                } else if (randomChangeIntervalX2 == RANDOM_CHANGE_INTERVAL.RANDOM) {
-
-                    double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX2, dt);
-                    double changeCheckX2 = Math.random();
-                    if (changeCheckX2 < probabilityThreshold) {
-                        generateNewRandomX2 = evolveX2;
-                    }
-
-                }
-
-            }
-            if (canRandomlyChangeX3) {
-
-                if (randomChangeIntervalX3 == RANDOM_CHANGE_INTERVAL.REGULAR) {
-
-                    if (totalTimeElapsedSinceLastRandomChangeX3Seconds >= probabilityOfRandomChangePerSecondX3) {
-                        generateNewRandomX3 = evolveX3;
-                        totalTimeElapsedSinceLastRandomChangeX3Seconds = 0;
-                    }
-
-                } else if (randomChangeIntervalX3 == RANDOM_CHANGE_INTERVAL.RANDOM) {
-
-                    double probabilityThreshold = 1.0 - Math.pow(1.0 - probabilityOfRandomChangePerSecondX3, dt);
-                    double changeCheckX3 = Math.random();
-                    if (changeCheckX3 < probabilityThreshold) {
-                        generateNewRandomX3 = evolveX3;
                     }
 
                 }
@@ -428,245 +292,271 @@ public class PositionEvolver {
 
         }
 
-        if (generateNewRandomX1
-                || generateNewRandomX2
-                || generateNewRandomX3) {
-            generateNewRandomPosition(generateNewRandomX1, generateNewRandomX2, generateNewRandomX3);
+        // We can't make global random changes
+        // Check the individual variables
+        else {
+
+            // Loop through the variables
+            for (PositionEvolverVariable positionEvolverVariable : X) {
+
+                // Get the variable name
+                String variableName = positionEvolverVariable.getName();
+
+                // Get the random change effect
+                RandomChangeEffect randomChangeEffect = positionEvolverVariable.getRandomChangeEffect();
+
+                // Check if the current variable can randomly change
+                if (randomChangeEffect.canRandomlyChange) {
+
+                    // Check if we should randomly change at regular intervals
+                    if (randomChangeEffect.randomChangeInterval == RandomChangeEffect.RANDOM_CHANGE_INTERVAL.REGULAR) {
+
+                        // Check if we have exceeded the random change timer
+                        if (positionEvolverVariable.getTotalTimeElapsedSinceLastRandomChangeSeconds() >= randomChangeEffect.randomChangeValue) {
+
+                            // Set the generate new random value flag
+                            boolean generateNewRandomValue = true;
+                            if (mapEvolveVariables.containsKey(variableName)) {
+                                generateNewRandomValue = mapEvolveVariables.get(variableName);
+                            }
+
+                            // Check if we should generate a new random value
+                            if (generateNewRandomValue) {
+
+                                // Add the generate new random value flag to the map
+                                arrayListGenerateNewRandomValues.add(variableName);
+
+                            }
+
+                            // Reset the random change timer
+                            positionEvolverVariable.setTotalTimeElapsedSinceLastRandomChangeSeconds(0.0);
+
+                        }
+
+                    }
+
+                    // Check if we should randomly change at random intervals
+                    else if (randomChangeEffect.randomChangeInterval == RandomChangeEffect.RANDOM_CHANGE_INTERVAL.RANDOM) {
+
+                        double probabilityThreshold = 1.0 - Math.pow(1.0 - randomChangeEffect.randomChangeValue, dt);
+                        double changeCheck = Math.random();
+                        if (changeCheck < probabilityThreshold) {
+
+                            // Set the generate new random value flag
+                            boolean generateNewRandomValue = true;
+                            if (mapEvolveVariables.containsKey(variableName)) {
+                                generateNewRandomValue = mapEvolveVariables.get(variableName);
+                            }
+
+                            // Check if we should generate a new random value
+                            if (generateNewRandomValue) {
+
+                                // Add the generate new random value flag to the map
+                                arrayListGenerateNewRandomValues.add(variableName);
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+
         }
 
-        PositionVector dXdt = null;
-        double dX1 = 0.0;
-        double dX2 = 0.0;
-        double dX3 = 0.0;
+        // -------------------- END Check for random changes -------------------- //
+
+        // Add the random change list for dX variables
         if (positionEvolverDXdt != null) {
-            dXdt = positionEvolverDXdt.getX(mode);
-            if (!isConstantX1
-                    && evolveX1
-                    && !generateNewRandomX1) {
-                dX1 = dXdt.X1 * dt;
-            }
-            if (!isConstantX2
-                    && evolveX2
-                    && !generateNewRandomX2) {
-                dX2 = dXdt.X2 * dt;
-            }
-            if (!isConstantX3
-                    && evolveX3
-                    && !generateNewRandomX3) {
-                dX3 = dXdt.X3 * dt;
-            }
-
-            boolean generatedNewRandomDX1 = generateNewRandomX1 && tieNewRandomX1ToNewRandomDX1;
-            boolean generatedNewRandomDX2 = generateNewRandomX2 && tieNewRandomX2ToNewRandomDX2;
-            boolean generatedNewRandomDX3 = generateNewRandomX3 && tieNewRandomX3ToNewRandomDX3;
-                positionEvolverDXdt.evolveTime(
-                        dt
-                        , evolveX1 && !generatedNewRandomDX1
-                        , evolveX2 && !generatedNewRandomDX2
-                        , evolveX3 && !generatedNewRandomDX3);
-
+            arrayListGenerateNewRandomValues.addAll(positionEvolverDXdt.checkRandomChanges(dt, mapEvolveVariables));
         }
 
-        double newX1 = X.X1 + dX1;
-        double newX2 = X.X2 + dX2;
-        double newX3 = X.X3 + dX3;
-
-        int boundaryReachedX1 = checkBoundaryReached(newX1, dX1, minimumX1, maximumX1, isConstantX1, boundaryEffectX1);
-        int boundaryReachedX2 = checkBoundaryReached(newX2, dX2, minimumX2, maximumX2, isConstantX2, boundaryEffectX2);
-        int boundaryReachedX3 = checkBoundaryReached(newX3, dX2, minimumX3, maximumX3, isConstantX3, boundaryEffectX3);
-
-        boolean bounceX1 = false;
-        boolean bounceX2 = false;
-        boolean bounceX3 = false;
-
-        if (boundaryReachedX1 != 0) {
-            BoundaryHandlerValues boundaryHandlerValues = processBoundary(
-                    boundaryReachedX1
-                    , newX1
-                    , minimumX1
-                    , maximumX1
-                    , boundaryEffectX1);
-            newX1 = boundaryHandlerValues.newValue;
-            bounceX1 = boundaryHandlerValues.bounceValue;
-        }
-
-        if (boundaryReachedX2 != 0) {
-            if (name == "dRadiusdt") {
-                int flag = 0;
-                flag++;
-            }
-            BoundaryHandlerValues boundaryHandlerValues = processBoundary(
-                    boundaryReachedX2
-                    , newX2
-                    , minimumX2
-                    , maximumX2
-                    , boundaryEffectX2);
-            newX2 = boundaryHandlerValues.newValue;
-            bounceX2 = boundaryHandlerValues.bounceValue;
-        }
-
-        if (boundaryReachedX3 != 0) {
-            BoundaryHandlerValues boundaryHandlerValues = processBoundary(
-                    boundaryReachedX3
-                    , newX3
-                    , minimumX3
-                    , maximumX3
-                    , boundaryEffectX3);
-            newX3 = boundaryHandlerValues.newValue;
-            bounceX3 = boundaryHandlerValues.bounceValue;
-        }
-
-        if (positionEvolverDXdt != null &&
-                (bounceX1
-                || bounceX2
-                || bounceX3)) {
-            positionEvolverDXdt.bounce(
-                    mode
-                    , bounceX1
-                    , bounceX2
-                    , bounceX3);
-        }
-
-        X = new PositionVector(newX1, newX2, newX3);
+        return arrayListGenerateNewRandomValues;
 
     }
 
-    public static int checkBoundaryReachedNoDX(
-            double X
-            , double minimumX
-            , double maximumX
-            , BoundaryEffect boundaryEffectX) {
+    public void evolveTime(
+            double dt
+            , HashMap<String, Boolean> mapEvolveVariables
+            , HashMap<String, Boolean> mapGenerateNewRandomValues) {
 
-        // Initialize if we reached a boundary
-        int boundaryReached = 0;
+        if (dt > 1.0) {
+            int blah = 0;
+            blah++;
 
-        // Check if the boundaries are absolute values that are mirrored positive and negative
-        if (boundaryEffectX.mirrorAbsoluteValueBoundaries) {
+        }
 
-            double negativeMinimumX = -1.0 * maximumX;
-            double negativeMaximumX = -1.0 * minimumX;
+        // Generate new random values as needed
+        generateNewRandomPosition(mapGenerateNewRandomValues);
 
-            if (X <= negativeMinimumX) {
-                boundaryReached = -2;
-            }
+        // Get the current dX
+        ArrayList<Double> currentDXdt = null;
+        if (positionEvolverDXdt != null) {
+            currentDXdt = positionEvolverDXdt.getX(mode).getX();
+        }
 
-            if (X >= maximumX) {
-                boundaryReached = 2;
-            }
+        // Check if we have a dX
+        if (positionEvolverDXdt != null
+                && currentDXdt != null) {
 
-            if (X >= negativeMaximumX && X <= minimumX) {
+            // Initialize the bounce
+            ArrayList<Boolean> bounceVariables = new ArrayList<>();
 
-                double middleValue = negativeMaximumX + ((minimumX - negativeMaximumX) / 2.0);
+            // Loop through the variables
+            for (int currentVariableIndex = 0; currentVariableIndex < X.size(); currentVariableIndex++) {
 
-                if (X <= middleValue) {
-                    boundaryReached = -1;
-                } else {
-                    boundaryReached = 1;
+                // Get the current variable
+                PositionEvolverVariable positionEvolverVariable = X.get(currentVariableIndex);
+
+                // Get the current variable name
+                String variableName = positionEvolverVariable.getName();
+
+                // Get the dx for the current variable
+                double dxdt = currentDXdt.get(currentVariableIndex);
+
+                // Get the flag on whether we should evolve this variable
+                boolean evolveVariable = true;
+                if (mapEvolveVariables.containsKey(variableName)) {
+                    evolveVariable = mapEvolveVariables.get(variableName);
                 }
 
+                // Get the flag on whether we generated a new value
+                boolean generatedNewRandomValue = false;
+                if (mapGenerateNewRandomValues.containsKey(variableName)) {
+                    generatedNewRandomValue = mapGenerateNewRandomValues.get(variableName);
+                }
+
+                // Check if we should evolve the variable
+                if (positionEvolverVariable.getCanChange()
+                        && evolveVariable
+                        && !generatedNewRandomValue) {
+
+                    // Get the change in value
+                    double dx = dxdt * dt;
+
+                    // Change the variable value
+                    positionEvolverVariable.moveValue(dx);
+
+                }
+
+                // -------------------- BEGIN Check boundaries -------------------- //
+
+                // Get if the variable is increasing or decreasing
+                int variableDirection = 0;
+                if (dxdt > 0.0) {
+                    variableDirection = 1;
+                } else if (dxdt < 0.0) {
+                    variableDirection = -1;
+                }
+
+                // Get the boundary reached
+                int boundaryReached = positionEvolverVariable.checkBoundaryReached(variableDirection);
+
+                // Check if we actually reached a boundary
+                if (boundaryReached != 0) {
+
+                    // Get the boundary handler values
+                    PositionEvolverVariable.BoundaryHandlerValues boundaryHandlerValues =
+                            positionEvolverVariable.processBoundary(boundaryReached);
+                    double newValue = boundaryHandlerValues.newValue;
+
+                    // Add the bounce value to the bounce variables list
+                    bounceVariables.add(boundaryHandlerValues.bounceValue);
+
+                    // Set the new value
+                    positionEvolverVariable.setValue(newValue);
+
+                } else {
+
+                    // Add no bounce to the bounce variable list
+                    bounceVariables.add(false);
+
+                }
+
+
+                // -------------------- END Check boundaries -------------------- //
+
             }
 
-        } else {
+            // Evolve dX
+            positionEvolverDXdt.evolveTime(
+                    dt
+                    , mapEvolveVariables
+                    , mapGenerateNewRandomValues
+            );
 
-            if (X <= minimumX) {
-                boundaryReached = -1;
-            }
-
-            if (X >= maximumX) {
-                boundaryReached = 1;
-            }
+            // Process bounce if necessary
+            positionEvolverDXdt.bounce(mode, bounceVariables);
 
         }
 
-        return boundaryReached;
-
     }
 
-    public static int checkBoundaryReached(
-            double X
-            , double DX
-            , double minimumX
-            , double maximumX
-            , boolean isConstantX
-            , BoundaryEffect boundaryEffectX) {
 
-        // Initialize if we reached a boundary
-        int boundaryReached = 0;
-
-        // Check if the boundaries are absolute values that are mirrored positive and negative
-        if (boundaryEffectX.mirrorAbsoluteValueBoundaries) {
-
-            double negativeMinimumX = -1.0 * maximumX;
-            double negativeMaximumX = -1.0 * minimumX;
-
-            if (DX < 0.0 && (
-                    (X < negativeMinimumX)
-                    || (!isConstantX && X == negativeMinimumX))) {
-                boundaryReached = -2;
-            }
-
-            if (DX > 0.0 && (
-                    (X > maximumX)
-                    || (!isConstantX && X == maximumX))) {
-                boundaryReached = 2;
-            }
-
-            if (DX < 0.0 && (
-                    (X > negativeMaximumX && X < minimumX)
-                    || (!isConstantX && X == minimumX))) {
-                boundaryReached = 1;
-            }
-
-            if (DX > 0.0 && (
-                    (X > negativeMaximumX && X < minimumX)
-                    || (!isConstantX && X == negativeMaximumX))) {
-                boundaryReached = -1;
-            }
-
-        } else {
-
-            if (DX < 0.0 && (
-                    (X < minimumX)
-                    || (!isConstantX && X == minimumX))) {
-                boundaryReached = -1;
-            }
-
-            if (DX > 0.0 && (
-                    (X > maximumX)
-                    || (!isConstantX && X == maximumX))) {
-                boundaryReached = 1;
-            }
-
-        }
-
-        return boundaryReached;
-    }
 
     public void bounce(
             MODE mode
-            , boolean bounceX1
-            , boolean bounceX2
-            , boolean bounceX3) {
+            , ArrayList<Boolean> bounceVariables) {
 
+        // Check if the modes are the same
         if (this.mode == mode) {
-            X = new PositionVector(
-                    (bounceX1)? X.X1 * -1.0 : X.X1
-                    , (bounceX2)? X.X2 * -1.0 : X.X2
-                    , (bounceX3)? X.X3 * -1.0 : X.X3);
+
+            // Loop through the variables
+            for (int currentVariableIndex = 0; currentVariableIndex < X.size(); currentVariableIndex++) {
+
+                // Get the current variable
+                PositionEvolverVariable currentVariable = X.get(currentVariableIndex);
+
+                // Get the bounce value
+                boolean bounce = false;
+                if (bounceVariables.size() > currentVariableIndex) {
+                    bounce = bounceVariables.get(currentVariableIndex);
+                }
+
+                // Check if we should bounce this variable
+                if (bounce) {
+
+                    // Bounce the current variable
+                    currentVariable.setValue(currentVariable.getValue() * -1.0);
+
+                }
+
+            }
+
         }
 
+        // Check if we are bouncing from cartesian to polar
         else if (this.mode == MODE.POLAR_2D && mode == MODE.CARTESIAN_2D) {
-            double newX2 = X.X2;
-            if (bounceX1) {
-                newX2 = Math.PI - X.X2;
+
+            // Get the bounce flags
+            boolean bounceX = bounceVariables.get(0);
+            boolean bounceY = bounceVariables.get(1);
+
+            // Get the direction variable
+            PositionEvolverVariable variableDirection = X.get(1);
+
+            // Check if we are bouncing horizontally
+            if (bounceX) {
+
+                // Bounce horizontally
+                variableDirection.setValue(
+                        Math.PI - variableDirection.getValue()
+                );
+
             }
-            if (bounceX2) {
-                newX2 *= -1.0;
+
+            // Check if we are bounding vertically
+            if (bounceY) {
+
+                // Bounce vertically
+                variableDirection.setValue(
+                        variableDirection.getValue() * -1.0
+                );
+
             }
-            X = new PositionVector(
-                    X.X1
-                    , newX2
-                    , 0.0);
+
         }
 
     }
@@ -677,6 +567,49 @@ public class PositionEvolver {
         , CARTESIAN_3D
         , POLAR_2D
         , SPHERICAL_3D
+    }
+
+    public static class RandomChangeEffect {
+
+        public final boolean canRandomlyChange;
+        public final double randomChangeValue;
+        public final RANDOM_CHANGE_INTERVAL randomChangeInterval;
+        public final boolean bounceOnRandomChange;
+
+        public RandomChangeEffect() {
+            canRandomlyChange = false;
+            randomChangeValue = 0.0;
+            randomChangeInterval = RANDOM_CHANGE_INTERVAL.CONSTANT;
+            bounceOnRandomChange = false;
+        }
+
+        public RandomChangeEffect(
+                boolean canRandomlyChange
+                , double randomChangeValue
+                , RANDOM_CHANGE_INTERVAL randomChangeInterval) {
+            this.canRandomlyChange = canRandomlyChange;
+            this.randomChangeValue = randomChangeValue;
+            this.randomChangeInterval = randomChangeInterval;
+            this.bounceOnRandomChange = false;
+        }
+
+        public RandomChangeEffect(
+                boolean canRandomlyChange
+                , double randomChangeValue
+                , RANDOM_CHANGE_INTERVAL randomChangeInterval
+                , boolean bounceOnRandomChange) {
+            this.canRandomlyChange = canRandomlyChange;
+            this.randomChangeValue = randomChangeValue;
+            this.randomChangeInterval = randomChangeInterval;
+            this.bounceOnRandomChange = bounceOnRandomChange;
+        }
+
+        public enum RANDOM_CHANGE_INTERVAL {
+            CONSTANT
+            , REGULAR
+            , RANDOM
+        }
+
     }
 
     public static class BoundaryEffect {
@@ -721,168 +654,6 @@ public class PositionEvolver {
             , PERIODIC_REFLECTIVE
         }
 
-    }
-
-
-
-    public static BoundaryHandlerValues processBoundary(
-            int boundaryReached
-            , double currentValue
-            , double minimumValue
-            , double maximumValue
-            , BoundaryEffect boundaryEffect) {
-
-        // Check the extremal case where the min = max
-        if (minimumValue == maximumValue) {
-            double newValue = minimumValue;
-            if (boundaryEffect.mirrorAbsoluteValueBoundaries
-                    && (boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                    || boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
-                    || boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE)) {
-                newValue *= -1.0;
-            }
-            return new BoundaryHandlerValues(
-                    newValue
-                    , boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                    || boundaryEffect.boundaryEffect == BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE
-            );
-        }
-
-        double newValue = currentValue;
-        boolean bounce = false;
-
-        double valueRange = maximumValue - minimumValue;
-
-        int typeOfBoundaryReached = boundaryReached;
-        double minimumValueToUse = minimumValue;
-        double maximumValueToUse = maximumValue;
-        double otherRegionMinimumValue = -1.0 * maximumValue;
-        double otherRegionMaximumValue = -1.0 * minimumValue;
-        if (boundaryEffect.mirrorAbsoluteValueBoundaries) {
-            double negativeMinimumValue = -1.0 * maximumValue;
-            double negativeMaximumValue = -1.0 * minimumValue;
-            switch (boundaryReached) {
-                case -2:
-                    minimumValueToUse = negativeMinimumValue;
-                    maximumValueToUse = negativeMaximumValue;
-                    otherRegionMinimumValue = minimumValue;
-                    otherRegionMaximumValue = maximumValue;
-                    typeOfBoundaryReached = -1;
-                    break;
-                case -1:
-                    minimumValueToUse = negativeMinimumValue;
-                    maximumValueToUse = negativeMaximumValue;
-                    otherRegionMinimumValue = minimumValue;
-                    otherRegionMaximumValue = maximumValue;
-                    typeOfBoundaryReached = 1;
-                    break;
-                case 1:
-                    typeOfBoundaryReached = -1;
-                    break;
-                case 2:
-                    typeOfBoundaryReached = 1;
-                    break;
-            }
-        }
-
-        double boundaryOverflow = (typeOfBoundaryReached == 1) ?
-                newValue - maximumValueToUse
-                : minimumValueToUse - newValue;
-
-        double remainingOverflow = boundaryOverflow % valueRange;
-
-        int numberOfBoundariesReached = (int) Math.floor(boundaryOverflow / valueRange) + 1;
-
-        switch (boundaryEffect.boundaryEffect) {
-            case STICK:
-                newValue = (typeOfBoundaryReached == -1) ? minimumValueToUse : maximumValueToUse;
-                break;
-
-            case BOUNCE:
-                if (numberOfBoundariesReached % 2 == 0) {
-                    newValue = (typeOfBoundaryReached == 1) ?
-                            minimumValueToUse + remainingOverflow
-                            : maximumValueToUse - remainingOverflow;
-                } else {
-                    newValue = (typeOfBoundaryReached == 1) ?
-                            maximumValueToUse - remainingOverflow
-                            : minimumValueToUse + remainingOverflow;
-                    bounce = true;
-                }
-                break;
-
-            case PERIODIC:
-                if (boundaryEffect.mirrorAbsoluteValueBoundaries) {
-
-                    if (numberOfBoundariesReached % 2 == 1) {
-
-                        if (typeOfBoundaryReached == 1) {
-                            newValue = minimumValueToUse + remainingOverflow;
-                        } else {
-                            newValue = maximumValueToUse - remainingOverflow;
-                        }
-
-                    } else {
-
-                        if (typeOfBoundaryReached == 1) {
-                            newValue = otherRegionMinimumValue + remainingOverflow;
-                        } else {
-                            newValue = otherRegionMaximumValue - remainingOverflow;
-                        }
-
-                    }
-
-                } else {
-
-                    if (typeOfBoundaryReached == 1) {
-                        newValue = minimumValueToUse + remainingOverflow;
-                    } else {
-                        newValue = maximumValueToUse - remainingOverflow;
-                    }
-
-                }
-
-                break;
-
-            case PERIODIC_REFLECTIVE:
-                if (numberOfBoundariesReached % 2 == 0) {
-                    newValue = (typeOfBoundaryReached == 1) ?
-                            minimumValueToUse + remainingOverflow
-                            : maximumValueToUse - remainingOverflow;
-                } else {
-                    newValue = (typeOfBoundaryReached == 1) ?
-                            maximumValueToUse - remainingOverflow
-                            : minimumValueToUse + remainingOverflow;
-                    bounce = true;
-                }
-
-                break;
-
-            default: // STICK
-                newValue = (typeOfBoundaryReached == -1) ? minimumValueToUse : maximumValueToUse;
-        }
-        return new BoundaryHandlerValues(
-                newValue,
-                bounce);
-    }
-
-    public static class BoundaryHandlerValues {
-        public final double newValue;
-        public final boolean bounceValue;
-
-        public BoundaryHandlerValues(
-                double newValue
-                , boolean bounceValue) {
-            this.newValue = newValue;
-            this.bounceValue = bounceValue;
-        }
-
-    }
-
-    public enum RANDOM_CHANGE_INTERVAL {
-        CONSTANT
-        , REGULAR
-        , RANDOM
     }
 
 }

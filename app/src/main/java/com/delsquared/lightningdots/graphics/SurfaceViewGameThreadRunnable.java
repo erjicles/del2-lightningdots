@@ -17,6 +17,7 @@ import android.view.SurfaceHolder;
 
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.game.ClickTarget;
 import com.delsquared.lightningdots.game.ClickTargetSnapshot;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
@@ -27,6 +28,8 @@ import com.delsquared.lightningdots.game.UserClick;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class SurfaceViewGameThreadRunnable implements Runnable {
 
@@ -67,6 +70,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 	// Target paint
     private Paint paintIntermediateTarget;
 	private Paint paintTarget;
+    private Paint paintTargetDisabled;
 
 	// User click paints
 	private Paint defaultPaint;
@@ -160,6 +164,11 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 		paintTarget = new Paint(Paint.ANTI_ALIAS_FLAG);
 		paintTarget.setStyle(Paint.Style.STROKE);
 		paintTarget.setColor(context.getResources().getColor(R.color.android_light_blue));
+
+        // Add the disabled target paint
+        paintTargetDisabled = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintTargetDisabled.setStyle(Paint.Style.STROKE);
+        paintTargetDisabled.setColor(context.getResources().getColor(R.color.app_light_purple));
 
 		// Create the default user click paint
 		defaultPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -666,7 +675,14 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         boolean isLevelComplete = gameSnapshot.getIsLevelComplete();
         int awardLevel = gameSnapshot.getAwardLevel();
         boolean isNewHighScore = gameSnapshot.getIsNewHighScore();
-		ClickTargetSnapshot clickTargetSnapshot = gameSnapshot.getCurrentClickTargetSnapshot();
+        HashMap<String, ClickTargetSnapshot> mapClickTargetSnapshots = gameSnapshot.getMapClickTargetSnapshots();
+        ClickTargetSnapshot firstClickTargetSnapshot = null;
+        Iterator iterator = mapClickTargetSnapshots.entrySet().iterator();
+        while (iterator.hasNext()) {
+            Map.Entry<String, ClickTargetSnapshot> pair = (Map.Entry) iterator.next();
+            firstClickTargetSnapshot = pair.getValue();
+            break;
+        }
 
         // Get global app seettings
         boolean showClickTargetProperties = context.getResources().getBoolean(R.bool.activity_game_show_click_target_properties);
@@ -772,48 +788,49 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
         // Check if we are in debug mode and should show the click target properties
         if (BuildConfig.DEBUG
-                && showClickTargetProperties) {
+                && showClickTargetProperties
+                && firstClickTargetSnapshot != null) {
 
             textHandlerClickTargetPropertiesX.setText(
                     String.format(
                             context.getString(R.string.game_text_template_click_target_properties_X)
-                            , clickTargetSnapshot.getXPixels().X1
-                            , clickTargetSnapshot.getXPixels().X2
+                            , firstClickTargetSnapshot.getXPixels().getValue(0)
+                            , firstClickTargetSnapshot.getXPixels().getValue(1)
                     )
             );
             textHandlerClickTargetPropertiesdX.setText(
                     String.format(
                             context.getString(R.string.game_text_template_click_target_properties_dX)
-                            , clickTargetSnapshot.getDXdtPixelsPerMilliPolar().X1
-                            , clickTargetSnapshot.getDXdtPixelsPerMilliPolar().X2
+                            , firstClickTargetSnapshot.getDXdtPixelsPerSecondPolar().getValue(0)
+                            , firstClickTargetSnapshot.getDXdtPixelsPerSecondPolar().getValue(1)
                     )
             );
             textHandlerClickTargetPropertiesd2X.setText(
                     String.format(
                             context.getString(R.string.game_text_template_click_target_properties_d2X)
-                            , clickTargetSnapshot.getD2Xdt2PixelsPolar().X1
-                            , clickTargetSnapshot.getD2Xdt2PixelsPolar().X2
+                            , firstClickTargetSnapshot.getD2Xdt2PixelsPolar().getValue(0)
+                            , firstClickTargetSnapshot.getD2Xdt2PixelsPolar().getValue(1)
                     )
             );
             textHandlerClickTargetPropertiesRadius.setText(
                     String.format(
                             context.getString(R.string.game_text_template_click_target_properties_Radius)
-                            , clickTargetSnapshot.getRadiusPixels().X1
-                            , clickTargetSnapshot.getRadiusPixels().X2
+                            , firstClickTargetSnapshot.getRadiusPixels().getValue(0)
+                            , firstClickTargetSnapshot.getRotationRadians().getValue(0)
                     )
             );
             textHandlerClickTargetPropertiesdRadius.setText(
                     String.format(
                             context.getString(R.string.game_text_template_click_target_properties_dRadius)
-                            , clickTargetSnapshot.getDRadiusPixels().X1
-                            , clickTargetSnapshot.getDRadiusPixels().X2
+                            , firstClickTargetSnapshot.getDRadiusPixels().getValue(0)
+                            , firstClickTargetSnapshot.getDRotationRadians().getValue(0)
                     )
             );
             textHandlerClickTargetPropertiesd2Radius.setText(
                     String.format(
                             context.getString(R.string.game_text_template_click_target_properties_d2Radius)
-                            , clickTargetSnapshot.getD2RadiusPixels().X1
-                            , clickTargetSnapshot.getD2RadiusPixels().X2
+                            , firstClickTargetSnapshot.getD2RadiusPixels().getValue(0)
+                            , firstClickTargetSnapshot.getD2RotationRadians().getValue(0)
                     )
             );
 
@@ -940,8 +957,33 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 					|| gameState == Game.GameState.RUNNING
 					|| gameState == Game.GameState.PAUSED) {
 
-				// Draw the target
-                clickTargetSnapshot.draw(canvas, paintTarget);
+                // Loop through the click target snapshots
+                Iterator clickTargetSnapshotIterator = mapClickTargetSnapshots.entrySet().iterator();
+                while (clickTargetSnapshotIterator.hasNext()) {
+
+                    // Get the current click target snapshot
+                    Map.Entry<String, ClickTargetSnapshot> currentClickTargetSnapshotPair = (Map.Entry) clickTargetSnapshotIterator.next();
+                    ClickTargetSnapshot currentClickTargetSnapshot = currentClickTargetSnapshotPair.getValue();
+
+                    // Check if the click target is visible
+                    if (currentClickTargetSnapshot.getVisibility() == ClickTarget.VISIBILITY.VISIBLE) {
+
+                        // Check if it's enabled
+                        if (currentClickTargetSnapshot.getIsClickable()) {
+
+                            // Draw the target with the enabled paint
+                            currentClickTargetSnapshot.draw(canvas, paintTarget);
+
+                        } else { // It's disabled
+
+                            // Draw the target with the disabled paint
+                            currentClickTargetSnapshot.draw(canvas, paintTargetDisabled);
+
+                        }
+
+                    }
+
+                }
 
 			}
 
@@ -1142,6 +1184,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             // Set the target stroke width
             paintIntermediateTarget.setStrokeWidth((float) targetWidth);
             paintTarget.setStrokeWidth((float) targetWidth);
+            paintTargetDisabled.setStrokeWidth((float) targetWidth);
 
             // Calculate the playable width
             canvasPlayableWidth = width - borderWidth - borderWidth - borderPadding - borderPadding;

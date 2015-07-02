@@ -44,18 +44,18 @@ public class GameLevelDefinitionHelper {
             }
         }
 
-        // Get the click target profile script
-        ClickTargetProfileScript clickTargetProfileScript =
-                ClickTargetProfileScriptHelper.getClickTargetProfileScript(
+        // Get the level definition
+        LevelDefinitionLadder levelDefinitionLadder =
+                LevelDefinitionLadderHelper.getLevelDefinitionLadder(
                         context
-                        , gameType
-                        , gameLevel);
+                        , gameLevel
+                );
 
         // Create the game level definition
         GameLevelDefinition gameLevelDefinition = new GameLevelDefinition(
                 gameTimeLimitMillis
                 , arrayListTargetUserClicks
-                , clickTargetProfileScript);
+                , levelDefinitionLadder);
 
         return gameLevelDefinition;
 

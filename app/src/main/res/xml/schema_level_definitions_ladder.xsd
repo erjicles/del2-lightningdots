@@ -1,0 +1,261 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
+    elementFormDefault="qualified"
+    xmlns="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
+    xmlns:ctps="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    >
+
+    <xs:element name="Levels">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="Level" type="level" minOccurs="0" maxOccurs="unbounded">
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+        <!--<xs:unique name="unique-level">
+            <xs:selector xpath="ctps:Level"></xs:selector>
+            <xs:field xpath="@level"></xs:field>
+        </xs:unique>-->
+    </xs:element>
+
+    <xs:complexType name="level">
+        <xs:all>
+            <xs:element name="ClickTargets" type="clickTargets" minOccurs="1" maxOccurs="1">
+                <!--<xs:unique name="unique-ClickTarget-name">
+                    <xs:selector xpath="ctps:ClickTarget"/>
+                    <xs:field xpath="@name"/>
+                </xs:unique>-->
+            </xs:element>
+            <xs:element name="TransitionTriggers" type="transitionTriggers" minOccurs="0" maxOccurs="1">
+                <!--<xs:unique name="unique-TransitionTrigger-source-target">
+                    <xs:selector xpath="ctps:TransitionTrigger"/>
+                    <xs:field xpath="@sourceClickTargetName"/>
+                    <xs:field xpath="@sourceClickTargetProfileName"/>
+                    <xs:field xpath="@targetClickTargetName"/>
+                    <xs:field xpath="@targetClickTargetProfileName"/>
+                </xs:unique>-->
+            </xs:element>
+            <xs:element name="RandomChangeTriggers" type="randomChangeTriggers" minOccurs="0" maxOccurs="1">
+                <!--<xs:unique name="unique-RandomChangeTrigger-sourceVariable-targetVariable">
+                    <xs:selector xpath="ctps:RandomChangeTrigger"/>
+                    <xs:field xpath="@sourceClickTargetName"/>
+                    <xs:field xpath="@sourceClickTargetProfileName"/>
+                    <xs:field xpath="@sourceVariable"/>
+                    <xs:field xpath="@targetClickTargetName"/>
+                    <xs:field xpath="@targetClickTargetProfileName"/>
+                    <xs:field xpath="@targetVariable"/>
+                </xs:unique>-->
+            </xs:element>
+        </xs:all>
+        <xs:attribute name="level" type="xs:int" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="clickTargets">
+        <xs:sequence>
+            <xs:element name="ClickTarget" type="clickTarget" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="clickTarget">
+        <xs:sequence>
+            <xs:element name="ClickTargetProfileScript" type="clickTargetProfileScript" minOccurs="1" maxOccurs="unbounded">
+                <!--<xs:unique name="unique-ClickTargetProfile-name">
+                    <xs:selector xpath="ctps:ClickTargetProfile"/>
+                    <xs:field xpath="@name"/>
+                </xs:unique>-->
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="clickTargetProfileScript">
+        <xs:sequence>
+            <xs:element name="ClickTargetProfile" type="clickTargetProfile" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="scriptTransitionMode" type="transitionMode"/>
+        <xs:attribute name="scriptTransitionInterval" type="transitionInterval"/>
+        <xs:attribute name="scriptCycleDirection" type="cycleDirection"/>
+        <xs:attribute name="initialClickTargetProfile" type="xs:integer"/>
+    </xs:complexType>
+
+    <xs:complexType name="clickTargetProfile">
+
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="Variables" type="variables" minOccurs="0" maxOccurs="1">
+                <!--<xs:unique name="unique-variable-name">
+                    <xs:selector xpath="ctps:Variable"/>
+                    <xs:field xpath="@name"/>
+                </xs:unique>-->
+            </xs:element>
+        </xs:choice>
+
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="scriptTransitionValue" type="xs:float"/>
+        <xs:attribute name="targetShape" type="targetShape"/>
+        <xs:attribute name="targetIsClickable" type="trueOrFalse"/>
+        <xs:attribute name="targetVisibility" type="visibility"/>
+
+    </xs:complexType>
+
+    <xs:complexType name="variables">
+        <xs:sequence>
+            <xs:element name="Variable" type="targetVariable" minOccurs="0" maxOccurs="unbounded">
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="targetVariable">
+        <xs:all minOccurs="0">
+            <xs:element name="RandomChangeEffect" type="randomChangeEffect" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="BoundaryEffect" type="boundaryEffect" minOccurs="0" maxOccurs="1"/>
+        </xs:all>
+        <xs:attribute name="name" type="targetVariableName" use="required"/>
+        <xs:attribute name="minimumValue" type="xs:float"/>
+        <xs:attribute name="initialValue" type="xs:float"/>
+        <xs:attribute name="maximumValue" type="xs:float"/>
+        <xs:attribute name="randomInitialValue" type="trueOrFalse"/>
+        <xs:attribute name="randomInitialSign" type="trueOrFalse"/>
+        <xs:attribute name="canChange" type="trueOrFalse"/>
+        <xs:attribute name="transitionContinuity" type="transitionContinuity"/>
+    </xs:complexType>
+
+    <xs:complexType name="randomChangeEffect">
+        <xs:attribute name="canRandomlyChange" type="trueOrFalse"/>
+        <xs:attribute name="randomChangeValue" type="xs:float"/>
+        <xs:attribute name="randomChangeInterval" type="randomChangeInterval"/>
+        <xs:attribute name="bounceOnRandomChange" type="trueOrFalse"/>
+    </xs:complexType>
+
+    <xs:complexType name="boundaryEffect">
+        <xs:attribute name="boundaryEffect" type="boundaryEffectAttribute"/>
+        <xs:attribute name="mirrorAbsoluteValueBoundaries" type="trueOrFalse"/>
+        <xs:attribute name="bounceOnInternalBoundary" type="trueOrFalse"/>
+    </xs:complexType>
+
+    <xs:complexType name="randomChangeTriggers">
+        <xs:sequence>
+            <xs:element name="RandomChangeTrigger" type="randomChangeTrigger" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="randomChangeTrigger">
+        <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="sourceVariable" type="targetVariableName" use="required"/>
+        <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="targetVariable" type="targetVariableName" use="required"/>
+    </xs:complexType>
+
+    <xs:complexType name="transitionTriggers">
+        <xs:sequence>
+            <xs:element name="TransitionTrigger" type="transitionTrigger" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="transitionTrigger">
+        <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
+    </xs:complexType>
+
+
+
+    <xs:simpleType name="targetShape">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CIRCLE"/>
+            <xs:enumeration value="SQUARE"/>
+            <xs:enumeration value="TRIANGLE_EQUILATERAL"/>
+            <xs:enumeration value="STAR_5_POINTS"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+    <xs:simpleType name="targetVariableName">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="position_horizontal"/>
+            <xs:enumeration value="position_vertical"/>
+            <xs:enumeration value="speed"/>
+            <xs:enumeration value="direction"/>
+            <xs:enumeration value="dSpeed"/>
+            <xs:enumeration value="dDirection"/>
+            <xs:enumeration value="radius"/>
+            <xs:enumeration value="dRadius"/>
+            <xs:enumeration value="d2Radius"/>
+            <xs:enumeration value="rotation"/>
+            <xs:enumeration value="dRotation"/>
+            <xs:enumeration value="d2Rotation"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+
+    <xs:simpleType name="trueOrFalse">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="true"/>
+            <xs:enumeration value="false"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="visibility">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="VISIBLE"/>
+            <xs:enumeration value="HIDDEN"/>
+            <xs:enumeration value="GONE"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="levelInteger">
+        <xs:restriction base="xs:integer">
+            <xs:minInclusive value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="transitionMode">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CONSTANT"/>
+            <xs:enumeration value="CYCLE"/>
+            <xs:enumeration value="RANDOM"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="transitionInterval">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CONSTANT"/>
+            <xs:enumeration value="REGULAR"/>
+            <xs:enumeration value="RANDOM"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="cycleDirection">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="INCREASING"/>
+            <xs:enumeration value="DECREASING"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="randomChangeInterval">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CONSTANT"/>
+            <xs:enumeration value="REGULAR"/>
+            <xs:enumeration value="RANDOM"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="boundaryEffectAttribute">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="STICK"/>
+            <xs:enumeration value="BOUNCE"/>
+            <xs:enumeration value="PERIODIC"/>
+            <xs:enumeration value="PERIODIC_REFLECTIVE"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="transitionContinuity">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CONTINUOUS"/>
+            <xs:enumeration value="DISCONTINUOUS"/>
+            <xs:enumeration value="DEFAULT"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
+</xs:schema>

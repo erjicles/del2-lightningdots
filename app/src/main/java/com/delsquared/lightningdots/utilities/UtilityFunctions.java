@@ -2,6 +2,7 @@ package com.delsquared.lightningdots.utilities;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.XmlResourceParser;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.TypedValue;
@@ -141,8 +142,8 @@ public class UtilityFunctions {
     //            <0 for P2  right of the line
     //    See: Algorithm 1 "Area of Triangles and Polygons"
     public static double pointIsLeftOfEdge(PositionVector P0, PositionVector P1, PositionVector P2) {
-        return ( (P1.X1 - P0.X1) * (P2.X2 - P0.X2) )
-                - ( (P2.X1 -  P0.X1) * (P1.X2 - P0.X2) );
+        return ( (P1.getValue(0) - P0.getValue(0)) * (P2.getValue(1) - P0.getValue(1)) )
+                - ( (P2.getValue(0) -  P0.getValue(0)) * (P1.getValue(1) - P0.getValue(1)) );
     }
 
     // wn_PnPoly(): winding number test for a point in a polygon
@@ -160,15 +161,15 @@ public class UtilityFunctions {
         for (int i = 0; i < V.size() - 1; i++) {    // edge from V[i] to  V[i+1]
             PositionVector V1 = V.get(i);
             PositionVector V2 = V.get(i+1);
-            if (V1.X2 <= P.X2) {                    // start y <= P.y
-                if (V2.X2 > P.X2) {                 // an upward crossing
+            if (V1.getValue(1) <= P.getValue(1)) {                    // start y <= P.y
+                if (V2.getValue(1) > P.getValue(1)) {                 // an upward crossing
                     if (pointIsLeftOfEdge(V1, V2, P) > 0) {    // P left of  edge
                         ++wn;                       // have  a valid up intersect
                     }
                 }
             }
             else {                                  // start y > P.y (no test needed)
-                if (V2.X2 <= P.X2) {                // a downward crossing
+                if (V2.getValue(1) <= P.getValue(1)) {                // a downward crossing
                     if (pointIsLeftOfEdge(V1, V2, P) < 0) {    // P right of  edge
                         --wn;                       // have  a valid down intersect
                     }
@@ -177,6 +178,47 @@ public class UtilityFunctions {
         }
 
         return wn;
+    }
+
+    public static <T extends Enum<T>> T getEnumValue(
+            String enumValueName
+            , final Class<T> enumClass
+            , T defaultValue) {
+
+        // Initialize the result
+        T resultValue = defaultValue;
+
+        try {
+            resultValue = Enum.valueOf(
+                    enumClass
+                    , enumValueName
+            );
+        } catch (Exception e) {
+            resultValue = defaultValue;
+        }
+         return resultValue;
+    }
+
+    public static <T extends Enum<T>> T getEnumValue(
+            XmlResourceParser xmlResourceParser
+            , String attributeName
+            , final Class<T> enumClass
+            , T defaultValue) {
+
+        // Initialize the result
+        T resultValue = defaultValue;
+
+        if (xmlResourceParser.getAttributeValue(null, attributeName) != null) {
+
+            resultValue = getEnumValue(
+                    xmlResourceParser.getAttributeValue(null, attributeName)
+                    , enumClass
+                    , defaultValue);
+
+        }
+
+        return resultValue;
+
     }
 
 }

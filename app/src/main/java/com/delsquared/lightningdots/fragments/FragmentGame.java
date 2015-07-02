@@ -2,7 +2,6 @@ package com.delsquared.lightningdots.fragments;
 
 import android.app.Fragment;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,7 @@ import android.view.ViewGroup;
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.database.LoaderHelperGameResult;
-import com.delsquared.lightningdots.game.ClickTargetProfileScriptHelper;
+import com.delsquared.lightningdots.game.LevelDefinitionLadderHelper;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.game.InterfaceGameCallback;
@@ -57,9 +56,12 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 		this.currentGameType = currentGameType;
 
         // Get the highest scripted level
-        this.highestScriptedLevel = ClickTargetProfileScriptHelper.getHighestScriptedLevel(
-                getActivity().getApplicationContext()
-                , Game.GameType.values()[this.currentGameType]);
+        this.highestScriptedLevel = 1;
+        if (this.currentGameType == Game.GameType.AGILITY.ordinal()) {
+            this.highestScriptedLevel = LevelDefinitionLadderHelper.getHighestScriptedLevel(
+                    getActivity().getApplicationContext());
+        }
+
 
         // Get the best score overall
         loadGameResultHighScoreOverall();
