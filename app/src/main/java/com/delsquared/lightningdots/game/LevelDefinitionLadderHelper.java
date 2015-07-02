@@ -1545,34 +1545,6 @@ public class LevelDefinitionLadderHelper {
                         else if (xmlResourceParser.getName().contentEquals(NODE_NAME_CLICK_TARGET_PROFILE_SCRIPT)
                                 && currentXMLClickTarget != null) {
 
-                            // Check if the initial click target profile name is not in the map
-                            if (currentXMLClickTarget
-                                    .xmlClickTargetProfileScript
-                                    .mapXMLClickTargetProfiles.containsKey(
-                                            currentXMLClickTarget
-                                                    .xmlClickTargetProfileScript
-                                                    .initialClickTargetProfileName)) {
-
-                                // Initialize the name to blank
-                                currentXMLClickTarget.xmlClickTargetProfileScript.initialClickTargetProfileName = "";
-
-                                // Loop through the XMLClickTargetProfiles
-                                Iterator xmlClickTargetProfileIterator = currentXMLClickTarget.xmlClickTargetProfileScript.mapXMLClickTargetProfiles.entrySet().iterator();
-                                while (xmlClickTargetProfileIterator.hasNext()) {
-
-                                    // Get the current XMLClickTargetProfile
-                                    Map.Entry<String, XMLClickTargetProfile> currentEntry = (Map.Entry) xmlClickTargetProfileIterator.next();
-                                    XMLClickTargetProfile xmlClickTargetProfile = currentEntry.getValue();
-
-                                    // Set the initial profile name
-                                    currentXMLClickTarget.xmlClickTargetProfileScript.initialClickTargetProfileName = xmlClickTargetProfile.name;
-
-                                    // Break out of the loop
-                                    break;
-
-                                }
-
-                            }
 
 
                         }
