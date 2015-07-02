@@ -80,9 +80,19 @@ public class ClickTargetProfileScript {
     }
 
     public void setCurrentClickTargetProfileName(String newName) {
+
+        // Set the profile name
         if (mapClickTargetProfiles.containsKey(newName)) {
             this.currentClickTargetProfileName = newName;
         }
+
+        // Reset the transition clock
+        resetTransitionClock();
+
+    }
+
+    public void resetTransitionClock() {
+        totalTimeElapsedSinceLastTransitionSeconds = 0.0;
     }
 
     public boolean processTransition(double timeElapsedSinceLastUpdateSeconds) {
