@@ -105,7 +105,6 @@
                                 transitionContinuity="CONTINUOUS"/>
                         </Variables>
                     </ClickTargetProfile>
-
                 </ClickTargetProfileScript>
             </ClickTarget>
         </ClickTargets>
@@ -834,6 +833,329 @@
                 </ClickTargetProfileScript>
             </ClickTarget>
         </ClickTargets>
+    </Level>
+
+    <Level level="31">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable name="radius" initialValue="0.75"/>
+                            <Variable name="speed" initialValue="1.75"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="radius" initialValue="0.75"/>
+                            <Variable name="speed" initialValue="1.75"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+    </Level>
+
+    <Level level="32">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR">
+                    <ClickTargetProfile
+                        name="0"
+                        targetIsClickable="true"
+                        scriptTransitionValue="2.5">
+                        <Variables>
+                            <Variable name="radius" initialValue="0.75"/>
+                            <Variable name="speed" initialValue="1.50"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile
+                        name="1"
+                        targetIsClickable="false"
+                        scriptTransitionValue="2.5">
+                        <Variables>
+                            <Variable name="radius" initialValue="0.75"/>
+                            <Variable name="speed" initialValue="1.50"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="radius" initialValue="0.75"/>
+                            <Variable name="speed" initialValue="1.50"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="true">
+                        <Variables>
+                            <Variable name="radius" initialValue="0.75"/>
+                            <Variable name="speed" initialValue="1.50"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <TransitionTriggers>
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                targetClickTargetName="1" targetClickTargetProfileName="0" />
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="1" />
+        </TransitionTriggers>
+    </Level>
+
+    <Level level="33">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.4">
+                        <Variables>
+                            <Variable name="position_horizontal">
+                                <RandomChangeEffect
+                                    canRandomlyChange="true"
+                                    randomChangeInterval="RANDOM"
+                                    randomChangeValue="0.3"/>
+                            </Variable>
+                            <Variable
+                                name="speed"
+                                initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable
+                                name="radius"
+                                initialValue="0.6"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.4">
+                        <Variables>
+                            <Variable
+                                name="speed"
+                                initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable
+                                name="radius"
+                                initialValue="0.6"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable
+                                name="radius"
+                                initialValue="0.6"
+                                minimumValue="0.4"
+                                maximumValue="0.6"
+                                canChange="true"
+                                transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable
+                                name="radius"
+                                initialValue="0.6"
+                                minimumValue="0.4"
+                                maximumValue="0.6"
+                                canChange="true"
+                                transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <TransitionTriggers>
+            <TransitionTrigger sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                targetClickTargetName="1" targetClickTargetProfileName="0" />
+            <TransitionTrigger sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="1" />
+        </TransitionTriggers>
+        <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
+                targetClickTargetName="0" targetClickTargetProfileName="0" targetVariable="direction"/>
+            <RandomChangeTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
+                targetClickTargetName="1" targetClickTargetProfileName="0" targetVariable="direction"/>
+        </RandomChangeTriggers>
+    </Level>
+
+    <Level level="34">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0">
+                        <Variables>
+                            <Variable
+                                name="speed"
+                                initialValue="1.25"
+                                minimumValue="1.25"
+                                maximumValue="5.0"
+                                canChange="true"/>
+                            <Variable
+                                name="dSpeed"
+                                initialValue="2.0"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable
+                                name="speed"
+                                initialValue="5.0"
+                                minimumValue="1.25"
+                                maximumValue="5.0"
+                                canChange="true"/>
+                            <Variable
+                                name="dSpeed"
+                                initialValue="2.0"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+    </Level>
+
+    <Level level="35">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR">
+                    <ClickTargetProfile
+                        name="0"
+                        scriptTransitionValue="1.0">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile
+                        name="1"
+                        targetIsClickable="false"
+                        scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript
+                    initialClickTargetProfile="1"
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR">
+                    <ClickTargetProfile
+                        name="0"
+                        targetShape="TRIANGLE_EQUILATERAL"
+                        scriptTransitionValue="1.0">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable
+                                name="rotation"
+                                canChange="true"
+                                transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile
+                        name="1"
+                        targetShape="TRIANGLE_EQUILATERAL"
+                        targetIsClickable="false"
+                        scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable
+                                name="rotation"
+                                canChange="true"
+                                transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="2">
+                <ClickTargetProfileScript
+                    initialClickTargetProfile="1"
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR">
+                    <ClickTargetProfile
+                        name="0"
+                        targetShape="STAR_5_POINTS"
+                        scriptTransitionValue="1.0">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable
+                                name="rotation"
+                                canChange="true"
+                                transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile
+                        name="1"
+                        targetShape="STAR_5_POINTS"
+                        targetIsClickable="false"
+                        scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable
+                                name="rotation"
+                                canChange="true"
+                                transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <TransitionTriggers>
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="0"/>
+            <TransitionTrigger
+                sourceClickTargetName="1" sourceClickTargetProfileName="1"
+                targetClickTargetName="2" targetClickTargetProfileName="0"/>
+            <TransitionTrigger
+                sourceClickTargetName="2" sourceClickTargetProfileName="1"
+                targetClickTargetName="0" targetClickTargetProfileName="0"/>
+        </TransitionTriggers>
     </Level>
 
 </Levels>
