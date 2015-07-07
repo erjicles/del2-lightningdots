@@ -574,7 +574,12 @@ public class Game {
 	public void processUserClick(Context context, float clickX, float clickY) {
 
 		// Initialize the click to being inside the target
-		boolean isInsideTarget = true;
+		boolean isInsideTarget = false;
+
+        // Check if there are no click targets - if none, set it to true
+        if (mapClickTargets.size() == 0) {
+            isInsideTarget = true;
+        }
 
 		// Check if the game type is agility
 		if (gameType == Game.GameType.AGILITY) {
