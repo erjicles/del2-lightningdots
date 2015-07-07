@@ -620,6 +620,14 @@ public class Game {
 
 		}
 
+        // The game type is not ladder
+        else {
+
+            // Set the flag to true
+            isInsideTarget = true;
+
+        }
+
 		// Create the new user click
 		UserClick userClick = new UserClick(
 				(int) clickX
