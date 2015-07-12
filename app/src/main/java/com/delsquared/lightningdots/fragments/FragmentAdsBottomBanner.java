@@ -97,6 +97,9 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
                     //if (BuildConfig.DEBUG) {
 
                     // Add specific devices to test device list
+                    // Motorolla Droid Rarz Maxx HD
+                    adRequestBuilder.addTestDevice("8D7B51BEF3C6133F9AF035FCDF3ADF9A");
+                    // Samsung Galaxy S5
                     adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
 
                     //}
