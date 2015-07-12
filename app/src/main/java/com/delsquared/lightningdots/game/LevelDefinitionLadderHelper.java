@@ -786,6 +786,7 @@ public class LevelDefinitionLadderHelper {
         public ClickTargetProfileScript.SCRIPT_CYCLE_DIRECTION scriptCycleDirection;
         public String initialClickTargetProfileName;
 
+        public ArrayList<String> arrayListClickTargetProfileNames;
         public HashMap<String, XMLClickTargetProfile> mapXMLClickTargetProfiles;
 
         public XMLClickTargetProfileScript(Context context) {
@@ -804,6 +805,7 @@ public class LevelDefinitionLadderHelper {
                     );
             initialClickTargetProfileName = "";
 
+            arrayListClickTargetProfileNames = new ArrayList<>();
             mapXMLClickTargetProfiles = new HashMap<>();
 
         }
@@ -816,21 +818,36 @@ public class LevelDefinitionLadderHelper {
                 // Reinitialize the initial name to blank
                 initialClickTargetProfileName = "";
 
-                // Loop through the click target profiles
-                Iterator xmlClickTargetProfilesIterator = mapXMLClickTargetProfiles.entrySet().iterator();
-                while (xmlClickTargetProfilesIterator.hasNext()) {
+                // Check if there are names
+                if (arrayListClickTargetProfileNames.size() > 0) {
 
-                    // Get the current XMLClickTargetProfile
-                    Map.Entry<String, XMLClickTargetProfile> currentXMLClickTargetProfilePair = (Map.Entry) xmlClickTargetProfilesIterator.next();
-                    String currentXMLClickTargetProfileName = currentXMLClickTargetProfilePair.getKey();
+                    // Set the initial profile to the first name
+                    initialClickTargetProfileName = arrayListClickTargetProfileNames.get(0);
 
-                    // Set the initial name to this click target profile's name
-                    initialClickTargetProfileName = currentXMLClickTargetProfileName;
-
-                    // Break out of the loop
-                    break;
                 }
 
+                // Check if the map of click target profiles still does not contain the initial name
+                if (!mapXMLClickTargetProfiles.containsKey(initialClickTargetProfileName)) {
+
+                    // Reinitialize the initial name to blank
+                    initialClickTargetProfileName = "";
+
+                    // Loop through the click target profiles
+                    Iterator xmlClickTargetProfilesIterator = mapXMLClickTargetProfiles.entrySet().iterator();
+                    while (xmlClickTargetProfilesIterator.hasNext()) {
+
+                        // Get the current XMLClickTargetProfile
+                        Map.Entry<String, XMLClickTargetProfile> currentXMLClickTargetProfilePair = (Map.Entry) xmlClickTargetProfilesIterator.next();
+                        String currentXMLClickTargetProfileName = currentXMLClickTargetProfilePair.getKey();
+
+                        // Set the initial name to this click target profile's name
+                        initialClickTargetProfileName = currentXMLClickTargetProfileName;
+
+                        // Break out of the loop
+                        break;
+                    }
+
+                }
 
             }
         }
@@ -1224,6 +1241,7 @@ public class LevelDefinitionLadderHelper {
                             xmlClickTargetProfile.visibility = visibility;
 
                             // Add it to the ClickTargetProfileScript
+                            currentXMLClickTarget.xmlClickTargetProfileScript.arrayListClickTargetProfileNames.add(name);
                             currentXMLClickTarget.xmlClickTargetProfileScript.mapXMLClickTargetProfiles.put(name, xmlClickTargetProfile);
 
                             // Set the trackers
