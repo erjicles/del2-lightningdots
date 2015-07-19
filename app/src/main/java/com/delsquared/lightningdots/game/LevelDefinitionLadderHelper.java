@@ -37,6 +37,8 @@ public class LevelDefinitionLadderHelper {
     private static final String NODE_NAME_TRANSITION_TRIGGER = "TransitionTrigger";
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGERS = "RandomChangeTriggers";
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGER = "RandomChangeTrigger";
+    private static final String NODE_NAME_SYNC_VARIABLE_TRIGGERS = "SyncVariableTriggers";
+    private static final String NODE_NAME_SYNC_VARIABLE_TRIGGER = "SyncVariableTrigger";
 
 
     // <Level> attribute names
@@ -92,6 +94,15 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_SOURCE_CLICK_TARGET_PROFILE_NAME = "sourceClickTargetProfileName";
     private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_TARGET_CLICK_TARGET_NAME = "targetClickTargetName";
     private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_TARGET_CLICK_TARGET_PROFILE_NAME = "targetClickTargetProfileName";
+
+    // <SyncVariableTrigger> attribute names
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_NAME = "sourceClickTargetName";
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_PROFILE_NAME = "sourceClickTargetProfileName";
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_TARGET_CLICK_TARGET_NAME = "targetClickTargetName";
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_TARGET_CLICK_TARGET_PROFILE_NAME = "targetClickTargetProfileName";
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_VARIABLE_NAME = "variableName";
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_MODE = "mode";
+    private static final String ATTRIBUTE_NAME_SYNCVARIABLE_VALUE = "value";
 
 
     // Variable names
@@ -156,12 +167,54 @@ public class LevelDefinitionLadderHelper {
 
     }
 
+    public static class XMLSyncVariableTrigger {
+
+        public final String sourceClickTargetName;
+        public final String sourceClickTargetProfileName;
+        public final String targetClickTargetName;
+        public final String targetClickTargetProfileName;
+        public final String variableName;
+        public final LevelDefinitionLadder.SyncVariableTrigger.MODE mode;
+        public final double value;
+
+        public XMLSyncVariableTrigger(
+                String sourceClickTargetName
+                , String sourceClickTargetProfileName
+                , String targetClickTargetName
+                , String targetClickTargetProfileName
+                , String variableName
+                , LevelDefinitionLadder.SyncVariableTrigger.MODE mode
+                , double value) {
+            this.sourceClickTargetName = sourceClickTargetName;
+            this.sourceClickTargetProfileName = sourceClickTargetProfileName;
+            this.targetClickTargetName = targetClickTargetName;
+            this.targetClickTargetProfileName = targetClickTargetProfileName;
+            this.variableName = variableName;
+            this.mode = mode;
+            this.value = value;
+        }
+
+        public LevelDefinitionLadder.SyncVariableTrigger toSyncVariableTrigger() {
+            return new LevelDefinitionLadder.SyncVariableTrigger(
+                    sourceClickTargetName
+                    , sourceClickTargetProfileName
+                    , targetClickTargetName
+                    , targetClickTargetProfileName
+                    , variableName
+                    , mode
+                    , value
+            );
+        }
+
+    }
+
     public static class XMLTransitionTrigger {
 
         public final String sourceClickTargetName;
         public final String sourceClickTargetProfileName;
         public final String targetClickTargetName;
         public final String targetClickTargetProfileName;
+        public ArrayList<XMLSyncVariableTrigger> arrayListXMLSyncVariableTriggers;
 
         public XMLTransitionTrigger(
                 String sourceClickTargetName
@@ -172,14 +225,24 @@ public class LevelDefinitionLadderHelper {
             this.sourceClickTargetProfileName = sourceClickTargetProfileName;
             this.targetClickTargetName = targetClickTargetName;
             this.targetClickTargetProfileName = targetClickTargetProfileName;
+            this.arrayListXMLSyncVariableTriggers = new ArrayList<>();
         }
 
         public LevelDefinitionLadder.TransitionTrigger toTransitionTrigger() {
+
+            // Convert the XMLSyncVariables to SyncVariables
+            ArrayList<LevelDefinitionLadder.SyncVariableTrigger> arrayListSyncVariableTriggers = new ArrayList<>();
+            for (XMLSyncVariableTrigger xmlSyncVariableTrigger : arrayListXMLSyncVariableTriggers) {
+                LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger = xmlSyncVariableTrigger.toSyncVariableTrigger();
+                arrayListSyncVariableTriggers.add(syncVariableTrigger);
+            }
+
             return new LevelDefinitionLadder.TransitionTrigger(
                     sourceClickTargetName
                     , sourceClickTargetProfileName
                     , targetClickTargetName
                     , targetClickTargetProfileName
+                    , arrayListSyncVariableTriggers
             );
         }
     }
@@ -192,6 +255,7 @@ public class LevelDefinitionLadderHelper {
         public final String targetClickTargetName;
         public final String targetClickTargetProfileName;
         public final String targetVariable;
+        public ArrayList<XMLSyncVariableTrigger> arrayListXMLSyncVariableTriggers;
 
         public XMLRandomChangeTrigger(
                 String sourceClickTargetName
@@ -206,9 +270,18 @@ public class LevelDefinitionLadderHelper {
             this.targetClickTargetName = targetClickTargetName;
             this.targetClickTargetProfileName = targetClickTargetProfileName;
             this.targetVariable = targetVariable;
+            this.arrayListXMLSyncVariableTriggers = new ArrayList<>();
         }
 
         public LevelDefinitionLadder.RandomChangeTrigger toRandomChangeTrigger() {
+
+            // Convert the XMLSyncVariables to SyncVariables
+            ArrayList<LevelDefinitionLadder.SyncVariableTrigger> arrayListSyncVariableTriggers = new ArrayList<>();
+            for (XMLSyncVariableTrigger xmlSyncVariableTrigger : arrayListXMLSyncVariableTriggers) {
+                LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger = xmlSyncVariableTrigger.toSyncVariableTrigger();
+                arrayListSyncVariableTriggers.add(syncVariableTrigger);
+            }
+
             return new LevelDefinitionLadder.RandomChangeTrigger(
                     sourceClickTargetName
                     , sourceClickTargetProfileName
@@ -216,6 +289,7 @@ public class LevelDefinitionLadderHelper {
                     , targetClickTargetName
                     , targetClickTargetProfileName
                     , targetVariable
+                    , arrayListSyncVariableTriggers
             );
         }
 
@@ -323,6 +397,7 @@ public class LevelDefinitionLadderHelper {
                     , minimumValue
                     , initialValue
                     , maximumValue
+                    , usesInitialValueMultipliers
                     , randomInitialValue
                     , randomInitialSign
                     , canChange
@@ -1057,10 +1132,12 @@ public class LevelDefinitionLadderHelper {
             // Initialize the flag on if we found the level
             boolean foundLevel = false;
 
-            // Initialize tracker
+            // Initialize trackers
             String currentClickTargetName = null;
             String currentClickTargetProfileName = null;
             String currentVariableName = null;
+            int currentTransitionTriggerIndex = -1;
+            int currentRandomChangeTriggerIndex = -1;
 
             // Get a XmlResourceParser object to read contents of the xml file
             XmlResourceParser xmlResourceParser =
@@ -1108,6 +1185,9 @@ public class LevelDefinitionLadderHelper {
                         XMLClickTargetProfile currentXMLClickTargetProfile = null;
                         XMLVariable currentXMLVariable = null;
 
+                        XMLRandomChangeTrigger currentXMLRandomChangeTrigger = null;
+                        XMLTransitionTrigger currentXMLTransitionTrigger = null;
+
                         // Get the current XML Objects
                         if (currentClickTargetName != null
                                 && xmlLevel.mapXMLClickTarget.containsKey(currentClickTargetName)) {
@@ -1130,6 +1210,14 @@ public class LevelDefinitionLadderHelper {
                             currentXMLVariable =
                                     currentXMLClickTargetProfile
                                             .mapXMLVariables.get(currentVariableName);
+                        }
+                        if (currentRandomChangeTriggerIndex >= 0) {
+                            currentXMLRandomChangeTrigger =
+                                    xmlLevel.arrayListXMLRandomChangeTriggers.get(currentRandomChangeTriggerIndex);
+                        }
+                        if (currentTransitionTriggerIndex >= 0) {
+                            currentXMLTransitionTrigger =
+                                    xmlLevel.arrayListXMLTransitionTriggers.get(currentTransitionTriggerIndex);
                         }
 
                         // -------------------- BEGIN Creating XML Objects -------------------- //
@@ -1445,13 +1533,15 @@ public class LevelDefinitionLadderHelper {
                                 // Add the XMLTransitionTrigger object to the transition trigger array list
                                 xmlLevel.arrayListXMLTransitionTriggers.add(xmlTransitionTrigger);
 
+                                // Set the trackers
+                                currentTransitionTriggerIndex = xmlLevel.arrayListXMLTransitionTriggers.indexOf(xmlTransitionTrigger);
+                                currentRandomChangeTriggerIndex = -1;
+
                             }
-
-
 
                         }
 
-                        // Check if this is the end of a <RandomChangeTrigger> tag
+                        // Check if this is the start of a <RandomChangeTrigger> tag
                         else if (xmlResourceParser.getName().contentEquals(NODE_NAME_RANDOM_CHANGE_TRIGGER)) {
 
                             // Get the attributes
@@ -1501,6 +1591,81 @@ public class LevelDefinitionLadderHelper {
 
                                 // Add the XMLRandomChangeTrigger to the list
                                 xmlLevel.arrayListXMLRandomChangeTriggers.add(xmlRandomChangeTrigger);
+
+                                // Set the trackers
+                                currentTransitionTriggerIndex = -1;
+                                currentRandomChangeTriggerIndex = xmlLevel.arrayListXMLRandomChangeTriggers.indexOf(xmlRandomChangeTrigger);
+
+                            }
+
+                        }
+
+                        // Check if this is the start of a <SyncVariableTrigger> tag
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_SYNC_VARIABLE_TRIGGER)) {
+
+                            // Get the attributes
+                            String sourceClickTargetName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_NAME);
+                            String sourceClickTargetProfileName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_PROFILE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_PROFILE_NAME);
+                            String targetClickTargetName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_TARGET_CLICK_TARGET_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_TARGET_CLICK_TARGET_NAME);
+                            String targetClickTargetProfileName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_TARGET_CLICK_TARGET_PROFILE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_TARGET_CLICK_TARGET_PROFILE_NAME);
+                            String variableName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_VARIABLE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_VARIABLE_NAME);
+                            LevelDefinitionLadder.SyncVariableTrigger.MODE mode =
+                                    UtilityFunctions.getEnumValue(
+                                            xmlResourceParser
+                                            , ATTRIBUTE_NAME_SYNCVARIABLE_MODE
+                                            , LevelDefinitionLadder.SyncVariableTrigger.MODE.class
+                                            , LevelDefinitionLadder.SyncVariableTrigger.MODE.valueOf(
+                                                    context.getString(R.string.game_values_defaultSyncVariableMode)
+                                            )
+                                    );
+                            double value =
+                                    xmlResourceParser.getAttributeFloatValue(
+                                            null
+                                            , ATTRIBUTE_NAME_SYNCVARIABLE_VALUE
+                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                                    context
+                                                    , R.dimen.game_values_defaultSyncVariableValue)
+                                    );
+
+                            boolean isSameNames = sourceClickTargetName.contentEquals(targetClickTargetName)
+                                    && sourceClickTargetProfileName.contentEquals(targetClickTargetProfileName);
+                            boolean isValidVariableName = arrayListVariableNames.contains(variableName);
+
+                            // Check if the names are not the same
+                            if (!isSameNames && isValidVariableName) {
+
+                                // Create the XMLSyncVariable object
+                                XMLSyncVariableTrigger xmlSyncVariableTrigger = new XMLSyncVariableTrigger(
+                                        sourceClickTargetName
+                                        , sourceClickTargetProfileName
+                                        , targetClickTargetName
+                                        , targetClickTargetProfileName
+                                        , variableName
+                                        , mode
+                                        , value
+                                );
+
+                                // Add the XMLSyncVariableTrigger object to the transition trigger array list
+                                if (currentXMLTransitionTrigger != null) {
+                                    currentXMLTransitionTrigger.arrayListXMLSyncVariableTriggers.add(xmlSyncVariableTrigger);
+                                } else if (currentXMLRandomChangeTrigger != null) {
+                                    currentXMLRandomChangeTrigger.arrayListXMLSyncVariableTriggers.add(xmlSyncVariableTrigger);
+                                }
 
                             }
 

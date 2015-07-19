@@ -46,5 +46,13 @@
         <Vertex x="-0.29389262614"  y="-0.40450849718" />
         <Vertex x="0.0"             y="-1.0" />
     </ClickTargetShape>
+    
+    <ClickTargetShape name="RHOMBUS_45">
+        <Vertex x="-1.0" y="0.0" />
+        <Vertex x="0.0" y="0.70710678118"/>
+        <Vertex x="1.0" y="0.0"/>
+        <Vertex x="0.0" y="-0.70710678118"/>
+        <Vertex x="-1.0" y="0.0"/>
+    </ClickTargetShape>
 
 </ClickTargetShapeDefinitions>

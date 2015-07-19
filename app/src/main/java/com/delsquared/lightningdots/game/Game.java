@@ -305,6 +305,9 @@ public class Game {
             }
             // -------------------- END Check for RandomChangeEvents and TransitionTriggers -------------------- //
 
+            // Initialize the list of SyncVariableTriggers already processed
+            // TransitionTriggers and RandomChangeTriggers contribute to this
+            ArrayList<LevelDefinitionLadder.SyncVariableTrigger> arrayListGeneratedSyncVariableTriggers = new ArrayList<>();
 
             // -------------------- BEGIN Create the map of generated RandomChangeEvents -------------------- //
 
@@ -389,6 +392,14 @@ public class Game {
                             // Add the new RandomChangeEvent to the list of RandomChangeEvents
                             arrayListRandomChangeEventsUnprocessed.add(randomChangeEvent);
 
+                            // Loop through the SyncVariableTriggers associated with this RandomChangeTrigger
+                            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : randomChangeTrigger.arrayListSyncVariableTriggers) {
+
+                                // Add the sync variable trigger to the list
+                                arrayListGeneratedSyncVariableTriggers.add(syncVariableTrigger);
+
+                            }
+
                         }
 
                     }
@@ -444,8 +455,16 @@ public class Game {
                             ClickTarget.ClickTargetProfileTransitionEvent transitionEvent =
                                     transitionTrigger.toTransitionEvent();
 
-                            // Add the new RandomChangeEvent to the list of RandomChangeEvents
+                            // Add the new TransitionEvent to the list of TransitionEvents
                             arrayListTransitionEventsUnprocessed.add(transitionEvent);
+
+                            // Loop through the SyncVariableTriggers associated with this RandomChangeTrigger
+                            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : transitionTrigger.arrayListSyncVariableTriggers) {
+
+                                // Add the sync variable trigger to the list
+                                arrayListGeneratedSyncVariableTriggers.add(syncVariableTrigger);
+
+                            }
 
                         }
 
@@ -500,6 +519,69 @@ public class Game {
             }
 
             // -------------------- END Evolve the click targets -------------------- //
+
+
+            // -------------------- BEGIN Process sync variable triggers -------------------- //
+
+            // Loop through the list of generated sync variable triggers
+            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : arrayListGeneratedSyncVariableTriggers) {
+
+                // Check the mode
+                if (syncVariableTrigger.mode == LevelDefinitionLadder.SyncVariableTrigger.MODE.SNAP_TO_TARGET) {
+
+                    // Check if the source and target ClickTargets exist
+                    if (mapClickTargets.containsKey(syncVariableTrigger.sourceClickTargetName)
+                            && mapClickTargets.containsKey((syncVariableTrigger.targetClickTargetName))) {
+
+                        // Get the source and target ClickTargets
+                        ClickTarget sourceClickTarget = mapClickTargets.get(syncVariableTrigger.sourceClickTargetName);
+                        ClickTarget targetClickTarget = mapClickTargets.get(syncVariableTrigger.targetClickTargetName);
+
+                        // Make sure the source and target ClickTargets are using the required ClickTargetProfiles
+                        if (sourceClickTarget.getCurrentClickTargetProfileName().equals(syncVariableTrigger.sourceClickTargetProfileName)
+                                && targetClickTarget.getCurrentClickTargetProfileName().equals(syncVariableTrigger.targetClickTargetProfileName)) {
+
+                            // Get the source target value for the variable
+                            double sourceVariableValue = sourceClickTarget.getVariableValue(syncVariableTrigger.variableName);
+
+                            // Set the target click target value
+                            targetClickTarget.setVariableValue(syncVariableTrigger.variableName, sourceVariableValue);
+
+                        }
+
+                    }
+
+                }
+
+                // The mode is RANDOMIZE or LITERAL_VALUE
+                else {
+
+                    // Get the target click target
+                    if (mapClickTargets.containsKey(syncVariableTrigger.targetClickTargetName)) {
+
+                        // Get the target ClickTarget
+                        ClickTarget targetClickTarget = mapClickTargets.get(syncVariableTrigger.targetClickTargetName);
+
+                        // Check the mode
+                        if (syncVariableTrigger.mode == LevelDefinitionLadder.SyncVariableTrigger.MODE.LITERAL_VALUE) {
+
+                            // Set the value
+                            targetClickTarget.setVariableValue(syncVariableTrigger.variableName, syncVariableTrigger.value, true);
+
+                        } else if (syncVariableTrigger.mode == LevelDefinitionLadder.SyncVariableTrigger.MODE.RANDOMIZE) {
+
+                            // Randomize the value
+                            targetClickTarget.randomizeVariableValue(syncVariableTrigger.variableName);
+
+                        }
+
+                    }
+
+                }
+
+            }
+
+            // -------------------- END Process sync variable triggers -------------------- //
 
 		}
 

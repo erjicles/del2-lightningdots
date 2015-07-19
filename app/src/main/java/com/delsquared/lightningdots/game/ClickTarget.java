@@ -18,9 +18,15 @@ import java.util.HashMap;
 
 public class ClickTarget {
 
-    public static final String POSITION_EVOLVER_NAME_POSITION = "X";
+    public static final String POSITION_EVOLVER_NAME_X = "X";
+    public static final String POSITION_EVOLVER_NAME_DX = "dXdt";
+    public static final String POSITION_EVOLVER_NAME_D2X = "d2Xdt2";
     public static final String POSITION_EVOLVER_NAME_RADIUS = "radius";
+    public static final String POSITION_EVOLVER_NAME_DRADIUS = "dRadius";
+    public static final String POSITION_EVOLVER_NAME_D2RADIUS = "d2Radius";
     public static final String POSITION_EVOLVER_NAME_ROTATION = "rotation";
+    public static final String POSITION_EVOLVER_NAME_DROTATION = "dRotation";
+    public static final String POSITION_EVOLVER_NAME_D2ROTATION = "d2Rotation";
 
     public static final String VARIABLE_NAME_X = "position_horizontal";
     public static final String VARIABLE_NAME_Y = "position_vertical";
@@ -76,7 +82,7 @@ public class ClickTarget {
 	}
 
     public PositionVector getXPixels() {
-        PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+        PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_X);
         if (positionEvolverX != null) {
             return positionEvolverX.getX();
         }
@@ -91,10 +97,90 @@ public class ClickTarget {
         return 0.0;
     }
 
+    public PositionEvolver getPositionEvolverFromVariableName(String variableName) {
+
+        // Get the position evolver name
+        String positionEvolverName = "";
+        if (mapTranslateVariableNameToPositionEvolverName.containsKey(variableName)) {
+            positionEvolverName = mapTranslateVariableNameToPositionEvolverName.get(variableName);
+        }
+
+        return getPositionEvolver(positionEvolverName);
+
+    }
+
+    public double getVariableValue(String variableName) {
+
+        // Get the position evolver
+        PositionEvolver positionEvolver = getPositionEvolverFromVariableName(variableName);
+
+        if (positionEvolver != null) {
+
+            // Return the value
+            return positionEvolver.getVariableValue(variableName);
+
+        }
+
+         return 0.0;
+    }
+
+    public void setVariableValue(String variableName, double variableValue) {
+        setVariableValue(variableName, variableValue, false);
+    }
+
+    public void setVariableValue(String variableName, double variableValue, boolean treatAsInitialValue) {
+
+        // Get the position evolver
+        PositionEvolver positionEvolver = getPositionEvolverFromVariableName(variableName);
+
+        if (positionEvolver != null) {
+
+            // Set the value
+            positionEvolver.setVariableValue(variableName, variableValue, treatAsInitialValue);
+
+        }
+
+    }
+
+    public void randomizeVariableValue(String variableName) {
+
+        // Get the position evolver
+        PositionEvolver positionEvolver = getPositionEvolverFromVariableName(variableName);
+
+        if (positionEvolver != null) {
+
+            // Randomize the value
+            positionEvolver.randomizeVariableValue(variableName);
+
+        }
+
+    }
+
     public PositionEvolver getPositionEvolver(String positionEvolverName) {
+
+        // Loop through the top level PositionEvolvers first
         for (PositionEvolver positionEvolver : arrayListPositionEvolvers) {
             if (positionEvolver.getName().contentEquals(positionEvolverName)) {
                 return positionEvolver;
+            }
+        }
+
+        // Do a deep dive
+        for (PositionEvolver positionEvolver : arrayListPositionEvolvers) {
+
+            // Set the current position evolver to the dX position evolver
+            PositionEvolver currentPositionEvolver = positionEvolver.getPositionEvolverDXdt();
+
+            // Loop while the dX position evolver is not null
+            while (currentPositionEvolver != null) {
+
+                // Check if the current position evolver is the one we are looking for
+                if (currentPositionEvolver.getName().contentEquals(positionEvolverName)) {
+                    return currentPositionEvolver;
+                }
+
+                // Set the next position evolver to the next dX position evolver
+                currentPositionEvolver = currentPositionEvolver.getPositionEvolverDXdt();
             }
         }
         return null;
@@ -120,7 +206,7 @@ public class ClickTarget {
         ArrayList<PositionVector> arrayListCenterPoints = new ArrayList<>();
 
         // Get the X PositionEvolver
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
 
         // Check if the position evolver exists
         if (positionEvolverXPixels == null) {
@@ -305,7 +391,7 @@ public class ClickTarget {
         boolean returnValue = false;
 
         // Get the X position evolver
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
 
         if (positionEvolverXPixels == null)
             return false;
@@ -348,7 +434,7 @@ public class ClickTarget {
     public void resetPositionBoundary() {
 
         // Get the position evolver
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
 
         if (positionEvolverXPixels == null) {
             return;
@@ -377,46 +463,6 @@ public class ClickTarget {
         positionEvolverXPixels.setBoundaryValues(VARIABLE_NAME_X, minimumX, maximumX);
         positionEvolverXPixels.setBoundaryValues(VARIABLE_NAME_Y, minimumY, maximumY);
 
-    }
-
-    public static class RandomChangeEvent {
-        public final String clickTargetName;
-        public final String clickTargetProfileName;
-        public final String variable;
-        public RandomChangeEvent(
-                String clickTargetName
-                , String clickTargetProfileName
-                , String variable) {
-            this.clickTargetName = clickTargetName;
-            this.clickTargetProfileName = clickTargetProfileName;
-            this.variable = variable;
-        }
-
-        public NTuple toRandomChangeTriggerKey() {
-            return LevelDefinitionLadder.nTupleTypeRandomChangeTriggerKey.createNTuple(
-                    clickTargetName
-                    , clickTargetProfileName
-                    , variable
-            );
-        }
-    }
-
-    public static class ClickTargetProfileTransitionEvent {
-        public final String clickTargetName;
-        public final String clickTargetProfileName;
-        public ClickTargetProfileTransitionEvent(
-                String clickTargetName
-                , String clickTargetProfileName) {
-            this.clickTargetName = clickTargetName;
-            this.clickTargetProfileName = clickTargetProfileName;
-        }
-
-        public NTuple toTransitionTriggerKey() {
-            return LevelDefinitionLadder.nTupleTypeTransitionTriggerKey.createNTuple(
-                    clickTargetName
-                    , clickTargetProfileName
-            );
-        }
     }
 
     public ArrayList<RandomChangeEvent> checkRandomChanges(double dt) {
@@ -484,7 +530,7 @@ public class ClickTarget {
         if (polygonTargetShape != null) {
 
             // Get the position evolvers
-            PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+            PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_X);
             PositionEvolver positionEvolverRadius = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
             PositionEvolver positionEvolverRotation = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
 
@@ -527,7 +573,7 @@ public class ClickTarget {
 	public ClickTargetSnapshot getClickTargetSnapshot() {
 
         // Get the position evolvers
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
         PositionEvolver positionEvolverRadiusPixels = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
         PositionEvolver positionEvolverRotationRadians = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
 
@@ -847,7 +893,7 @@ public class ClickTarget {
         double height = maximumPixelsY - minimumPixelsY;
 
         // Get the position evolvers
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_POSITION);
+        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
         PositionEvolver positionEvolverRadiusPixels = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
         PositionEvolver positionEvolverRotationRadians = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
 
@@ -927,7 +973,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetD2Xdt2Pixels = new PositionEvolver(
-                "d2Xdt2"
+                POSITION_EVOLVER_NAME_D2X
                 , arrayListPositionEvolverVariablesD2X
                 , null
                 , PositionEvolver.MODE.POLAR_2D
@@ -996,7 +1042,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetDXdtPixels = new PositionEvolver(
-                "dXdt"
+                POSITION_EVOLVER_NAME_DX
                 , arrayListPositionEvolverVariablesDX
                 , targetD2Xdt2Pixels
                 , PositionEvolver.MODE.POLAR_2D
@@ -1071,7 +1117,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetXPixels = new PositionEvolver(
-                "X"
+                POSITION_EVOLVER_NAME_X
                 , arrayListPositionEvolverVariablesX
                 , targetDXdtPixels
                 , PositionEvolver.MODE.CARTESIAN_2D
@@ -1119,7 +1165,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetD2RadiusDt2Pixels = new PositionEvolver(
-                "d2Radiusdt2"
+                POSITION_EVOLVER_NAME_D2RADIUS
                 , arrayListPositionEvolverVariablesD2Radius
                 , null
                 , PositionEvolver.MODE.ONE_DIMENSION
@@ -1164,14 +1210,9 @@ public class ClickTarget {
         );
         arrayListPositionEvolverVariablesDRadius.add(dRadius);
 
-        if (targetDRadiusPixels > 500.0) {
-            double blah = 0.0;
-            blah++;
-        }
-
         // Create the position evolver
         PositionEvolver targetDRadiusDtPixels = new PositionEvolver(
-                "dRadiusdt"
+                POSITION_EVOLVER_NAME_DRADIUS
                 , arrayListPositionEvolverVariablesDRadius
                 , targetD2RadiusDt2Pixels
                 , PositionEvolver.MODE.ONE_DIMENSION
@@ -1211,7 +1252,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetRadiusPixels = new PositionEvolver(
-                "radius"
+                POSITION_EVOLVER_NAME_RADIUS
                 , arrayListPositionEvolverVariablesRadius
                 , targetDRadiusDtPixels
                 , PositionEvolver.MODE.ONE_DIMENSION
@@ -1254,7 +1295,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetD2RotationRadiansPerSecondPerSecond = new PositionEvolver(
-                "d2Rotationdt2"
+                POSITION_EVOLVER_NAME_D2ROTATION
                 , arrayListPositionEvolverVariablesD2Rotation
                 , null
                 , PositionEvolver.MODE.ONE_DIMENSION
@@ -1298,7 +1339,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetDRotationRadiansPerSecond = new PositionEvolver(
-                "dRotationdt"
+                POSITION_EVOLVER_NAME_DROTATION
                 , arrayListPositionEvolverVariablesDRotation
                 , targetD2RotationRadiansPerSecondPerSecond
                 , PositionEvolver.MODE.ONE_DIMENSION
@@ -1333,7 +1374,7 @@ public class ClickTarget {
 
         // Create the position evolver
         PositionEvolver targetRotationRadians = new PositionEvolver(
-                "rotation"
+                POSITION_EVOLVER_NAME_ROTATION
                 , arrayListPositionEvolverVariablesRotation
                 , targetDRotationRadiansPerSecond
                 , PositionEvolver.MODE.ONE_DIMENSION
@@ -1373,10 +1414,65 @@ public class ClickTarget {
 
     }
 
+    public static class RandomChangeEvent {
+        public final String clickTargetName;
+        public final String clickTargetProfileName;
+        public final String variable;
+        public RandomChangeEvent(
+                String clickTargetName
+                , String clickTargetProfileName
+                , String variable) {
+            this.clickTargetName = clickTargetName;
+            this.clickTargetProfileName = clickTargetProfileName;
+            this.variable = variable;
+        }
+
+        public NTuple toRandomChangeTriggerKey() {
+            return LevelDefinitionLadder.nTupleTypeRandomChangeTriggerKey.createNTuple(
+                    clickTargetName
+                    , clickTargetProfileName
+                    , variable
+            );
+        }
+    }
+
+    public static class ClickTargetProfileTransitionEvent {
+        public final String clickTargetName;
+        public final String clickTargetProfileName;
+        public ClickTargetProfileTransitionEvent(
+                String clickTargetName
+                , String clickTargetProfileName) {
+            this.clickTargetName = clickTargetName;
+            this.clickTargetProfileName = clickTargetProfileName;
+        }
+
+        public NTuple toTransitionTriggerKey() {
+            return LevelDefinitionLadder.nTupleTypeTransitionTriggerKey.createNTuple(
+                    clickTargetName
+                    , clickTargetProfileName
+            );
+        }
+    }
+
     public enum VISIBILITY {
         VISIBLE
         , HIDDEN
         , GONE
     }
+
+    private HashMap<String, String> mapTranslateVariableNameToPositionEvolverName = new HashMap<String, String>() {{
+        put(VARIABLE_NAME_X, POSITION_EVOLVER_NAME_X);
+        put(VARIABLE_NAME_Y, POSITION_EVOLVER_NAME_X);
+        put(VARIABLE_NAME_SPEED, POSITION_EVOLVER_NAME_DX);
+        put(VARIABLE_NAME_DIRECTION, POSITION_EVOLVER_NAME_DX);
+        put(VARIABLE_NAME_DSPEED, POSITION_EVOLVER_NAME_D2X);
+        put(VARIABLE_NAME_DDIRECTION, POSITION_EVOLVER_NAME_D2X);
+        put(VARIABLE_NAME_RADIUS, POSITION_EVOLVER_NAME_RADIUS);
+        put(VARIABLE_NAME_DRADIUS, POSITION_EVOLVER_NAME_DRADIUS);
+        put(VARIABLE_NAME_D2RADIUS, POSITION_EVOLVER_NAME_D2RADIUS);
+        put(VARIABLE_NAME_ROTATION, POSITION_EVOLVER_NAME_ROTATION);
+        put(VARIABLE_NAME_DROTATION, POSITION_EVOLVER_NAME_DROTATION);
+        put(VARIABLE_NAME_D2ROTATION, POSITION_EVOLVER_NAME_D2ROTATION);
+    }};
 
 }

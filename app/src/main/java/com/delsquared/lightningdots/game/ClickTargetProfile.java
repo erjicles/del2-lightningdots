@@ -46,6 +46,7 @@ public class ClickTargetProfile {
         public final double minimumValue;
         public final double initialValue;
         public final double maximumValue;
+        public final boolean usesInitialValueMultipliers;
         public final boolean randomInitialValue;
         public final boolean randomInitialSign;
         public final boolean canChange;
@@ -58,6 +59,7 @@ public class ClickTargetProfile {
                 , double minimumValue
                 , double initialValue
                 , double maximumValue
+                , boolean usesInitialValueMultipliers
                 , boolean randomInitialValue
                 , boolean randomInitialSign
                 , boolean canChange
@@ -68,6 +70,7 @@ public class ClickTargetProfile {
             this.minimumValue = minimumValue;
             this.initialValue = initialValue;
             this.maximumValue = maximumValue;
+            this.usesInitialValueMultipliers = usesInitialValueMultipliers;
             this.randomInitialValue = randomInitialValue;
             this.randomInitialSign = randomInitialSign;
             this.canChange = canChange;
@@ -91,6 +94,7 @@ public class ClickTargetProfile {
                     , minimumValue
                     , initialValue
                     , maximumValue
+                    , usesInitialValueMultipliers
                     , randomInitialValue
                     , randomInitialSign
                     , canChange

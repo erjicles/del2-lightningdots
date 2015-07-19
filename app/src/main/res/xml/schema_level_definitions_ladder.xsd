@@ -140,6 +140,9 @@
     </xs:complexType>
 
     <xs:complexType name="randomChangeTrigger">
+        <xs:sequence>
+            <xs:element name="SyncVariableTriggers" type="syncVariableTriggers" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
         <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
         <xs:attribute name="sourceVariable" type="targetVariableName" use="required"/>
@@ -155,11 +158,38 @@
     </xs:complexType>
 
     <xs:complexType name="transitionTrigger">
+        <xs:sequence>
+            <xs:element name="SyncVariableTriggers" type="syncVariableTriggers" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
         <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
     </xs:complexType>
+
+    <xs:complexType name="syncVariableTriggers">
+        <xs:sequence>
+            <xs:element name="SyncVariableTrigger" type="syncVariableTrigger" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="syncVariableTrigger">
+        <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="variableName" type="targetVariableName" use="required"/>
+        <xs:attribute name="mode" type="syncVariableMode" default="SNAP_TO_TARGET" use="optional"/>
+        <xs:attribute name="value" type="xs:float" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="syncVariableMode">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="SNAP_TO_TARGET"/>
+            <xs:enumeration value="RANDOMIZE"/>
+            <xs:enumeration value="LITERAL_VALUE"/>
+        </xs:restriction>
+    </xs:simpleType>
 
 
 
@@ -169,6 +199,7 @@
             <xs:enumeration value="SQUARE"/>
             <xs:enumeration value="TRIANGLE_EQUILATERAL"/>
             <xs:enumeration value="STAR_5_POINTS"/>
+            <xs:enumeration value="RHOMBUS_45"/>
         </xs:restriction>
     </xs:simpleType>
 

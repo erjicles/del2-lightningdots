@@ -1158,4 +1158,118 @@
         </TransitionTriggers>
     </Level>
 
+    <Level level="36">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR">
+                    <ClickTargetProfile
+                        name="0"
+                        scriptTransitionValue="1.5"
+                        targetShape="TRIANGLE_EQUILATERAL">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.5"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.7"/>
+                            <Variable name="rotation" canChange="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" initialValue="1.6"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile
+                        name="1"
+                        scriptTransitionValue="15.0"
+                        targetShape="TRIANGLE_EQUILATERAL"
+                        targetIsClickable="false">
+                        <Variables>
+                            <Variable name="speed" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="rotation" canChange="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR"
+                    initialClickTargetProfile="1">
+                    <ClickTargetProfile
+                        name="0"
+                        scriptTransitionValue="1.5"
+                        targetShape="RHOMBUS_45">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.75"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius"  transitionContinuity="CONTINUOUS"/>
+                            <Variable name="rotation" canChange="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" initialValue="1.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile
+                        name="1"
+                        scriptTransitionValue="15.0"
+                        targetShape="RHOMBUS_45"
+                        targetIsClickable="false">
+                        <Variables>
+                            <Variable name="speed" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.6"/>
+                            <Variable name="rotation" canChange="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dRotation" transitionContinuity="CONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <TransitionTriggers>
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="0">
+                <SyncVariableTriggers>
+                    <SyncVariableTrigger
+                        sourceClickTargetName="1" sourceClickTargetProfileName="0"
+                        targetClickTargetName="0" targetClickTargetProfileName="1"
+                        variableName="position_horizontal" />
+                    <SyncVariableTrigger
+                        sourceClickTargetName="1" sourceClickTargetProfileName="0"
+                        targetClickTargetName="0" targetClickTargetProfileName="1"
+                        variableName="position_vertical" />
+                    <SyncVariableTrigger
+                        sourceClickTargetName="1" sourceClickTargetProfileName="0"
+                        targetClickTargetName="0" targetClickTargetProfileName="1"
+                        variableName="rotation"/>
+                    <SyncVariableTrigger
+                        sourceClickTargetName="1" sourceClickTargetProfileName="0"
+                        targetClickTargetName="0" targetClickTargetProfileName="1"
+                        variableName="dRotation" mode="RANDOMIZE"/>
+                </SyncVariableTriggers>
+            </TransitionTrigger>
+            <TransitionTrigger
+                sourceClickTargetName="1" sourceClickTargetProfileName="1"
+                targetClickTargetName="0" targetClickTargetProfileName="0">
+                <SyncVariableTriggers>
+                    <SyncVariableTrigger
+                        sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                        targetClickTargetName="1" targetClickTargetProfileName="0"
+                        variableName="position_horizontal" />
+                    <SyncVariableTrigger
+                        sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                        targetClickTargetName="1" targetClickTargetProfileName="0"
+                        variableName="position_vertical" />
+                    <SyncVariableTrigger
+                        sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                        targetClickTargetName="1" targetClickTargetProfileName="0"
+                        variableName="rotation"/>
+                    <SyncVariableTrigger
+                        sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                        targetClickTargetName="1" targetClickTargetProfileName="0"
+                        variableName="dRotation" mode="RANDOMIZE"/>
+                </SyncVariableTriggers>
+            </TransitionTrigger>
+        </TransitionTriggers>
+    </Level>
+
 </Levels>

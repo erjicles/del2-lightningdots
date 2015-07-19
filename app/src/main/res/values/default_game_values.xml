@@ -147,6 +147,9 @@
     <bool name="game_values_defaultTargetIsClickable">true</bool>
     <string name="game_values_defaultTargetVisibility">VISIBLE</string>
 
+    <string name="game_values_defaultSyncVariableMode">SNAP_TO_TARGET</string>
+    <item name="game_values_defaultSyncVariableValue" format="float" type="dimen">0.0</item>
+
     <integer-array name="game_values_targetUserClicksAgilityPer15Seconds">
         <item>80</item>
         <item>92</item>

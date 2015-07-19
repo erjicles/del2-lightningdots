@@ -1,5 +1,7 @@
 package com.delsquared.lightningdots.utilities;
 
+import com.delsquared.lightningdots.game.ClickTarget;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -40,6 +42,82 @@ public class PositionEvolver {
     }
 
     public String getName() { return name; }
+
+    public PositionEvolverVariable getPositionEvolverVariable(String variableName) {
+
+        // Loop through the variables
+        for (PositionEvolverVariable currentVariable : X) {
+
+            // Check if we found the variable
+            if (currentVariable.getName().contentEquals(variableName)) {
+
+                // Return the current value
+                return currentVariable;
+
+            }
+        }
+
+        return null;
+
+    }
+
+    public double getVariableValue(String variableName) {
+
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
+
+        if (positionEvolverVariable != null) {
+
+            // Return the current value
+            return positionEvolverVariable.getValue();
+
+        }
+
+        return 0.0;
+
+    }
+
+    public void setVariableValue(String variableName, double variableValue) {
+        setVariableValue(variableName, variableValue, false);
+    }
+
+    public void setVariableValue(String variableName, double variableValue, boolean treatAsInitialValue) {
+
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
+
+        if (positionEvolverVariable != null) {
+
+            // Check if we should treat this as a reinitialization
+            if (treatAsInitialValue) {
+
+                // Reinitialize the value
+                positionEvolverVariable.reinitializeValue(variableValue);
+
+            } else {
+
+                // Set the value
+                positionEvolverVariable.setValue(variableValue);
+
+            }
+
+        }
+
+    }
+
+    public void randomizeVariableValue(String variableName) {
+
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
+
+        if (positionEvolverVariable != null) {
+
+            // Generate random value
+            positionEvolverVariable.randomizeValue();
+
+        }
+
+    }
 
     public PositionVector getX() {
 
@@ -106,33 +184,30 @@ public class PositionEvolver {
 
     public double getMinimumValue(String variableName) {
 
-        // Loop through the variables
-        for (PositionEvolverVariable currentVariable : X) {
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
 
-            // Check if we found the variable
-            if (currentVariable.getName().contentEquals(variableName)) {
+        if (positionEvolverVariable != null) {
 
-                // Set the boundary value
-                return currentVariable.getMinimumValue();
+            // Get the boundary value
+            return positionEvolverVariable.getMinimumValue();
 
-            }
         }
 
         return 0.0;
 
     }
+
     public double getMaximumValue(String variableName) {
 
-        // Loop through the variables
-        for (PositionEvolverVariable currentVariable : X) {
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
 
-            // Check if we found the variable
-            if (currentVariable.getName().contentEquals(variableName)) {
+        if (positionEvolverVariable != null) {
 
-                // Set the boundary value
-                return currentVariable.getMaximumValue();
+            // Get the boundary value
+            return positionEvolverVariable.getMaximumValue();
 
-            }
         }
 
         return 0.0;
@@ -140,16 +215,14 @@ public class PositionEvolver {
     }
     public BoundaryEffect getBoundaryEffect(String variableName) {
 
-        // Loop through the variables
-        for (PositionEvolverVariable currentVariable : X) {
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
 
-            // Check if we found the variable
-            if (currentVariable.getName().contentEquals(variableName)) {
+        if (positionEvolverVariable != null) {
 
-                // Set the boundary value
-                return currentVariable.getBoundaryEffect();
+            // Get the boundary value
+            return positionEvolverVariable.getBoundaryEffect();
 
-            }
         }
 
         return new BoundaryEffect();
@@ -161,16 +234,14 @@ public class PositionEvolver {
             , double minimumValue
             , double maximumValue) {
 
-        // Loop through the variables
-        for (PositionEvolverVariable currentVariable : X) {
+        // Get the PositionEvolverVariable
+        PositionEvolverVariable positionEvolverVariable = getPositionEvolverVariable(variableName);
 
-            // Check if we found the variable
-            if (currentVariable.getName().contentEquals(variableName)) {
+        if (positionEvolverVariable != null) {
 
-                // Set the boundary value
-                currentVariable.setBoundaryValues(minimumValue, maximumValue);
-                break;
-            }
+            // Set the boundary value
+            positionEvolverVariable.setBoundaryValues(minimumValue, maximumValue);
+
         }
 
     }

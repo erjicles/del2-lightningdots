@@ -9,6 +9,7 @@ public class PositionEvolverVariable {
     private double minimumValue;
     private double initialValue;
     private double maximumValue;
+    private boolean usesInitialValueMultipliers;
     private boolean randomInitialValue;
     private boolean randomInitialSign;
     private boolean canChange;
@@ -24,6 +25,7 @@ public class PositionEvolverVariable {
         minimumValue = 0.0;
         initialValue = 0.0;
         maximumValue = 0.0;
+        usesInitialValueMultipliers = false;
         randomInitialValue = false;
         randomInitialSign = false;
         canChange = false;
@@ -38,6 +40,7 @@ public class PositionEvolverVariable {
             , double minimumValue
             , double initialValue
             , double maximumValue
+            , boolean usesInitialValueMultipliers
             , boolean randomInitialValue
             , boolean randomInitialSign
             , boolean canChange
@@ -49,6 +52,7 @@ public class PositionEvolverVariable {
         this.minimumValue = minimumValue;
         this.initialValue = initialValue;
         this.maximumValue = maximumValue;
+        this.usesInitialValueMultipliers = usesInitialValueMultipliers;
         this.randomInitialValue = randomInitialValue;
         this.randomInitialSign = randomInitialSign;
         this.canChange = canChange;
@@ -63,6 +67,7 @@ public class PositionEvolverVariable {
         this.minimumValue = profileVariableValues.minimumValue;
         this.initialValue = profileVariableValues.initialValue;
         this.maximumValue = profileVariableValues.maximumValue;
+        this.usesInitialValueMultipliers = profileVariableValues.usesInitialValueMultipliers;
         this.randomInitialValue = profileVariableValues.randomInitialValue;
         this.randomInitialSign = profileVariableValues.randomInitialSign;
         this.canChange = profileVariableValues.canChange;
@@ -76,6 +81,7 @@ public class PositionEvolverVariable {
     public double getMinimumValue() { return this.minimumValue; }
     public double getInitialValue() { return this.initialValue; }
     public double getMaximumValue() { return this.maximumValue; }
+    public boolean getUsesInitialValueMultipliers() { return this.usesInitialValueMultipliers; }
     public boolean getRandomInitialValue() { return this.randomInitialValue; }
     public boolean getRandomInitialSign() { return this.randomInitialSign; }
     public boolean getCanChange() { return this.canChange; }
@@ -84,9 +90,16 @@ public class PositionEvolverVariable {
     public ClickTargetProfile.TRANSITION_CONTINUITY getTransitionContinuity() { return this.transitionContinuity; }
     public double getTotalTimeElapsedSinceLastRandomChangeSeconds() { return this.totalTimeElapsedSinceLastRandomChangeSeconds; }
 
-    public void setValue(double value) { this.value = value; }
     public void setTotalTimeElapsedSinceLastRandomChangeSeconds(double totalTimeElapsedSinceLastRandomChangeSeconds) {
         this.totalTimeElapsedSinceLastRandomChangeSeconds = totalTimeElapsedSinceLastRandomChangeSeconds;
+    }
+    public void setValue(double value) { this.value = value; }
+    public void reinitializeValue(double value) {
+        if (usesInitialValueMultipliers) {
+            this.value = minimumValue + (value * (maximumValue - minimumValue));
+        } else {
+            this.value = value;
+        }
     }
 
     public void incrementTotalTimeElapsedSinceLastRandomChangeSeconds(double dt) {

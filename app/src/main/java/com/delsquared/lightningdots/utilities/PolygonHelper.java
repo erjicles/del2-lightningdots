@@ -26,6 +26,7 @@ public class PolygonHelper {
         add("SQUARE");
         add("TRIANGLE_EQUILATERAL");
         add("STAR_5_POINTS");
+        add("RHOMBUS_45");
     }};
 
     public static Polygon getPolygon(
