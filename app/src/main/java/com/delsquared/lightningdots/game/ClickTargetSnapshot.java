@@ -8,6 +8,7 @@ import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionVector;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClickTargetSnapshot {
 
@@ -21,7 +22,7 @@ public class ClickTargetSnapshot {
     private final PositionVector RotationRadians;
     private final PositionVector DRotationRadians;
     private final PositionVector D2RotationRadians;
-    private final ArrayList<PositionVector> arrayListCenterPoints;
+    private final List<PositionVector> listCenterPoints;
     private final Polygon polygonTargetShape;
     private final boolean isClickable;
     private final ClickTarget.VISIBILITY visibility;
@@ -37,7 +38,7 @@ public class ClickTargetSnapshot {
         RotationRadians = new PositionVector();
         DRotationRadians = new PositionVector();
         D2RotationRadians = new PositionVector();
-        arrayListCenterPoints = new ArrayList<>();
+        listCenterPoints = new ArrayList<>();
         polygonTargetShape = null;
         isClickable = true;
         visibility = ClickTarget.VISIBILITY.VISIBLE;
@@ -54,7 +55,7 @@ public class ClickTargetSnapshot {
             , PositionVector RotationRadians
             , PositionVector DRotationRadians
             , PositionVector D2RotationRadians
-            , ArrayList<PositionVector> arrayListCenterPoints
+            , List<PositionVector> listCenterPoints
             , Polygon polygonTargetShape
             , boolean isClickable
             , ClickTarget.VISIBILITY visibility
@@ -69,7 +70,7 @@ public class ClickTargetSnapshot {
         this.RotationRadians = RotationRadians;
         this.DRotationRadians = DRotationRadians;
         this.D2RotationRadians = D2RotationRadians;
-        this.arrayListCenterPoints = arrayListCenterPoints;
+        this.listCenterPoints = listCenterPoints;
         this.polygonTargetShape = polygonTargetShape;
         this.isClickable = isClickable;
         this.visibility = visibility;
@@ -85,7 +86,7 @@ public class ClickTargetSnapshot {
     public PositionVector getRotationRadians() { return RotationRadians; }
     public PositionVector getDRotationRadians() { return DRotationRadians; }
     public PositionVector getD2RotationRadians() { return D2RotationRadians; }
-    public ArrayList<PositionVector> getArrayListCenterPoints() { return this.arrayListCenterPoints; }
+    public List<PositionVector> getListCenterPoints() { return this.listCenterPoints; }
     public Polygon getPolygonTargetShape() { return polygonTargetShape; }
     public boolean getIsClickable() { return isClickable; }
     public ClickTarget.VISIBILITY getVisibility() { return visibility; }
@@ -101,7 +102,7 @@ public class ClickTargetSnapshot {
                 && RotationRadians.equals(otherClickTargetSnapshot.getRotationRadians())
                 && DRotationRadians.equals(otherClickTargetSnapshot.getDRotationRadians())
                 && D2RotationRadians.equals(otherClickTargetSnapshot.getD2RotationRadians())
-                && arrayListCenterPoints.equals(otherClickTargetSnapshot.getArrayListCenterPoints())
+                && listCenterPoints.equals(otherClickTargetSnapshot.getListCenterPoints())
                 && polygonTargetShape.equals(otherClickTargetSnapshot.getPolygonTargetShape())
                 && isClickable == otherClickTargetSnapshot.getIsClickable()
                 && visibility == otherClickTargetSnapshot.getVisibility();
@@ -111,7 +112,7 @@ public class ClickTargetSnapshot {
     public void draw(Canvas canvas, Paint paintTarget) {
 
         // Loop through the center points to draw
-        for (PositionVector currentPoint : arrayListCenterPoints) {
+        for (PositionVector currentPoint : listCenterPoints) {
 
             // Check if the target is a polygon
             if (polygonTargetShape != null) {
@@ -143,10 +144,10 @@ public class ClickTargetSnapshot {
         boolean returnValue = false;
 
         // Get the list of center points
-        ArrayList<PositionVector> arrayListCenterPoints = getArrayListCenterPoints();
+        List<PositionVector> listCenterPoints = new ArrayList<>(getListCenterPoints());
 
         // Loop through the center points
-        for (PositionVector currentCenterPoint : arrayListCenterPoints) {
+        for (PositionVector currentCenterPoint : listCenterPoints) {
 
             // Check if the target is a polygon
             if (polygonTargetShape != null) {

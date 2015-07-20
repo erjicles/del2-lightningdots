@@ -332,7 +332,7 @@ public class PositionEvolver {
                 // N = number of partial units in one unit
                 // N = 1 second / time elapsed since last update in seconds
                 double probabilityThreshold = 1.0 - Math.pow(1.0 - randomChangeEffect.randomChangeValue, dt);
-                double positionChangeCheck = Math.random();
+                double positionChangeCheck = UtilityFunctions.generateRandomValue(0.0, 1.0, false);
                 if (positionChangeCheck < probabilityThreshold) {
 
                     // Loop through the variables
@@ -410,7 +410,7 @@ public class PositionEvolver {
                     else if (randomChangeEffect.randomChangeInterval == RandomChangeEffect.RANDOM_CHANGE_INTERVAL.RANDOM) {
 
                         double probabilityThreshold = 1.0 - Math.pow(1.0 - randomChangeEffect.randomChangeValue, dt);
-                        double changeCheck = Math.random();
+                        double changeCheck = UtilityFunctions.generateRandomValue(0.0, 1.0, false);
                         if (changeCheck < probabilityThreshold) {
 
                             // Set the generate new random value flag

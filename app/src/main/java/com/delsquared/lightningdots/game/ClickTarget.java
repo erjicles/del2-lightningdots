@@ -15,6 +15,7 @@ import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ClickTarget {
 
@@ -43,7 +44,7 @@ public class ClickTarget {
 
     private String name;
     private ClickTargetProfileScript clickTargetProfileScript;
-    private ArrayList<PositionEvolver> arrayListPositionEvolvers;
+    private List<PositionEvolver> listPositionEvolvers;
     private Polygon polygonTargetShape = null;
     private boolean isClickable = true;
     private VISIBILITY visibility = VISIBILITY.VISIBLE;
@@ -57,7 +58,7 @@ public class ClickTarget {
 
         clickTargetProfileScript = new ClickTargetProfileScript();
 
-        arrayListPositionEvolvers = new ArrayList<>();
+        listPositionEvolvers = new ArrayList<>();
 
     }
 
@@ -73,7 +74,7 @@ public class ClickTarget {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
 
-        arrayListPositionEvolvers = new ArrayList<>();
+        listPositionEvolvers = new ArrayList<>();
 
         // Initialize the click target to its current profile
         transitionClickTargetProfile(
@@ -159,14 +160,14 @@ public class ClickTarget {
     public PositionEvolver getPositionEvolver(String positionEvolverName) {
 
         // Loop through the top level PositionEvolvers first
-        for (PositionEvolver positionEvolver : arrayListPositionEvolvers) {
+        for (PositionEvolver positionEvolver : listPositionEvolvers) {
             if (positionEvolver.getName().contentEquals(positionEvolverName)) {
                 return positionEvolver;
             }
         }
 
         // Do a deep dive
-        for (PositionEvolver positionEvolver : arrayListPositionEvolvers) {
+        for (PositionEvolver positionEvolver : listPositionEvolvers) {
 
             // Set the current position evolver to the dX position evolver
             PositionEvolver currentPositionEvolver = positionEvolver.getPositionEvolverDXdt();
@@ -200,21 +201,21 @@ public class ClickTarget {
         return "";
     }
 
-    public ArrayList<PositionVector> getArrayListCenterPoints() {
+    public List<PositionVector> getListCenterPoints() {
 
         // Initialize the result
-        ArrayList<PositionVector> arrayListCenterPoints = new ArrayList<>();
+        List<PositionVector> listCenterPoints = new ArrayList<>();
 
         // Get the X PositionEvolver
         PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
 
         // Check if the position evolver exists
         if (positionEvolverXPixels == null) {
-            return arrayListCenterPoints;
+            return listCenterPoints;
         }
 
         // Add the true center point
-        arrayListCenterPoints.add(new PositionVector(positionEvolverXPixels.getX()));
+        listCenterPoints.add(new PositionVector(positionEvolverXPixels.getX()));
 
         // Get the X and Y boundary effects
         PositionEvolver.BoundaryEffect boundaryEffectX = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_X);
@@ -343,40 +344,40 @@ public class ClickTarget {
 
             if (minimumBoundaryReachedX) {
                 // newTargetX1, targetY;
-                arrayListCenterPoints.add(new PositionVector(newTargetX1, targetY));
+                listCenterPoints.add(new PositionVector(newTargetX1, targetY));
             }
             if (maximumBoundaryReachedX) {
                 //newTargetX2, targetY;
-                arrayListCenterPoints.add(new PositionVector(newTargetX2, targetY));
+                listCenterPoints.add(new PositionVector(newTargetX2, targetY));
             }
             if (minimumBoundaryReachedY) {
                 //targetX, newTargetY1;
-                arrayListCenterPoints.add(new PositionVector(targetX, newTargetY1));
+                listCenterPoints.add(new PositionVector(targetX, newTargetY1));
             }
             if (maximumBoundaryReachedY) {
                 //targetX, newTargetY2;
-                arrayListCenterPoints.add(new PositionVector(targetX, newTargetY2));
+                listCenterPoints.add(new PositionVector(targetX, newTargetY2));
             }
             if (minimumBoundaryReachedX && minimumBoundaryReachedY) {
                 //newTargetX1, newTargetY1;
-                arrayListCenterPoints.add(new PositionVector(newTargetX1, newTargetY1));
+                listCenterPoints.add(new PositionVector(newTargetX1, newTargetY1));
             }
             if (minimumBoundaryReachedX && maximumBoundaryReachedY) {
                 //newTargetX1, newTargetY2;
-                arrayListCenterPoints.add(new PositionVector(newTargetX1, newTargetY2));
+                listCenterPoints.add(new PositionVector(newTargetX1, newTargetY2));
             }
             if (maximumBoundaryReachedX && minimumBoundaryReachedY) {
                 //newTargetX2, newTargetY1;
-                arrayListCenterPoints.add(new PositionVector(newTargetX2, newTargetY1));
+                listCenterPoints.add(new PositionVector(newTargetX2, newTargetY1));
             }
             if (maximumBoundaryReachedX && maximumBoundaryReachedY) {
                 //newTargetX2, newTargetY2;
-                arrayListCenterPoints.add(new PositionVector(newTargetX2, newTargetY2));
+                listCenterPoints.add(new PositionVector(newTargetX2, newTargetY2));
             }
 
         }
 
-        return arrayListCenterPoints;
+        return listCenterPoints;
 
     }
 
@@ -400,7 +401,7 @@ public class ClickTarget {
         double radius = getRadiusPixels();
 
         // Get the list of center points
-        ArrayList<PositionVector> arrayListCenterPoints = getArrayListCenterPoints();
+        ArrayList<PositionVector> arrayListCenterPoints = new ArrayList<>(getListCenterPoints());
 
         // Loop through the center points
         for (PositionVector currentCenterPoint : arrayListCenterPoints) {
@@ -471,7 +472,7 @@ public class ClickTarget {
         ArrayList<RandomChangeEvent> arrayListRandomChangeEvents = new ArrayList<>();
 
         // Loop through the position evolvers
-        for (PositionEvolver currentPositionEvolver : arrayListPositionEvolvers) {
+        for (PositionEvolver currentPositionEvolver : listPositionEvolvers) {
 
             // Check the position evolver for random changes
             ArrayList<String> arrayListRandomChanges = currentPositionEvolver.checkRandomChanges(
@@ -516,7 +517,7 @@ public class ClickTarget {
 		Resources resources = context.getResources();
 
         // Loop through the position evolvers
-        for (PositionEvolver positionEvolver : arrayListPositionEvolvers) {
+        for (PositionEvolver positionEvolver : listPositionEvolvers) {
 
             // Evolve the position and radius
             positionEvolver.evolveTime(
@@ -629,7 +630,7 @@ public class ClickTarget {
                 , targetRotation
                 , targetDRotation
                 , targetD2Rotation
-                , getArrayListCenterPoints()
+                , getListCenterPoints()
                 , polygonTargetShape
                 , isClickable
                 , visibility
@@ -872,26 +873,6 @@ public class ClickTarget {
                         , (float) variableValuesD2Radius.maximumValue
                         , context.getResources().getDisplayMetrics());
 
-
-        // Calculate the boundaries
-        double minimumPixelsX = 0.0;
-        double maximumPixelsX = canvasWidth;
-        double minimumPixelsY = 0.0;
-        double maximumPixelsY = canvasHeight;
-        if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
-            minimumPixelsX = initialTargetRadiusPixels / 2.0;
-            maximumPixelsX = canvasWidth - (initialTargetRadiusPixels / 2.0);
-        }
-        if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                || variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
-            minimumPixelsY = initialTargetRadiusPixels / 2.0;
-            maximumPixelsY = canvasHeight - (initialTargetRadiusPixels / 2.0);
-        }
-
-        double width = maximumPixelsX - minimumPixelsX;
-        double height = maximumPixelsY - minimumPixelsY;
-
         // Get the position evolvers
         PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
         PositionEvolver positionEvolverRadiusPixels = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
@@ -1052,6 +1033,31 @@ public class ClickTarget {
 
 
         // -------------------- BEGIN Position -------------------- //
+        // Calculate the boundaries
+        double minimumPixelsX = 0.0;
+        double maximumPixelsX = canvasWidth;
+        double minimumPixelsY = 0.0;
+        double maximumPixelsY = canvasHeight;
+        double currentRadiusPixels = initialTargetRadiusPixels;
+        if (!initializeClickTarget
+                && positionEvolverRadiusPixels != null) {
+            currentRadiusPixels = positionEvolverRadiusPixels.getX().getValue(0);
+        }
+        if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
+            minimumPixelsX = currentRadiusPixels / 2.0;
+            maximumPixelsX = canvasWidth - (currentRadiusPixels / 2.0);
+        }
+        if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
+                || variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
+            minimumPixelsY = currentRadiusPixels / 2.0;
+            maximumPixelsY = canvasHeight - (currentRadiusPixels / 2.0);
+        }
+
+        double width = maximumPixelsX - minimumPixelsX;
+        double height = maximumPixelsY - minimumPixelsY;
+
+
         double XPixels = 0.0;
         double YPixels = 0.0;
         if (!initializeClickTarget && continuousX) {
@@ -1076,7 +1082,7 @@ public class ClickTarget {
             // Set starting position
             // Check if we should randomize the starting X position
             if (variableValuesPositionHorizontal.randomInitialValue) {
-                XPixels = minimumPixelsX + (Math.random() * width);
+                XPixels = minimumPixelsX + (UtilityFunctions.generateRandomValue(0.0, width, false));
             } else { // Do not randomize starting position
                 // Check if we should center
                 if (variableValuesPositionHorizontal.initialValue == -1.0) {
@@ -1088,7 +1094,7 @@ public class ClickTarget {
             }
             // Check if we should randomize the starting Y position
             if (variableValuesPositionVertical.randomInitialValue) {
-                YPixels = minimumPixelsY + (Math.random() * height);
+                YPixels = minimumPixelsY + (UtilityFunctions.generateRandomValue(0.0, height, false));
             } else { // Do not randomize starting position
                 // Check if we should center
                 if (variableValuesPositionVertical.initialValue == -1.0) {
@@ -1383,12 +1389,12 @@ public class ClickTarget {
         // -------------------- END Rotation -------------------- //
 
         // First clear the position evolver list
-        this.arrayListPositionEvolvers.clear();
+        this.listPositionEvolvers.clear();
 
         // Add the new position evolvers to the list
-        this.arrayListPositionEvolvers.add(targetXPixels);
-        this.arrayListPositionEvolvers.add(targetRadiusPixels);
-        this.arrayListPositionEvolvers.add(targetRotationRadians);
+        this.listPositionEvolvers.add(targetXPixels);
+        this.listPositionEvolvers.add(targetRadiusPixels);
+        this.listPositionEvolvers.add(targetRotationRadians);
 
         // Get the polygon
         polygonTargetShape = PolygonHelper.getPolygon(context, clickTargetProfile.shape);

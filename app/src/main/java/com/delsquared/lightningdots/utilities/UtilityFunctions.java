@@ -11,6 +11,7 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class UtilityFunctions {
 
@@ -110,12 +111,40 @@ public class UtilityFunctions {
         return resultValue;
     }
 
+    public static Random randomizer = new Random();
+
+    public static int generateRandomIndex(int minIndex, int maxIndex) {
+
+        return generateRandomIndex(minIndex, maxIndex, randomizer);
+
+    }
+
+    public static int generateRandomIndex(int minIndex, int maxIndex, Random randomizer) {
+
+        // Get the range
+        int numberOfPossibleIndices = maxIndex - minIndex + 1;
+
+        // Get the unshifted random index
+        int randomNumber = randomizer.nextInt(numberOfPossibleIndices);
+
+        // Set the result by shifting the random index to our specified range
+        return minIndex + randomNumber;
+
+    }
+
     public static double generateRandomValue(double minimumValue, double maximumValue, boolean mirrorAbsoluteValue) {
+
+        return generateRandomValue(minimumValue, maximumValue, mirrorAbsoluteValue, randomizer);
+
+    }
+
+    public static double generateRandomValue(double minimumValue, double maximumValue, boolean mirrorAbsoluteValue, Random randomizer) {
 
         // Initialize the result
         double resultValue = 0.0;
 
-        resultValue = minimumValue + (Math.random() * (maximumValue - minimumValue));
+        // Get the random value
+        resultValue = minimumValue + (randomizer.nextDouble() * (maximumValue - minimumValue));
 
         if (mirrorAbsoluteValue) {
             resultValue *= getRandomSign();
@@ -126,7 +155,14 @@ public class UtilityFunctions {
     }
 
     public static double getRandomSign() {
-        return (Math.random() <= 0.5) ? -1.0 : 1.0;
+
+        return getRandomSign(randomizer);
+
+    }
+    public static double getRandomSign(Random randomizer) {
+
+        return (randomizer.nextBoolean()) ? 1.0 : -1.0;
+
     }
 
     public boolean pointIsLeftOfEdge() {

@@ -141,6 +141,7 @@
     <string name="game_values_defaultScriptTransitionMode">CONSTANT</string>
     <string name="game_values_defaultScriptTransitionInterval">CONSTANT</string>
     <string name="game_values_defaultScriptCycleDirection">INCREASING</string>
+    <bool name="game_values_defaultRandomInitialClickTargetProfile">false</bool>
 
     <string name="game_values_defaultTargetShape">CIRCLE</string>
 

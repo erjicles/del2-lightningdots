@@ -1,7 +1,12 @@
 package com.delsquared.lightningdots.game;
 
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
+
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ClickTargetProfileScript {
 
@@ -9,8 +14,9 @@ public class ClickTargetProfileScript {
     private final SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval;
     private final SCRIPT_CYCLE_DIRECTION scriptCycleDirection;
     private final String initialClickTargetProfileName;
-    private final ArrayList<String> arrayListClickTargetNames;
-    private final HashMap<String, ClickTargetProfile> mapClickTargetProfiles;
+    private final boolean randomInitialClickTargetProfile;
+    private final List<String> listClickTargetNames;
+    private final Map<String, ClickTargetProfile> mapClickTargetProfiles;
     private String currentClickTargetProfileName = "";
     private double totalTimeElapsedSinceLastTransitionSeconds = 0.0;
 
@@ -19,8 +25,9 @@ public class ClickTargetProfileScript {
         scriptTransitionInterval = SCRIPT_TRANSITION_INTERVAL.CONSTANT;
         scriptCycleDirection = SCRIPT_CYCLE_DIRECTION.INCREASING;
         initialClickTargetProfileName = "";
-        arrayListClickTargetNames = new ArrayList<>();
-        mapClickTargetProfiles = new HashMap<>();
+        randomInitialClickTargetProfile = false;
+        listClickTargetNames = new ArrayList<>();
+        mapClickTargetProfiles = new LinkedHashMap<>();
     }
 
     public ClickTargetProfileScript(
@@ -28,20 +35,33 @@ public class ClickTargetProfileScript {
             , SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval
             , SCRIPT_CYCLE_DIRECTION scriptCycleDirection
             , String initialClickTargetProfileName
-            , ArrayList<String> arrayListClickTargetNames
-            , HashMap<String, ClickTargetProfile> mapClickTargetProfiles) {
+            , boolean randomInitialClickTargetProfile
+            , List<String> listClickTargetNames
+            , Map<String, ClickTargetProfile> mapClickTargetProfiles) {
         this.scriptTransitionMode = scriptTransitionMode;
         this.scriptTransitionInterval = scriptTransitionInterval;
         this.scriptCycleDirection = scriptCycleDirection;
         this.initialClickTargetProfileName = initialClickTargetProfileName;
-        this.arrayListClickTargetNames = arrayListClickTargetNames;
+        this.randomInitialClickTargetProfile = randomInitialClickTargetProfile;
+        this.listClickTargetNames = listClickTargetNames;
         this.mapClickTargetProfiles = mapClickTargetProfiles;
+
+        // Check if we should randomize the initial click target
+        if (randomInitialClickTargetProfile) {
+
+            // Select a random click target profile
+            randomizeClickTargetProfile();
+
+            // Set the random click target profile as the initial
+            initialClickTargetProfileName = currentClickTargetProfileName;
+
+        }
 
         // Check if the initial click target profile name is not in the list
         if (!mapClickTargetProfiles.containsKey(initialClickTargetProfileName)) {
             // Set the initial click target profile name to the first name in the list
-            if (arrayListClickTargetNames.size() > 0) {
-                initialClickTargetProfileName = arrayListClickTargetNames.get(0);
+            if (listClickTargetNames.size() > 0) {
+                initialClickTargetProfileName = listClickTargetNames.get(0);
             }
         }
         currentClickTargetProfileName = initialClickTargetProfileName;
@@ -49,8 +69,8 @@ public class ClickTargetProfileScript {
 
     private void resetCurrentClickTargetProfileName() {
         if (!mapClickTargetProfiles.containsKey(currentClickTargetProfileName)) {
-            if (arrayListClickTargetNames.size() > 0) {
-                currentClickTargetProfileName = arrayListClickTargetNames.get(0);
+            if (listClickTargetNames.size() > 0) {
+                currentClickTargetProfileName = listClickTargetNames.get(0);
             }
         }
     }
@@ -88,6 +108,21 @@ public class ClickTargetProfileScript {
 
         // Reset the transition clock
         resetTransitionClock();
+
+    }
+
+    public void randomizeClickTargetProfile() {
+
+        // Check if there are profiles
+        if (mapClickTargetProfiles.size() > 0) {
+
+            // Get the random index
+            int randomIndex = UtilityFunctions.generateRandomIndex(0, listClickTargetNames.size() - 1);
+
+            // Set the new current profile
+            setCurrentClickTargetProfileName(listClickTargetNames.get(randomIndex));
+
+        }
 
     }
 
@@ -134,7 +169,7 @@ public class ClickTargetProfileScript {
                 case RANDOM:
                     double probabilityThreshold =
                             1.0 - Math.pow(1.0 - currentTransitionValue, timeElapsedSinceLastUpdateSeconds);
-                    double transitionCheck = Math.random();
+                    double transitionCheck = UtilityFunctions.generateRandomValue(0.0, 1.0, false);
                     if (transitionCheck < probabilityThreshold) {
                         performTransition = true;
                     }
@@ -150,7 +185,7 @@ public class ClickTargetProfileScript {
                 totalTimeElapsedSinceLastTransitionSeconds = 0.0;
 
                 // Get the index of the current click target name
-                int currentClickTargetNameIndex = arrayListClickTargetNames.indexOf(currentClickTargetProfileName);
+                int currentClickTargetNameIndex = listClickTargetNames.indexOf(currentClickTargetProfileName);
 
                 switch (scriptTransitionMode) {
 
@@ -159,7 +194,7 @@ public class ClickTargetProfileScript {
 
                             case INCREASING:
                                 // Check if we have reached the last index
-                                if (currentClickTargetNameIndex >= arrayListClickTargetNames.size() - 1) {
+                                if (currentClickTargetNameIndex >= listClickTargetNames.size() - 1) {
                                     currentClickTargetNameIndex = 0;
                                 } else {
                                     // Increment the index
@@ -171,7 +206,7 @@ public class ClickTargetProfileScript {
                                 // Check if we have reached the min index
                                 if (currentClickTargetNameIndex <= 0) {
                                     // Reset index to max
-                                    currentClickTargetNameIndex = arrayListClickTargetNames.size() - 1;
+                                    currentClickTargetNameIndex = listClickTargetNames.size() - 1;
                                 } else {
                                     // Decrement the index
                                     currentClickTargetNameIndex--;
@@ -182,10 +217,9 @@ public class ClickTargetProfileScript {
                         break;
 
                     case RANDOM:
-                        double randomValue = Math.random() * (double)arrayListClickTargetNames.size();
-                        int newIndex = (int) Math.floor(randomValue);
-                        if (newIndex == arrayListClickTargetNames.size()) {
-                            newIndex = arrayListClickTargetNames.size() - 1;
+                        int newIndex = UtilityFunctions.generateRandomIndex(0, listClickTargetNames.size());
+                        if (newIndex == listClickTargetNames.size()) {
+                            newIndex = listClickTargetNames.size() - 1;
                         }
                         currentClickTargetNameIndex = newIndex;
                         break;
@@ -193,7 +227,7 @@ public class ClickTargetProfileScript {
                 }
 
                 // Set the new ClickTargetProfile name
-                currentClickTargetProfileName = arrayListClickTargetNames.get(currentClickTargetNameIndex);
+                currentClickTargetProfileName = listClickTargetNames.get(currentClickTargetNameIndex);
 
             }
 

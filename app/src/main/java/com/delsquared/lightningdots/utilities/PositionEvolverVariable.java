@@ -109,13 +109,13 @@ public class PositionEvolverVariable {
     public void randomizeValue() {
 
         // Generate new value
-        value = minimumValue + (Math.random() * (maximumValue - minimumValue));
+        value = UtilityFunctions.generateRandomValue(minimumValue, maximumValue, false);
 
         // Check if we should mirror absolute value boundaries
         if (boundaryEffect.mirrorAbsoluteValueBoundaries) {
 
             // Randomize sign
-            value *= (Math.random() <= 0.5) ? 1 : -1;
+            value *= UtilityFunctions.getRandomSign();
 
         }
     }
@@ -155,7 +155,7 @@ public class PositionEvolverVariable {
 
             // Generate random value
             double probabilityThreshold = 1.0 - Math.pow(1.0 - randomChangeEffect.randomChangeValue, dt);
-            double changeCheck = Math.random();
+            double changeCheck = UtilityFunctions.generateRandomValue(0.0, 1.0, false);
 
             // Check if it should randomly change
             if (changeCheck < probabilityThreshold) {

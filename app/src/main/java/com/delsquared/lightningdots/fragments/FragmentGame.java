@@ -15,6 +15,7 @@ import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.game.InterfaceGameCallback;
 import com.delsquared.lightningdots.graphics.SurfaceViewGame;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -245,7 +246,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void processEndOfGameAd() {
-        int randomInt = (int) Math.floor(Math.random() * 4.0);
+        int randomInt = UtilityFunctions.generateRandomIndex(0, 4);
         if ((LightningDotsApplication.numberOfGameTransitions - randomInt) % 4 == 0) {
             showInterstitialAd();
         }

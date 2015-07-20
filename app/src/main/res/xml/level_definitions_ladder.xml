@@ -1272,4 +1272,269 @@
         </TransitionTriggers>
     </Level>
 
+    <Level level="37">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false">
+                                <RandomChangeEffect
+                                    canRandomlyChange="true"
+                                    randomChangeInterval="RANDOM"
+                                    randomChangeValue="0.6"/>
+                            </Variable>
+                            <Variable name="position_vertical" canChange="false"/>
+                            <Variable
+                                name="radius"
+                                initialValue="0.8"
+                                minimumValue="0.4"
+                                maximumValue="0.8"
+                                canChange="true"/>
+                            <Variable name="dRadius" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="speed" initialValue="2.5"/>
+                            <Variable name="direction">
+                                <RandomChangeEffect
+                                    canRandomlyChange="true"
+                                    randomChangeInterval="RANDOM"
+                                    randomChangeValue="0.6"/>
+                            </Variable>
+                            <Variable name="radius" initialValue="0.25"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                sourceVariable="position_horizontal" targetClickTargetName="0" targetClickTargetProfileName="0"
+                targetVariable="position_vertical">
+                <SyncVariableTriggers>
+                    <SyncVariableTrigger
+                        sourceClickTargetName="1" sourceClickTargetProfileName="0"
+                        targetClickTargetName="0" targetClickTargetProfileName="0"
+                        variableName="position_horizontal" />
+                    <SyncVariableTrigger
+                        sourceClickTargetName="1" sourceClickTargetProfileName="0"
+                        targetClickTargetName="0" targetClickTargetProfileName="0"
+                        variableName="position_vertical"/>
+                </SyncVariableTriggers>
+            </RandomChangeTrigger>
+        </RandomChangeTriggers>
+    </Level>
+
+    <Level level="38">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="2">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="3">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="4">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="5">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="6">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="7">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="RANDOM"
+                    randomInitialClickTargetProfile="true">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="0.7">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" randomInitialValue="true" minimumValue="1.25" maximumValue="1.75" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+    </Level>
+
 </Levels>

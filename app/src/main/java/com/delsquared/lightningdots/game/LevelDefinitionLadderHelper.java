@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
@@ -52,6 +53,7 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_SCRIPT_TRANSITION_INTERVAL = "scriptTransitionInterval";
     private static final String ATTRIBUTE_NAME_SCRIPT_CYCLE_DIRECTION = "scriptCycleDirection";
     private static final String ATTRIBUTE_NAME_SCRIPT_INITIAL_CLICK_TARGET_PROFILE = "initialClickTargetProfile";
+    private static final String ATTRIBUTE_NAME_SCRIPT_RANDOM_INITIAL_CLICK_TARGET_PROFILE = "randomInitialClickTargetProfile";
 
     // <ClickTargetProfile> attribute names
     private static final String ATTRIBUTE_NAME_PROFILE_NAME = "name";
@@ -860,9 +862,10 @@ public class LevelDefinitionLadderHelper {
         public ClickTargetProfileScript.SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval;
         public ClickTargetProfileScript.SCRIPT_CYCLE_DIRECTION scriptCycleDirection;
         public String initialClickTargetProfileName;
+        public boolean randomInitialClickTargetProfile;
 
-        public ArrayList<String> arrayListClickTargetProfileNames;
-        public HashMap<String, XMLClickTargetProfile> mapXMLClickTargetProfiles;
+        public List<String> listClickTargetProfileNames;
+        public Map<String, XMLClickTargetProfile> mapXMLClickTargetProfiles;
 
         public XMLClickTargetProfileScript(Context context) {
 
@@ -879,8 +882,9 @@ public class LevelDefinitionLadderHelper {
                         context.getString(R.string.game_values_defaultScriptCycleDirection)
                     );
             initialClickTargetProfileName = "";
+            randomInitialClickTargetProfile = context.getResources().getBoolean(R.bool.game_values_defaultRandomInitialClickTargetProfile);
 
-            arrayListClickTargetProfileNames = new ArrayList<>();
+            listClickTargetProfileNames = new ArrayList<>();
             mapXMLClickTargetProfiles = new HashMap<>();
 
         }
@@ -894,10 +898,10 @@ public class LevelDefinitionLadderHelper {
                 initialClickTargetProfileName = "";
 
                 // Check if there are names
-                if (arrayListClickTargetProfileNames.size() > 0) {
+                if (listClickTargetProfileNames.size() > 0) {
 
                     // Set the initial profile to the first name
-                    initialClickTargetProfileName = arrayListClickTargetProfileNames.get(0);
+                    initialClickTargetProfileName = listClickTargetProfileNames.get(0);
 
                 }
 
@@ -962,6 +966,7 @@ public class LevelDefinitionLadderHelper {
                     , this.scriptTransitionInterval
                     , this.scriptCycleDirection
                     , this.initialClickTargetProfileName
+                    , this.randomInitialClickTargetProfile
                     , arrayListClickTargetProfileNames
                     , mapClickTargetProfiles
             );
@@ -1275,6 +1280,12 @@ public class LevelDefinitionLadderHelper {
                                     (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SCRIPT_INITIAL_CLICK_TARGET_PROFILE) == null) ?
                                             ""
                                             : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SCRIPT_INITIAL_CLICK_TARGET_PROFILE);
+                            boolean randomInitialClickTargetProfile =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_SCRIPT_RANDOM_INITIAL_CLICK_TARGET_PROFILE
+                                            , currentXMLClickTarget.xmlClickTargetProfileScript.randomInitialClickTargetProfile
+                                    );
 
 
                             // Set the attributes
@@ -1282,6 +1293,7 @@ public class LevelDefinitionLadderHelper {
                             currentXMLClickTarget.xmlClickTargetProfileScript.scriptTransitionInterval = scriptTransitionInterval;
                             currentXMLClickTarget.xmlClickTargetProfileScript.scriptCycleDirection = scriptCycleDirection;
                             currentXMLClickTarget.xmlClickTargetProfileScript.initialClickTargetProfileName = initialClickTargetProfileName;
+                            currentXMLClickTarget.xmlClickTargetProfileScript.randomInitialClickTargetProfile = randomInitialClickTargetProfile;
 
                         }
 
@@ -1329,7 +1341,7 @@ public class LevelDefinitionLadderHelper {
                             xmlClickTargetProfile.visibility = visibility;
 
                             // Add it to the ClickTargetProfileScript
-                            currentXMLClickTarget.xmlClickTargetProfileScript.arrayListClickTargetProfileNames.add(name);
+                            currentXMLClickTarget.xmlClickTargetProfileScript.listClickTargetProfileNames.add(name);
                             currentXMLClickTarget.xmlClickTargetProfileScript.mapXMLClickTargetProfiles.put(name, xmlClickTargetProfile);
 
                             // Set the trackers
