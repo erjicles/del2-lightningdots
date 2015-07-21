@@ -1537,4 +1537,154 @@
         </ClickTargets>
     </Level>
 
+    <Level level="39">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.75">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.25"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.25"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.25"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.25"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR"
+                    initialClickTargetProfile="1">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.75">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.75"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.25"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.75"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.25"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="2">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR"
+                    initialClickTargetProfile="1">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.75">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.75"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.75"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.75"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.75"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="3">
+                <ClickTargetProfileScript
+                    scriptTransitionMode="CYCLE"
+                    scriptTransitionInterval="REGULAR"
+                    initialClickTargetProfile="1">
+                    <ClickTargetProfile name="0" scriptTransitionValue="0.75">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.25"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.75"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false" scriptTransitionValue="15.0">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false" initialValue="0.25"/>
+                            <Variable name="position_vertical" canChange="false" initialValue="0.75"/>
+                            <Variable name="radius" initialValue="0.4"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <TransitionTriggers>
+            <TransitionTrigger sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="0"/>
+            <TransitionTrigger sourceClickTargetName="1" sourceClickTargetProfileName="1"
+                targetClickTargetName="2" targetClickTargetProfileName="0"/>
+            <TransitionTrigger sourceClickTargetName="2" sourceClickTargetProfileName="1"
+                targetClickTargetName="3" targetClickTargetProfileName="0"/>
+            <TransitionTrigger sourceClickTargetName="3" sourceClickTargetProfileName="1"
+                targetClickTargetName="0" targetClickTargetProfileName="0"/>
+        </TransitionTriggers>
+    </Level>
+
+    <Level level="40">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="speed" initialValue="1.0"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="radius" initialValue="0.2"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0">
+                        <Variables>
+                            <Variable name="position_horizontal" canChange="false">
+                                <RandomChangeEffect
+                                    canRandomlyChange="true"
+                                    randomChangeInterval="REGULAR"
+                                    randomChangeValue="0.75"/>
+                            </Variable>
+                            <Variable name="position_vertical" canChange="false"/>
+                            <Variable name="radius" initialValue="0.35"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="1"
+                sourceClickTargetProfileName="0"
+                sourceVariable="position_horizontal"
+                targetClickTargetName="1"
+                targetClickTargetProfileName="0"
+                targetVariable="position_vertical">
+                <SyncVariableTriggers>
+                    <SyncVariableTrigger
+                        sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                        targetClickTargetName="1" targetClickTargetProfileName="0"
+                        variableName="position_horizontal" />
+                    <SyncVariableTrigger
+                        sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                        targetClickTargetName="1" targetClickTargetProfileName="0"
+                        variableName="position_vertical"/>
+                </SyncVariableTriggers>
+            </RandomChangeTrigger>
+        </RandomChangeTriggers>
+    </Level>
+
 </Levels>
