@@ -1624,15 +1624,30 @@
             </ClickTarget>
         </ClickTargets>
         <TransitionTriggers>
-            <TransitionTrigger sourceClickTargetName="0" sourceClickTargetProfileName="1"
-                targetClickTargetName="1" targetClickTargetProfileName="0"/>
-            <TransitionTrigger sourceClickTargetName="1" sourceClickTargetProfileName="1"
-                targetClickTargetName="2" targetClickTargetProfileName="0"/>
-            <TransitionTrigger sourceClickTargetName="2" sourceClickTargetProfileName="1"
-                targetClickTargetName="3" targetClickTargetProfileName="0"/>
-            <TransitionTrigger sourceClickTargetName="3" sourceClickTargetProfileName="1"
-                targetClickTargetName="0" targetClickTargetProfileName="0"/>
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="0"
+                randomTargetClickTarget="true"/>
+            <TransitionTrigger
+                sourceClickTargetName="1" sourceClickTargetProfileName="1"
+                targetClickTargetName="2" targetClickTargetProfileName="0"
+                randomTargetClickTarget="true"/>
+            <TransitionTrigger
+                sourceClickTargetName="2" sourceClickTargetProfileName="1"
+                targetClickTargetName="3" targetClickTargetProfileName="0"
+                randomTargetClickTarget="true"/>
+            <TransitionTrigger
+                sourceClickTargetName="3" sourceClickTargetProfileName="1"
+                targetClickTargetName="0" targetClickTargetProfileName="0"
+                randomTargetClickTarget="true"/>
         </TransitionTriggers>
+        <ClickTargetSettingsShuffles>
+            <ClickTargetSettingsShuffle preserveOrder="false">
+                <ClickTargetSettingsShuffleSettings>
+                    <ClickTargetSettingsShuffleSetting name="initialClickTargetProfileName" />
+                </ClickTargetSettingsShuffleSettings>
+            </ClickTargetSettingsShuffle>
+        </ClickTargetSettingsShuffles>
     </Level>
 
     <Level level="40">

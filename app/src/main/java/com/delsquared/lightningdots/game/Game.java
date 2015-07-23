@@ -6,11 +6,13 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionVector;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 public class Game {
@@ -39,12 +41,13 @@ public class Game {
 	private GameTimer gameTimer;
     private GameTimer endingTimer;
 
-    // Objects for user clicks
-    private HashMap<String, ClickTarget> mapClickTargets;
-    //private ArrayList<Integer> arrayListTargetUserClicks = new ArrayList<Integer>();
-    private ArrayList<UserClick> listUserClick = new ArrayList<UserClick>();
-    private ArrayList<UserClick> listNewUserClick = new ArrayList<UserClick>();
-    private ArrayList<UserClick> listValidUserClick = new ArrayList<UserClick>();
+    // Click targets
+    private Map<String, ClickTarget> mapClickTargets;
+
+    // User click lists
+    private List<UserClick> listUserClick = new ArrayList<UserClick>();
+    private List<UserClick> listNewUserClick = new ArrayList<UserClick>();
+    private List<UserClick> listValidUserClick = new ArrayList<UserClick>();
 
     // Objects for the end of the game
     private boolean isLevelComplete;
@@ -216,10 +219,10 @@ public class Game {
 	public int getGameLevel() { return gameLevel; }
     public long getStartingTimeMillis() { return startingTimeMillis; }
 	public long getGameTimeLimitMillis() { return gameLevelDefinition.gameTimeLimitMillis; }
-	public HashMap<String, ClickTarget> getMapClickTargets() { return mapClickTargets; }
-	public ArrayList<UserClick> getListUserClick() { return listUserClick; }
-	public ArrayList<UserClick> getListValidUserClick() { return listValidUserClick; }
-	public ArrayList<UserClick> getListNewUserClick() { return listNewUserClick; }
+	public Map<String, ClickTarget> getMapClickTargets() { return mapClickTargets; }
+	public List<UserClick> getListUserClick() { return listUserClick; }
+	public List<UserClick> getListValidUserClick() { return listValidUserClick; }
+	public List<UserClick> getListNewUserClick() { return listNewUserClick; }
 
 	public void addUserClick(UserClick userClick) { listUserClick.add(userClick); }
 	public void addNewUserClick(UserClick userClick) { listNewUserClick.add(userClick); }
@@ -262,13 +265,13 @@ public class Game {
 
 		if (gameState == GameState.RUNNING) {
 
-            // -------------------- BEGIN Check for RandomChangeEvents and TransitionTriggers -------------------- //
+            // -------------------- BEGIN Check for RandomChangeEvents and TransitionEvents -------------------- //
 
 			// Initialize the list of unprocessed RandomChangeEvents
-            ArrayList<ClickTarget.RandomChangeEvent> arrayListRandomChangeEventsUnprocessed = new ArrayList<>();
+            List<ClickTarget.RandomChangeEvent> listRandomChangeEventsUnprocessed = new ArrayList<>();
 
             // Initialize the list of unprocessed TransitionEvents
-            ArrayList<ClickTarget.ClickTargetProfileTransitionEvent> arrayListTransitionEventsUnprocessed = new ArrayList<>();
+            List<ClickTarget.ClickTargetProfileTransitionEvent> listTransitionEventsUnprocessed = new ArrayList<>();
 
             // Initialize the click target iterator
             Iterator clickTargetIterator = mapClickTargets.entrySet().iterator();
@@ -285,7 +288,7 @@ public class Game {
                         currentClickTarget.checkRandomChanges(timeElapsedSinceLastUpdateSeconds);
 
                 // Add the list of random change events to the list
-                arrayListRandomChangeEventsUnprocessed.addAll(currentClickTargetArrayListRandomChangeEvents);
+                listRandomChangeEventsUnprocessed.addAll(currentClickTargetArrayListRandomChangeEvents);
 
                 // Check the current click target for a profile transition
                 if (currentClickTarget.checkProfileTransition(timeElapsedSinceLastUpdateSeconds)) {
@@ -298,36 +301,36 @@ public class Game {
                             );
 
                     // Add the transition event to the list
-                    arrayListTransitionEventsUnprocessed.add(transitionEvent);
+                    listTransitionEventsUnprocessed.add(transitionEvent);
 
                 }
 
             }
-            // -------------------- END Check for RandomChangeEvents and TransitionTriggers -------------------- //
+            // -------------------- END Check for RandomChangeEvents and TransitionEvents -------------------- //
 
             // Initialize the list of SyncVariableTriggers already processed
             // TransitionTriggers and RandomChangeTriggers contribute to this
-            ArrayList<LevelDefinitionLadder.SyncVariableTrigger> arrayListGeneratedSyncVariableTriggers = new ArrayList<>();
+            List<LevelDefinitionLadder.SyncVariableTrigger> listGeneratedSyncVariableTriggers = new ArrayList<>();
 
             // -------------------- BEGIN Create the map of generated RandomChangeEvents -------------------- //
 
             // Initialize the map of generated random changes
-            HashMap<String, HashMap<String, HashMap<String, Boolean>>> mapGeneratedRandomChanges = new HashMap<>();
+            Map<String, Map<String, Map<String, Boolean>>> mapGeneratedRandomChanges = new HashMap<>();
 
             // Initialize the map of RandomChangeTriggers already processed
-            HashMap<NTuple, Boolean> mapRandomChangeEventsProcessed = new HashMap<>();
+            Map<NTuple, Boolean> mapRandomChangeEventsProcessed = new HashMap<>();
 
             // Process while there are still unprocessed RandomChangeEvents
-            while (arrayListRandomChangeEventsUnprocessed.size() > 0) {
+            while (listRandomChangeEventsUnprocessed.size() > 0) {
 
                 // Get the first RandomChangeEvent in the list
-                ClickTarget.RandomChangeEvent firstRandomChangeEvent = arrayListRandomChangeEventsUnprocessed.get(0);
+                ClickTarget.RandomChangeEvent firstRandomChangeEvent = listRandomChangeEventsUnprocessed.get(0);
 
                 // Get the RandomChangeTrigger key
                 NTuple randomChangeTriggerKey = firstRandomChangeEvent.toRandomChangeTriggerKey();
 
                 // Remove this RandomChangeEvent from the unprocessed list
-                arrayListRandomChangeEventsUnprocessed.remove(0);
+                listRandomChangeEventsUnprocessed.remove(0);
 
                 // Check if we have not yet processed this RandomChangeEvent
                 if (!mapRandomChangeEventsProcessed.containsKey(randomChangeTriggerKey)) {
@@ -343,7 +346,7 @@ public class Game {
                         // Add this click target to the map of generated random changes
                         mapGeneratedRandomChanges.put(
                                 firstRandomChangeEvent.clickTargetName
-                                , new HashMap<String, HashMap<String, Boolean>>()
+                                , new HashMap<String, Map<String, Boolean>>()
                         );
 
                     }
@@ -379,24 +382,24 @@ public class Game {
                             && gameLevelDefinition.levelDefinitionLadder.mapRandomChangeTriggers.containsKey(randomChangeTriggerKey)) {
 
                         // Get the list of associated triggers
-                        ArrayList<LevelDefinitionLadder.RandomChangeTrigger> arrayListRandomChangeTriggers =
+                        List<LevelDefinitionLadder.RandomChangeTrigger> listRandomChangeTriggers =
                                 gameLevelDefinition.levelDefinitionLadder.mapRandomChangeTriggers.get(randomChangeTriggerKey);
 
                         // Loop through the associated triggers
-                        for (LevelDefinitionLadder.RandomChangeTrigger randomChangeTrigger : arrayListRandomChangeTriggers) {
+                        for (LevelDefinitionLadder.RandomChangeTrigger randomChangeTrigger : listRandomChangeTriggers) {
 
                             // Convert the trigger to a RandomChangeEvent
                             ClickTarget.RandomChangeEvent randomChangeEvent =
                                     randomChangeTrigger.toRandomChangeEvent();
 
                             // Add the new RandomChangeEvent to the list of RandomChangeEvents
-                            arrayListRandomChangeEventsUnprocessed.add(randomChangeEvent);
+                            listRandomChangeEventsUnprocessed.add(randomChangeEvent);
 
                             // Loop through the SyncVariableTriggers associated with this RandomChangeTrigger
-                            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : randomChangeTrigger.arrayListSyncVariableTriggers) {
+                            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : randomChangeTrigger.listSyncVariableTriggers) {
 
                                 // Add the sync variable trigger to the list
-                                arrayListGeneratedSyncVariableTriggers.add(syncVariableTrigger);
+                                listGeneratedSyncVariableTriggers.add(syncVariableTrigger);
 
                             }
 
@@ -414,22 +417,22 @@ public class Game {
             // -------------------- BEGIN Create the map of generated ClickTargetProfileTransitionEvents -------------------- //
 
             // Initialize the map of generated transitions
-            HashMap<String, String> mapGeneratedTransitions = new HashMap<>();
+            Map<String, String> mapGeneratedTransitions = new HashMap<>();
 
             // Initialize the map of ClickTargetProfileTransitionEvents already processed
-            HashMap<NTuple, Boolean> mapTransitionEventsProcessed = new HashMap<>();
+            Map<NTuple, Boolean> mapTransitionEventsProcessed = new HashMap<>();
 
             // Process while there are still unprocessed ClickTargetProfileTransitionEvents
-            while (arrayListTransitionEventsUnprocessed.size() > 0) {
+            while (listTransitionEventsUnprocessed.size() > 0) {
 
                 // Get the first ClickTargetProfileTransitionEvent in the list
-                ClickTarget.ClickTargetProfileTransitionEvent firstTransitionEvent = arrayListTransitionEventsUnprocessed.get(0);
+                ClickTarget.ClickTargetProfileTransitionEvent firstTransitionEvent = listTransitionEventsUnprocessed.get(0);
 
                 // Get the TransitionTrigger key
                 NTuple transitionTriggerKey = firstTransitionEvent.toTransitionTriggerKey();
 
                 // Remove this TransitionEvent from the unprocessed list
-                arrayListTransitionEventsUnprocessed.remove(0);
+                listTransitionEventsUnprocessed.remove(0);
 
                 // Check if we have not yet processed this transition event
                 if (!mapTransitionEventsProcessed.containsKey(transitionTriggerKey)) {
@@ -445,24 +448,79 @@ public class Game {
                             && gameLevelDefinition.levelDefinitionLadder.mapTransitionTriggers.containsKey(transitionTriggerKey)) {
 
                         // Get the list of associated triggers
-                        ArrayList<LevelDefinitionLadder.TransitionTrigger> arrayListTransitionTriggers =
+                        List<LevelDefinitionLadder.TransitionTrigger> listTransitionTriggers =
                                 gameLevelDefinition.levelDefinitionLadder.mapTransitionTriggers.get(transitionTriggerKey);
 
                         // Loop through the associated triggers
-                        for (LevelDefinitionLadder.TransitionTrigger transitionTrigger : arrayListTransitionTriggers) {
+                        for (LevelDefinitionLadder.TransitionTrigger transitionTrigger : listTransitionTriggers) {
+
+                            // Initialize the target click target name and profile
+                            String targetClickTargetName = transitionTrigger.targetClickTargetName;
+                            String targetClickTargetProfileName = transitionTrigger.targetClickTargetProfileName;
+
+                            // Check if the transition trigger should randomize the target click target
+                            if (transitionTrigger.randomTargetClickTarget
+                                    && gameLevelDefinition.levelDefinitionLadder.listClickTargetDefinitionNames.size() > 1) {
+
+                                // Get the index of the source click target for the transition trigger
+                                int sourceClickTargetIndex =
+                                        gameLevelDefinition
+                                                .levelDefinitionLadder
+                                                .listClickTargetDefinitionNames.indexOf(transitionTrigger.sourceClickTargetName);
+
+                                // Generate a random index
+                                int randomIndex =
+                                        UtilityFunctions.generateRandomIndex(
+                                                0
+                                                , gameLevelDefinition.levelDefinitionLadder.listClickTargetDefinitionNames.size() - 2);
+
+                                // Shift the random index up to ensure that we never select the source
+                                if (randomIndex >= sourceClickTargetIndex) {
+                                    randomIndex++;
+                                }
+
+                                // Set the name of the target
+                                targetClickTargetName = gameLevelDefinition.levelDefinitionLadder.listClickTargetDefinitionNames.get(randomIndex);
+
+                            }
+
+                            // Check if the transition trigger should randomize the target click target profile
+                            if (transitionTrigger.randomTargetClickTargetProfile) {
+
+                                // Get the click target definition
+                                ClickTargetDefinition clickTargetDefinition =
+                                        gameLevelDefinition.levelDefinitionLadder.mapClickTargetDefinitions.get(targetClickTargetName);
+
+                                // Get the list of profile names
+                                List<String> listClickTargetProfileNames =
+                                        clickTargetDefinition.clickTargetProfileScript.getListClickTargetProfileNames();
+
+                                // Get a random index
+                                int randomIndex =
+                                        UtilityFunctions.generateRandomIndex(
+                                                0
+                                                , listClickTargetProfileNames.size() - 1
+                                        );
+
+                                // Set the name of the target
+                                targetClickTargetProfileName = listClickTargetProfileNames.get(randomIndex);
+
+                            }
 
                             // Convert the trigger to a ClickTargetProfileTransitionEvent
-                            ClickTarget.ClickTargetProfileTransitionEvent transitionEvent =
-                                    transitionTrigger.toTransitionEvent();
+                            ClickTarget.ClickTargetProfileTransitionEvent transitionEvent = new ClickTarget.ClickTargetProfileTransitionEvent(
+                                    targetClickTargetName
+                                    , targetClickTargetProfileName
+                            );
 
                             // Add the new TransitionEvent to the list of TransitionEvents
-                            arrayListTransitionEventsUnprocessed.add(transitionEvent);
+                            listTransitionEventsUnprocessed.add(transitionEvent);
 
                             // Loop through the SyncVariableTriggers associated with this RandomChangeTrigger
-                            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : transitionTrigger.arrayListSyncVariableTriggers) {
+                            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : transitionTrigger.listSyncVariableTriggers) {
 
                                 // Add the sync variable trigger to the list
-                                arrayListGeneratedSyncVariableTriggers.add(syncVariableTrigger);
+                                listGeneratedSyncVariableTriggers.add(syncVariableTrigger);
 
                             }
 
@@ -496,7 +554,7 @@ public class Game {
                 String currentClickTargetProfileName = currentClickTarget.getCurrentClickTargetProfileName();
 
                 // Get the random changes for this click target and profile
-                HashMap<String, Boolean> mapRandomChanges = new HashMap<>();
+                Map<String, Boolean> mapRandomChanges = new HashMap<>();
                 if (mapGeneratedRandomChanges.containsKey(currentClickTargetName)
                         && mapGeneratedRandomChanges.get(currentClickTargetName).containsKey(currentClickTargetProfileName)) {
                     mapRandomChanges = mapGeneratedRandomChanges.get(currentClickTargetName).get(currentClickTargetProfileName);
@@ -524,7 +582,7 @@ public class Game {
             // -------------------- BEGIN Process sync variable triggers -------------------- //
 
             // Loop through the list of generated sync variable triggers
-            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : arrayListGeneratedSyncVariableTriggers) {
+            for (LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger : listGeneratedSyncVariableTriggers) {
 
                 // Check the mode
                 if (syncVariableTrigger.mode == LevelDefinitionLadder.SyncVariableTrigger.MODE.SNAP_TO_TARGET) {

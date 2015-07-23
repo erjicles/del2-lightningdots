@@ -21,6 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.logging.Level;
 
 public class LevelDefinitionLadderHelper {
 
@@ -40,6 +41,10 @@ public class LevelDefinitionLadderHelper {
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGER = "RandomChangeTrigger";
     private static final String NODE_NAME_SYNC_VARIABLE_TRIGGERS = "SyncVariableTriggers";
     private static final String NODE_NAME_SYNC_VARIABLE_TRIGGER = "SyncVariableTrigger";
+    private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLES = "ClickTargetSettingsShuffles";
+    private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE = "ClickTargetSettingsShuffle";
+    private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE_SETTINGS = "ClickTargetSettingsShuffleSettings";
+    private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE_SETTING = "ClickTargetSettingsShuffleSetting";
 
 
     // <Level> attribute names
@@ -96,6 +101,8 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_SOURCE_CLICK_TARGET_PROFILE_NAME = "sourceClickTargetProfileName";
     private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_TARGET_CLICK_TARGET_NAME = "targetClickTargetName";
     private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_TARGET_CLICK_TARGET_PROFILE_NAME = "targetClickTargetProfileName";
+    private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_RANDOM_TARGET_CLICK_TARGET = "randomTargetClickTarget";
+    private static final String ATTRIBUTE_NAME_TRANSITIONTRIGGER_RANDOM_TARGET_CLICK_TARGET_PROFILE = "randomTargetClickTargetProfile";
 
     // <SyncVariableTrigger> attribute names
     private static final String ATTRIBUTE_NAME_SYNCVARIABLE_SOURCE_CLICK_TARGET_NAME = "sourceClickTargetName";
@@ -105,6 +112,12 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_SYNCVARIABLE_VARIABLE_NAME = "variableName";
     private static final String ATTRIBUTE_NAME_SYNCVARIABLE_MODE = "mode";
     private static final String ATTRIBUTE_NAME_SYNCVARIABLE_VALUE = "value";
+
+    // <ClickTargetSettingsShuffle> attribute names
+    private static final String ATTRIBUTE_NAME_CLICKTARGETSETTINGSSHUFFLE_PRESERVE_ORDER = "preserveOrder";
+
+    // <ClickTargetSettingsShuffleSetting> attribute names
+    private static final String ATTRIBUTE_NAME_CLICKTARGETSETTINGSSHUFFLESETTING_NAME = "name";
 
 
     // Variable names
@@ -169,6 +182,25 @@ public class LevelDefinitionLadderHelper {
 
     }
 
+    public static class XMLClickTargetSettingsShuffle {
+        public List<String> listXMLClickTargetSettingsShuffleSettingNames;
+        public boolean preserveOrder;
+
+        public XMLClickTargetSettingsShuffle(Context context) {
+            listXMLClickTargetSettingsShuffleSettingNames = new ArrayList<>();
+            preserveOrder = context.getResources().getBoolean(R.bool.game_values_defaultClickTargetSettingsShufflePreserveOrder);
+        }
+
+        public LevelDefinitionLadder.ClickTargetSettingsShuffle toClickTargetSettingsShuffle() {
+
+            return new LevelDefinitionLadder.ClickTargetSettingsShuffle(
+                    listXMLClickTargetSettingsShuffleSettingNames
+                    , preserveOrder
+            );
+
+        }
+    }
+
     public static class XMLSyncVariableTrigger {
 
         public final String sourceClickTargetName;
@@ -216,17 +248,23 @@ public class LevelDefinitionLadderHelper {
         public final String sourceClickTargetProfileName;
         public final String targetClickTargetName;
         public final String targetClickTargetProfileName;
+        public final boolean randomTargetClickTarget;
+        public final boolean randomTargetClickTargetProfile;
         public ArrayList<XMLSyncVariableTrigger> arrayListXMLSyncVariableTriggers;
 
         public XMLTransitionTrigger(
                 String sourceClickTargetName
                 , String sourceClickTargetProfileName
                 , String targetClickTargetName
-                , String targetClickTargetProfileName) {
+                , String targetClickTargetProfileName
+                , boolean randomTargetClickTarget
+                , boolean randomTargetClickTargetProfile) {
             this.sourceClickTargetName = sourceClickTargetName;
             this.sourceClickTargetProfileName = sourceClickTargetProfileName;
             this.targetClickTargetName = targetClickTargetName;
             this.targetClickTargetProfileName = targetClickTargetProfileName;
+            this.randomTargetClickTarget = randomTargetClickTarget;
+            this.randomTargetClickTargetProfile = randomTargetClickTargetProfile;
             this.arrayListXMLSyncVariableTriggers = new ArrayList<>();
         }
 
@@ -244,6 +282,8 @@ public class LevelDefinitionLadderHelper {
                     , sourceClickTargetProfileName
                     , targetClickTargetName
                     , targetClickTargetProfileName
+                    , randomTargetClickTarget
+                    , randomTargetClickTargetProfile
                     , arrayListSyncVariableTriggers
             );
         }
@@ -1006,44 +1046,44 @@ public class LevelDefinitionLadderHelper {
 
         public int level;
 
-        public HashMap<String, XMLClickTarget> mapXMLClickTarget;
-        public ArrayList<XMLTransitionTrigger> arrayListXMLTransitionTriggers;
-        public ArrayList<XMLRandomChangeTrigger> arrayListXMLRandomChangeTriggers;
+        public List<String> listXMLClickTargetNames;
+        public Map<String, XMLClickTarget> mapXMLClickTargets;
+        public List<XMLTransitionTrigger> listXMLTransitionTriggers;
+        public List<XMLRandomChangeTrigger> listXMLRandomChangeTriggers;
+        public List<XMLClickTargetSettingsShuffle> listXMLClickTargetSettingsShuffles;
 
         public XMLLevel() {
             this.level = 1;
-            this.mapXMLClickTarget = new HashMap<>();
-            this.arrayListXMLTransitionTriggers = new ArrayList<>();
-            this.arrayListXMLRandomChangeTriggers = new ArrayList<>();
+            this.listXMLClickTargetNames = new ArrayList<>();
+            this.mapXMLClickTargets = new HashMap<>();
+            this.listXMLTransitionTriggers = new ArrayList<>();
+            this.listXMLRandomChangeTriggers = new ArrayList<>();
+            this.listXMLClickTargetSettingsShuffles = new ArrayList<>();
         }
 
         public LevelDefinitionLadder toLevelDefinitionLadder() {
 
             // Convert the XMLClickTargets to ClickTargetDefinition objects
-            HashMap<String, ClickTargetDefinition> mapClickTargetDefinitions = new HashMap<>();
-
-            // Convert the XMLClickTargets to ClickTargetDefinitions
-            Iterator xmlClickTargetIterator = this.mapXMLClickTarget.entrySet().iterator();
-            while (xmlClickTargetIterator.hasNext()) {
+            Map<String, ClickTargetDefinition> mapClickTargetDefinitions = new HashMap<>();
+            for (String currentClickTargetName : listXMLClickTargetNames) {
 
                 // Get the current XMLClickTarget
-                Map.Entry<String, XMLClickTarget> currentXMLClickTargetPair = (Map.Entry) xmlClickTargetIterator.next();
-                String currentClickTargetName = currentXMLClickTargetPair.getKey();
-                XMLClickTarget currentXMLClickTarget = currentXMLClickTargetPair.getValue();
+                XMLClickTarget currentXMLClickTarget = mapXMLClickTargets.get(currentClickTargetName);
 
                 // Convert the current XMLClickTarget to a ClickTargetDefinition
                 ClickTargetDefinition currentClickTargetDefinition = currentXMLClickTarget.toClickTargetDefinition();
 
+                // Add the ClickTarget to the map
                 mapClickTargetDefinitions.put(currentClickTargetName, currentClickTargetDefinition);
 
             }
 
 
             // Convert the XMLTransitionTriggers to TransitionTriggers
-            HashMap<NTuple, ArrayList<LevelDefinitionLadder.TransitionTrigger>> mapTransitionTriggers = new HashMap<>();
+            Map<NTuple, List<LevelDefinitionLadder.TransitionTrigger>> mapTransitionTriggers = new HashMap<>();
 
             // Loop through the XMLTransitionTriggers
-            for (XMLTransitionTrigger xmlTransitionTrigger : arrayListXMLTransitionTriggers) {
+            for (XMLTransitionTrigger xmlTransitionTrigger : listXMLTransitionTriggers) {
 
                 // Create the TransitionTrigger object
                 LevelDefinitionLadder.TransitionTrigger transitionTrigger = xmlTransitionTrigger.toTransitionTrigger();
@@ -1076,10 +1116,10 @@ public class LevelDefinitionLadderHelper {
 
 
             // Convert the XMLRandomChangeTriggers to RandomChangeTriggers
-            HashMap<NTuple, ArrayList<LevelDefinitionLadder.RandomChangeTrigger>> mapRandomChangeTriggers = new HashMap<>();
+            Map<NTuple, List<LevelDefinitionLadder.RandomChangeTrigger>> mapRandomChangeTriggers = new HashMap<>();
 
             // Loop through the XMLRandomChangeTriggers
-            for (XMLRandomChangeTrigger xmlRandomChangeTrigger : arrayListXMLRandomChangeTriggers) {
+            for (XMLRandomChangeTrigger xmlRandomChangeTrigger : listXMLRandomChangeTriggers) {
 
                 // Convert the XMLRandomChangeTrigger to RandomChangeTrigger
                 LevelDefinitionLadder.RandomChangeTrigger currentRandomChangeTrigger = xmlRandomChangeTrigger.toRandomChangeTrigger();
@@ -1111,13 +1151,28 @@ public class LevelDefinitionLadderHelper {
 
             }
 
+            // Convert the XMLClickTargetSettingsShuffles to ClickTargetSettingsShuffles
+            List<LevelDefinitionLadder.ClickTargetSettingsShuffle> listClickTargetSettingsShuffles = new ArrayList<>();
+            for (XMLClickTargetSettingsShuffle xmlClickTargetSettingsShuffle : listXMLClickTargetSettingsShuffles) {
+
+                // Create the ClickTargetSettingsShuffle
+                LevelDefinitionLadder.ClickTargetSettingsShuffle clickTargetSettingsShuffle =
+                        xmlClickTargetSettingsShuffle.toClickTargetSettingsShuffle();
+
+                // Add the ClickTargetSettingsShuffle to the list
+                listClickTargetSettingsShuffles.add(clickTargetSettingsShuffle);
+
+            }
+
 
             // Create the LevelDefinitionLadder
             LevelDefinitionLadder levelDefinitionLadder = new LevelDefinitionLadder(
                     this.level
+                    , listXMLClickTargetNames
                     , mapClickTargetDefinitions
                     , mapTransitionTriggers
                     , mapRandomChangeTriggers
+                    , listClickTargetSettingsShuffles
             );
 
             return levelDefinitionLadder;
@@ -1143,6 +1198,7 @@ public class LevelDefinitionLadderHelper {
             String currentVariableName = null;
             int currentTransitionTriggerIndex = -1;
             int currentRandomChangeTriggerIndex = -1;
+            int currentXMLClickTargetSettingsShuffleIndex = -1;
 
             // Get a XmlResourceParser object to read contents of the xml file
             XmlResourceParser xmlResourceParser =
@@ -1193,10 +1249,12 @@ public class LevelDefinitionLadderHelper {
                         XMLRandomChangeTrigger currentXMLRandomChangeTrigger = null;
                         XMLTransitionTrigger currentXMLTransitionTrigger = null;
 
+                        XMLClickTargetSettingsShuffle currentXMLClickTargetSettingsShuffle = null;
+
                         // Get the current XML Objects
                         if (currentClickTargetName != null
-                                && xmlLevel.mapXMLClickTarget.containsKey(currentClickTargetName)) {
-                            currentXMLClickTarget = xmlLevel.mapXMLClickTarget.get(currentClickTargetName);
+                                && xmlLevel.mapXMLClickTargets.containsKey(currentClickTargetName)) {
+                            currentXMLClickTarget = xmlLevel.mapXMLClickTargets.get(currentClickTargetName);
                         }
                         if (currentClickTargetProfileName != null
                                 && currentXMLClickTarget != null
@@ -1218,11 +1276,16 @@ public class LevelDefinitionLadderHelper {
                         }
                         if (currentRandomChangeTriggerIndex >= 0) {
                             currentXMLRandomChangeTrigger =
-                                    xmlLevel.arrayListXMLRandomChangeTriggers.get(currentRandomChangeTriggerIndex);
+                                    xmlLevel.listXMLRandomChangeTriggers.get(currentRandomChangeTriggerIndex);
                         }
                         if (currentTransitionTriggerIndex >= 0) {
                             currentXMLTransitionTrigger =
-                                    xmlLevel.arrayListXMLTransitionTriggers.get(currentTransitionTriggerIndex);
+                                    xmlLevel.listXMLTransitionTriggers.get(currentTransitionTriggerIndex);
+                        }
+
+                        if (currentXMLClickTargetSettingsShuffleIndex >= 0) {
+                            currentXMLClickTargetSettingsShuffle =
+                                    xmlLevel.listXMLClickTargetSettingsShuffles.get(currentXMLClickTargetSettingsShuffleIndex);
                         }
 
                         // -------------------- BEGIN Creating XML Objects -------------------- //
@@ -1241,7 +1304,8 @@ public class LevelDefinitionLadderHelper {
                             xmlClickTarget.name = currentXMLClickTargetName;
 
                             // Add it to the level
-                            xmlLevel.mapXMLClickTarget.put(currentXMLClickTargetName, xmlClickTarget);
+                            xmlLevel.listXMLClickTargetNames.add(currentXMLClickTargetName);
+                            xmlLevel.mapXMLClickTargets.put(currentXMLClickTargetName, xmlClickTarget);
 
                             // Set the trackers
                             currentClickTargetName = currentXMLClickTargetName;
@@ -1528,6 +1592,18 @@ public class LevelDefinitionLadderHelper {
                                     (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_TRANSITIONTRIGGER_TARGET_CLICK_TARGET_PROFILE_NAME) == null) ?
                                             ""
                                             : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_TRANSITIONTRIGGER_TARGET_CLICK_TARGET_PROFILE_NAME);
+                            boolean randomTargetClickTarget =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_TRANSITIONTRIGGER_RANDOM_TARGET_CLICK_TARGET
+                                            , context.getResources().getBoolean(R.bool.game_values_defaultTransitionTriggerRandomTargetClickTarget)
+                                    );
+                            boolean randomTargetClickTargetProfile =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_TRANSITIONTRIGGER_RANDOM_TARGET_CLICK_TARGET_PROFILE
+                                            , context.getResources().getBoolean(R.bool.game_values_defaultTransitionTriggerRandomTargetClickTargetProfile)
+                                    );
 
                             // Check if the names are not the same
                             if (!(
@@ -1540,14 +1616,17 @@ public class LevelDefinitionLadderHelper {
                                         , sourceClickTargetProfileName
                                         , targetClickTargetName
                                         , targetClickTargetProfileName
+                                        , randomTargetClickTarget
+                                        , randomTargetClickTargetProfile
                                 );
 
                                 // Add the XMLTransitionTrigger object to the transition trigger array list
-                                xmlLevel.arrayListXMLTransitionTriggers.add(xmlTransitionTrigger);
+                                xmlLevel.listXMLTransitionTriggers.add(xmlTransitionTrigger);
 
                                 // Set the trackers
-                                currentTransitionTriggerIndex = xmlLevel.arrayListXMLTransitionTriggers.indexOf(xmlTransitionTrigger);
+                                currentTransitionTriggerIndex = xmlLevel.listXMLTransitionTriggers.indexOf(xmlTransitionTrigger);
                                 currentRandomChangeTriggerIndex = -1;
+                                currentXMLClickTargetSettingsShuffleIndex = -1;
 
                             }
 
@@ -1602,11 +1681,12 @@ public class LevelDefinitionLadderHelper {
                                 );
 
                                 // Add the XMLRandomChangeTrigger to the list
-                                xmlLevel.arrayListXMLRandomChangeTriggers.add(xmlRandomChangeTrigger);
+                                xmlLevel.listXMLRandomChangeTriggers.add(xmlRandomChangeTrigger);
 
                                 // Set the trackers
                                 currentTransitionTriggerIndex = -1;
-                                currentRandomChangeTriggerIndex = xmlLevel.arrayListXMLRandomChangeTriggers.indexOf(xmlRandomChangeTrigger);
+                                currentRandomChangeTriggerIndex = xmlLevel.listXMLRandomChangeTriggers.indexOf(xmlRandomChangeTrigger);
+                                currentXMLClickTargetSettingsShuffleIndex = -1;
 
                             }
 
@@ -1683,6 +1763,48 @@ public class LevelDefinitionLadderHelper {
 
                         }
 
+                        // Check if this is a <ClickTargetSettingsShuffle> tag
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE)) {
+
+                            // Get the attributes
+                            boolean preserveOrder =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_CLICKTARGETSETTINGSSHUFFLE_PRESERVE_ORDER
+                                            , context.getResources().getBoolean(R.bool.game_values_defaultClickTargetSettingsShufflePreserveOrder)
+                                    );
+
+                            // Create the XMLClickTargetSettingsShuffle object
+                            XMLClickTargetSettingsShuffle xmlClickTargetSettingsShuffle = new XMLClickTargetSettingsShuffle(context);
+
+                            // Set the attributes
+                            xmlClickTargetSettingsShuffle.preserveOrder = preserveOrder;
+
+                            // Add the object to the list
+                            xmlLevel.listXMLClickTargetSettingsShuffles.add(xmlClickTargetSettingsShuffle);
+
+                            // Set the current XMLClickTargetSettingsShuffle index
+                            currentTransitionTriggerIndex = -1;
+                            currentRandomChangeTriggerIndex = -1;
+                            currentXMLClickTargetSettingsShuffleIndex = xmlLevel.listXMLClickTargetSettingsShuffles.indexOf(xmlClickTargetSettingsShuffle);
+
+                        }
+
+                        // Check if this is a <ClickTargetSettingsShuffleSetting> tag
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE_SETTING)
+                                && currentXMLClickTargetSettingsShuffle != null) {
+
+                            // Get the attributes
+                            String name =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_CLICKTARGETSETTINGSSHUFFLESETTING_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_CLICKTARGETSETTINGSSHUFFLESETTING_NAME);
+
+                            // Add the setting to the existing shuffle setting name list
+                            currentXMLClickTargetSettingsShuffle.listXMLClickTargetSettingsShuffleSettingNames.add(name);
+
+                        }
+
                         // -------------------- END Creating XML Objects -------------------- //
 
                     }
@@ -1699,8 +1821,8 @@ public class LevelDefinitionLadderHelper {
 
                         // Get the current XML Objects
                         if (currentClickTargetName != null
-                                && xmlLevel.mapXMLClickTarget.containsKey(currentClickTargetName)) {
-                            currentXMLClickTarget = xmlLevel.mapXMLClickTarget.get(currentClickTargetName);
+                                && xmlLevel.mapXMLClickTargets.containsKey(currentClickTargetName)) {
+                            currentXMLClickTarget = xmlLevel.mapXMLClickTargets.get(currentClickTargetName);
                         }
                         if (currentClickTargetProfileName != null
                                 && currentXMLClickTarget != null

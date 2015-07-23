@@ -47,6 +47,9 @@
                     <xs:field xpath="@targetVariable"/>
                 </xs:unique>-->
             </xs:element>
+            <xs:element name="ClickTargetSettingsShuffles" type="clickTargetSettingsShuffles" minOccurs="0" maxOccurs="1">
+
+            </xs:element>
         </xs:all>
         <xs:attribute name="level" type="xs:int" use="required"/>
     </xs:complexType>
@@ -166,6 +169,8 @@
         <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="randomTargetClickTarget" type="trueOrFalse"/>
+        <xs:attribute name="randomTargetClickTargetProfile" type="trueOrFalse"/>
     </xs:complexType>
 
     <xs:complexType name="syncVariableTriggers">
@@ -191,6 +196,37 @@
             <xs:enumeration value="LITERAL_VALUE"/>
         </xs:restriction>
     </xs:simpleType>
+
+    <xs:complexType name="clickTargetSettingsShuffles">
+        <xs:sequence>
+            <xs:element name="ClickTargetSettingsShuffle" type="clickTargetSettingsShuffle" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="clickTargetSettingsShuffle">
+        <xs:sequence>
+            <xs:element name="ClickTargetSettingsShuffleSettings" type="clickTargetSettingsShuffleSettings" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="preserveOrder" type="trueOrFalse"/>
+    </xs:complexType>
+
+    <xs:complexType name="clickTargetSettingsShuffleSettings">
+        <xs:sequence>
+            <xs:element name="ClickTargetSettingsShuffleSetting" type="clickTargetSettingsShuffleSetting" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="clickTargetSettingsShuffleSetting">
+        <xs:attribute name="name" type="clickTargetSettingName" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="clickTargetSettingName">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="initialClickTargetProfileName"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+
 
 
 

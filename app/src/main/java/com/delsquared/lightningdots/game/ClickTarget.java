@@ -16,6 +16,7 @@ import com.delsquared.lightningdots.utilities.UtilityFunctions;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ClickTarget {
 
@@ -475,13 +476,13 @@ public class ClickTarget {
         for (PositionEvolver currentPositionEvolver : listPositionEvolvers) {
 
             // Check the position evolver for random changes
-            ArrayList<String> arrayListRandomChanges = currentPositionEvolver.checkRandomChanges(
+            List<String> listRandomChanges = currentPositionEvolver.checkRandomChanges(
                     dt
                     , new HashMap<String, Boolean>()
             );
 
             // Convert the list of change variables to RandomChangeEvents
-            for (String currentRandomChangeVariableName : arrayListRandomChanges) {
+            for (String currentRandomChangeVariableName : listRandomChanges) {
                 RandomChangeEvent randomChangeEvent = new RandomChangeEvent(
                         name
                         , getCurrentClickTargetProfileName()
@@ -504,8 +505,8 @@ public class ClickTarget {
 	public void processElapsedTimeMillis(
 			Context context
 			, double dt
-            , HashMap<String, Boolean> mapEvolveVariables
-            , HashMap<String, Boolean> mapRandomChanges
+            , Map<String, Boolean> mapEvolveVariables
+            , Map<String, Boolean> mapRandomChanges
             , String transitionToClickTargetProfileName) {
 
         // Check if the visibility is gone

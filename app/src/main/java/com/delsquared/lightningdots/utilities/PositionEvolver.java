@@ -4,6 +4,8 @@ import com.delsquared.lightningdots.game.ClickTarget;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class PositionEvolver {
@@ -246,7 +248,7 @@ public class PositionEvolver {
 
     }
 
-    public void generateNewRandomPosition(HashMap<String, Boolean> generateNewRandomValues) {
+    public void generateNewRandomPosition(Map<String, Boolean> generateNewRandomValues) {
 
         // Loop through the variables
         for (PositionEvolverVariable positionEvolverVariable : X) {
@@ -268,12 +270,12 @@ public class PositionEvolver {
 
     }
 
-    public ArrayList<String> checkRandomChanges(
+    public List<String> checkRandomChanges(
             double dt
-            , HashMap<String, Boolean> mapEvolveVariables) {
+            , Map<String, Boolean> mapEvolveVariables) {
 
         // Initialize the list of variables that should randomly change
-        ArrayList<String> arrayListGenerateNewRandomValues = new ArrayList<>();
+        List<String> listGenerateNewRandomValues = new ArrayList<>();
 
         // -------------------- BEGIN Check for random changes -------------------- //
 
@@ -310,7 +312,7 @@ public class PositionEvolver {
                         if (generateNewRandomValue) {
 
                             // Add the variable name to the list
-                            arrayListGenerateNewRandomValues.add(variableName);
+                            listGenerateNewRandomValues.add(variableName);
 
                         }
 
@@ -351,7 +353,7 @@ public class PositionEvolver {
                         if (generateNewRandomValue) {
 
                             // Add the generate new random value flag to the map
-                            arrayListGenerateNewRandomValues.add(variableName);
+                            listGenerateNewRandomValues.add(variableName);
 
                         }
 
@@ -395,7 +397,7 @@ public class PositionEvolver {
                             if (generateNewRandomValue) {
 
                                 // Add the generate new random value flag to the map
-                                arrayListGenerateNewRandomValues.add(variableName);
+                                listGenerateNewRandomValues.add(variableName);
 
                             }
 
@@ -423,7 +425,7 @@ public class PositionEvolver {
                             if (generateNewRandomValue) {
 
                                 // Add the generate new random value flag to the map
-                                arrayListGenerateNewRandomValues.add(variableName);
+                                listGenerateNewRandomValues.add(variableName);
 
                             }
 
@@ -441,17 +443,17 @@ public class PositionEvolver {
 
         // Add the random change list for dX variables
         if (positionEvolverDXdt != null) {
-            arrayListGenerateNewRandomValues.addAll(positionEvolverDXdt.checkRandomChanges(dt, mapEvolveVariables));
+            listGenerateNewRandomValues.addAll(positionEvolverDXdt.checkRandomChanges(dt, mapEvolveVariables));
         }
 
-        return arrayListGenerateNewRandomValues;
+        return listGenerateNewRandomValues;
 
     }
 
     public void evolveTime(
             double dt
-            , HashMap<String, Boolean> mapEvolveVariables
-            , HashMap<String, Boolean> mapGenerateNewRandomValues) {
+            , Map<String, Boolean> mapEvolveVariables
+            , Map<String, Boolean> mapGenerateNewRandomValues) {
 
         if (dt > 1.0) {
             int blah = 0;
@@ -569,7 +571,7 @@ public class PositionEvolver {
 
     public void bounce(
             MODE mode
-            , ArrayList<Boolean> bounceVariables) {
+            , List<Boolean> bounceVariables) {
 
         // Check if the modes are the same
         if (this.mode == mode) {
