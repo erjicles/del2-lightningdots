@@ -3,14 +3,26 @@ package com.delsquared.lightningdots.game;
 import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.util.Pair;
+import android.util.TypedValue;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.ntuple.NTuple;
+import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
+import com.delsquared.lightningdots.utilities.PositionEvolverVariable;
+import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
+import com.delsquared.lightningdots.utilities.RandomChangeEvent;
+import com.delsquared.lightningdots.utilities.RandomChangeTrigger;
+import com.delsquared.lightningdots.utilities.SyncVariableTrigger;
+import com.delsquared.lightningdots.utilities.TimedChangeHandler;
+import com.delsquared.lightningdots.utilities.TransitionContinuity;
+import com.delsquared.lightningdots.utilities.TransitionEvent;
+import com.delsquared.lightningdots.utilities.TransitionTrigger;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
+import org.w3c.dom.Attr;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -33,8 +45,10 @@ public class LevelDefinitionLadderHelper {
     private static final String NODE_NAME_CLICK_TARGET_PROFILE = "ClickTargetProfile";
     private static final String NODE_NAME_VARIABLES = "Variables";
     private static final String NODE_NAME_VARIABLE = "Variable";
-    private static final String NODE_NAME_RANDOM_CHANGE_EFFECT = "RandomChangeEffect";
+    private static final String NODE_NAME_TIMED_CHANGE = "TimedChange";
     private static final String NODE_NAME_BOUNDARY_EFFECT = "BoundaryEffect";
+    private static final String NODE_NAME_ATTRACTORS = "Attractors";
+    private static final String NODE_NAME_ATTRACTOR = "Attractor";
     private static final String NODE_NAME_TRANSITION_TRIGGERS = "TransitionTriggers";
     private static final String NODE_NAME_TRANSITION_TRIGGER = "TransitionTrigger";
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGERS = "RandomChangeTriggers";
@@ -66,6 +80,7 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_SHAPE = "targetShape";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_IS_CLICKABLE = "targetIsClickable";
     private static final String ATTRIBUTE_NAME_PROFILE_TARGET_VISIBILITY = "targetVisibility";
+    private static final String ATTRIBUTE_NAME_PROFILE_MASS = "mass";
 
     // <Variable> attribute names
     private static final String ATTRIBUTE_NAME_VARIABLE_NAME = "name";
@@ -77,11 +92,28 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_VARIABLE_CAN_CHANGE = "canChange";
     private static final String ATTRIBUTE_NAME_VARIABLE_TRANSITION_CONTINUITY = "transitionContinuity";
 
-    // <RandomChangeEffect> attribute names
-    private static final String ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_CAN_RANDOMLY_CHANGE = "canRandomlyChange";
-    private static final String ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_RANDOM_CHANGE_VALUE = "randomChangeValue";
-    private static final String ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_RANDOM_CHANGE_INTERVAL = "randomChangeInterval";
-    private static final String ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_BOUNCE_ON_RANDOM_CHANGE = "bounceOnRandomChange";
+    // <Attractor> attribute names
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_TYPE = "type";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_NAME = "sourceClickTargetName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_PROFILE_NAME = "sourceClickTargetProfileName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_FAMILY_NAME = "sourcePositionEvolverFamilyName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_NAME = "sourcePositionEvolverName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_NAME = "targetClickTargetName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_PROFILE_NAME = "targetClickTargetProfileName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_FAMILY_NAME = "targetPositionEvolverFamilyName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_NAME = "targetPositionEvolverName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_VARIABLE_NAME = "variableName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_INITIAL_FIXED_VALUE = "initialFixedValue";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_MODE = "mode";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_MASS = "mass";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_IS_REPELLER = "isRepeller";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_IS_PERCENT = "isPercent";
+
+    // <TimedChange> attribute names
+    private static final String ATTRIBUTE_NAME_TIMEDCHANGE_CAN_RANDOMLY_CHANGE = "canRandomlyChange";
+    private static final String ATTRIBUTE_NAME_TIMEDCHANGE_RANDOM_CHANGE_VALUE = "value";
+    private static final String ATTRIBUTE_NAME_TIMEDCHANGE_RANDOM_CHANGE_INTERVAL = "interval";
+    private static final String ATTRIBUTE_NAME_TIMEDCHANGE_BOUNCE_ON_RANDOM_CHANGE = "bounceOnRandomChange";
 
     // <BoundaryEffect> attribute names
     private static final String ATTRIBUTE_NAME_BOUNDARYEFFECT_BOUNDARY_EFFECT = "boundaryEffect";
@@ -208,7 +240,7 @@ public class LevelDefinitionLadderHelper {
         public final String targetClickTargetName;
         public final String targetClickTargetProfileName;
         public final String variableName;
-        public final LevelDefinitionLadder.SyncVariableTrigger.MODE mode;
+        public final SyncVariableTrigger.MODE mode;
         public final double value;
 
         public XMLSyncVariableTrigger(
@@ -217,7 +249,7 @@ public class LevelDefinitionLadderHelper {
                 , String targetClickTargetName
                 , String targetClickTargetProfileName
                 , String variableName
-                , LevelDefinitionLadder.SyncVariableTrigger.MODE mode
+                , SyncVariableTrigger.MODE mode
                 , double value) {
             this.sourceClickTargetName = sourceClickTargetName;
             this.sourceClickTargetProfileName = sourceClickTargetProfileName;
@@ -228,8 +260,8 @@ public class LevelDefinitionLadderHelper {
             this.value = value;
         }
 
-        public LevelDefinitionLadder.SyncVariableTrigger toSyncVariableTrigger() {
-            return new LevelDefinitionLadder.SyncVariableTrigger(
+        public SyncVariableTrigger toSyncVariableTrigger() {
+            return new SyncVariableTrigger(
                     sourceClickTargetName
                     , sourceClickTargetProfileName
                     , targetClickTargetName
@@ -250,7 +282,7 @@ public class LevelDefinitionLadderHelper {
         public final String targetClickTargetProfileName;
         public final boolean randomTargetClickTarget;
         public final boolean randomTargetClickTargetProfile;
-        public ArrayList<XMLSyncVariableTrigger> arrayListXMLSyncVariableTriggers;
+        public List<XMLSyncVariableTrigger> listXMLSyncVariableTriggers;
 
         public XMLTransitionTrigger(
                 String sourceClickTargetName
@@ -265,26 +297,26 @@ public class LevelDefinitionLadderHelper {
             this.targetClickTargetProfileName = targetClickTargetProfileName;
             this.randomTargetClickTarget = randomTargetClickTarget;
             this.randomTargetClickTargetProfile = randomTargetClickTargetProfile;
-            this.arrayListXMLSyncVariableTriggers = new ArrayList<>();
+            this.listXMLSyncVariableTriggers = new ArrayList<>();
         }
 
-        public LevelDefinitionLadder.TransitionTrigger toTransitionTrigger() {
+        public TransitionTrigger toTransitionTrigger() {
 
             // Convert the XMLSyncVariables to SyncVariables
-            ArrayList<LevelDefinitionLadder.SyncVariableTrigger> arrayListSyncVariableTriggers = new ArrayList<>();
-            for (XMLSyncVariableTrigger xmlSyncVariableTrigger : arrayListXMLSyncVariableTriggers) {
-                LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger = xmlSyncVariableTrigger.toSyncVariableTrigger();
-                arrayListSyncVariableTriggers.add(syncVariableTrigger);
+            List<SyncVariableTrigger> listSyncVariableTriggers = new ArrayList<>();
+            for (XMLSyncVariableTrigger xmlSyncVariableTrigger : listXMLSyncVariableTriggers) {
+                SyncVariableTrigger syncVariableTrigger = xmlSyncVariableTrigger.toSyncVariableTrigger();
+                listSyncVariableTriggers.add(syncVariableTrigger);
             }
 
-            return new LevelDefinitionLadder.TransitionTrigger(
+            return new TransitionTrigger(
                     sourceClickTargetName
                     , sourceClickTargetProfileName
                     , targetClickTargetName
                     , targetClickTargetProfileName
                     , randomTargetClickTarget
                     , randomTargetClickTargetProfile
-                    , arrayListSyncVariableTriggers
+                    , listSyncVariableTriggers
             );
         }
     }
@@ -297,7 +329,7 @@ public class LevelDefinitionLadderHelper {
         public final String targetClickTargetName;
         public final String targetClickTargetProfileName;
         public final String targetVariable;
-        public ArrayList<XMLSyncVariableTrigger> arrayListXMLSyncVariableTriggers;
+        public List<XMLSyncVariableTrigger> listXMLSyncVariableTriggers;
 
         public XMLRandomChangeTrigger(
                 String sourceClickTargetName
@@ -312,50 +344,126 @@ public class LevelDefinitionLadderHelper {
             this.targetClickTargetName = targetClickTargetName;
             this.targetClickTargetProfileName = targetClickTargetProfileName;
             this.targetVariable = targetVariable;
-            this.arrayListXMLSyncVariableTriggers = new ArrayList<>();
+            this.listXMLSyncVariableTriggers = new ArrayList<>();
         }
 
-        public LevelDefinitionLadder.RandomChangeTrigger toRandomChangeTrigger() {
+        public RandomChangeTrigger toRandomChangeTrigger() {
 
             // Convert the XMLSyncVariables to SyncVariables
-            ArrayList<LevelDefinitionLadder.SyncVariableTrigger> arrayListSyncVariableTriggers = new ArrayList<>();
-            for (XMLSyncVariableTrigger xmlSyncVariableTrigger : arrayListXMLSyncVariableTriggers) {
-                LevelDefinitionLadder.SyncVariableTrigger syncVariableTrigger = xmlSyncVariableTrigger.toSyncVariableTrigger();
-                arrayListSyncVariableTriggers.add(syncVariableTrigger);
+            List<SyncVariableTrigger> listSyncVariableTriggers = new ArrayList<>();
+            for (XMLSyncVariableTrigger xmlSyncVariableTrigger : listXMLSyncVariableTriggers) {
+                SyncVariableTrigger syncVariableTrigger = xmlSyncVariableTrigger.toSyncVariableTrigger();
+                listSyncVariableTriggers.add(syncVariableTrigger);
             }
 
-            return new LevelDefinitionLadder.RandomChangeTrigger(
+            return new RandomChangeTrigger(
                     sourceClickTargetName
                     , sourceClickTargetProfileName
                     , sourceVariable
                     , targetClickTargetName
                     , targetClickTargetProfileName
                     , targetVariable
-                    , arrayListSyncVariableTriggers
+                    , listSyncVariableTriggers
             );
         }
 
     }
 
-    public static class XMLRandomChangeEffect {
+    public static class XMLPositionEvolverVariableAttractor {
+
+        public PositionEvolverVariableAttractor.TYPE type;
+
+        public String sourceObjectName;
+        public String sourceObjectProfileName;
+        public String sourcePositionEvolverFamilyName;
+        public String sourcePositionEvolverName;
+        public String targetObjectName;
+        public String targetObjectProfileName;
+        public String targetPositionEvolverFamilyName;
+        public String targetPositionEvolverName;
+        public String variableName;
+        public double initialFixedValue;
+
+        public PositionEvolverVariableAttractor.MODE mode;
+        public double mass;
+        public boolean isRepeller;
+        public boolean isPercent;
+        private double value;
+
+        public XMLPositionEvolverVariableAttractor(
+                PositionEvolverVariableAttractor.TYPE type
+                , String sourceObjectName
+                , String sourceObjectProfileName
+                , String sourcePositionEvolverFamilyName
+                , String sourcePositionEvolverName
+                , String targetObjectName
+                , String targetObjectProfileName
+                , String targetPositionEvolverFamilyName
+                , String targetPositionEvolverName
+                , String variableName
+                , double initialFixedValue
+                , PositionEvolverVariableAttractor.MODE mode
+                , double mass
+                , boolean isRepeller
+                , boolean isPercent) {
+            this.type = type;
+            this.sourceObjectName = sourceObjectName;
+            this.sourceObjectProfileName = sourceObjectProfileName;
+            this.sourcePositionEvolverFamilyName = sourcePositionEvolverFamilyName;
+            this.sourcePositionEvolverName = sourcePositionEvolverName;
+            this.targetObjectName = targetObjectName;
+            this.targetObjectProfileName = targetObjectProfileName;
+            this.targetPositionEvolverFamilyName = targetPositionEvolverFamilyName;
+            this.targetPositionEvolverName = targetPositionEvolverName;
+            this.variableName = variableName;
+            this.initialFixedValue = initialFixedValue;
+            this.mode = mode;
+            this.mass = mass;
+            this.isRepeller = isRepeller;
+            this.isPercent = isPercent;
+        }
+
+        public PositionEvolverVariableAttractor toPositionEvolverVariableAttractor() {
+            return new PositionEvolverVariableAttractor(
+                    this.type
+                    , this.sourceObjectName
+                    , this.sourceObjectProfileName
+                    , this.sourcePositionEvolverFamilyName
+                    , this.sourcePositionEvolverName
+                    , this.targetObjectName
+                    , this.targetObjectProfileName
+                    , this.targetPositionEvolverFamilyName
+                    , this.targetPositionEvolverName
+                    , this.variableName
+                    , this.initialFixedValue
+                    , this.mode
+                    , this.mass
+                    , this.isRepeller
+                    , this.isPercent
+            );
+        }
+
+    }
+
+    public static class XMLTimedChangeHandler {
 
         public boolean canRandomlyChange;
-        public double randomChangeValue;
-        public PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL randomChangeInterval;
+        public double value;
+        public TimedChangeHandler.INTERVAL interval;
         public boolean bounceOnRandomChange;
 
-        public XMLRandomChangeEffect() {
+        public XMLTimedChangeHandler() {
             this.canRandomlyChange = false;
-            this.randomChangeValue = 0.0;
-            this.randomChangeInterval = PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.CONSTANT;
+            this.value = 0.0;
+            this.interval = TimedChangeHandler.INTERVAL.NONE;
             this.bounceOnRandomChange = false;
         }
 
-        public PositionEvolver.RandomChangeEffect toRandomChangeEffect() {
-            return new PositionEvolver.RandomChangeEffect(
+        public TimedChangeHandler toTimedChangeHandler() {
+            return new TimedChangeHandler(
                     canRandomlyChange
-                    , randomChangeValue
-                    , randomChangeInterval
+                    , value
+                    , interval
                     , bounceOnRandomChange
             );
         }
@@ -364,18 +472,18 @@ public class LevelDefinitionLadderHelper {
 
     public static class XMLBoundaryEffect {
 
-        public PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundaryEffect;
+        public BoundaryEffect.TYPE boundaryEffect;
         public boolean mirrorAbsoluteValueBoundaries;
         public boolean bounceOnInternalBoundary;
 
         public XMLBoundaryEffect() {
-            boundaryEffect = PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK;
+            boundaryEffect = BoundaryEffect.TYPE.STICK;
             mirrorAbsoluteValueBoundaries = false;
             bounceOnInternalBoundary = false;
         }
 
-        public PositionEvolver.BoundaryEffect toBoundaryEffect() {
-            return new PositionEvolver.BoundaryEffect(
+        public BoundaryEffect toBoundaryEffect() {
+            return new BoundaryEffect(
                     boundaryEffect
                     , mirrorAbsoluteValueBoundaries
                     , bounceOnInternalBoundary
@@ -395,10 +503,12 @@ public class LevelDefinitionLadderHelper {
         public boolean randomInitialValue;
         public boolean randomInitialSign;
         public boolean canChange;
-        public ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuity;
+        public TransitionContinuity transitionContinuity;
 
-        public XMLRandomChangeEffect xmlRandomChangeEffect;
+        public XMLTimedChangeHandler xmlTimedChangeHandler;
         public XMLBoundaryEffect xmlBoundaryEffect;
+
+        public boolean isInches;
 
         public XMLVariable() {
             this.name = "";
@@ -410,27 +520,55 @@ public class LevelDefinitionLadderHelper {
             this.randomInitialValue = false;
             this.randomInitialSign = false;
             this.canChange = false;
-            this.transitionContinuity = ClickTargetProfile.TRANSITION_CONTINUITY.DEFAULT;
+            this.transitionContinuity = TransitionContinuity.DEFAULT;
 
-            this.xmlRandomChangeEffect = new XMLRandomChangeEffect();
+            this.xmlTimedChangeHandler = new XMLTimedChangeHandler();
             this.xmlBoundaryEffect = new XMLBoundaryEffect();
+
+            this.isInches = false;
         }
 
-        public ClickTargetProfile.ProfileVariableValues toProfileVariableValues() {
+        public ClickTargetProfile.ProfileVariableValues toProfileVariableValues(Context context) {
 
-            PositionEvolver.RandomChangeEffect randomChangeEffect = xmlRandomChangeEffect.toRandomChangeEffect();
-            PositionEvolver.BoundaryEffect boundaryEffect = xmlBoundaryEffect.toBoundaryEffect();
+            TimedChangeHandler randomChangeEffect = xmlTimedChangeHandler.toTimedChangeHandler();
+            BoundaryEffect boundaryEffect = xmlBoundaryEffect.toBoundaryEffect();
 
             double minimumValue = this.minimumValue;
             double initialValue = this.initialValue;
             double maximumValue = this.maximumValue;
 
-            // Check if this variable uses initial value multipliers
-            if (usesInitialValueMultipliers) {
+            if (minimumValue != -1.0 && initialValue != -1.0
+                    && !name.contentEquals(ClickTarget.VARIABLE_NAME_X)
+                    && !name.contentEquals(ClickTarget.VARIABLE_NAME_Y)) {
 
-                minimumValue *= defaultInitialValue;
-                initialValue *= defaultInitialValue;
-                maximumValue *= defaultInitialValue;
+                // Check if this variable uses initial value multipliers
+                if (usesInitialValueMultipliers) {
+
+                    minimumValue *= defaultInitialValue;
+                    initialValue *= defaultInitialValue;
+                    maximumValue *= defaultInitialValue;
+
+                }
+
+                // Check if this is in units of inches
+                if (isInches) {
+                    // Convert the values to pixels
+                    minimumValue = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_IN
+                            , (float) minimumValue
+                            , context.getResources().getDisplayMetrics()
+                    );
+                    initialValue = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_IN
+                            , (float) initialValue
+                            , context.getResources().getDisplayMetrics()
+                    );
+                    maximumValue = TypedValue.applyDimension(
+                            TypedValue.COMPLEX_UNIT_IN
+                            , (float) maximumValue
+                            , context.getResources().getDisplayMetrics()
+                    );
+                }
 
             }
 
@@ -459,18 +597,33 @@ public class LevelDefinitionLadderHelper {
        public String shape;
        public boolean isClickable;
        public ClickTarget.VISIBILITY visibility;
+       public double mass;
 
-       public HashMap<String, XMLVariable> mapXMLVariables;
+       public List<String> listXMLVariableNames;
+       public Map<String, XMLVariable> mapXMLVariables;
 
        public XMLClickTargetProfile(Context context) {
            name = "";
            scriptTransitionValue =
                    UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultScriptTransitionValue);
-
            shape = PolygonHelper.CLICK_TARGET_SHAPES.get(0);// Target shape
            isClickable = context.getResources().getBoolean(R.bool.game_values_defaultTargetIsClickable);
            visibility = ClickTarget.VISIBILITY.valueOf(context.getString(R.string.game_values_defaultTargetVisibility));
+           mass = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultClickTargetProfileMass);
 
+           listXMLVariableNames = new ArrayList<>();
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_X);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_Y);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_SPEED);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_DIRECTION);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_DSPEED);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_DDIRECTION);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_RADIUS);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_DRADIUS);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_D2RADIUS);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_ROTATION);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_DROTATION);
+           listXMLVariableNames.add(ClickTarget.VARIABLE_NAME_D2ROTATION);
            mapXMLVariables = new HashMap<>();
 
            initializeVariables(context);
@@ -486,11 +639,11 @@ public class LevelDefinitionLadderHelper {
 
                // Transition continuity
                variable.transitionContinuity =
-                       ClickTargetProfile.TRANSITION_CONTINUITY.valueOf(
+                       TransitionContinuity.valueOf(
                         context.getString(R.string.game_values_defaultScriptTransitionContinuity)
                        );
 
-               if (currentVariableName.contentEquals("position_horizontal")) {
+               if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_X)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetPositionHorizontal);
@@ -502,24 +655,26 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangePosition);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangePosition);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomPositionChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangePosition);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomPositionChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalPosition)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectPositionHorizontal)
                            );
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("position_vertical")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_Y)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetPositionVertical);
@@ -531,24 +686,26 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangePosition);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangePosition);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomPositionChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangePosition);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomPositionChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalPosition)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectPositionVertical)
                            );
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("speed")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_SPEED)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetSpeedInchesPerSecond);
@@ -561,24 +718,26 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeSpeed);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeSpeed);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomSpeedChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeSpeed);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomSpeedChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalSpeed)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectSpeed)
                            );
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("direction")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_DIRECTION)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDirectionAngleRadians);
@@ -590,16 +749,16 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeDirection);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDirection);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDirectionChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDirection);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDirectionChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalDirection)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectDirection)
                            );
 
@@ -607,7 +766,7 @@ public class LevelDefinitionLadderHelper {
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("dSpeed")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_DSPEED)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetSpeedChangeAbsoluteValueInchesPerSecond);
@@ -620,25 +779,27 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = false;
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDSpeed);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDSpeedChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDSpeed);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDSpeedChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalDSpeed)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectDSpeed)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("dDirection")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_DDIRECTION)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDirectionAngleChangeAbsoluteValueRadiansPerSecond);
@@ -651,16 +812,16 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = false;
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDDirection);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDDirectionChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDDirection);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDDirectionChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalDDirection)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectDDirection)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
@@ -669,7 +830,7 @@ public class LevelDefinitionLadderHelper {
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("radius")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_RADIUS)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetRadiusInches);
@@ -682,24 +843,26 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeRadius);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeRadius);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRadiusChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeRadius);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRadiusChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalRadius)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectRadius)
                            );
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("dRadius")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_DRADIUS)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDRadiusAbsoluteValueInchesPerSecond);
@@ -712,25 +875,27 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeDRadius);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDRadius);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRadiusChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDRadius);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRadiusChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalDRadius)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectDRadius)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("d2Radius")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_D2RADIUS)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDRadiusChangeAbsoluteValueInchesPerSecondPerSecond);
@@ -743,25 +908,27 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = false;
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeD2Radius);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeD2Radius);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RadiusChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalD2Radius)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectD2Radius)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
+
+                   variable.isInches = true;
 
                    // Add the variable to the map
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("rotation")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_ROTATION)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetRotationAngleRadians);
@@ -773,16 +940,16 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeRotation);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeRotation);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRotationChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeRotation);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomRotationChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalRotation)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectRotation)
                            );
 
@@ -790,7 +957,7 @@ public class LevelDefinitionLadderHelper {
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("dRotation")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_DROTATION)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetDRotationAbsoluteValueRadiansPerSecond);
@@ -803,16 +970,16 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = context.getResources().getBoolean(R.bool.game_values_defaultCanChangeDRotation);
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDRotation);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRotationChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeDRotation);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomDRotationChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalDRotation)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectDRotation)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
@@ -821,7 +988,7 @@ public class LevelDefinitionLadderHelper {
                    mapXMLVariables.put(currentVariableName, variable);
 
                }
-               else if (currentVariableName.contentEquals("d2Rotation")) {
+               else if (currentVariableName.contentEquals(ClickTarget.VARIABLE_NAME_D2ROTATION)) {
 
                    // Set the Variable values
                    variable.defaultInitialValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultInitialTargetD2RotationAbsoluteValueRadiansPerSecondPerSecond);
@@ -834,16 +1001,16 @@ public class LevelDefinitionLadderHelper {
                    variable.canChange = false;
 
                    // Set the RandomChangeEffect values
-                   variable.xmlRandomChangeEffect.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeD2Rotation);
-                   variable.xmlRandomChangeEffect.randomChangeValue = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RotationChangePerSecond);
-                   variable.xmlRandomChangeEffect.randomChangeInterval =
-                           PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.valueOf(
+                   variable.xmlTimedChangeHandler.canRandomlyChange = context.getResources().getBoolean(R.bool.game_values_defaultCanRandomlyChangeD2Rotation);
+                   variable.xmlTimedChangeHandler.value = UtilityFunctions.getResourceFloatValue(context, R.dimen.game_values_defaultProbabilityOfRandomD2RotationChangePerSecond);
+                   variable.xmlTimedChangeHandler.interval =
+                           TimedChangeHandler.INTERVAL.valueOf(
                                    context.getString(R.string.game_values_defaultRandomChangeIntervalD2Rotation)
                            );
 
                    // Set the BoundaryEffect values
                    variable.xmlBoundaryEffect.boundaryEffect =
-                           PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.valueOf(
+                           BoundaryEffect.TYPE.valueOf(
                                    context.getString(R.string.game_values_defaultBoundaryEffectD2Rotation)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
@@ -857,28 +1024,22 @@ public class LevelDefinitionLadderHelper {
 
        }
 
-       public ClickTargetProfile toClickTargetProfile() {
+       public ClickTargetProfile toClickTargetProfile(Context context) {
 
            // Convert the XMLVariables to ProfileVariableValues objects
-           HashMap<String, ClickTargetProfile.ProfileVariableValues> mapProfileVariableValues = new HashMap<>();
+           Map<String, ClickTargetProfile.ProfileVariableValues> mapProfileVariableValues = new HashMap<>();
 
            // Loop through the XMLVariables
-           Iterator XMLVariableIterator = mapXMLVariables.entrySet().iterator();
-           while (XMLVariableIterator.hasNext()) {
+           for (String currentVariableName : listXMLVariableNames) {
 
-               // Get the current XMLVariable pair
-               Map.Entry<String, XMLVariable> currentXMLVariablePair = (Map.Entry) XMLVariableIterator.next();
-               String currentVariableName = currentXMLVariablePair.getKey();
-               XMLVariable currentXMLVariable = currentXMLVariablePair.getValue();
-
+               XMLVariable currentXMLVariable = mapXMLVariables.get(currentVariableName);
                // Convert the XMLVariable to a ProfileVariableValues object
-               ClickTargetProfile.ProfileVariableValues currentProfileVariableValues = currentXMLVariable.toProfileVariableValues();
+               ClickTargetProfile.ProfileVariableValues currentProfileVariableValues = currentXMLVariable.toProfileVariableValues(context);
 
                // Add the ProfileVariableValues object to the map
                mapProfileVariableValues.put(currentVariableName, currentProfileVariableValues);
 
            }
-
 
            // Create the ClickTargetProfile object
            ClickTargetProfile clickTargetProfile = new ClickTargetProfile(
@@ -887,6 +1048,7 @@ public class LevelDefinitionLadderHelper {
                    , this.shape
                    , this.isClickable
                    , this.visibility
+                   , this.mass
                    , mapProfileVariableValues
            );
 
@@ -971,7 +1133,7 @@ public class LevelDefinitionLadderHelper {
             }
         }
 
-        public ClickTargetProfileScript toClickTargetProfileScript() {
+        public ClickTargetProfileScript toClickTargetProfileScript(Context context) {
 
             // First validate the initial click target profile name
             validateInitialClickTargetProfileName();
@@ -990,7 +1152,7 @@ public class LevelDefinitionLadderHelper {
                 XMLClickTargetProfile currentXMLClickTargetProfile = currentXMLClickTargetProfilePair.getValue();
 
                 // Convert the XMLClickTargetProfile to a ClickTargetProfile
-                ClickTargetProfile currentClickTargetProfile = currentXMLClickTargetProfile.toClickTargetProfile();
+                ClickTargetProfile currentClickTargetProfile = currentXMLClickTargetProfile.toClickTargetProfile(context);
 
                 // Add the ClickTargetProfile name to the name list
                 arrayListClickTargetProfileNames.add(currentXMLClickTargetProfileName);
@@ -1026,10 +1188,10 @@ public class LevelDefinitionLadderHelper {
             this.xmlClickTargetProfileScript = new XMLClickTargetProfileScript(context);
         }
 
-        public ClickTargetDefinition toClickTargetDefinition() {
+        public ClickTargetDefinition toClickTargetDefinition(Context context) {
 
             // Convert the XMLClickTargetProfileScript to ClickTargetProfileScript
-            ClickTargetProfileScript clickTargetProfileScript = xmlClickTargetProfileScript.toClickTargetProfileScript();
+            ClickTargetProfileScript clickTargetProfileScript = xmlClickTargetProfileScript.toClickTargetProfileScript(context);
 
             // Create the ClickTargetDefinition object
             ClickTargetDefinition clickTargetDefinition = new ClickTargetDefinition(
@@ -1051,6 +1213,7 @@ public class LevelDefinitionLadderHelper {
         public List<XMLTransitionTrigger> listXMLTransitionTriggers;
         public List<XMLRandomChangeTrigger> listXMLRandomChangeTriggers;
         public List<XMLClickTargetSettingsShuffle> listXMLClickTargetSettingsShuffles;
+        public List<XMLPositionEvolverVariableAttractor> listXMLPositionEvolverVariableAttractors;
 
         public XMLLevel() {
             this.level = 1;
@@ -1059,9 +1222,10 @@ public class LevelDefinitionLadderHelper {
             this.listXMLTransitionTriggers = new ArrayList<>();
             this.listXMLRandomChangeTriggers = new ArrayList<>();
             this.listXMLClickTargetSettingsShuffles = new ArrayList<>();
+            this.listXMLPositionEvolverVariableAttractors = new ArrayList<>();
         }
 
-        public LevelDefinitionLadder toLevelDefinitionLadder() {
+        public LevelDefinitionLadder toLevelDefinitionLadder(Context context) {
 
             // Convert the XMLClickTargets to ClickTargetDefinition objects
             Map<String, ClickTargetDefinition> mapClickTargetDefinitions = new HashMap<>();
@@ -1071,7 +1235,7 @@ public class LevelDefinitionLadderHelper {
                 XMLClickTarget currentXMLClickTarget = mapXMLClickTargets.get(currentClickTargetName);
 
                 // Convert the current XMLClickTarget to a ClickTargetDefinition
-                ClickTargetDefinition currentClickTargetDefinition = currentXMLClickTarget.toClickTargetDefinition();
+                ClickTargetDefinition currentClickTargetDefinition = currentXMLClickTarget.toClickTargetDefinition(context);
 
                 // Add the ClickTarget to the map
                 mapClickTargetDefinitions.put(currentClickTargetName, currentClickTargetDefinition);
@@ -1080,18 +1244,18 @@ public class LevelDefinitionLadderHelper {
 
 
             // Convert the XMLTransitionTriggers to TransitionTriggers
-            Map<NTuple, List<LevelDefinitionLadder.TransitionTrigger>> mapTransitionTriggers = new HashMap<>();
+            Map<NTuple, List<TransitionTrigger>> mapTransitionTriggers = new HashMap<>();
 
             // Loop through the XMLTransitionTriggers
             for (XMLTransitionTrigger xmlTransitionTrigger : listXMLTransitionTriggers) {
 
                 // Create the TransitionTrigger object
-                LevelDefinitionLadder.TransitionTrigger transitionTrigger = xmlTransitionTrigger.toTransitionTrigger();
+                TransitionTrigger transitionTrigger = xmlTransitionTrigger.toTransitionTrigger();
 
                 // Create the TransitionTrigger NTuple key object
-                NTuple transitionTriggerKey = LevelDefinitionLadder.nTupleTypeTransitionTriggerKey.createNTuple(
-                        transitionTrigger.sourceClickTargetName
-                        , transitionTrigger.sourceClickTargetProfileName
+                NTuple transitionTriggerKey = TransitionEvent.nTupleTypeTransitionTriggerKey.createNTuple(
+                        transitionTrigger.sourceObjectName
+                        , transitionTrigger.sourceObjectProfileName
                 );
 
                 // Check if the key is already in the map
@@ -1103,7 +1267,7 @@ public class LevelDefinitionLadderHelper {
                 } else {
 
                     // Create the transition trigger list for this key
-                    ArrayList<LevelDefinitionLadder.TransitionTrigger> arrayListTransitionTriggers = new ArrayList<>();
+                    ArrayList<TransitionTrigger> arrayListTransitionTriggers = new ArrayList<>();
 
                     // Add the transition trigger to the list
                     arrayListTransitionTriggers.add(transitionTrigger);
@@ -1116,19 +1280,19 @@ public class LevelDefinitionLadderHelper {
 
 
             // Convert the XMLRandomChangeTriggers to RandomChangeTriggers
-            Map<NTuple, List<LevelDefinitionLadder.RandomChangeTrigger>> mapRandomChangeTriggers = new HashMap<>();
+            Map<NTuple, List<RandomChangeTrigger>> mapRandomChangeTriggers = new HashMap<>();
 
             // Loop through the XMLRandomChangeTriggers
             for (XMLRandomChangeTrigger xmlRandomChangeTrigger : listXMLRandomChangeTriggers) {
 
                 // Convert the XMLRandomChangeTrigger to RandomChangeTrigger
-                LevelDefinitionLadder.RandomChangeTrigger currentRandomChangeTrigger = xmlRandomChangeTrigger.toRandomChangeTrigger();
+                RandomChangeTrigger currentRandomChangeTrigger = xmlRandomChangeTrigger.toRandomChangeTrigger();
 
                 // Create the RandomChangeTrigger NTuple key object
-                NTuple randomChangeTriggerKey = LevelDefinitionLadder.nTupleTypeRandomChangeTriggerKey.createNTuple(
-                        currentRandomChangeTrigger.sourceClickTargetName
-                        , currentRandomChangeTrigger.sourceClickTargetProfileName
-                        , currentRandomChangeTrigger.sourceVariable
+                NTuple randomChangeTriggerKey = RandomChangeEvent.nTupleTypeRandomChangeTriggerKey.createNTuple(
+                        currentRandomChangeTrigger.sourceObjectName
+                        , currentRandomChangeTrigger.sourceObjectProfileName
+                        , currentRandomChangeTrigger.sourceVariableName
                 );
 
                 // Check if the key is already in the map
@@ -1140,7 +1304,7 @@ public class LevelDefinitionLadderHelper {
                 } else {
 
                     // Create the random change trigger list for this key
-                    ArrayList<LevelDefinitionLadder.RandomChangeTrigger> arrayListRandomChangeTrigger = new ArrayList<>();
+                    ArrayList<RandomChangeTrigger> arrayListRandomChangeTrigger = new ArrayList<>();
 
                     // Add the transition trigger to the list
                     arrayListRandomChangeTrigger.add(currentRandomChangeTrigger);
@@ -1164,6 +1328,38 @@ public class LevelDefinitionLadderHelper {
 
             }
 
+            // Convert the XMLPositionEvolverVariableAttractors to PositionEvolverVariableAttractors
+            Map<NTuple, List<PositionEvolverVariableAttractor>> mapPositionEvolverVariableAttractors = new HashMap<>();
+            for (XMLPositionEvolverVariableAttractor xmlPositionEvolverVariableAttractor : listXMLPositionEvolverVariableAttractors) {
+
+                // Create the PositionEvolverVariableAttractor
+                PositionEvolverVariableAttractor positionEvolverVariableAttractor =
+                        xmlPositionEvolverVariableAttractor.toPositionEvolverVariableAttractor();
+
+                // Create the key
+                NTuple positionEvolverVariableAttractorKey = positionEvolverVariableAttractor.getTargetKey();
+
+                // Check if the key already exists
+                if (mapPositionEvolverVariableAttractors.containsKey(positionEvolverVariableAttractorKey)) {
+
+                    // Add the attractor to the list
+                    mapPositionEvolverVariableAttractors
+                            .get(positionEvolverVariableAttractorKey)
+                            .add(positionEvolverVariableAttractor);
+
+                } else {
+
+                    // Create list
+                    List<PositionEvolverVariableAttractor> listPositionEvolverVariableAttractors = new ArrayList<>();
+                    listPositionEvolverVariableAttractors.add(positionEvolverVariableAttractor);
+
+                    // Add the list to the map
+                    mapPositionEvolverVariableAttractors.put(positionEvolverVariableAttractorKey, listPositionEvolverVariableAttractors);
+
+                }
+
+            }
+
 
             // Create the LevelDefinitionLadder
             LevelDefinitionLadder levelDefinitionLadder = new LevelDefinitionLadder(
@@ -1172,6 +1368,7 @@ public class LevelDefinitionLadderHelper {
                     , mapClickTargetDefinitions
                     , mapTransitionTriggers
                     , mapRandomChangeTriggers
+                    , mapPositionEvolverVariableAttractors
                     , listClickTargetSettingsShuffles
             );
 
@@ -1396,6 +1593,12 @@ public class LevelDefinitionLadderHelper {
                                             , ClickTarget.VISIBILITY.class
                                             , xmlClickTargetProfile.visibility
                                     );
+                            double mass =
+                                    (double) xmlResourceParser.getAttributeFloatValue(
+                                            null
+                                            , ATTRIBUTE_NAME_PROFILE_MASS
+                                            , (float) xmlClickTargetProfile.mass
+                                    );
 
                             // Set the attributes
                             xmlClickTargetProfile.name = name;
@@ -1403,6 +1606,7 @@ public class LevelDefinitionLadderHelper {
                             xmlClickTargetProfile.shape = shape;
                             xmlClickTargetProfile.isClickable = isClickable;
                             xmlClickTargetProfile.visibility = visibility;
+                            xmlClickTargetProfile.mass = mass;
 
                             // Add it to the ClickTargetProfileScript
                             currentXMLClickTarget.xmlClickTargetProfileScript.listClickTargetProfileNames.add(name);
@@ -1469,11 +1673,11 @@ public class LevelDefinitionLadderHelper {
                                                 , ATTRIBUTE_NAME_VARIABLE_CAN_CHANGE
                                                 , currentXMLVariable.canChange
                                         );
-                                ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuity =
+                                TransitionContinuity transitionContinuity =
                                         UtilityFunctions.getEnumValue(
                                                 xmlResourceParser
                                                 , ATTRIBUTE_NAME_VARIABLE_TRANSITION_CONTINUITY
-                                                , ClickTargetProfile.TRANSITION_CONTINUITY.class
+                                                , TransitionContinuity.class
                                                 , currentXMLVariable.transitionContinuity
                                         );
 
@@ -1502,41 +1706,41 @@ public class LevelDefinitionLadderHelper {
                         }
 
                         // Check if this is the start of a <RandomChangeEffect> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_RANDOM_CHANGE_EFFECT)
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_TIMED_CHANGE)
                                 && currentXMLVariable != null) {
 
                             // Get the attributes
                             boolean canRandomlyChange =
                                     xmlResourceParser.getAttributeBooleanValue(
                                             null
-                                            , ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_CAN_RANDOMLY_CHANGE
-                                            , currentXMLVariable.xmlRandomChangeEffect.canRandomlyChange
+                                            , ATTRIBUTE_NAME_TIMEDCHANGE_CAN_RANDOMLY_CHANGE
+                                            , currentXMLVariable.xmlTimedChangeHandler.canRandomlyChange
                                     );
                             double randomChangeValue =
                                     xmlResourceParser.getAttributeFloatValue(
                                             null
-                                            , ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_RANDOM_CHANGE_VALUE
-                                            , (float) currentXMLVariable.xmlRandomChangeEffect.randomChangeValue
+                                            , ATTRIBUTE_NAME_TIMEDCHANGE_RANDOM_CHANGE_VALUE
+                                            , (float) currentXMLVariable.xmlTimedChangeHandler.value
                                     );
-                            PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL randomChangeInterval =
+                            TimedChangeHandler.INTERVAL interval =
                                     UtilityFunctions.getEnumValue(
                                             xmlResourceParser
-                                            , ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_RANDOM_CHANGE_INTERVAL
-                                            , PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.class
-                                            , currentXMLVariable.xmlRandomChangeEffect.randomChangeInterval
+                                            , ATTRIBUTE_NAME_TIMEDCHANGE_RANDOM_CHANGE_INTERVAL
+                                            , TimedChangeHandler.INTERVAL.class
+                                            , currentXMLVariable.xmlTimedChangeHandler.interval
                                     );
                             boolean bounceOnRandomChange =
                                     xmlResourceParser.getAttributeBooleanValue(
                                             null
-                                            , ATTRIBUTE_NAME_RANDOMCHANGEEFFECT_BOUNCE_ON_RANDOM_CHANGE
-                                            , currentXMLVariable.xmlRandomChangeEffect.bounceOnRandomChange
+                                            , ATTRIBUTE_NAME_TIMEDCHANGE_BOUNCE_ON_RANDOM_CHANGE
+                                            , currentXMLVariable.xmlTimedChangeHandler.bounceOnRandomChange
                                     );
 
                             // Set the attributes
-                            currentXMLVariable.xmlRandomChangeEffect.canRandomlyChange = canRandomlyChange;
-                            currentXMLVariable.xmlRandomChangeEffect.randomChangeValue = randomChangeValue;
-                            currentXMLVariable.xmlRandomChangeEffect.randomChangeInterval = randomChangeInterval;
-                            currentXMLVariable.xmlRandomChangeEffect.bounceOnRandomChange = bounceOnRandomChange;
+                            currentXMLVariable.xmlTimedChangeHandler.canRandomlyChange = canRandomlyChange;
+                            currentXMLVariable.xmlTimedChangeHandler.value = randomChangeValue;
+                            currentXMLVariable.xmlTimedChangeHandler.interval = interval;
+                            currentXMLVariable.xmlTimedChangeHandler.bounceOnRandomChange = bounceOnRandomChange;
 
                         }
 
@@ -1545,11 +1749,11 @@ public class LevelDefinitionLadderHelper {
                                 && currentXMLVariable != null) {
 
                             // Get the attributes
-                            PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT boundaryEffect =
+                            BoundaryEffect.TYPE boundaryEffect =
                                     UtilityFunctions.getEnumValue(
                                             xmlResourceParser
                                             , ATTRIBUTE_NAME_BOUNDARYEFFECT_BOUNDARY_EFFECT
-                                            , PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.class
+                                            , BoundaryEffect.TYPE.class
                                             , currentXMLVariable.xmlBoundaryEffect.boundaryEffect
                                     );
                             boolean mirrorAbsoluteValueBoundaries =
@@ -1569,6 +1773,118 @@ public class LevelDefinitionLadderHelper {
                             currentXMLVariable.xmlBoundaryEffect.boundaryEffect = boundaryEffect;
                             currentXMLVariable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = mirrorAbsoluteValueBoundaries;
                             currentXMLVariable.xmlBoundaryEffect.bounceOnInternalBoundary = bounceOnInternalBoundary;
+
+                        }
+
+                        // Check if this is the start of a <Attractor> tag
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_ATTRACTOR)) {
+
+                            // Get the attributes
+                            PositionEvolverVariableAttractor.TYPE type =
+                                    UtilityFunctions.getEnumValue(
+                                            xmlResourceParser
+                                            , ATTRIBUTE_NAME_ATTRACTOR_TYPE
+                                            , PositionEvolverVariableAttractor.TYPE.class
+                                            , PositionEvolverVariableAttractor.TYPE.valueOf(
+                                                    context.getString(R.string.game_values_defaultPositionEvolverVariableAttractor_type)
+                                            )
+                                    );
+                            String sourceClickTargetName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_NAME);
+                            String sourceClickTargetProfileName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_PROFILE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_PROFILE_NAME);
+                            String sourcePositionEvolverFamilyName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_FAMILY_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_FAMILY_NAME);
+                            String sourcePositionEvolverName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_NAME);
+                            String targetClickTargetName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_NAME);
+                            String targetClickTargetProfileName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_PROFILE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_PROFILE_NAME);
+                            String targetPositionEvolverFamilyName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_FAMILY_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_FAMILY_NAME);
+                            String targetPositionEvolverName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_NAME);
+                            String variableName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_VARIABLE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_VARIABLE_NAME);
+                            double initialFixedValue =
+                                    xmlResourceParser.getAttributeFloatValue(
+                                            null
+                                            , ATTRIBUTE_NAME_ATTRACTOR_INITIAL_FIXED_VALUE
+                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                                    context
+                                                    , R.dimen.game_values_defaultPositionEvolverVariableAttractor_initialFixedValue)
+                                    );
+                            PositionEvolverVariableAttractor.MODE mode =
+                                    UtilityFunctions.getEnumValue(
+                                            xmlResourceParser
+                                            , ATTRIBUTE_NAME_ATTRACTOR_MODE
+                                            , PositionEvolverVariableAttractor.MODE.class
+                                            , PositionEvolverVariableAttractor.MODE.valueOf(
+                                                    context.getString(R.string.game_values_defaultPositionEvolverVariableAttractor_mode)
+                                            )
+                                    );
+                            double mass =
+                                    xmlResourceParser.getAttributeFloatValue(
+                                            null
+                                            , ATTRIBUTE_NAME_ATTRACTOR_MASS
+                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                                    context
+                                                    , R.dimen.game_values_defaultPositionEvolverVariableAttractor_mass)
+                                    );
+                            boolean isRepeller =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_ATTRACTOR_IS_REPELLER
+                                            , context.getResources().getBoolean(R.bool.game_values_defaultPositionEvolverVariableAttractor_IsRepeller)
+                                    );
+                            boolean isPercent =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_ATTRACTOR_IS_PERCENT
+                                            , context.getResources().getBoolean(R.bool.game_values_defaultPositionEvolverVariableAttractor_IsPercent)
+                                    );
+
+
+                            // Create the attractor
+                            XMLPositionEvolverVariableAttractor xmlPositionEvolverVariableAttractor = new XMLPositionEvolverVariableAttractor(
+                                    type
+                                    , sourceClickTargetName
+                                    , sourceClickTargetProfileName
+                                    , sourcePositionEvolverFamilyName
+                                    , sourcePositionEvolverName
+                                    , targetClickTargetName
+                                    , targetClickTargetProfileName
+                                    , targetPositionEvolverFamilyName
+                                    , targetPositionEvolverName
+                                    , variableName
+                                    , initialFixedValue
+                                    , mode
+                                    , mass
+                                    , isRepeller
+                                    , isPercent
+                            );
+
+                            // Add the attractor to the list
+                            xmlLevel.listXMLPositionEvolverVariableAttractors.add(xmlPositionEvolverVariableAttractor);
 
                         }
 
@@ -1716,12 +2032,12 @@ public class LevelDefinitionLadderHelper {
                                     (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_VARIABLE_NAME) == null) ?
                                             ""
                                             : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_SYNCVARIABLE_VARIABLE_NAME);
-                            LevelDefinitionLadder.SyncVariableTrigger.MODE mode =
+                            SyncVariableTrigger.MODE mode =
                                     UtilityFunctions.getEnumValue(
                                             xmlResourceParser
                                             , ATTRIBUTE_NAME_SYNCVARIABLE_MODE
-                                            , LevelDefinitionLadder.SyncVariableTrigger.MODE.class
-                                            , LevelDefinitionLadder.SyncVariableTrigger.MODE.valueOf(
+                                            , SyncVariableTrigger.MODE.class
+                                            , SyncVariableTrigger.MODE.valueOf(
                                                     context.getString(R.string.game_values_defaultSyncVariableMode)
                                             )
                                     );
@@ -1754,9 +2070,9 @@ public class LevelDefinitionLadderHelper {
 
                                 // Add the XMLSyncVariableTrigger object to the transition trigger array list
                                 if (currentXMLTransitionTrigger != null) {
-                                    currentXMLTransitionTrigger.arrayListXMLSyncVariableTriggers.add(xmlSyncVariableTrigger);
+                                    currentXMLTransitionTrigger.listXMLSyncVariableTriggers.add(xmlSyncVariableTrigger);
                                 } else if (currentXMLRandomChangeTrigger != null) {
-                                    currentXMLRandomChangeTrigger.arrayListXMLSyncVariableTriggers.add(xmlSyncVariableTrigger);
+                                    currentXMLRandomChangeTrigger.listXMLSyncVariableTriggers.add(xmlSyncVariableTrigger);
                                 }
 
                             }
@@ -1877,7 +2193,7 @@ public class LevelDefinitionLadderHelper {
                         }
 
                         // Check if this is the end of a <RandomChangeEffect> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_RANDOM_CHANGE_EFFECT)) {
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_TIMED_CHANGE)) {
 
                         }
 
@@ -1912,7 +2228,7 @@ public class LevelDefinitionLadderHelper {
         // -------------------- BEGIN Perform Validations -------------------- //
         // -------------------- END Perform Validations -------------------- //
 
-        return xmlLevel.toLevelDefinitionLadder();
+        return xmlLevel.toLevelDefinitionLadder(context);
 
     }
 

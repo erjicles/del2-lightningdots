@@ -2,6 +2,10 @@ package com.delsquared.lightningdots.game;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.ntuple.NTupleType;
+import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
+import com.delsquared.lightningdots.utilities.RandomChangeTrigger;
+import com.delsquared.lightningdots.utilities.SyncVariableTrigger;
+import com.delsquared.lightningdots.utilities.TransitionTrigger;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
@@ -17,6 +21,7 @@ public class LevelDefinitionLadder {
     public final Map<String, ClickTargetDefinition> mapClickTargetDefinitions;
     public final Map<NTuple, List<TransitionTrigger>> mapTransitionTriggers;
     public final Map<NTuple, List<RandomChangeTrigger>> mapRandomChangeTriggers;
+    public final Map<NTuple, List<PositionEvolverVariableAttractor>> mapPositionEvolverVariableAttractors;
     public final List<ClickTargetSettingsShuffle> listClickTargetSettingsShuffles;
 
     public LevelDefinitionLadder() {
@@ -25,6 +30,7 @@ public class LevelDefinitionLadder {
         mapClickTargetDefinitions = new HashMap<>();
         mapTransitionTriggers = new HashMap<>();
         mapRandomChangeTriggers = new HashMap<>();
+        mapPositionEvolverVariableAttractors = new HashMap<>();
         listClickTargetSettingsShuffles = new ArrayList<>();
     }
 
@@ -34,12 +40,14 @@ public class LevelDefinitionLadder {
             , Map<String, ClickTargetDefinition> mapClickTargetDefinitions
             , Map<NTuple, List<TransitionTrigger>> mapTransitionTriggers
             , Map<NTuple, List<RandomChangeTrigger>> mapRandomChangeTriggers
+            , Map<NTuple, List<PositionEvolverVariableAttractor>> mapPositionEvolverVariableAttractors
             , List<ClickTargetSettingsShuffle> listClickTargetSettingsShuffles) {
         this.level = level;
         this.listClickTargetDefinitionNames = listClickTargetDefinitionNames;
         this.mapClickTargetDefinitions = mapClickTargetDefinitions;
         this.mapTransitionTriggers = mapTransitionTriggers;
         this.mapRandomChangeTriggers = mapRandomChangeTriggers;
+        this.mapPositionEvolverVariableAttractors = mapPositionEvolverVariableAttractors;
         this.listClickTargetSettingsShuffles = listClickTargetSettingsShuffles;
 
         // Perform any ClickTarget settings shuffles
@@ -113,122 +121,6 @@ public class LevelDefinitionLadder {
 
     }
 
-    public static class TransitionTrigger {
-
-        public final String sourceClickTargetName;
-        public final String sourceClickTargetProfileName;
-        public final String targetClickTargetName;
-        public final String targetClickTargetProfileName;
-        public final boolean randomTargetClickTarget;
-        public final boolean randomTargetClickTargetProfile;
-        public final List<SyncVariableTrigger> listSyncVariableTriggers;
-
-        public TransitionTrigger(
-                String sourceClickTargetName
-                , String sourceClickTargetProfileName
-                , String targetClickTargetName
-                , String targetClickTargetProfileName
-                , boolean randomTargetClickTarget
-                , boolean randomTargetClickTargetProfile
-                , List<SyncVariableTrigger> listSyncVariableTriggers) {
-            this.sourceClickTargetName = sourceClickTargetName;
-            this.sourceClickTargetProfileName = sourceClickTargetProfileName;
-            this.targetClickTargetName = targetClickTargetName;
-            this.targetClickTargetProfileName = targetClickTargetProfileName;
-            this.randomTargetClickTarget = randomTargetClickTarget;
-            this.randomTargetClickTargetProfile = randomTargetClickTargetProfile;
-            this.listSyncVariableTriggers = listSyncVariableTriggers;
-        }
-
-        public ClickTarget.ClickTargetProfileTransitionEvent toTransitionEvent() {
-            return new ClickTarget.ClickTargetProfileTransitionEvent(
-                    targetClickTargetName
-                    , targetClickTargetProfileName
-            );
-        }
-
-    }
-
-    public static class RandomChangeTrigger {
-
-        public final String sourceClickTargetName;
-        public final String sourceClickTargetProfileName;
-        public final String sourceVariable;
-        public final String targetClickTargetName;
-        public final String targetClickTargetProfileName;
-        public final String targetVariable;
-        public final List<SyncVariableTrigger> listSyncVariableTriggers;
-
-        public RandomChangeTrigger(
-                String sourceClickTargetName
-                , String sourceClickTargetProfileName
-                , String sourceVariable
-                , String targetClickTargetName
-                , String targetClickTargetProfileName
-                , String targetVariable
-                , List<SyncVariableTrigger> listSyncVariableTriggers) {
-            this.sourceClickTargetName = sourceClickTargetName;
-            this.sourceClickTargetProfileName = sourceClickTargetProfileName;
-            this.sourceVariable = sourceVariable;
-            this.targetClickTargetName = targetClickTargetName;
-            this.targetClickTargetProfileName = targetClickTargetProfileName;
-            this.targetVariable = targetVariable;
-            this.listSyncVariableTriggers = listSyncVariableTriggers;
-        }
-
-        public ClickTarget.RandomChangeEvent toRandomChangeEvent() {
-            return new ClickTarget.RandomChangeEvent(
-                    targetClickTargetName
-                    , targetClickTargetProfileName
-                    , targetVariable
-            );
-        }
-
-    }
-
-    public static class SyncVariableTrigger {
-
-        public final String sourceClickTargetName;
-        public final String sourceClickTargetProfileName;
-        public final String targetClickTargetName;
-        public final String targetClickTargetProfileName;
-        public final String variableName;
-        public final MODE mode;
-        public final double value;
-
-        public SyncVariableTrigger(
-                String sourceClickTargetName
-                , String sourceClickTargetProfileName
-                , String targetClickTargetName
-                , String targetClickTargetProfileName
-                , String variableName
-                , MODE mode
-                , double value) {
-            this.sourceClickTargetName = sourceClickTargetName;
-            this.sourceClickTargetProfileName = sourceClickTargetProfileName;
-            this.targetClickTargetName = targetClickTargetName;
-            this.targetClickTargetProfileName = targetClickTargetProfileName;
-            this.variableName = variableName;
-            this.mode = mode;
-            this.value = value;
-        }
-
-        public NTuple getKey() {
-            return nTupleTypeSyncVariableTriggerKey.createNTuple(
-                    targetClickTargetName
-                    , targetClickTargetProfileName
-                    , value
-            );
-        }
-
-        public enum MODE {
-            SNAP_TO_TARGET
-            , RANDOMIZE
-            , LITERAL_VALUE
-        }
-
-    }
-
     public static class ClickTargetSettingsShuffle {
 
         public static final String SETTING_NAME_INITIAL_CLICK_TARGET_PROFILE_NAME = "initialClickTargetProfileName";
@@ -250,22 +142,4 @@ public class LevelDefinitionLadder {
 
     }
 
-    public static final NTupleType nTupleTypeTransitionTriggerKey =
-            NTupleType.DefaultFactory.create(
-                    String.class
-                    , String.class
-            );
-    public static final NTupleType nTupleTypeRandomChangeTriggerKey =
-            NTupleType.DefaultFactory.create(
-                    String.class
-                    , String.class
-                    , String.class
-            );
-
-    public static final NTupleType nTupleTypeSyncVariableTriggerKey =
-            NTupleType.DefaultFactory.create(
-                    String.class
-                    , String.class
-                    , String.class
-            );
 }

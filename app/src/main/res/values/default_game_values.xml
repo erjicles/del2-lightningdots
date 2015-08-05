@@ -135,6 +135,13 @@
     <string name="game_values_defaultBoundaryEffectDRotation">BOUNCE</string>
     <string name="game_values_defaultBoundaryEffectD2Rotation">STICK</string>
 
+    <string name="game_values_defaultPositionEvolverVariableAttractor_type">OTHER_OBJECT</string>
+    <item name="game_values_defaultPositionEvolverVariableAttractor_initialFixedValue" format="float" type="dimen">0.0</item>
+    <string name="game_values_defaultPositionEvolverVariableAttractor_mode">CONSTANT_SPEED</string>
+    <item name="game_values_defaultPositionEvolverVariableAttractor_mass" format="float" type="dimen">1.0</item>
+    <bool name="game_values_defaultPositionEvolverVariableAttractor_IsRepeller">false</bool>
+    <bool name="game_values_defaultPositionEvolverVariableAttractor_IsPercent">false</bool>
+
     <item name="game_values_defaultScriptTransitionValue" format="float" type="dimen">0.0</item>
     <string name="game_values_defaultScriptTransitionContinuity">DEFAULT</string>
 
@@ -144,6 +151,7 @@
     <bool name="game_values_defaultRandomInitialClickTargetProfile">false</bool>
 
     <string name="game_values_defaultTargetShape">CIRCLE</string>
+    <item name="game_values_defaultClickTargetProfileMass" format="float" type="dimen">1.0</item>
 
     <bool name="game_values_defaultTargetIsClickable">true</bool>
     <string name="game_values_defaultTargetVisibility">VISIBLE</string>

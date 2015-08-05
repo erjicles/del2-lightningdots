@@ -1,10 +1,12 @@
 package com.delsquared.lightningdots.utilities;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class PositionVector {
     public final int cardinality;
-    private final ArrayList<Double> X;
+    private final List<Double> X;
     public PositionVector() {
         cardinality = 0;
         X = new ArrayList<Double>();
@@ -31,17 +33,20 @@ public class PositionVector {
         }};
     }
 
-    public PositionVector(ArrayList<Double> X) {
+    public PositionVector(List<Double> X) {
         cardinality = X.size();
         this.X = X;
     }
 
     public PositionVector(final PositionVector positionVector) {
         cardinality = positionVector.cardinality;
-        X = (ArrayList<Double>) positionVector.X.clone();
+        X = new ArrayList<>(positionVector.cardinality);
+        for (double currentItem : positionVector.getX()) {
+            X.add(currentItem);
+        }
     }
 
-    public ArrayList<Double> getX() {
+    public List<Double> getX() {
         return X;
     }
 

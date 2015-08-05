@@ -2,11 +2,16 @@ package com.delsquared.lightningdots.game;
 
 import android.util.Pair;
 
+import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariable;
+import com.delsquared.lightningdots.utilities.TimedChangeHandler;
+import com.delsquared.lightningdots.utilities.TransitionContinuity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ClickTargetProfile {
 
@@ -15,8 +20,9 @@ public class ClickTargetProfile {
     public final String shape;
     public final boolean isClickable;
     public final ClickTarget.VISIBILITY visibility;
+    public final double mass;
 
-    public final HashMap<String, ProfileVariableValues> mapProfileVariableValues;
+    public final Map<String, ProfileVariableValues> mapProfileVariableValues;
 
     public ClickTargetProfile(
             String name
@@ -24,7 +30,8 @@ public class ClickTargetProfile {
             , String shape
             , boolean isClickable
             , ClickTarget.VISIBILITY visibility
-            , HashMap<String, ProfileVariableValues> mapProfileVariableValues) {
+            , double mass
+            , Map<String, ProfileVariableValues> mapProfileVariableValues) {
 
         this.name = name;
         this.scriptTransitionValue = scriptTransitionValue;
@@ -32,13 +39,8 @@ public class ClickTargetProfile {
         this.isClickable = isClickable;
         this.visibility = visibility;
         this.mapProfileVariableValues = mapProfileVariableValues;
+        this.mass = mass;
 
-    }
-
-    public enum TRANSITION_CONTINUITY {
-        CONTINUOUS
-        , DISCONTINUOUS
-        , DEFAULT
     }
 
     public static class ProfileVariableValues {
@@ -50,9 +52,9 @@ public class ClickTargetProfile {
         public final boolean randomInitialValue;
         public final boolean randomInitialSign;
         public final boolean canChange;
-        public final PositionEvolver.RandomChangeEffect randomChangeEffect;
-        public final PositionEvolver.BoundaryEffect boundaryEffect;
-        public final TRANSITION_CONTINUITY transitionContinuity;
+        public final TimedChangeHandler timedChangeHandler;
+        public final BoundaryEffect boundaryEffect;
+        public final TransitionContinuity transitionContinuity;
 
         public ProfileVariableValues(
                 String name
@@ -63,9 +65,9 @@ public class ClickTargetProfile {
                 , boolean randomInitialValue
                 , boolean randomInitialSign
                 , boolean canChange
-                , PositionEvolver.RandomChangeEffect randomChangeEffect
-                , PositionEvolver.BoundaryEffect boundaryEffect
-                , TRANSITION_CONTINUITY transitionContinuity) {
+                , TimedChangeHandler timedChangeHandler
+                , BoundaryEffect boundaryEffect
+                , TransitionContinuity transitionContinuity) {
             this.name = name;
             this.minimumValue = minimumValue;
             this.initialValue = initialValue;
@@ -74,7 +76,7 @@ public class ClickTargetProfile {
             this.randomInitialValue = randomInitialValue;
             this.randomInitialSign = randomInitialSign;
             this.canChange = canChange;
-            this.randomChangeEffect = randomChangeEffect;
+            this.timedChangeHandler = timedChangeHandler;
             this.boundaryEffect = boundaryEffect;
             this.transitionContinuity = transitionContinuity;
         }
@@ -98,7 +100,7 @@ public class ClickTargetProfile {
                     , randomInitialValue
                     , randomInitialSign
                     , canChange
-                    , randomChangeEffect
+                    , timedChangeHandler
                     , boundaryEffect
                     , transitionContinuity
             );

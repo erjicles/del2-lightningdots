@@ -2,7 +2,14 @@ package com.delsquared.lightningdots.utilities;
 
 import com.delsquared.lightningdots.game.ClickTargetProfile;
 
-public class PositionEvolverVariable {
+import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class PositionEvolverVariable implements INamedObject {
+
+    private PositionEvolver parentPositionEvolver;
 
     private String name;
     private double value;
@@ -13,11 +20,10 @@ public class PositionEvolverVariable {
     private boolean randomInitialValue;
     private boolean randomInitialSign;
     private boolean canChange;
-    private PositionEvolver.RandomChangeEffect randomChangeEffect;
-    private PositionEvolver.BoundaryEffect boundaryEffect;
-    private ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuity;
-
-    private double totalTimeElapsedSinceLastRandomChangeSeconds = 0.0;
+    private TimedChangeHandler timedChangeHandler;
+    private BoundaryEffect boundaryEffect;
+    private TransitionContinuity transitionContinuity;
+    private List<String> listPositionEvolverVariableAttractorNames;
 
     public PositionEvolverVariable() {
         name = "";
@@ -29,9 +35,9 @@ public class PositionEvolverVariable {
         randomInitialValue = false;
         randomInitialSign = false;
         canChange = false;
-        randomChangeEffect = new PositionEvolver.RandomChangeEffect();
-        boundaryEffect = new PositionEvolver.BoundaryEffect();
-        transitionContinuity = ClickTargetProfile.TRANSITION_CONTINUITY.DEFAULT;
+        timedChangeHandler = new TimedChangeHandler();
+        boundaryEffect = new BoundaryEffect();
+        transitionContinuity = TransitionContinuity.DEFAULT;
     }
 
     public PositionEvolverVariable(
@@ -44,9 +50,9 @@ public class PositionEvolverVariable {
             , boolean randomInitialValue
             , boolean randomInitialSign
             , boolean canChange
-            , PositionEvolver.RandomChangeEffect randomChangeEffect
-            , PositionEvolver.BoundaryEffect boundaryEffect
-            , ClickTargetProfile.TRANSITION_CONTINUITY transitionContinuity) {
+            , TimedChangeHandler timedChangeHandler
+            , BoundaryEffect boundaryEffect
+            , TransitionContinuity transitionContinuity) {
         this.name = name;
         this.value = initialValue;
         this.minimumValue = minimumValue;
@@ -56,7 +62,7 @@ public class PositionEvolverVariable {
         this.randomInitialValue = randomInitialValue;
         this.randomInitialSign = randomInitialSign;
         this.canChange = canChange;
-        this.randomChangeEffect = randomChangeEffect;
+        this.timedChangeHandler = timedChangeHandler;
         this.boundaryEffect = boundaryEffect;
         this.transitionContinuity = transitionContinuity;
     }
@@ -71,7 +77,7 @@ public class PositionEvolverVariable {
         this.randomInitialValue = profileVariableValues.randomInitialValue;
         this.randomInitialSign = profileVariableValues.randomInitialSign;
         this.canChange = profileVariableValues.canChange;
-        this.randomChangeEffect = profileVariableValues.randomChangeEffect;
+        this.timedChangeHandler = profileVariableValues.timedChangeHandler;
         this.boundaryEffect = profileVariableValues.boundaryEffect;
         this.transitionContinuity = profileVariableValues.transitionContinuity;
     }
@@ -85,14 +91,10 @@ public class PositionEvolverVariable {
     public boolean getRandomInitialValue() { return this.randomInitialValue; }
     public boolean getRandomInitialSign() { return this.randomInitialSign; }
     public boolean getCanChange() { return this.canChange; }
-    public PositionEvolver.RandomChangeEffect getRandomChangeEffect() { return this.randomChangeEffect; }
-    public PositionEvolver.BoundaryEffect getBoundaryEffect() { return this.boundaryEffect; }
-    public ClickTargetProfile.TRANSITION_CONTINUITY getTransitionContinuity() { return this.transitionContinuity; }
-    public double getTotalTimeElapsedSinceLastRandomChangeSeconds() { return this.totalTimeElapsedSinceLastRandomChangeSeconds; }
+    public TimedChangeHandler getTimedChangeHandler() { return this.timedChangeHandler; }
+    public BoundaryEffect getBoundaryEffect() { return this.boundaryEffect; }
+    public TransitionContinuity getTransitionContinuity() { return this.transitionContinuity; }
 
-    public void setTotalTimeElapsedSinceLastRandomChangeSeconds(double totalTimeElapsedSinceLastRandomChangeSeconds) {
-        this.totalTimeElapsedSinceLastRandomChangeSeconds = totalTimeElapsedSinceLastRandomChangeSeconds;
-    }
     public void setValue(double value) { this.value = value; }
     public void reinitializeValue(double value) {
         if (usesInitialValueMultipliers) {
@@ -100,10 +102,6 @@ public class PositionEvolverVariable {
         } else {
             this.value = value;
         }
-    }
-
-    public void incrementTotalTimeElapsedSinceLastRandomChangeSeconds(double dt) {
-        this.totalTimeElapsedSinceLastRandomChangeSeconds += dt;
     }
 
     public void randomizeValue() {
@@ -129,46 +127,8 @@ public class PositionEvolverVariable {
         this.maximumValue = maximumValue;
     }
 
-    public boolean getShouldRandomlyChange(double dt) {
-
-        // Initialize the result
-        boolean shouldRandomlyChange = false;
-
-        // Check if it should change randomly in regular intervals
-        if (randomChangeEffect.randomChangeInterval == PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.REGULAR) {
-
-            // Check if the time since the last random change has exceeded the interval
-            if (totalTimeElapsedSinceLastRandomChangeSeconds >= randomChangeEffect.randomChangeValue) {
-
-                // Set the random change flag to true
-                shouldRandomlyChange = true;
-
-                // Reset the timer
-                totalTimeElapsedSinceLastRandomChangeSeconds = 0.0;
-
-            }
-
-        }
-
-        // It should change randomly in random intervals
-        else if (randomChangeEffect.randomChangeInterval == PositionEvolver.RandomChangeEffect.RANDOM_CHANGE_INTERVAL.RANDOM) {
-
-            // Generate random value
-            double probabilityThreshold = 1.0 - Math.pow(1.0 - randomChangeEffect.randomChangeValue, dt);
-            double changeCheck = UtilityFunctions.generateRandomValue(0.0, 1.0, false);
-
-            // Check if it should randomly change
-            if (changeCheck < probabilityThreshold) {
-
-                // Set the random change flag
-                shouldRandomlyChange = true;
-
-            }
-
-        }
-
-        return shouldRandomlyChange;
-
+    public boolean checkTimedChange(double dt) {
+        return timedChangeHandler.checkTimedChange(dt);
     }
 
     public int checkBoundaryReachedNoDX() {
@@ -286,15 +246,15 @@ public class PositionEvolverVariable {
         if (minimumValue == maximumValue) {
             double newValue = minimumValue;
             if (boundaryEffect.mirrorAbsoluteValueBoundaries
-                    && (boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                    || boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
-                    || boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE)) {
+                    && (boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
+                    || boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
+                    || boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE)) {
                 newValue *= -1.0;
             }
             return new BoundaryHandlerValues(
                     newValue
-                    , boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                    || boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE
+                    , boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
+                    || boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE
             );
         }
 
@@ -414,19 +374,6 @@ public class PositionEvolverVariable {
         return new BoundaryHandlerValues(
                 newValue,
                 bounce);
-    }
-
-    public static class BoundaryHandlerValues {
-        public final double newValue;
-        public final boolean bounceValue;
-
-        public BoundaryHandlerValues(
-                double newValue
-                , boolean bounceValue) {
-            this.newValue = newValue;
-            this.bounceValue = bounceValue;
-        }
-
     }
 
 }

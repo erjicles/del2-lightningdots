@@ -33,10 +33,10 @@
                     <ClickTargetProfile name="">
                         <Variables>
                             <Variable name="radius">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="1.5"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="1.5"
+                                    interval="FIXED"/>
                             </Variable>
                         </Variables>
                     </ClickTargetProfile>
@@ -135,16 +135,21 @@
                         <Variables>
                             <Variable name="position_horizontal"
                                 canChange="false">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="1.5"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="1.5"
+                                    interval="FIXED"/>
                             </Variable>
                         </Variables>
                     </ClickTargetProfile>
                 </ClickTargetProfileScript>
             </ClickTarget>
         </ClickTargets>
+        <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="" sourceClickTargetProfileName="" sourceVariable="position_horizontal"
+                targetClickTargetName="" targetClickTargetProfileName="" targetVariable="position_vertical"/>
+        </RandomChangeTriggers>
     </Level>
 
     <Level level="9">
@@ -158,7 +163,7 @@
                             <Variable name="direction"
                                 canChange="true"/>
                             <Variable name="dDirection">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"/>
                             </Variable>
                             <Variable name="radius"
@@ -201,10 +206,10 @@
                             <Variable name="speed"
                                 initialValue="1.5"/>
                             <Variable name="direction">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="1.5"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="1.5"
+                                    interval="FIXED"/>
                             </Variable>
                         </Variables>
                     </ClickTargetProfile>
@@ -239,10 +244,10 @@
                             <Variable name="direction"
                                 transitionContinuity="CONTINUOUS"
                                 canChange="true">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="1.5"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="1.5"
+                                    interval="FIXED"/>
                             </Variable>
                         </Variables>
                     </ClickTargetProfile>
@@ -277,10 +282,10 @@
                             <Variable name="radius"
                                 transitionContinuity="DISCONTINUOUS"
                                 initialValue="0.75">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeInterval="REGULAR"
-                                    randomChangeValue="1.5"/>
+                                    interval="FIXED"
+                                    value="1.5"/>
                             </Variable>
                         </Variables>
                     </ClickTargetProfile>
@@ -296,21 +301,26 @@
                     <ClickTargetProfile name="">
                         <Variables>
                             <Variable name="position_horizontal">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.50"/>
+                                    value="0.50"/>
                             </Variable>
                             <Variable name="radius"
                                 initialValue="0.75">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.50"/>
+                                    value="0.50"/>
                             </Variable>
                         </Variables>
                     </ClickTargetProfile>
                 </ClickTargetProfileScript>
             </ClickTarget>
         </ClickTargets>
+        <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="" sourceClickTargetProfileName="" sourceVariable="position_horizontal"
+                targetClickTargetName="" targetClickTargetProfileName="" targetVariable="position_vertical"/>
+        </RandomChangeTriggers>
     </Level>
 
     <Level level="15">
@@ -320,15 +330,15 @@
                     <ClickTargetProfile name="">
                         <Variables>
                             <Variable name="speed">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="1.0"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="1.0"
+                                    interval="FIXED"/>
                             </Variable>
                             <Variable name="direction">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.50"/>
+                                    value="0.50"/>
                             </Variable>
                             <Variable name="radius"
                                 initialValue="0.65"/>
@@ -352,10 +362,10 @@
                                 transitionContinuity="CONTINUOUS"
                                 initialValue="1.75"/>
                             <Variable name="direction">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="1.0"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="1.0"
+                                    interval="FIXED"/>
                             </Variable>
                             <Variable name="radius"
                                 transitionContinuity="CONTINUOUS"/>
@@ -399,18 +409,18 @@
                                 minimumValue="1.5"
                                 maximumValue="2.5"
                                 canChange="true">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeInterval="REGULAR"
-                                    randomChangeValue="1.5"/>
+                                    interval="FIXED"
+                                    value="1.5"/>
                             </Variable>
                             <Variable name="direction"
                                 canChange="true"/>
                             <Variable name="dDirection">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.5"
-                                    randomChangeInterval="RANDOM"/>
+                                    value="0.5"
+                                    interval="RANDOM"/>
                             </Variable>
                             <Variable name="radius"
                                 initialValue="0.80"
@@ -440,17 +450,17 @@
                     <ClickTargetProfile name="">
                         <Variables>
                             <Variable name="position_horizontal">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.70"/>
+                                    value="0.70"/>
                             </Variable>
                             <Variable name="speed"
                                 initialValue="2.25"
                                 minimumValue="1.50"
                                 maximumValue="3.00">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.60"/>
+                                    value="0.60"/>
                             </Variable>
                             <Variable name="radius"
                                 initialValue="0.80"/>
@@ -460,6 +470,9 @@
             </ClickTarget>
         </ClickTargets>
         <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="" sourceClickTargetProfileName="" sourceVariable="position_horizontal"
+                targetClickTargetName="" targetClickTargetProfileName="" targetVariable="position_vertical"/>
             <RandomChangeTrigger
                 sourceClickTargetName=""
                 sourceClickTargetProfileName=""
@@ -545,10 +558,10 @@
                         scriptTransitionValue="0.5">
                         <Variables>
                             <Variable name="position_horizontal">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.1"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="0.1"
+                                    interval="FIXED"/>
                             </Variable>
                             <Variable name="speed"
                                 initialValue="1.5"/>
@@ -569,6 +582,9 @@
             </ClickTarget>
         </ClickTargets>
         <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
+                targetClickTargetName="" targetClickTargetProfileName="0" targetVariable="position_vertical"/>
             <RandomChangeTrigger
                 sourceClickTargetName=""
                 sourceClickTargetProfileName="0"
@@ -596,9 +612,9 @@
                             <Variable name="speed"
                                 initialValue="1.5"/>
                             <Variable name="direction">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.35"/>
+                                    value="0.35"/>
                             </Variable>
                             <Variable name="radius"
                                 initialValue="0.7"/>
@@ -649,10 +665,10 @@
                             <Variable name="speed"
                                 initialValue="1.75"/>
                             <Variable name="direction">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeValue="0.5"
-                                    randomChangeInterval="REGULAR"/>
+                                    value="0.5"
+                                    interval="FIXED"/>
                             </Variable>
                             <Variable name="radius"
                                 initialValue="0.7"/>
@@ -926,10 +942,10 @@
                     <ClickTargetProfile name="0" scriptTransitionValue="0.4">
                         <Variables>
                             <Variable name="position_horizontal">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeInterval="RANDOM"
-                                    randomChangeValue="0.3"/>
+                                    interval="RANDOM"
+                                    value="0.3"/>
                             </Variable>
                             <Variable
                                 name="speed"
@@ -991,6 +1007,9 @@
                 targetClickTargetName="1" targetClickTargetProfileName="1" />
         </TransitionTriggers>
         <RandomChangeTriggers>
+            <RandomChangeTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
+                targetClickTargetName="0" targetClickTargetProfileName="0" targetVariable="position_vertical"/>
             <RandomChangeTrigger
                 sourceClickTargetName="0" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
                 targetClickTargetName="0" targetClickTargetProfileName="0" targetVariable="direction"/>
@@ -1279,10 +1298,10 @@
                     <ClickTargetProfile name="0">
                         <Variables>
                             <Variable name="position_horizontal" canChange="false">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeInterval="RANDOM"
-                                    randomChangeValue="0.6"/>
+                                    interval="RANDOM"
+                                    value="0.6"/>
                             </Variable>
                             <Variable name="position_vertical" canChange="false"/>
                             <Variable
@@ -1302,10 +1321,10 @@
                         <Variables>
                             <Variable name="speed" initialValue="2.5"/>
                             <Variable name="direction">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeInterval="RANDOM"
-                                    randomChangeValue="0.6"/>
+                                    interval="RANDOM"
+                                    value="0.6"/>
                             </Variable>
                             <Variable name="radius" initialValue="0.25"/>
                         </Variables>
@@ -1315,9 +1334,8 @@
         </ClickTargets>
         <RandomChangeTriggers>
             <RandomChangeTrigger
-                sourceClickTargetName="0" sourceClickTargetProfileName="0"
-                sourceVariable="position_horizontal" targetClickTargetName="0" targetClickTargetProfileName="0"
-                targetVariable="position_vertical">
+                sourceClickTargetName="0" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
+                targetClickTargetName="0" targetClickTargetProfileName="0" targetVariable="position_vertical">
                 <SyncVariableTriggers>
                     <SyncVariableTrigger
                         sourceClickTargetName="1" sourceClickTargetProfileName="0"
@@ -1668,10 +1686,10 @@
                     <ClickTargetProfile name="0">
                         <Variables>
                             <Variable name="position_horizontal" canChange="false">
-                                <RandomChangeEffect
+                                <TimedChange
                                     canRandomlyChange="true"
-                                    randomChangeInterval="REGULAR"
-                                    randomChangeValue="0.75"/>
+                                    interval="FIXED"
+                                    value="0.75"/>
                             </Variable>
                             <Variable name="position_vertical" canChange="false"/>
                             <Variable name="radius" initialValue="0.35"/>
@@ -1682,12 +1700,8 @@
         </ClickTargets>
         <RandomChangeTriggers>
             <RandomChangeTrigger
-                sourceClickTargetName="1"
-                sourceClickTargetProfileName="0"
-                sourceVariable="position_horizontal"
-                targetClickTargetName="1"
-                targetClickTargetProfileName="0"
-                targetVariable="position_vertical">
+                sourceClickTargetName="1" sourceClickTargetProfileName="0" sourceVariable="position_horizontal"
+                targetClickTargetName="1" targetClickTargetProfileName="0" targetVariable="position_vertical">
                 <SyncVariableTriggers>
                     <SyncVariableTrigger
                         sourceClickTargetName="0" sourceClickTargetProfileName="0"

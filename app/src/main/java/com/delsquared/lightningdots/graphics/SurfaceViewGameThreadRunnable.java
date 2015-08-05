@@ -675,7 +675,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         boolean isLevelComplete = gameSnapshot.getIsLevelComplete();
         int awardLevel = gameSnapshot.getAwardLevel();
         boolean isNewHighScore = gameSnapshot.getIsNewHighScore();
-        HashMap<String, ClickTargetSnapshot> mapClickTargetSnapshots = gameSnapshot.getMapClickTargetSnapshots();
+        Map<String, ClickTargetSnapshot> mapClickTargetSnapshots = gameSnapshot.getMapClickTargetSnapshots();
         ClickTargetSnapshot firstClickTargetSnapshot = null;
         Iterator iterator = mapClickTargetSnapshots.entrySet().iterator();
         while (iterator.hasNext()) {

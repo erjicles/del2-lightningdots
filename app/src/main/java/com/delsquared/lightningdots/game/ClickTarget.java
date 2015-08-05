@@ -6,19 +6,30 @@ import android.content.res.Resources;
 import android.util.TypedValue;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
+import com.delsquared.lightningdots.utilities.BoundaryEffect;
+import com.delsquared.lightningdots.utilities.IPositionEvolvingObject;
+import com.delsquared.lightningdots.utilities.IPositionEvolvingPolygonalObject;
+import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
+import com.delsquared.lightningdots.utilities.PositionEvolverFamily;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariable;
 import com.delsquared.lightningdots.utilities.PositionVector;
+import com.delsquared.lightningdots.utilities.TimedChangeHandler;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClickTarget {
+public class ClickTarget implements IPositionEvolvingPolygonalObject {
+
+    public static final String POSITION_EVOLVER_FAMILY_NAME_X = "X";
+    public static final String POSITION_EVOLVER_FAMILY_NAME_RADIUS = "radius";
+    public static final String POSITION_EVOLVER_FAMILY_NAME_ROTATION = "rotation";
 
     public static final String POSITION_EVOLVER_NAME_X = "X";
     public static final String POSITION_EVOLVER_NAME_DX = "dXdt";
@@ -45,22 +56,20 @@ public class ClickTarget {
 
     private String name;
     private ClickTargetProfileScript clickTargetProfileScript;
-    private List<PositionEvolver> listPositionEvolvers;
+    private OrderedObjectCollection<PositionEvolverFamily> collectionPositionEvolverFamilies;
     private Polygon polygonTargetShape = null;
     private boolean isClickable = true;
     private VISIBILITY visibility = VISIBILITY.VISIBLE;
 
+    private Context context;
     private double canvasWidth = 1.0;
     private double canvasHeight = 1.0;
 
     public ClickTarget() {
-
         name = "";
-
         clickTargetProfileScript = new ClickTargetProfileScript();
-
-        listPositionEvolvers = new ArrayList<>();
-
+        this.context = null;
+        collectionPositionEvolverFamilies = new OrderedObjectCollection<>();
     }
 
 	public ClickTarget(
@@ -68,47 +77,88 @@ public class ClickTarget {
             , String name
             , ClickTargetProfileScript clickTargetProfileScript
             , double canvasWidth
-            , double canvasHeight)
-	{
+            , double canvasHeight) {
         this.name = name;
         this.clickTargetProfileScript = clickTargetProfileScript;
+        this.context = context;
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
-
-        listPositionEvolvers = new ArrayList<>();
+        collectionPositionEvolverFamilies = new OrderedObjectCollection<>();
 
         // Initialize the click target to its current profile
-        transitionClickTargetProfile(
-                context
-                , true);
+        transitionClickTargetProfile(true);
 	}
 
+    public void setCurrentProfile(String profileName) {
+        setCurrentProfile(profileName, false);
+    }
+
+    public void setCurrentProfile(String profileName, boolean initializeClickTarget) {
+        clickTargetProfileScript.setCurrentClickTargetProfileName(profileName);
+        transitionClickTargetProfile(initializeClickTarget);
+    }
+
+    public OrderedObjectCollection<PositionEvolverFamily> getCollectionPositionEvolverFamilies() {
+        return collectionPositionEvolverFamilies;
+    }
+
+    public PositionEvolverFamily getPositionEvolverFamily(String positionEvolverFamilyName) {
+        return collectionPositionEvolverFamilies.getObject(positionEvolverFamilyName);
+    }
+
+    public String getCurrentProfileName() {
+        return getCurrentClickTargetProfileName();
+    }
+
+    public List<String> getListProfileNames() {
+        return clickTargetProfileScript.getListClickTargetProfileNames();
+    }
+
     public PositionVector getXPixels() {
-        PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_X);
-        if (positionEvolverX != null) {
-            return positionEvolverX.getX();
+        PositionEvolverFamily positionEvolverFamilyX = collectionPositionEvolverFamilies.getObject(POSITION_EVOLVER_NAME_X);
+        if (positionEvolverFamilyX != null) {
+            PositionEvolver positionEvolverX = positionEvolverFamilyX.getPositionEvolver(0);
+            if (positionEvolverX != null) {
+                return positionEvolverX.getX();
+            }
         }
         return null;
     }
 
     public double getRadiusPixels() {
-        PositionEvolver positionEvolverRadius = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
-        if (positionEvolverRadius != null) {
-            return positionEvolverRadius.getX().getValue(0);
+        PositionEvolverFamily positionEvolverFamilyRadius = collectionPositionEvolverFamilies.getObject(POSITION_EVOLVER_NAME_RADIUS);
+        if (positionEvolverFamilyRadius != null) {
+            PositionEvolver positionEvolverRadius = positionEvolverFamilyRadius.getPositionEvolver(0);
+            if (positionEvolverRadius != null) {
+                return positionEvolverRadius.getX().getValue(0);
+            }
         }
         return 0.0;
     }
 
-    public PositionEvolver getPositionEvolverFromVariableName(String variableName) {
+    public PositionEvolver getPositionEvolver(String positionEvolverName) {
+        if (mapTranslatePositionEvolverNameToPositionEvolverFamilyName.containsKey(positionEvolverName)) {
+            PositionEvolverFamily positionEvolverFamily =
+                    collectionPositionEvolverFamilies.getObject(
+                            mapTranslatePositionEvolverNameToPositionEvolverFamilyName.get(positionEvolverName));
+            if (positionEvolverFamily != null) {
+                return positionEvolverFamily.getPositionEvolver(positionEvolverName);
+            }
+        }
+        return null;
+    }
 
-        // Get the position evolver name
+    public PositionEvolver getPositionEvolverX() { return getPositionEvolver(POSITION_EVOLVER_NAME_X); }
+    public PositionEvolver getPositionEvolverRadius() { return getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS); }
+    public PositionEvolver getPositionEvolverRotation() { return getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION); }
+
+    public PositionEvolver getPositionEvolverFromVariableName(String variableName) {
         String positionEvolverName = "";
         if (mapTranslateVariableNameToPositionEvolverName.containsKey(variableName)) {
             positionEvolverName = mapTranslateVariableNameToPositionEvolverName.get(variableName);
+            return getPositionEvolver(positionEvolverName);
         }
-
-        return getPositionEvolver(positionEvolverName);
-
+        return null;
     }
 
     public double getVariableValue(String variableName) {
@@ -158,36 +208,6 @@ public class ClickTarget {
 
     }
 
-    public PositionEvolver getPositionEvolver(String positionEvolverName) {
-
-        // Loop through the top level PositionEvolvers first
-        for (PositionEvolver positionEvolver : listPositionEvolvers) {
-            if (positionEvolver.getName().contentEquals(positionEvolverName)) {
-                return positionEvolver;
-            }
-        }
-
-        // Do a deep dive
-        for (PositionEvolver positionEvolver : listPositionEvolvers) {
-
-            // Set the current position evolver to the dX position evolver
-            PositionEvolver currentPositionEvolver = positionEvolver.getPositionEvolverDXdt();
-
-            // Loop while the dX position evolver is not null
-            while (currentPositionEvolver != null) {
-
-                // Check if the current position evolver is the one we are looking for
-                if (currentPositionEvolver.getName().contentEquals(positionEvolverName)) {
-                    return currentPositionEvolver;
-                }
-
-                // Set the next position evolver to the next dX position evolver
-                currentPositionEvolver = currentPositionEvolver.getPositionEvolverDXdt();
-            }
-        }
-        return null;
-    }
-
     public String getName() {
         return this.name;
     }
@@ -201,6 +221,8 @@ public class ClickTarget {
         }
         return "";
     }
+
+    public Polygon getPolygon() { return this.polygonTargetShape; }
 
     public List<PositionVector> getListCenterPoints() {
 
@@ -219,15 +241,15 @@ public class ClickTarget {
         listCenterPoints.add(new PositionVector(positionEvolverXPixels.getX()));
 
         // Get the X and Y boundary effects
-        PositionEvolver.BoundaryEffect boundaryEffectX = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_X);
-        PositionEvolver.BoundaryEffect boundaryEffectY = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_Y);
+        BoundaryEffect boundaryEffectX = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_X);
+        BoundaryEffect boundaryEffectY = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_Y);
 
         // Check if either X or Y has periodic boundary effect
         // If not, then there won't be any secondary points
-        if (boundaryEffectX.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
-                || boundaryEffectX.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE
-                || boundaryEffectY.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
-                || boundaryEffectY.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+        if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
+                || boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE
+                || boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
+                || boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
 
             double targetX = positionEvolverXPixels.getX().getValue(0);
             double targetY = positionEvolverXPixels.getX().getValue(1);
@@ -258,7 +280,7 @@ public class ClickTarget {
 
             if (minimumBoundaryReachedX || maximumBoundaryReachedX) {
 
-                if (boundaryEffectX.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC) {
+                if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC) {
 
                     if (minimumBoundaryReachedX) {
                         double overflow = (minimumX - radiusMinimumX) % widthX;
@@ -270,7 +292,7 @@ public class ClickTarget {
                         newTargetX2 = minimumX + overflow - radius;
                     }
 
-                } else if (boundaryEffectX.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+                } else if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
 
                     if (minimumBoundaryReachedX) {
                         double boundaryOverflow = minimumX - radiusMinimumX;
@@ -302,7 +324,7 @@ public class ClickTarget {
 
             if (minimumBoundaryReachedY || maximumBoundaryReachedY) {
 
-                if (boundaryEffectY.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC) {
+                if (boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC) {
 
                     if (minimumBoundaryReachedY) {
                         double overflow = (minimumY - radiusMinimumY) % heightY;
@@ -314,7 +336,7 @@ public class ClickTarget {
                         newTargetY2 = minimumY + overflow - radius;
                     }
 
-                } else if (boundaryEffectY.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+                } else if (boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
 
                     if (minimumBoundaryReachedY) {
                         double boundaryOverflow = minimumY - radiusMinimumY;
@@ -388,51 +410,6 @@ public class ClickTarget {
         resetPositionBoundary();
     }
 
-    public boolean pointIsInsideTarget(double pointX, double pointY) {
-
-        boolean returnValue = false;
-
-        // Get the X position evolver
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
-
-        if (positionEvolverXPixels == null)
-            return false;
-
-        // Get the target radius
-        double radius = getRadiusPixels();
-
-        // Get the list of center points
-        ArrayList<PositionVector> arrayListCenterPoints = new ArrayList<>(getListCenterPoints());
-
-        // Loop through the center points
-        for (PositionVector currentCenterPoint : arrayListCenterPoints) {
-
-            // Check if the target is a polygon
-            if (polygonTargetShape != null) {
-
-                // Translate the polygon to the current center point
-                Polygon currentPolygon = polygonTargetShape.duplicate();
-                currentPolygon.setCenterPoint(currentCenterPoint);
-
-                // Check if the point is inside the polygon
-                returnValue = currentPolygon.pointIsInsidePolygon(pointX, pointY);
-
-            } else { // The target is a circle
-
-                double dx = currentCenterPoint.getValue(0) - pointX;
-                double dy = currentCenterPoint.getValue(1) - pointY;
-
-                returnValue = (dx * dx) + (dy * dy) <= (radius * radius);
-
-            }
-
-            if (returnValue) break;
-
-        }
-
-        return returnValue;
-    }
-
     public void resetPositionBoundary() {
 
         // Get the position evolver
@@ -449,16 +426,16 @@ public class ClickTarget {
         double minimumY = 0.0;
         double maximumY = canvasHeight;
 
-        PositionEvolver.BoundaryEffect boundaryEffectX = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_X);
-        PositionEvolver.BoundaryEffect boundaryEffectY = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_Y);
+        BoundaryEffect boundaryEffectX = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_X);
+        BoundaryEffect boundaryEffectY = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_Y);
 
-        if (boundaryEffectX.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                || boundaryEffectX.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
+        if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
+                || boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.STICK) {
             minimumX = radius / 2.0;
             maximumX = canvasWidth - (radius / 2.0);
         }
-        if (boundaryEffectY.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                || boundaryEffectY.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
+        if (boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
+                || boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.STICK) {
             minimumY = radius / 2.0;
             maximumY = canvasHeight - (radius / 2.0);
         }
@@ -467,117 +444,22 @@ public class ClickTarget {
 
     }
 
-    public ArrayList<RandomChangeEvent> checkRandomChanges(double dt) {
-
-        // Create the result list
-        ArrayList<RandomChangeEvent> arrayListRandomChangeEvents = new ArrayList<>();
-
-        // Loop through the position evolvers
-        for (PositionEvolver currentPositionEvolver : listPositionEvolvers) {
-
-            // Check the position evolver for random changes
-            List<String> listRandomChanges = currentPositionEvolver.checkRandomChanges(
-                    dt
-                    , new HashMap<String, Boolean>()
-            );
-
-            // Convert the list of change variables to RandomChangeEvents
-            for (String currentRandomChangeVariableName : listRandomChanges) {
-                RandomChangeEvent randomChangeEvent = new RandomChangeEvent(
-                        name
-                        , getCurrentClickTargetProfileName()
-                        , currentRandomChangeVariableName
-                );
-                arrayListRandomChangeEvents.add(randomChangeEvent);
-            }
-
-        }
-
-        return arrayListRandomChangeEvents;
-    }
-
     public boolean checkProfileTransition(double dt) {
-
         return clickTargetProfileScript.processTransition(dt);
-
     }
-
-	public void processElapsedTimeMillis(
-			Context context
-			, double dt
-            , Map<String, Boolean> mapEvolveVariables
-            , Map<String, Boolean> mapRandomChanges
-            , String transitionToClickTargetProfileName) {
-
-        // Check if the visibility is gone
-        if (visibility == VISIBILITY.GONE) {
-            return;
-        }
-
-		// Get the resources
-		Resources resources = context.getResources();
-
-        // Loop through the position evolvers
-        for (PositionEvolver positionEvolver : listPositionEvolvers) {
-
-            // Evolve the position and radius
-            positionEvolver.evolveTime(
-                    dt
-                    , mapEvolveVariables
-                    , mapRandomChanges);
-
-        }
-
-        // Update the polygon
-        if (polygonTargetShape != null) {
-
-            // Get the position evolvers
-            PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_X);
-            PositionEvolver positionEvolverRadius = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
-            PositionEvolver positionEvolverRotation = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
-
-            if (positionEvolverX != null
-                    && positionEvolverRadius != null
-                    && positionEvolverRotation != null) {
-
-                polygonTargetShape.setProperties(
-                        new PositionVector(positionEvolverX.getX())
-                        , positionEvolverRadius.getX().getValue(0)
-                        , positionEvolverRotation.getX().getValue(0)
-                );
-
-            }
-
-        }
-
-        // Process the click target profile transition
-        // Check if the click target is in the map
-        if (transitionToClickTargetProfileName != null) {
-
-            // Check if the target profile doesn't match the current profile
-            if (!clickTargetProfileScript.getCurrentClickTargetProfile().name.contentEquals(transitionToClickTargetProfileName)) {
-
-                // Set the click target profile
-                clickTargetProfileScript.setCurrentClickTargetProfileName(transitionToClickTargetProfileName);
-
-            }
-
-            // Transition the click target to the new profile
-            transitionClickTargetProfile(
-                    context
-                    , false
-            );
-
-        }
-
-	}
 
 	public ClickTargetSnapshot getClickTargetSnapshot() {
 
         // Get the position evolvers
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
-        PositionEvolver positionEvolverRadiusPixels = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
-        PositionEvolver positionEvolverRotationRadians = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
+        PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_X);
+        PositionEvolver positionEvolverDX = getPositionEvolver(POSITION_EVOLVER_NAME_DX);
+        PositionEvolver positionEvolverD2X = getPositionEvolver(POSITION_EVOLVER_NAME_D2X);
+        PositionEvolver positionEvolverRadius = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
+        PositionEvolver positionEvolverDRadius = getPositionEvolver(POSITION_EVOLVER_NAME_DRADIUS);
+        PositionEvolver positionEvolverD2Radius = getPositionEvolver(POSITION_EVOLVER_NAME_D2RADIUS);
+        PositionEvolver positionEvolverRotation = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
+        PositionEvolver positionEvolverDRotation = getPositionEvolver(POSITION_EVOLVER_NAME_DROTATION);
+        PositionEvolver positionEvolverD2Rotation = getPositionEvolver(POSITION_EVOLVER_NAME_D2ROTATION);
 
         PositionVector targetX = new PositionVector();
         PositionVector targetDX = new PositionVector();
@@ -588,37 +470,15 @@ public class ClickTarget {
         PositionVector targetRotation = new PositionVector();
         PositionVector targetDRotation = new PositionVector();
         PositionVector targetD2Rotation = new PositionVector();
-        if (positionEvolverXPixels != null) {
-            targetX = positionEvolverXPixels.getX();
-            if (positionEvolverXPixels.getDXdt() != null) {
-                targetDX = positionEvolverXPixels.getDXdt();
-            }
-            if (positionEvolverXPixels.getPositionEvolverDXdt() != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-                targetD2X = positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt().getX();
-            }
-
-        }
-        if (positionEvolverRadiusPixels != null) {
-            targetRadius = positionEvolverRadiusPixels.getX();
-            if (positionEvolverRadiusPixels.getDXdt() != null) {
-                targetDRadius = positionEvolverRadiusPixels.getDXdt();
-            }
-            if (positionEvolverRadiusPixels.getPositionEvolverDXdt() != null
-                    && positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-                targetD2Radius = positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt().getX();
-            }
-        }
-        if (positionEvolverRotationRadians != null) {
-            targetRotation = positionEvolverRotationRadians.getX();
-            if (positionEvolverRotationRadians.getDXdt() != null) {
-                targetDRotation = positionEvolverRotationRadians.getDXdt();
-            }
-            if (positionEvolverRotationRadians.getPositionEvolverDXdt() != null
-                    && positionEvolverRotationRadians.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-                targetD2Rotation = positionEvolverRotationRadians.getPositionEvolverDXdt().getPositionEvolverDXdt().getX();
-            }
-        }
+        if (positionEvolverX != null) { targetX = positionEvolverX.getX(); }
+        if (positionEvolverDX != null) { targetDX = positionEvolverDX.getX(); }
+        if (positionEvolverD2X != null) { targetD2X = positionEvolverD2X.getX(); }
+        if (positionEvolverRadius != null) { targetRadius = positionEvolverRadius.getX(); }
+        if (positionEvolverDRadius != null) { targetDRadius = positionEvolverDRadius.getX(); }
+        if (positionEvolverD2Radius != null) { targetD2Radius = positionEvolverD2Radius.getX(); }
+        if (positionEvolverRotation != null) { targetRotation = positionEvolverRotation.getX(); }
+        if (positionEvolverDRotation != null) { targetDRotation = positionEvolverDRotation.getX(); }
+        if (positionEvolverD2Rotation != null) { targetD2Rotation = positionEvolverD2Rotation.getX(); }
 
 		return new ClickTargetSnapshot(
                 name
@@ -638,15 +498,24 @@ public class ClickTarget {
         );
 	}
 
-    public void transitionClickTargetProfile(
-            Context context
-            , boolean initializeClickTarget) {
+    public void transitionClickTargetProfile(boolean initializeClickTarget) {
 
         ClickTargetProfile clickTargetProfile = clickTargetProfileScript.getCurrentClickTargetProfile();
 
         if (clickTargetProfile == null) {
             return;
         }
+
+        // Get the position evolvers
+        PositionEvolver positionEvolverX = getPositionEvolver(POSITION_EVOLVER_NAME_X);
+        PositionEvolver positionEvolverDX = getPositionEvolver(POSITION_EVOLVER_NAME_DX);
+        PositionEvolver positionEvolverD2X = getPositionEvolver(POSITION_EVOLVER_NAME_D2X);
+        PositionEvolver positionEvolverRadius = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
+        PositionEvolver positionEvolverDRadius = getPositionEvolver(POSITION_EVOLVER_NAME_DRADIUS);
+        PositionEvolver positionEvolverD2Radius = getPositionEvolver(POSITION_EVOLVER_NAME_D2RADIUS);
+        PositionEvolver positionEvolverRotation = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
+        PositionEvolver positionEvolverDRotation = getPositionEvolver(POSITION_EVOLVER_NAME_DROTATION);
+        PositionEvolver positionEvolverD2Rotation = getPositionEvolver(POSITION_EVOLVER_NAME_D2ROTATION);
 
         // Get the profile variable values
         ClickTargetProfile.ProfileVariableValues variableValuesPositionHorizontal =
@@ -792,106 +661,13 @@ public class ClickTarget {
 
         }
 
-        // Convert values from inches to pixels
-        // Radius
-        double initialTargetRadiusPixels =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesRadius.initialValue
-                        , context.getResources().getDisplayMetrics());
-        double minimumTargetRadiusPixels =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesRadius.minimumValue
-                        , context.getResources().getDisplayMetrics());
-        double maximumTargetRadiusPixels =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesRadius.maximumValue
-                        , context.getResources().getDisplayMetrics());
-
-        // Speed and Speed Change
-        double initialTargetSpeedPixelsPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesSpeed.initialValue
-                        , context.getResources().getDisplayMetrics());
-        double minimumTargetSpeedPixelsPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesSpeed.minimumValue
-                        , context.getResources().getDisplayMetrics());
-        double maximumTargetSpeedPixelsPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesSpeed.maximumValue
-                        , context.getResources().getDisplayMetrics());
-        double initialTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesDSpeed.initialValue
-                        , context.getResources().getDisplayMetrics());
-        double minimumTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesDSpeed.minimumValue
-                        , context.getResources().getDisplayMetrics());
-        double maximumTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesDSpeed.maximumValue
-                        , context.getResources().getDisplayMetrics());
-
-        // DRadius and DRadius Change
-        double initialTargetDRadiusAbsoluteValuePixelsPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesDRadius.initialValue
-                        , context.getResources().getDisplayMetrics());
-        double minimumTargetDRadiusAbsoluteValuePixelsPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesDRadius.minimumValue
-                        , context.getResources().getDisplayMetrics());
-        double maximumTargetDRadiusAbsoluteValuePixelsPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesDRadius.maximumValue
-                        , context.getResources().getDisplayMetrics());
-        double initialTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesD2Radius.initialValue
-                        , context.getResources().getDisplayMetrics());
-        double minimumTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesD2Radius.minimumValue
-                        , context.getResources().getDisplayMetrics());
-        double maximumTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond =
-                TypedValue.applyDimension(
-                        TypedValue.COMPLEX_UNIT_IN
-                        , (float) variableValuesD2Radius.maximumValue
-                        , context.getResources().getDisplayMetrics());
-
-        // Get the position evolvers
-        PositionEvolver positionEvolverXPixels = getPositionEvolver(POSITION_EVOLVER_NAME_X);
-        PositionEvolver positionEvolverRadiusPixels = getPositionEvolver(POSITION_EVOLVER_NAME_RADIUS);
-        PositionEvolver positionEvolverRotationRadians = getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION);
-
-
         // -------------------- BEGIN D2Position -------------------- //
         double targetDSpeedPixelsPerSecondPerSecond = 0.0;
         double targetDDirectionAngleRadiansPerSecond = 0.0;
         // DSpeed
         if (!initializeClickTarget && continuousDSpeed == true) {
-            if (positionEvolverXPixels != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt() != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-
-                PositionEvolver positionEvolverD2Xdt2Pixels = positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt();
-                targetDSpeedPixelsPerSecondPerSecond = positionEvolverD2Xdt2Pixels.getX().getValue(0);
-
+            if (positionEvolverD2X != null) {
+                targetDSpeedPixelsPerSecondPerSecond = positionEvolverD2X.getX().getValue(0);
             }
         } else {
             if (variableValuesSpeed.canChange) {
@@ -899,11 +675,11 @@ public class ClickTarget {
                 if (variableValuesDSpeed.randomInitialValue) {
                     targetDSpeedPixelsPerSecondPerSecond =
                             UtilityFunctions.generateRandomValue(
-                                    minimumTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond
-                                    , maximumTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond
+                                    variableValuesDSpeed.minimumValue
+                                    , variableValuesDSpeed.maximumValue
                                     , true);
                 } else {
-                    targetDSpeedPixelsPerSecondPerSecond = initialTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond;
+                    targetDSpeedPixelsPerSecondPerSecond = variableValuesDSpeed.initialValue;
                     if (variableValuesDSpeed.randomInitialSign) {
                         targetDSpeedPixelsPerSecondPerSecond *= UtilityFunctions.getRandomSign();
                     }
@@ -913,13 +689,8 @@ public class ClickTarget {
         }
         // Direction Angle Change
         if (!initializeClickTarget && continuousDDirection) {
-            if (positionEvolverXPixels != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt() != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-
-                PositionEvolver positionEvolverD2Xdt2Pixels = positionEvolverXPixels.getPositionEvolverDXdt().getPositionEvolverDXdt();
-                targetDDirectionAngleRadiansPerSecond = positionEvolverD2Xdt2Pixels.getX().getValue(1);
-
+            if (positionEvolverD2X != null) {
+                targetDDirectionAngleRadiansPerSecond = positionEvolverD2X.getX().getValue(1);
             }
         } else {
             if (variableValuesDirection.canChange) {
@@ -941,25 +712,24 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesD2X = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesD2X = new ArrayList<>();
         PositionEvolverVariable dSpeed = variableValuesDSpeed.toPositionEvolverVariable(
-                minimumTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond
+                variableValuesDSpeed.minimumValue
                 , targetDSpeedPixelsPerSecondPerSecond
-                , maximumTargetDSpeedAbsoluteValuePixelsPerSecondPerSecond
+                , variableValuesDSpeed.maximumValue
         );
         PositionEvolverVariable dDirection = variableValuesDDirection.toPositionEvolverVariable(
                 targetDDirectionAngleRadiansPerSecond
         );
-        arrayListPositionEvolverVariablesD2X.add(dSpeed);
-        arrayListPositionEvolverVariablesD2X.add(dDirection);
+        listPositionEvolverVariablesD2X.add(dSpeed);
+        listPositionEvolverVariablesD2X.add(dDirection);
 
         // Create the position evolver
-        PositionEvolver targetD2Xdt2Pixels = new PositionEvolver(
+        PositionEvolver positionEvolverD2XNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2X
-                , arrayListPositionEvolverVariablesD2X
-                , null
+                , listPositionEvolverVariablesD2X
                 , PositionEvolver.MODE.POLAR_2D
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END D2Position -------------------- //
 
@@ -970,30 +740,26 @@ public class ClickTarget {
         double targetDirectionAngleRadians = 0.0;
         // Speed
         if (!initializeClickTarget && continuousSpeed) {
-            if (positionEvolverXPixels != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt() != null) {
-                PositionEvolver positionEvolverDXdtPixels = positionEvolverXPixels.getPositionEvolverDXdt();
-                targetSpeedPixelsPerSecond = positionEvolverDXdtPixels.getX().getValue(0);
+            if (positionEvolverDX != null) {
+                targetSpeedPixelsPerSecond = positionEvolverDX.getX().getValue(0);
             }
         } else {
             if (variableValuesPositionHorizontal.canChange) {
                 if (variableValuesSpeed.randomInitialValue) {
                     targetSpeedPixelsPerSecond =
                             UtilityFunctions.generateRandomValue(
-                                    minimumTargetSpeedPixelsPerSecond
-                                    , maximumTargetSpeedPixelsPerSecond
+                                    variableValuesSpeed.minimumValue
+                                    , variableValuesSpeed.maximumValue
                                     , false);
                 } else {
-                    targetSpeedPixelsPerSecond = initialTargetSpeedPixelsPerSecond;
+                    targetSpeedPixelsPerSecond = variableValuesSpeed.initialValue;
                 }
             }
         }
         // Direction Angle
         if (!initializeClickTarget && continuousDirection) {
-            if (positionEvolverXPixels != null
-                    && positionEvolverXPixels.getPositionEvolverDXdt() != null) {
-                PositionEvolver positionEvolverDXdtPixels = positionEvolverXPixels.getPositionEvolverDXdt();
-                targetDirectionAngleRadians = positionEvolverDXdtPixels.getX().getValue(1);
+            if (positionEvolverDX != null) {
+                targetDirectionAngleRadians = positionEvolverDX.getX().getValue(1);
             }
         } else {
             if (variableValuesPositionHorizontal.canChange) {
@@ -1010,25 +776,24 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesDX = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesDX = new ArrayList<>();
         PositionEvolverVariable speed = variableValuesSpeed.toPositionEvolverVariable(
-                minimumTargetSpeedPixelsPerSecond
+                variableValuesSpeed.minimumValue
                 , targetSpeedPixelsPerSecond
-                , maximumTargetSpeedPixelsPerSecond
+                , variableValuesSpeed.maximumValue
         );
         PositionEvolverVariable direction = variableValuesDirection.toPositionEvolverVariable(
                 targetDirectionAngleRadians
         );
-        arrayListPositionEvolverVariablesDX.add(speed);
-        arrayListPositionEvolverVariablesDX.add(direction);
+        listPositionEvolverVariablesDX.add(speed);
+        listPositionEvolverVariablesDX.add(direction);
 
         // Create the position evolver
-        PositionEvolver targetDXdtPixels = new PositionEvolver(
+        PositionEvolver positionEvolverDXNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DX
-                , arrayListPositionEvolverVariablesDX
-                , targetD2Xdt2Pixels
+                , listPositionEvolverVariablesDX
                 , PositionEvolver.MODE.POLAR_2D
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END DPosition -------------------- //
 
@@ -1039,18 +804,18 @@ public class ClickTarget {
         double maximumPixelsX = canvasWidth;
         double minimumPixelsY = 0.0;
         double maximumPixelsY = canvasHeight;
-        double currentRadiusPixels = initialTargetRadiusPixels;
+        double currentRadiusPixels = variableValuesRadius.initialValue;
         if (!initializeClickTarget
-                && positionEvolverRadiusPixels != null) {
-            currentRadiusPixels = positionEvolverRadiusPixels.getX().getValue(0);
+                && positionEvolverRadius != null) {
+            currentRadiusPixels = positionEvolverRadius.getX().getValue(0);
         }
-        if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
+        if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
+                || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.STICK) {
             minimumPixelsX = currentRadiusPixels / 2.0;
             maximumPixelsX = canvasWidth - (currentRadiusPixels / 2.0);
         }
-        if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.BOUNCE
-                || variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.STICK) {
+        if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
+                || variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.STICK) {
             minimumPixelsY = currentRadiusPixels / 2.0;
             maximumPixelsY = canvasHeight - (currentRadiusPixels / 2.0);
         }
@@ -1062,20 +827,20 @@ public class ClickTarget {
         double XPixels = 0.0;
         double YPixels = 0.0;
         if (!initializeClickTarget && continuousX) {
-            if (positionEvolverXPixels != null) {
-                XPixels = positionEvolverXPixels.getX().getValue(0);
-                YPixels = positionEvolverXPixels.getX().getValue(1);
+            if (positionEvolverX != null) {
+                XPixels = positionEvolverX.getX().getValue(0);
+                YPixels = positionEvolverX.getX().getValue(1);
             }
         } else {
 
             // Check if we need to renormalize the min and max position values based on boundary effect
-            if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
-                    || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+            if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
+                    || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
                 minimumPixelsX = 0.0;
                 maximumPixelsX = width;
             }
-            if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC
-                    || variableValuesPositionVertical.boundaryEffect.boundaryEffect == PositionEvolver.BoundaryEffect.BOUNDARY_EFFECT.PERIODIC_REFLECTIVE) {
+            if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
+                    || variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
                 minimumPixelsY = 0.0;
                 maximumPixelsY = height;
             }
@@ -1108,7 +873,7 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesX = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesX = new ArrayList<>();
         PositionEvolverVariable x = variableValuesPositionHorizontal.toPositionEvolverVariable(
                 minimumPixelsX
                 , XPixels
@@ -1119,16 +884,15 @@ public class ClickTarget {
                 , YPixels
                 , maximumPixelsY
         );
-        arrayListPositionEvolverVariablesX.add(x);
-        arrayListPositionEvolverVariablesX.add(y);
+        listPositionEvolverVariablesX.add(x);
+        listPositionEvolverVariablesX.add(y);
 
         // Create the position evolver
-        PositionEvolver targetXPixels = new PositionEvolver(
+        PositionEvolver positionEvolverXNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_X
-                , arrayListPositionEvolverVariablesX
-                , targetDXdtPixels
+                , listPositionEvolverVariablesX
                 , PositionEvolver.MODE.CARTESIAN_2D
-                , variableValuesPositionHorizontal.randomChangeEffect
+                , new TimedChangeHandler()
         );
         // -------------------- END Position -------------------- //
 
@@ -1139,21 +903,18 @@ public class ClickTarget {
 
         // D2Radius
         if (!initializeClickTarget && continuousD2Radius) {
-            if (positionEvolverRadiusPixels != null
-                    && positionEvolverRadiusPixels.getPositionEvolverDXdt() != null
-                    && positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-                PositionEvolver positionEvolverDRadiusChangePixels = positionEvolverRadiusPixels.getPositionEvolverDXdt().getPositionEvolverDXdt();
-                targetD2RadiusPixels = positionEvolverDRadiusChangePixels.getX().getValue(0);
+            if (positionEvolverD2Radius != null) {
+                targetD2RadiusPixels = positionEvolverD2Radius.getX().getValue(0);
             }
         } else {
             if (variableValuesDRadius.canChange) {
                 if (variableValuesD2Radius.randomInitialValue) {
                     targetD2RadiusPixels = UtilityFunctions.generateRandomValue(
-                            minimumTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond
-                            , maximumTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond
+                            variableValuesD2Radius.minimumValue
+                            , variableValuesD2Radius.maximumValue
                             , true);
                 } else {
-                    targetD2RadiusPixels = initialTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond;
+                    targetD2RadiusPixels = variableValuesD2Radius.initialValue;
                     if (variableValuesD2Radius.randomInitialSign) {
                         targetD2RadiusPixels *= UtilityFunctions.getRandomSign();
                     }
@@ -1162,21 +923,20 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesD2Radius = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesD2Radius = new ArrayList<>();
         PositionEvolverVariable d2Radius = variableValuesD2Radius.toPositionEvolverVariable(
-                minimumTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond
+                variableValuesD2Radius.minimumValue
                 , targetD2RadiusPixels
-                , maximumTargetD2RadiusAbsoluteValuePixelsPerSecondPerSecond
+                , variableValuesD2Radius.maximumValue
         );
-        arrayListPositionEvolverVariablesD2Radius.add(d2Radius);
+        listPositionEvolverVariablesD2Radius.add(d2Radius);
 
         // Create the position evolver
-        PositionEvolver targetD2RadiusDt2Pixels = new PositionEvolver(
+        PositionEvolver positionEvolverD2RadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2RADIUS
-                , arrayListPositionEvolverVariablesD2Radius
-                , null
+                , listPositionEvolverVariablesD2Radius
                 , PositionEvolver.MODE.ONE_DIMENSION
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END D2Radius -------------------- //
 
@@ -1187,20 +947,18 @@ public class ClickTarget {
 
         // DRadius
         if (!initializeClickTarget && continuousDRadius) {
-            if (positionEvolverRadiusPixels != null
-                    && positionEvolverRadiusPixels.getPositionEvolverDXdt() != null) {
-                PositionEvolver positionEvolverDRadiusPixels = positionEvolverRadiusPixels.getPositionEvolverDXdt();
-                targetDRadiusPixels = positionEvolverDRadiusPixels.getX().getValue(0);
+            if (positionEvolverDRadius != null) {
+                targetDRadiusPixels = positionEvolverDRadius.getX().getValue(0);
             }
         } else {
             if (variableValuesRadius.canChange) {
                 if (variableValuesDRadius.randomInitialValue) {
                     targetDRadiusPixels = UtilityFunctions.generateRandomValue(
-                            minimumTargetDRadiusAbsoluteValuePixelsPerSecond
-                            , maximumTargetDRadiusAbsoluteValuePixelsPerSecond
+                            variableValuesDRadius.minimumValue
+                            , variableValuesDRadius.maximumValue
                             , true);
                 } else {
-                    targetDRadiusPixels = initialTargetDRadiusAbsoluteValuePixelsPerSecond;
+                    targetDRadiusPixels = variableValuesDRadius.initialValue;
                     if (variableValuesDRadius.randomInitialSign) {
                         targetDRadiusPixels *= UtilityFunctions.getRandomSign();
                     }
@@ -1209,21 +967,20 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesDRadius = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesDRadius = new ArrayList<>();
         PositionEvolverVariable dRadius = variableValuesDRadius.toPositionEvolverVariable(
-                minimumTargetDRadiusAbsoluteValuePixelsPerSecond
+                variableValuesDRadius.minimumValue
                 , targetDRadiusPixels
-                , maximumTargetDRadiusAbsoluteValuePixelsPerSecond
+                , variableValuesDRadius.maximumValue
         );
-        arrayListPositionEvolverVariablesDRadius.add(dRadius);
+        listPositionEvolverVariablesDRadius.add(dRadius);
 
         // Create the position evolver
-        PositionEvolver targetDRadiusDtPixels = new PositionEvolver(
+        PositionEvolver positionEvolverDRadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DRADIUS
-                , arrayListPositionEvolverVariablesDRadius
-                , targetD2RadiusDt2Pixels
+                , listPositionEvolverVariablesDRadius
                 , PositionEvolver.MODE.ONE_DIMENSION
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END DRadius -------------------- //
 
@@ -1234,36 +991,35 @@ public class ClickTarget {
 
         // Radius
         if (!initializeClickTarget && continuousRadius) {
-            if (positionEvolverRadiusPixels != null) {
-                radiusPixels = positionEvolverRadiusPixels.getX().getValue(0);
+            if (positionEvolverRadius != null) {
+                radiusPixels = positionEvolverRadius.getX().getValue(0);
             }
         } else {
             if (variableValuesRadius.randomInitialValue) {
                 radiusPixels = UtilityFunctions.generateRandomValue(
-                        minimumTargetRadiusPixels
-                        , maximumTargetRadiusPixels
+                        variableValuesRadius.minimumValue
+                        , variableValuesRadius.maximumValue
                         , false);
             } else {
-                radiusPixels = initialTargetRadiusPixels;
+                radiusPixels = variableValuesRadius.initialValue;
             }
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesRadius = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesRadius = new ArrayList<>();
         PositionEvolverVariable radius = variableValuesRadius.toPositionEvolverVariable(
-                minimumTargetRadiusPixels
+                variableValuesRadius.minimumValue
                 , radiusPixels
-                , maximumTargetRadiusPixels
+                , variableValuesRadius.maximumValue
         );
-        arrayListPositionEvolverVariablesRadius.add(radius);
+        listPositionEvolverVariablesRadius.add(radius);
 
         // Create the position evolver
-        PositionEvolver targetRadiusPixels = new PositionEvolver(
+        PositionEvolver positionEvolverRadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_RADIUS
-                , arrayListPositionEvolverVariablesRadius
-                , targetDRadiusDtPixels
+                , listPositionEvolverVariablesRadius
                 , PositionEvolver.MODE.ONE_DIMENSION
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END Radius -------------------- //
 
@@ -1273,11 +1029,8 @@ public class ClickTarget {
         double targetD2RotationRadians = 0.0;
         // D2Rotation
         if (!initializeClickTarget && continuousD2Rotation) {
-            if (positionEvolverRotationRadians != null
-                    && positionEvolverRotationRadians.getPositionEvolverDXdt() != null
-                    && positionEvolverRotationRadians.getPositionEvolverDXdt().getPositionEvolverDXdt() != null) {
-                PositionEvolver positionEvolverD2RotationRadians = positionEvolverRotationRadians.getPositionEvolverDXdt().getPositionEvolverDXdt();
-                targetD2RotationRadians = positionEvolverD2RotationRadians.getX().getValue(0);
+            if (positionEvolverD2Rotation != null) {
+                targetD2RotationRadians = positionEvolverD2Rotation.getX().getValue(0);
             }
         } else {
             if (variableValuesDRotation.canChange) {
@@ -1296,17 +1049,16 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesD2Rotation = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesD2Rotation = new ArrayList<>();
         PositionEvolverVariable d2Rotation = variableValuesD2Rotation.toPositionEvolverVariable(targetD2RotationRadians);
-        arrayListPositionEvolverVariablesD2Rotation.add(d2Rotation);
+        listPositionEvolverVariablesD2Rotation.add(d2Rotation);
 
         // Create the position evolver
-        PositionEvolver targetD2RotationRadiansPerSecondPerSecond = new PositionEvolver(
+        PositionEvolver positionEvolverD2RotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2ROTATION
-                , arrayListPositionEvolverVariablesD2Rotation
-                , null
+                , listPositionEvolverVariablesD2Rotation
                 , PositionEvolver.MODE.ONE_DIMENSION
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END D2Rotation -------------------- //
 
@@ -1316,10 +1068,8 @@ public class ClickTarget {
         double targetDRotationRadians = 0.0;
         // DRotation
         if (!initializeClickTarget && continuousDRotation) {
-            if (positionEvolverRotationRadians != null
-                    && positionEvolverRotationRadians.getPositionEvolverDXdt() != null) {
-                PositionEvolver positionEvolverDRotationRadians = positionEvolverRotationRadians.getPositionEvolverDXdt();
-                targetDRotationRadians = positionEvolverDRotationRadians.getX().getValue(0);
+            if (positionEvolverDRotation != null) {
+                targetDRotationRadians = positionEvolverDRotation.getX().getValue(0);
             }
         } else {
             if (variableValuesRotation.canChange) {
@@ -1340,17 +1090,16 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesDRotation = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesDRotation = new ArrayList<>();
         PositionEvolverVariable dRotation = variableValuesDRotation.toPositionEvolverVariable(targetDRotationRadians);
-        arrayListPositionEvolverVariablesDRotation.add(dRotation);
+        listPositionEvolverVariablesDRotation.add(dRotation);
 
         // Create the position evolver
-        PositionEvolver targetDRotationRadiansPerSecond = new PositionEvolver(
+        PositionEvolver positionEvolverDRotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DROTATION
-                , arrayListPositionEvolverVariablesDRotation
-                , targetD2RotationRadiansPerSecondPerSecond
+                , listPositionEvolverVariablesDRotation
                 , PositionEvolver.MODE.ONE_DIMENSION
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END DRotation -------------------- //
 
@@ -1360,8 +1109,8 @@ public class ClickTarget {
         double rotationRadians = 0.0;
         // Rotation
         if (!initializeClickTarget && continuousRotation) {
-            if (positionEvolverRotationRadians != null) {
-                rotationRadians = positionEvolverRotationRadians.getX().getValue(0);
+            if (positionEvolverRotation != null) {
+                rotationRadians = positionEvolverRotation.getX().getValue(0);
             }
         } else {
             if (variableValuesRotation.randomInitialValue) {
@@ -1375,33 +1124,61 @@ public class ClickTarget {
         }
 
         // Create the variables list
-        ArrayList<PositionEvolverVariable> arrayListPositionEvolverVariablesRotation = new ArrayList<>();
+        List<PositionEvolverVariable> listPositionEvolverVariablesRotation = new ArrayList<>();
         PositionEvolverVariable rotation = variableValuesRotation.toPositionEvolverVariable(rotationRadians);
-        arrayListPositionEvolverVariablesRotation.add(rotation);
+        listPositionEvolverVariablesRotation.add(rotation);
 
         // Create the position evolver
-        PositionEvolver targetRotationRadians = new PositionEvolver(
+        PositionEvolver positionEvolverRotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_ROTATION
-                , arrayListPositionEvolverVariablesRotation
-                , targetDRotationRadiansPerSecond
+                , listPositionEvolverVariablesRotation
                 , PositionEvolver.MODE.ONE_DIMENSION
-                , new PositionEvolver.RandomChangeEffect()
+                , new TimedChangeHandler()
         );
         // -------------------- END Rotation -------------------- //
 
-        // First clear the position evolver list
-        this.listPositionEvolvers.clear();
+        // Create the position evolver lists
+        List<PositionEvolver> listPositionEvolversX = new ArrayList<>();
+        listPositionEvolversX.add(positionEvolverXNew);
+        listPositionEvolversX.add(positionEvolverDXNew);
+        listPositionEvolversX.add(positionEvolverD2XNew);
 
-        // Add the new position evolvers to the list
-        this.listPositionEvolvers.add(targetXPixels);
-        this.listPositionEvolvers.add(targetRadiusPixels);
-        this.listPositionEvolvers.add(targetRotationRadians);
+        List<PositionEvolver> listPositionEvolversRadius = new ArrayList<>();
+        listPositionEvolversRadius.add(positionEvolverRadiusNew);
+        listPositionEvolversRadius.add(positionEvolverDRadiusNew);
+        listPositionEvolversRadius.add(positionEvolverD2RadiusNew);
+
+        List<PositionEvolver> listPositionEvolversRotation = new ArrayList<>();
+        listPositionEvolversRotation.add(positionEvolverRotationNew);
+        listPositionEvolversRotation.add(positionEvolverDRotationNew);
+        listPositionEvolversRotation.add(positionEvolverD2RotationNew);
+
+        // Create the position evolver families list
+        List<PositionEvolverFamily> listPositionEvolverFamillies = new ArrayList<>();
+        listPositionEvolverFamillies.add(
+                new PositionEvolverFamily(
+                        POSITION_EVOLVER_FAMILY_NAME_X
+                        , new OrderedObjectCollection<>(listPositionEvolversX)
+        ));
+        listPositionEvolverFamillies.add(
+                new PositionEvolverFamily(
+                        POSITION_EVOLVER_FAMILY_NAME_RADIUS
+                        , new OrderedObjectCollection<>(listPositionEvolversRadius)
+        ));
+        listPositionEvolverFamillies.add(
+                new PositionEvolverFamily(
+                        POSITION_EVOLVER_FAMILY_NAME_ROTATION
+                        , new OrderedObjectCollection<>(listPositionEvolversRotation)
+        ));
+
+        // Replace the collection of position evolver families
+        collectionPositionEvolverFamilies = new OrderedObjectCollection<>(listPositionEvolverFamillies);
 
         // Get the polygon
         polygonTargetShape = PolygonHelper.getPolygon(context, clickTargetProfile.shape);
 
         // Check if we have a polygon
-        if (polygonTargetShape != null) {
+        if (polygonTargetShape != null && context != null) {
 
             // Set the polygon's properties
             polygonTargetShape.setProperties(
@@ -1421,51 +1198,38 @@ public class ClickTarget {
 
     }
 
-    public static class RandomChangeEvent {
-        public final String clickTargetName;
-        public final String clickTargetProfileName;
-        public final String variable;
-        public RandomChangeEvent(
-                String clickTargetName
-                , String clickTargetProfileName
-                , String variable) {
-            this.clickTargetName = clickTargetName;
-            this.clickTargetProfileName = clickTargetProfileName;
-            this.variable = variable;
-        }
-
-        public NTuple toRandomChangeTriggerKey() {
-            return LevelDefinitionLadder.nTupleTypeRandomChangeTriggerKey.createNTuple(
-                    clickTargetName
-                    , clickTargetProfileName
-                    , variable
-            );
-        }
-    }
-
-    public static class ClickTargetProfileTransitionEvent {
-        public final String clickTargetName;
-        public final String clickTargetProfileName;
-        public ClickTargetProfileTransitionEvent(
-                String clickTargetName
-                , String clickTargetProfileName) {
-            this.clickTargetName = clickTargetName;
-            this.clickTargetProfileName = clickTargetProfileName;
-        }
-
-        public NTuple toTransitionTriggerKey() {
-            return LevelDefinitionLadder.nTupleTypeTransitionTriggerKey.createNTuple(
-                    clickTargetName
-                    , clickTargetProfileName
-            );
-        }
-    }
-
     public enum VISIBILITY {
         VISIBLE
         , HIDDEN
         , GONE
     }
+    
+    private HashMap<String, String> mapTranslatePositionEvolverNameToPositionEvolverFamilyName = new HashMap<String, String>() {{
+        put(POSITION_EVOLVER_NAME_X, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(POSITION_EVOLVER_NAME_DX, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(POSITION_EVOLVER_NAME_D2X, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(POSITION_EVOLVER_NAME_RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+        put(POSITION_EVOLVER_NAME_DRADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+        put(POSITION_EVOLVER_NAME_D2RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+        put(POSITION_EVOLVER_NAME_ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+        put(POSITION_EVOLVER_NAME_DROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+        put(POSITION_EVOLVER_NAME_D2ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+    }};
+
+    private HashMap<String, String> mapTranslateVariableNameToPositionEvolverFamilyName = new HashMap<String, String>() {{
+        put(VARIABLE_NAME_X, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(VARIABLE_NAME_Y, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(VARIABLE_NAME_SPEED, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(VARIABLE_NAME_DIRECTION, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(VARIABLE_NAME_DSPEED, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(VARIABLE_NAME_DDIRECTION, POSITION_EVOLVER_FAMILY_NAME_X);
+        put(VARIABLE_NAME_RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+        put(VARIABLE_NAME_DRADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+        put(VARIABLE_NAME_D2RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+        put(VARIABLE_NAME_ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+        put(VARIABLE_NAME_DROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+        put(VARIABLE_NAME_D2ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+    }};
 
     private HashMap<String, String> mapTranslateVariableNameToPositionEvolverName = new HashMap<String, String>() {{
         put(VARIABLE_NAME_X, POSITION_EVOLVER_NAME_X);

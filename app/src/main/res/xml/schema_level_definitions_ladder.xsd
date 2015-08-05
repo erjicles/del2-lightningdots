@@ -50,6 +50,9 @@
             <xs:element name="ClickTargetSettingsShuffles" type="clickTargetSettingsShuffles" minOccurs="0" maxOccurs="1">
 
             </xs:element>
+            <xs:element name="Attractors" type="positionEvolverVariableAttractors" minOccurs="0" maxOccurs="1">
+
+            </xs:element>
         </xs:all>
         <xs:attribute name="level" type="xs:int" use="required"/>
     </xs:complexType>
@@ -99,6 +102,7 @@
         <xs:attribute name="targetShape" type="targetShape"/>
         <xs:attribute name="targetIsClickable" type="trueOrFalse"/>
         <xs:attribute name="targetVisibility" type="visibility"/>
+        <xs:attribute name="mass" type="xs:float"/>
 
     </xs:complexType>
 
@@ -111,7 +115,7 @@
 
     <xs:complexType name="targetVariable">
         <xs:all minOccurs="0">
-            <xs:element name="RandomChangeEffect" type="randomChangeEffect" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TimedChange" type="timedChange" minOccurs="0" maxOccurs="1"/>
             <xs:element name="BoundaryEffect" type="boundaryEffect" minOccurs="0" maxOccurs="1"/>
         </xs:all>
         <xs:attribute name="name" type="targetVariableName" use="required"/>
@@ -124,10 +128,10 @@
         <xs:attribute name="transitionContinuity" type="transitionContinuity"/>
     </xs:complexType>
 
-    <xs:complexType name="randomChangeEffect">
+    <xs:complexType name="timedChange">
         <xs:attribute name="canRandomlyChange" type="trueOrFalse"/>
-        <xs:attribute name="randomChangeValue" type="xs:float"/>
-        <xs:attribute name="randomChangeInterval" type="randomChangeInterval"/>
+        <xs:attribute name="value" type="xs:float"/>
+        <xs:attribute name="interval" type="timedChangeInterval"/>
         <xs:attribute name="bounceOnRandomChange" type="trueOrFalse"/>
     </xs:complexType>
 
@@ -136,6 +140,45 @@
         <xs:attribute name="mirrorAbsoluteValueBoundaries" type="trueOrFalse"/>
         <xs:attribute name="bounceOnInternalBoundary" type="trueOrFalse"/>
     </xs:complexType>
+
+    <xs:complexType name="positionEvolverVariableAttractors">
+        <xs:sequence>
+            <xs:element name="Attractor" type="positionEvolverVariableAttractor" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="positionEvolverVariableAttractor">
+        <xs:attribute name="type" type="positionEvolverVariableAttractorType"/>
+        <xs:attribute name="sourceClickTargetName" type="xs:string"/>
+        <xs:attribute name="sourceClickTargetProfileName" type="xs:string"/>
+        <xs:attribute name="sourcePositionEvolverFamilyName" type="xs:string"/>
+        <xs:attribute name="sourcePositionEvolverName" type="xs:string"/>
+        <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
+        <xs:attribute name="targetPositionEvolverFamilyName" type="xs:string" use="required"/>
+        <xs:attribute name="targetPositionEvolverName" type="xs:string" use="required"/>
+        <xs:attribute name="variableName" type="targetVariableName" use="required"/>
+        <xs:attribute name="initialFixedValue" type="xs:float"/>
+        <xs:attribute name="mode" type="positionEvolverVariableAttractorMode"/>
+        <xs:attribute name="mass" type="xs:float" use="required"/>
+        <xs:attribute name="isRepeller" type="trueOrFalse"/>
+        <xs:attribute name="isPercent" type="trueOrFalse"/>
+    </xs:complexType>
+
+    <xs:simpleType name="positionEvolverVariableAttractorType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="FIXED_VALUE"/>
+            <xs:enumeration value="OTHER_OBJECT"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="positionEvolverVariableAttractorMode">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CONSTANT_SPEED"/>
+            <xs:enumeration value="GRAVITY"/>
+        </xs:restriction>
+    </xs:simpleType>
+
 
     <xs:complexType name="randomChangeTriggers">
         <xs:sequence>
@@ -300,10 +343,10 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="randomChangeInterval">
+    <xs:simpleType name="timedChangeInterval">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="CONSTANT"/>
-            <xs:enumeration value="REGULAR"/>
+            <xs:enumeration value="NONE"/>
+            <xs:enumeration value="FIXED"/>
             <xs:enumeration value="RANDOM"/>
         </xs:restriction>
     </xs:simpleType>

@@ -2,6 +2,7 @@ package com.delsquared.lightningdots.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class GameSnapshot {
 
@@ -15,7 +16,7 @@ public class GameSnapshot {
     private final boolean isLevelComplete;
     private final int awardLevel;
     private final boolean isNewHighScore;
-    private final HashMap<String, ClickTargetSnapshot> mapClickTargetSnapshots;
+    private final Map<String, ClickTargetSnapshot> mapClickTargetSnapshots;
 
 	public GameSnapshot() {
 		gameType = Game.GameType.AGILITY;
@@ -42,7 +43,7 @@ public class GameSnapshot {
             , boolean isLevelComplete
             , int awardLevel
             , boolean isNewHighScore
-			, HashMap<String, ClickTargetSnapshot> mapClickTargetSnapshots
+			, Map<String, ClickTargetSnapshot> mapClickTargetSnapshots
 	) {
 		this.gameType = gameType;
 		this.gameLevel = gameLevel;
@@ -67,7 +68,7 @@ public class GameSnapshot {
     public boolean getIsLevelComplete() { return isLevelComplete; }
     public int getAwardLevel() { return awardLevel; }
     public boolean getIsNewHighScore() { return isNewHighScore; }
-    public HashMap<String, ClickTargetSnapshot> getMapClickTargetSnapshots() { return mapClickTargetSnapshots; }
+    public Map<String, ClickTargetSnapshot> getMapClickTargetSnapshots() { return mapClickTargetSnapshots; }
 
     public boolean equals(GameSnapshot otherGameSnapshot) {
 
