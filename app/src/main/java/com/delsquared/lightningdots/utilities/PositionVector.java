@@ -46,6 +46,14 @@ public class PositionVector {
         }
     }
 
+    public PositionVector(int cardinality) {
+        this.cardinality = cardinality;
+        X = new ArrayList<>();
+        for (int i = 0; i < cardinality; i++) {
+            X.add(0.0);
+        }
+    }
+
     public List<Double> getX() {
         return X;
     }
@@ -60,5 +68,41 @@ public class PositionVector {
     public boolean equals(PositionVector otherPositionVector) {
         return this.cardinality == otherPositionVector.cardinality
                 && this.X.equals(otherPositionVector.X);
+    }
+
+    public PositionVector add(PositionVector addVector) {
+        List<Double> valueList = new ArrayList<>();
+        for (int currentIndex = 0; currentIndex < Math.min(cardinality, addVector.cardinality); currentIndex++) {
+            valueList.add(getValue(currentIndex) + addVector.getValue(currentIndex));
+        }
+        return new PositionVector(valueList);
+    }
+
+    public PositionVector multiply(double scalar) {
+        List<Double> valueList = new ArrayList<>();
+        for (int currentIndex = 0; currentIndex < cardinality; currentIndex++) {
+            valueList.add(getValue(currentIndex) * scalar);
+        }
+        return new PositionVector(valueList);
+    }
+
+    public double dotProduct(PositionVector otherVector) {
+        double resultValue = 0.0;
+        List<Double> valueList = new ArrayList<>();
+        for (int currentIndex = 0; currentIndex < Math.min(cardinality, otherVector.cardinality); currentIndex++) {
+            valueList.add(getValue(currentIndex) * otherVector.getValue(currentIndex));
+        }
+        for (double value : valueList) {
+            resultValue += value;
+        }
+        return resultValue;
+    }
+
+    public double getMagnitude() {
+        return Math.sqrt(dotProduct(this));
+    }
+
+    public PositionVector getUnitVector() {
+        return multiply(1.0 / getMagnitude());
     }
 }

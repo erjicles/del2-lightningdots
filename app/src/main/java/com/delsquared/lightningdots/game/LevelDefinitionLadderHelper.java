@@ -8,11 +8,14 @@ import android.util.TypedValue;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
+import com.delsquared.lightningdots.utilities.BoundaryType;
+import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariable;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
+import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractorVariable;
 import com.delsquared.lightningdots.utilities.RandomChangeEvent;
 import com.delsquared.lightningdots.utilities.RandomChangeTrigger;
 import com.delsquared.lightningdots.utilities.SyncVariableTrigger;
@@ -49,6 +52,8 @@ public class LevelDefinitionLadderHelper {
     private static final String NODE_NAME_BOUNDARY_EFFECT = "BoundaryEffect";
     private static final String NODE_NAME_ATTRACTORS = "Attractors";
     private static final String NODE_NAME_ATTRACTOR = "Attractor";
+    private static final String NODE_NAME_ATTRACTOR_VARIABLES = "AttractorVariables";
+    private static final String NODE_NAME_ATTRACTOR_VARIABLE = "AttractorVariable";
     private static final String NODE_NAME_TRANSITION_TRIGGERS = "TransitionTriggers";
     private static final String NODE_NAME_TRANSITION_TRIGGER = "TransitionTrigger";
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGERS = "RandomChangeTriggers";
@@ -96,18 +101,19 @@ public class LevelDefinitionLadderHelper {
     private static final String ATTRIBUTE_NAME_ATTRACTOR_TYPE = "type";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_NAME = "sourceClickTargetName";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_PROFILE_NAME = "sourceClickTargetProfileName";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_FAMILY_NAME = "sourcePositionEvolverFamilyName";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_NAME = "sourcePositionEvolverName";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_NAME = "targetClickTargetName";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_PROFILE_NAME = "targetClickTargetProfileName";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_FAMILY_NAME = "targetPositionEvolverFamilyName";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_NAME = "targetPositionEvolverName";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_VARIABLE_NAME = "variableName";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_INITIAL_FIXED_VALUE = "initialFixedValue";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_POSITION_EVOLVER_FAMILY_NAME = "positionEvolverFamilyName";
+    private static final String ATTRIBUTE_NAME_ATTRACTOR_POSITION_EVOLVER_NAME = "positionEvolverName";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_MODE = "mode";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_MASS = "mass";
     private static final String ATTRIBUTE_NAME_ATTRACTOR_IS_REPELLER = "isRepeller";
-    private static final String ATTRIBUTE_NAME_ATTRACTOR_IS_PERCENT = "isPercent";
+
+
+    // <AttractorVariable> attribute names
+    private static final String ATTRIBUTE_NAME_ATTRACTORVARIABLE_NAME = "name";
+    private static final String ATTRIBUTE_NAME_ATTRACTORVARIABLE_INITIAL_FIXED_VALUE = "initialFixedValue";
+    private static final String ATTRIBUTE_NAME_ATTRACTORVARIABLE_IS_PERCENT = "isPercent";
 
     // <TimedChange> attribute names
     private static final String ATTRIBUTE_NAME_TIMEDCHANGE_CAN_RANDOMLY_CHANGE = "canRandomlyChange";
@@ -153,7 +159,7 @@ public class LevelDefinitionLadderHelper {
 
 
     // Variable names
-    private static final ArrayList<String> arrayListVariableNames = new ArrayList<String>() {{
+    private static final List<String> listVariableNames = new ArrayList<String>() {{
         add("position_horizontal");
         add("position_vertical");
         add("speed");
@@ -369,77 +375,102 @@ public class LevelDefinitionLadderHelper {
 
     }
 
+    public static class XMLPositionEvolverVariableAttractorVariable {
+
+        public final String name;
+        public final double initialFixedValue;
+        public final boolean isPercent;
+
+        public XMLPositionEvolverVariableAttractorVariable(
+                String name
+                , double initialFixedValue
+                , boolean isPercent) {
+            this.name = name;
+            this.initialFixedValue = initialFixedValue;
+            this.isPercent = isPercent;
+        }
+
+        public PositionEvolverVariableAttractorVariable toPositionEvolverVariableAttractorVariable() {
+            return new PositionEvolverVariableAttractorVariable(name, initialFixedValue, isPercent);
+        }
+
+    }
+
     public static class XMLPositionEvolverVariableAttractor {
 
         public PositionEvolverVariableAttractor.TYPE type;
 
         public String sourceObjectName;
         public String sourceObjectProfileName;
-        public String sourcePositionEvolverFamilyName;
-        public String sourcePositionEvolverName;
         public String targetObjectName;
         public String targetObjectProfileName;
-        public String targetPositionEvolverFamilyName;
-        public String targetPositionEvolverName;
-        public String variableName;
-        public double initialFixedValue;
+        public String positionEvolverFamilyName;
+        public String positionEvolverName;
+        public List<XMLPositionEvolverVariableAttractorVariable> listXMLPositionEvolverVariableAttractorVariables;
 
         public PositionEvolverVariableAttractor.MODE mode;
         public double mass;
         public boolean isRepeller;
-        public boolean isPercent;
-        private double value;
 
         public XMLPositionEvolverVariableAttractor(
                 PositionEvolverVariableAttractor.TYPE type
                 , String sourceObjectName
                 , String sourceObjectProfileName
-                , String sourcePositionEvolverFamilyName
-                , String sourcePositionEvolverName
                 , String targetObjectName
                 , String targetObjectProfileName
-                , String targetPositionEvolverFamilyName
-                , String targetPositionEvolverName
-                , String variableName
-                , double initialFixedValue
+                , String positionEvolverFamilyName
+                , String positionEvolverName
                 , PositionEvolverVariableAttractor.MODE mode
                 , double mass
-                , boolean isRepeller
-                , boolean isPercent) {
+                , boolean isRepeller) {
             this.type = type;
             this.sourceObjectName = sourceObjectName;
             this.sourceObjectProfileName = sourceObjectProfileName;
-            this.sourcePositionEvolverFamilyName = sourcePositionEvolverFamilyName;
-            this.sourcePositionEvolverName = sourcePositionEvolverName;
             this.targetObjectName = targetObjectName;
             this.targetObjectProfileName = targetObjectProfileName;
-            this.targetPositionEvolverFamilyName = targetPositionEvolverFamilyName;
-            this.targetPositionEvolverName = targetPositionEvolverName;
-            this.variableName = variableName;
-            this.initialFixedValue = initialFixedValue;
+            this.positionEvolverFamilyName = positionEvolverFamilyName;
+            this.positionEvolverName = positionEvolverName;
+            this.listXMLPositionEvolverVariableAttractorVariables = new ArrayList<>();
             this.mode = mode;
             this.mass = mass;
             this.isRepeller = isRepeller;
-            this.isPercent = isPercent;
         }
 
         public PositionEvolverVariableAttractor toPositionEvolverVariableAttractor() {
+
+            // Convert the XMLPositionEvolverVariableAttractorVariables to PositionEvolverVariableAttractorVariables
+            Map<String, PositionEvolverVariableAttractorVariable> mapPositionEvolverVariableAttractorVariables =
+                    new HashMap<>();
+            for (
+                    XMLPositionEvolverVariableAttractorVariable xmlPositionEvolverVariableAttractorVariable
+                    : listXMLPositionEvolverVariableAttractorVariables) {
+                mapPositionEvolverVariableAttractorVariables
+                        .put(
+                                xmlPositionEvolverVariableAttractorVariable.name
+                                , xmlPositionEvolverVariableAttractorVariable.toPositionEvolverVariableAttractorVariable());
+            }
+            List<PositionEvolverVariableAttractorVariable> listPositionEvolverVariableAttractorVariables =
+                    new ArrayList<>();
+            for (String variableName : listVariableNames) {
+                if (mapPositionEvolverVariableAttractorVariables.containsKey(variableName)) {
+                    listPositionEvolverVariableAttractorVariables.add(mapPositionEvolverVariableAttractorVariables.get(variableName));
+                }
+            }
+            OrderedObjectCollection<PositionEvolverVariableAttractorVariable> collectionPositionEvolverVariableAttractorVariables =
+                    new OrderedObjectCollection<>(listPositionEvolverVariableAttractorVariables);
+
             return new PositionEvolverVariableAttractor(
                     this.type
                     , this.sourceObjectName
                     , this.sourceObjectProfileName
-                    , this.sourcePositionEvolverFamilyName
-                    , this.sourcePositionEvolverName
                     , this.targetObjectName
                     , this.targetObjectProfileName
-                    , this.targetPositionEvolverFamilyName
-                    , this.targetPositionEvolverName
-                    , this.variableName
-                    , this.initialFixedValue
+                    , this.positionEvolverFamilyName
+                    , this.positionEvolverName
+                    , collectionPositionEvolverVariableAttractorVariables
                     , this.mode
                     , this.mass
                     , this.isRepeller
-                    , this.isPercent
             );
         }
 
@@ -472,19 +503,19 @@ public class LevelDefinitionLadderHelper {
 
     public static class XMLBoundaryEffect {
 
-        public BoundaryEffect.TYPE boundaryEffect;
+        public BoundaryType boundaryType;
         public boolean mirrorAbsoluteValueBoundaries;
         public boolean bounceOnInternalBoundary;
 
         public XMLBoundaryEffect() {
-            boundaryEffect = BoundaryEffect.TYPE.STICK;
+            boundaryType = BoundaryType.STICKY;
             mirrorAbsoluteValueBoundaries = false;
             bounceOnInternalBoundary = false;
         }
 
         public BoundaryEffect toBoundaryEffect() {
             return new BoundaryEffect(
-                    boundaryEffect
+                    boundaryType
                     , mirrorAbsoluteValueBoundaries
                     , bounceOnInternalBoundary
             );
@@ -631,7 +662,7 @@ public class LevelDefinitionLadderHelper {
 
        public void initializeVariables(Context context) {
 
-           for (String currentVariableName : arrayListVariableNames) {
+           for (String currentVariableName : listVariableNames) {
 
                // Initialize the new variable
                XMLVariable variable = new XMLVariable();
@@ -663,9 +694,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectPositionHorizontal)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypePositionHorizontal)
                            );
 
                    variable.isInches = true;
@@ -694,9 +725,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectPositionVertical)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypePositionVertical)
                            );
 
                    variable.isInches = true;
@@ -726,9 +757,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectSpeed)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeSpeed)
                            );
 
                    variable.isInches = true;
@@ -757,9 +788,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectDirection)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeDirection)
                            );
 
                    // Add the variable to the map
@@ -787,9 +818,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectDSpeed)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeDSpeed)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
 
@@ -820,9 +851,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectDDirection)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeDDirection)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
 
@@ -851,9 +882,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectRadius)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeRadius)
                            );
 
                    variable.isInches = true;
@@ -883,9 +914,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectDRadius)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeDRadius)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
 
@@ -916,9 +947,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectD2Radius)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeD2Radius)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
 
@@ -948,9 +979,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectRotation)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeRotation)
                            );
 
                    // Add the variable to the map
@@ -978,9 +1009,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectDRotation)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeDRotation)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
 
@@ -1009,9 +1040,9 @@ public class LevelDefinitionLadderHelper {
                            );
 
                    // Set the BoundaryEffect values
-                   variable.xmlBoundaryEffect.boundaryEffect =
-                           BoundaryEffect.TYPE.valueOf(
-                                   context.getString(R.string.game_values_defaultBoundaryEffectD2Rotation)
+                   variable.xmlBoundaryEffect.boundaryType =
+                           BoundaryType.valueOf(
+                                   context.getString(R.string.game_values_defaultBoundaryTypeD2Rotation)
                            );
                    variable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = true;
 
@@ -1337,7 +1368,7 @@ public class LevelDefinitionLadderHelper {
                         xmlPositionEvolverVariableAttractor.toPositionEvolverVariableAttractor();
 
                 // Create the key
-                NTuple positionEvolverVariableAttractorKey = positionEvolverVariableAttractor.getTargetKey();
+                NTuple positionEvolverVariableAttractorKey = positionEvolverVariableAttractor.getSourceKey();
 
                 // Check if the key already exists
                 if (mapPositionEvolverVariableAttractors.containsKey(positionEvolverVariableAttractorKey)) {
@@ -1396,6 +1427,7 @@ public class LevelDefinitionLadderHelper {
             int currentTransitionTriggerIndex = -1;
             int currentRandomChangeTriggerIndex = -1;
             int currentXMLClickTargetSettingsShuffleIndex = -1;
+            int currentXMLPositionEvolverVariableAttractorIndex = -1;
 
             // Get a XmlResourceParser object to read contents of the xml file
             XmlResourceParser xmlResourceParser =
@@ -1448,6 +1480,8 @@ public class LevelDefinitionLadderHelper {
 
                         XMLClickTargetSettingsShuffle currentXMLClickTargetSettingsShuffle = null;
 
+                        XMLPositionEvolverVariableAttractor currentXMLPositionEvolverVariableAttractor = null;
+
                         // Get the current XML Objects
                         if (currentClickTargetName != null
                                 && xmlLevel.mapXMLClickTargets.containsKey(currentClickTargetName)) {
@@ -1483,6 +1517,11 @@ public class LevelDefinitionLadderHelper {
                         if (currentXMLClickTargetSettingsShuffleIndex >= 0) {
                             currentXMLClickTargetSettingsShuffle =
                                     xmlLevel.listXMLClickTargetSettingsShuffles.get(currentXMLClickTargetSettingsShuffleIndex);
+                        }
+
+                        if (currentXMLPositionEvolverVariableAttractorIndex >= 0) {
+                            currentXMLPositionEvolverVariableAttractor =
+                                    xmlLevel.listXMLPositionEvolverVariableAttractors.get(currentXMLPositionEvolverVariableAttractorIndex);
                         }
 
                         // -------------------- BEGIN Creating XML Objects -------------------- //
@@ -1749,12 +1788,12 @@ public class LevelDefinitionLadderHelper {
                                 && currentXMLVariable != null) {
 
                             // Get the attributes
-                            BoundaryEffect.TYPE boundaryEffect =
+                            BoundaryType boundaryType =
                                     UtilityFunctions.getEnumValue(
                                             xmlResourceParser
                                             , ATTRIBUTE_NAME_BOUNDARYEFFECT_BOUNDARY_EFFECT
-                                            , BoundaryEffect.TYPE.class
-                                            , currentXMLVariable.xmlBoundaryEffect.boundaryEffect
+                                            , BoundaryType.class
+                                            , currentXMLVariable.xmlBoundaryEffect.boundaryType
                                     );
                             boolean mirrorAbsoluteValueBoundaries =
                                     xmlResourceParser.getAttributeBooleanValue(
@@ -1770,7 +1809,7 @@ public class LevelDefinitionLadderHelper {
                                     );
 
                             // Set the attributes
-                            currentXMLVariable.xmlBoundaryEffect.boundaryEffect = boundaryEffect;
+                            currentXMLVariable.xmlBoundaryEffect.boundaryType = boundaryType;
                             currentXMLVariable.xmlBoundaryEffect.mirrorAbsoluteValueBoundaries = mirrorAbsoluteValueBoundaries;
                             currentXMLVariable.xmlBoundaryEffect.bounceOnInternalBoundary = bounceOnInternalBoundary;
 
@@ -1797,14 +1836,6 @@ public class LevelDefinitionLadderHelper {
                                     (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_PROFILE_NAME) == null) ?
                                             ""
                                             : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_CLICK_TARGET_PROFILE_NAME);
-                            String sourcePositionEvolverFamilyName =
-                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_FAMILY_NAME) == null) ?
-                                            ""
-                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_FAMILY_NAME);
-                            String sourcePositionEvolverName =
-                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_NAME) == null) ?
-                                            ""
-                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_SOURCE_POSITION_EVOLVER_NAME);
                             String targetClickTargetName =
                                     (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_NAME) == null) ?
                                             ""
@@ -1813,26 +1844,15 @@ public class LevelDefinitionLadderHelper {
                                     (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_PROFILE_NAME) == null) ?
                                             ""
                                             : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_CLICK_TARGET_PROFILE_NAME);
-                            String targetPositionEvolverFamilyName =
-                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_FAMILY_NAME) == null) ?
+                            String positionEvolverFamilyName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_POSITION_EVOLVER_FAMILY_NAME) == null) ?
                                             ""
-                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_FAMILY_NAME);
-                            String targetPositionEvolverName =
-                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_NAME) == null) ?
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_POSITION_EVOLVER_FAMILY_NAME);
+                            String positionEvolverName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_POSITION_EVOLVER_NAME) == null) ?
                                             ""
-                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_TARGET_POSITION_EVOLVER_NAME);
-                            String variableName =
-                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_VARIABLE_NAME) == null) ?
-                                            ""
-                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_VARIABLE_NAME);
-                            double initialFixedValue =
-                                    xmlResourceParser.getAttributeFloatValue(
-                                            null
-                                            , ATTRIBUTE_NAME_ATTRACTOR_INITIAL_FIXED_VALUE
-                                            , (float) UtilityFunctions.getResourceFloatValue(
-                                                    context
-                                                    , R.dimen.game_values_defaultPositionEvolverVariableAttractor_initialFixedValue)
-                                    );
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTOR_POSITION_EVOLVER_NAME);
+
                             PositionEvolverVariableAttractor.MODE mode =
                                     UtilityFunctions.getEnumValue(
                                             xmlResourceParser
@@ -1856,12 +1876,7 @@ public class LevelDefinitionLadderHelper {
                                             , ATTRIBUTE_NAME_ATTRACTOR_IS_REPELLER
                                             , context.getResources().getBoolean(R.bool.game_values_defaultPositionEvolverVariableAttractor_IsRepeller)
                                     );
-                            boolean isPercent =
-                                    xmlResourceParser.getAttributeBooleanValue(
-                                            null
-                                            , ATTRIBUTE_NAME_ATTRACTOR_IS_PERCENT
-                                            , context.getResources().getBoolean(R.bool.game_values_defaultPositionEvolverVariableAttractor_IsPercent)
-                                    );
+
 
 
                             // Create the attractor
@@ -1869,22 +1884,60 @@ public class LevelDefinitionLadderHelper {
                                     type
                                     , sourceClickTargetName
                                     , sourceClickTargetProfileName
-                                    , sourcePositionEvolverFamilyName
-                                    , sourcePositionEvolverName
                                     , targetClickTargetName
                                     , targetClickTargetProfileName
-                                    , targetPositionEvolverFamilyName
-                                    , targetPositionEvolverName
-                                    , variableName
-                                    , initialFixedValue
+                                    , positionEvolverFamilyName
+                                    , positionEvolverName
                                     , mode
                                     , mass
                                     , isRepeller
-                                    , isPercent
                             );
 
                             // Add the attractor to the list
                             xmlLevel.listXMLPositionEvolverVariableAttractors.add(xmlPositionEvolverVariableAttractor);
+
+                            // Set the current XMLPositionEvolverVariableAttractorVariable index
+                            currentTransitionTriggerIndex = -1;
+                            currentRandomChangeTriggerIndex = -1;
+                            currentXMLClickTargetSettingsShuffleIndex = -1;
+                            currentXMLPositionEvolverVariableAttractorIndex = xmlLevel.listXMLPositionEvolverVariableAttractors.indexOf(xmlPositionEvolverVariableAttractor);
+
+                        }
+
+                        // Check if this is the start of a <AttractorVariable> tag
+                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_ATTRACTOR_VARIABLE)
+                                && currentXMLPositionEvolverVariableAttractor != null) {
+
+                            // Get the attributes
+                            String variableName =
+                                    (xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTORVARIABLE_NAME) == null) ?
+                                            ""
+                                            : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_ATTRACTORVARIABLE_NAME);
+                            double initialFixedValue =
+                                    xmlResourceParser.getAttributeFloatValue(
+                                            null
+                                            , ATTRIBUTE_NAME_ATTRACTORVARIABLE_INITIAL_FIXED_VALUE
+                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                                    context
+                                                    , R.dimen.game_values_defaultPositionEvolverVariableAttractorVariable_initialFixedValue)
+                                    );
+                            boolean isPercent =
+                                    xmlResourceParser.getAttributeBooleanValue(
+                                            null
+                                            , ATTRIBUTE_NAME_ATTRACTORVARIABLE_IS_PERCENT
+                                            , context.getResources().getBoolean(R.bool.game_values_defaultPositionEvolverVariableAttractorVariable_IsPercent)
+                                    );
+
+                            // Create the object
+                            XMLPositionEvolverVariableAttractorVariable xmlPositionEvolverVariableAttractorVariable =
+                                    new XMLPositionEvolverVariableAttractorVariable(
+                                            variableName
+                                            , initialFixedValue
+                                            , isPercent
+                                    );
+
+                            // Add the variable name to the list
+                            currentXMLPositionEvolverVariableAttractor.listXMLPositionEvolverVariableAttractorVariables.add(xmlPositionEvolverVariableAttractorVariable);
 
                         }
 
@@ -1943,6 +1996,7 @@ public class LevelDefinitionLadderHelper {
                                 currentTransitionTriggerIndex = xmlLevel.listXMLTransitionTriggers.indexOf(xmlTransitionTrigger);
                                 currentRandomChangeTriggerIndex = -1;
                                 currentXMLClickTargetSettingsShuffleIndex = -1;
+                                currentXMLPositionEvolverVariableAttractorIndex = -1;
 
                             }
 
@@ -1983,8 +2037,8 @@ public class LevelDefinitionLadderHelper {
                                     sourceVariable.contentEquals(targetVariable)
                                             && sourceClickTargetName.contentEquals(targetClickTargetName)
                                             && sourceClickTargetProfileName.contentEquals(targetClickTargetProfileName))
-                                && arrayListVariableNames.contains(sourceVariable)
-                                && arrayListVariableNames.contains(targetVariable)) {
+                                && listVariableNames.contains(sourceVariable)
+                                && listVariableNames.contains(targetVariable)) {
 
                                 // Create the XMLRandomChangeTrigger object
                                 XMLRandomChangeTrigger xmlRandomChangeTrigger = new XMLRandomChangeTrigger(
@@ -2003,6 +2057,7 @@ public class LevelDefinitionLadderHelper {
                                 currentTransitionTriggerIndex = -1;
                                 currentRandomChangeTriggerIndex = xmlLevel.listXMLRandomChangeTriggers.indexOf(xmlRandomChangeTrigger);
                                 currentXMLClickTargetSettingsShuffleIndex = -1;
+                                currentXMLPositionEvolverVariableAttractorIndex = -1;
 
                             }
 
@@ -2052,7 +2107,7 @@ public class LevelDefinitionLadderHelper {
 
                             boolean isSameNames = sourceClickTargetName.contentEquals(targetClickTargetName)
                                     && sourceClickTargetProfileName.contentEquals(targetClickTargetProfileName);
-                            boolean isValidVariableName = arrayListVariableNames.contains(variableName);
+                            boolean isValidVariableName = listVariableNames.contains(variableName);
 
                             // Check if the names are not the same
                             if (!isSameNames && isValidVariableName) {
@@ -2103,6 +2158,7 @@ public class LevelDefinitionLadderHelper {
                             currentTransitionTriggerIndex = -1;
                             currentRandomChangeTriggerIndex = -1;
                             currentXMLClickTargetSettingsShuffleIndex = xmlLevel.listXMLClickTargetSettingsShuffles.indexOf(xmlClickTargetSettingsShuffle);
+                            currentXMLPositionEvolverVariableAttractorIndex = -1;
 
                         }
 

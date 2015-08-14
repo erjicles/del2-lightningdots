@@ -122,25 +122,26 @@
     <bool name="game_values_defaultTieRandomRotationChangeToRandomDRotationChange">false</bool>
     <bool name="game_values_defaultTieRandomDRotationChangeToRandomD2RotationChange">false</bool>
 
-    <string name="game_values_defaultBoundaryEffectPositionHorizontal">BOUNCE</string>
-    <string name="game_values_defaultBoundaryEffectPositionVertical">BOUNCE</string>
-    <string name="game_values_defaultBoundaryEffectSpeed">BOUNCE</string>
-    <string name="game_values_defaultBoundaryEffectDirection">PERIODIC</string>
-    <string name="game_values_defaultBoundaryEffectDSpeed">STICK</string>
-    <string name="game_values_defaultBoundaryEffectDDirection">STICK</string>
-    <string name="game_values_defaultBoundaryEffectRadius">BOUNCE</string>
-    <string name="game_values_defaultBoundaryEffectDRadius">STICK</string>
-    <string name="game_values_defaultBoundaryEffectD2Radius">STICK</string>
-    <string name="game_values_defaultBoundaryEffectRotation">PERIODIC</string>
-    <string name="game_values_defaultBoundaryEffectDRotation">BOUNCE</string>
-    <string name="game_values_defaultBoundaryEffectD2Rotation">STICK</string>
+    <string name="game_values_defaultBoundaryTypePositionHorizontal">HARD</string>
+    <string name="game_values_defaultBoundaryTypePositionVertical">HARD</string>
+    <string name="game_values_defaultBoundaryTypeSpeed">HARD</string>
+    <string name="game_values_defaultBoundaryTypeDirection">PERIODIC</string>
+    <string name="game_values_defaultBoundaryTypeDSpeed">STICKY</string>
+    <string name="game_values_defaultBoundaryTypeDDirection">STICKY</string>
+    <string name="game_values_defaultBoundaryTypeRadius">HARD</string>
+    <string name="game_values_defaultBoundaryTypeDRadius">STICKY</string>
+    <string name="game_values_defaultBoundaryTypeD2Radius">STICKY</string>
+    <string name="game_values_defaultBoundaryTypeRotation">PERIODIC</string>
+    <string name="game_values_defaultBoundaryTypeDRotation">HARD</string>
+    <string name="game_values_defaultBoundaryTypeD2Rotation">STICKY</string>
 
     <string name="game_values_defaultPositionEvolverVariableAttractor_type">OTHER_OBJECT</string>
-    <item name="game_values_defaultPositionEvolverVariableAttractor_initialFixedValue" format="float" type="dimen">0.0</item>
-    <string name="game_values_defaultPositionEvolverVariableAttractor_mode">CONSTANT_SPEED</string>
+    <string name="game_values_defaultPositionEvolverVariableAttractor_mode">SNAP_TO_VECTOR</string>
     <item name="game_values_defaultPositionEvolverVariableAttractor_mass" format="float" type="dimen">1.0</item>
     <bool name="game_values_defaultPositionEvolverVariableAttractor_IsRepeller">false</bool>
-    <bool name="game_values_defaultPositionEvolverVariableAttractor_IsPercent">false</bool>
+
+    <item name="game_values_defaultPositionEvolverVariableAttractorVariable_initialFixedValue" format="float" type="dimen">0.0</item>
+    <bool name="game_values_defaultPositionEvolverVariableAttractorVariable_IsPercent">false</bool>
 
     <item name="game_values_defaultScriptTransitionValue" format="float" type="dimen">0.0</item>
     <string name="game_values_defaultScriptTransitionContinuity">DEFAULT</string>

@@ -8,7 +8,7 @@ public class PositionEvolver implements INamedObject {
 
     private String name;
     private OrderedObjectCollection<PositionEvolverVariable> collectionPositionEvolverVariables;
-    private MODE mode = MODE.CARTESIAN_3D;
+    private MODE mode = MODE.CARTESIAN;
     private TimedChangeHandler timedChangeHandler;
 
     public PositionEvolver(
@@ -26,6 +26,7 @@ public class PositionEvolver implements INamedObject {
     public OrderedObjectCollection<PositionEvolverVariable> getCollectionPositionEvolverVariables() { return this.collectionPositionEvolverVariables; }
     public MODE getMode() { return this. mode; }
     public TimedChangeHandler getTimedChangeHandler() { return this.timedChangeHandler; }
+    public int getCardinality() { return collectionPositionEvolverVariables.size(); }
 
     public double getVariableValue(String variableName) {
         PositionEvolverVariable positionEvolverVariable = collectionPositionEvolverVariables.getObject(variableName);
@@ -72,11 +73,12 @@ public class PositionEvolver implements INamedObject {
     }
 
     public PositionVector getX(MODE convertToMode) {
+        int cardinality = getCardinality();
         if (this.mode == convertToMode) {
             return getX();
         }
-        else if (this.mode == MODE.POLAR_2D
-                && convertToMode == MODE.CARTESIAN_2D) {
+        else if (this.mode == MODE.SPHERICAL && cardinality == 2
+                && convertToMode == MODE.CARTESIAN) {
             double X1 = collectionPositionEvolverVariables.getObject(0).getValue();
             double X2 = collectionPositionEvolverVariables.getObject(1).getValue();
             return new PositionVector(
@@ -84,8 +86,8 @@ public class PositionEvolver implements INamedObject {
                     , X1 * Math.sin(X2)
             );
         }
-        else if (this.mode == MODE.SPHERICAL_3D
-                && convertToMode == MODE.CARTESIAN_3D) {
+        else if (this.mode == MODE.SPHERICAL && cardinality == 3
+                && convertToMode == MODE.CARTESIAN) {
             double X1 = collectionPositionEvolverVariables.getObject(0).getValue();
             double X2 = collectionPositionEvolverVariables.getObject(1).getValue();
             double X3 = collectionPositionEvolverVariables.getObject(2).getValue();
@@ -147,6 +149,8 @@ public class PositionEvolver implements INamedObject {
             MODE mode
             , List<Boolean> bounceVariables) {
 
+        int cardinality = getCardinality();
+
         // Check if the modes are the same
         if (this.mode == mode) {
 
@@ -175,7 +179,7 @@ public class PositionEvolver implements INamedObject {
         }
 
         // Check if we are bouncing from cartesian to polar
-        else if (this.mode == MODE.POLAR_2D && mode == MODE.CARTESIAN_2D) {
+        else if (this.mode == MODE.SPHERICAL && cardinality == 2 && mode == MODE.CARTESIAN) {
 
             // Get the bounce flags
             boolean bounceX = bounceVariables.get(0);
@@ -209,11 +213,8 @@ public class PositionEvolver implements INamedObject {
     }
 
     public enum MODE {
-        ONE_DIMENSION
-        , CARTESIAN_2D
-        , CARTESIAN_3D
-        , POLAR_2D
-        , SPHERICAL_3D
+        CARTESIAN
+        , SPHERICAL
     }
 
 }

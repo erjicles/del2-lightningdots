@@ -13,11 +13,11 @@ public class PositionEvolvingPolygonalObjectContainerHelper<T extends IPositionE
         }
 
         // Create the helper
-        PositionEvolvingObjectContainerHelper<T> positionEvolvingObjectContainerHelper =
-                new PositionEvolvingObjectContainerHelper<>();
+        PositionEvolvingObjectContainerEvolverHelper<T> positionEvolvingObjectContainerEvolverHelper =
+                new PositionEvolvingObjectContainerEvolverHelper<>();
 
         // Evolve the time
-        positionEvolvingObjectContainerHelper.evolveTime(dt, positionEvolvingPolygonalObjectContainer);
+        positionEvolvingObjectContainerEvolverHelper.evolveTime(dt, positionEvolvingPolygonalObjectContainer);
 
         // Update the polygons
         for (T currentObject : positionEvolvingPolygonalObjectContainer.getCollectionObjects()) {

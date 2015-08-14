@@ -2,44 +2,37 @@ package com.delsquared.lightningdots.utilities;
 
 public class BoundaryEffect {
 
-    public final TYPE boundaryEffect;
+    public final BoundaryType boundaryType;
     public final boolean mirrorAbsoluteValueBoundaries;
     public final boolean bounceOnInternalBoundary;
 
     public BoundaryEffect() {
-        this.boundaryEffect = TYPE.STICK;
+        this.boundaryType = BoundaryType.HARD;
         this.mirrorAbsoluteValueBoundaries = false;
         this.bounceOnInternalBoundary = false;
     }
 
-    public BoundaryEffect(TYPE boundaryEffect) {
-        this.boundaryEffect = boundaryEffect;
+    public BoundaryEffect(BoundaryType boundaryType) {
+        this.boundaryType = boundaryType;
         this.mirrorAbsoluteValueBoundaries = false;
         this.bounceOnInternalBoundary = false;
     }
 
     public BoundaryEffect(
-            TYPE boundaryEffect
+            BoundaryType boundaryType
             , boolean mirrorAbsoluteValueBoundaries) {
-        this.boundaryEffect = boundaryEffect;
+        this.boundaryType = boundaryType;
         this.mirrorAbsoluteValueBoundaries = mirrorAbsoluteValueBoundaries;
         this.bounceOnInternalBoundary = false;
     }
 
     public BoundaryEffect(
-            TYPE boundaryEffect
+            BoundaryType boundaryType
             , boolean mirrorAbsoluteValueBoundaries
             , boolean bounceOnInternalBoundary) {
-        this.boundaryEffect = boundaryEffect;
+        this.boundaryType = boundaryType;
         this.mirrorAbsoluteValueBoundaries = mirrorAbsoluteValueBoundaries;
         this.bounceOnInternalBoundary = bounceOnInternalBoundary;
-    }
-
-    public enum TYPE {
-        STICK
-        , BOUNCE
-        , PERIODIC
-        , PERIODIC_REFLECTIVE
     }
 
 }

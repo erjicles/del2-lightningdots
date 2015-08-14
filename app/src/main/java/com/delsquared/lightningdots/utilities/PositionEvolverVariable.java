@@ -246,15 +246,15 @@ public class PositionEvolverVariable implements INamedObject {
         if (minimumValue == maximumValue) {
             double newValue = minimumValue;
             if (boundaryEffect.mirrorAbsoluteValueBoundaries
-                    && (boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
-                    || boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
-                    || boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE)) {
+                    && (boundaryEffect.boundaryType == BoundaryType.HARD
+                    || boundaryEffect.boundaryType == BoundaryType.PERIODIC
+                    || boundaryEffect.boundaryType == BoundaryType.PERIODIC_REFLECTIVE)) {
                 newValue *= -1.0;
             }
             return new BoundaryHandlerValues(
                     newValue
-                    , boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
-                    || boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE
+                    , boundaryEffect.boundaryType == BoundaryType.HARD
+                    || boundaryEffect.boundaryType == BoundaryType.PERIODIC_REFLECTIVE
             );
         }
 
@@ -303,12 +303,12 @@ public class PositionEvolverVariable implements INamedObject {
 
         int numberOfBoundariesReached = (int) Math.floor(boundaryOverflow / valueRange) + 1;
 
-        switch (boundaryEffect.boundaryEffect) {
-            case STICK:
+        switch (boundaryEffect.boundaryType) {
+            case STICKY:
                 newValue = (typeOfBoundaryReached == -1) ? minimumValueToUse : maximumValueToUse;
                 break;
 
-            case BOUNCE:
+            case HARD:
                 if (numberOfBoundariesReached % 2 == 0) {
                     newValue = (typeOfBoundaryReached == 1) ?
                             minimumValueToUse + remainingOverflow

@@ -144,7 +144,7 @@ public class UtilityFunctions {
         double resultValue = 0.0;
 
         // Get the random value
-        resultValue = minimumValue + (randomizer.nextDouble() * (maximumValue - minimumValue));
+        resultValue = getRangeValue(randomizer.nextDouble(), minimumValue, maximumValue);
 
         if (mirrorAbsoluteValue) {
             resultValue *= getRandomSign();
@@ -163,6 +163,10 @@ public class UtilityFunctions {
 
         return (randomizer.nextBoolean()) ? 1.0 : -1.0;
 
+    }
+
+    public static double getRangeValue(double percent, double minimumValue, double maximumValue) {
+        return minimumValue + (percent * (maximumValue - minimumValue));
     }
 
     public boolean pointIsLeftOfEdge() {

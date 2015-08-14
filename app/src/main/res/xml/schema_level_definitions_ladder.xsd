@@ -136,7 +136,8 @@
     </xs:complexType>
 
     <xs:complexType name="boundaryEffect">
-        <xs:attribute name="boundaryEffect" type="boundaryEffectAttribute"/>
+        <xs:attribute name="boundaryEffect" type="boundaryType"/>
+        <xs:attribute name="bounceOnHardBoundary" type="trueOrFalse"/>
         <xs:attribute name="mirrorAbsoluteValueBoundaries" type="trueOrFalse"/>
         <xs:attribute name="bounceOnInternalBoundary" type="trueOrFalse"/>
     </xs:complexType>
@@ -148,20 +149,30 @@
     </xs:complexType>
 
     <xs:complexType name="positionEvolverVariableAttractor">
+        <xs:sequence>
+            <xs:element name="AttractorVariables" type="positionEvolverVariableAttractorVariables" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
         <xs:attribute name="type" type="positionEvolverVariableAttractorType"/>
-        <xs:attribute name="sourceClickTargetName" type="xs:string"/>
-        <xs:attribute name="sourceClickTargetProfileName" type="xs:string"/>
-        <xs:attribute name="sourcePositionEvolverFamilyName" type="xs:string"/>
-        <xs:attribute name="sourcePositionEvolverName" type="xs:string"/>
+        <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
+        <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
-        <xs:attribute name="targetPositionEvolverFamilyName" type="xs:string" use="required"/>
-        <xs:attribute name="targetPositionEvolverName" type="xs:string" use="required"/>
-        <xs:attribute name="variableName" type="targetVariableName" use="required"/>
-        <xs:attribute name="initialFixedValue" type="xs:float"/>
+        <xs:attribute name="positionEvolverFamilyName" type="xs:string" use="required"/>
+        <xs:attribute name="positionEvolverName" type="xs:string" use="required"/>
         <xs:attribute name="mode" type="positionEvolverVariableAttractorMode"/>
         <xs:attribute name="mass" type="xs:float" use="required"/>
         <xs:attribute name="isRepeller" type="trueOrFalse"/>
+    </xs:complexType>
+
+    <xs:complexType name="positionEvolverVariableAttractorVariables">
+        <xs:sequence>
+            <xs:element name="AttractorVariable" type="positionEvolverVariableAttractorVariable" minOccurs="1" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="positionEvolverVariableAttractorVariable">
+        <xs:attribute name="name" type="targetVariableName" use="required"/>
+        <xs:attribute name="initialFixedValue" type="xs:float"/>
         <xs:attribute name="isPercent" type="trueOrFalse"/>
     </xs:complexType>
 
@@ -174,7 +185,9 @@
 
     <xs:simpleType name="positionEvolverVariableAttractorMode">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="CONSTANT_SPEED"/>
+            <xs:enumeration value="SNAP_TO_VECTOR"/>
+            <xs:enumeration value="MAX_TO_VECTOR"/>
+            <xs:enumeration value="GRAVITY_FIELD"/>
             <xs:enumeration value="GRAVITY"/>
         </xs:restriction>
     </xs:simpleType>
@@ -351,10 +364,10 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:simpleType name="boundaryEffectAttribute">
+    <xs:simpleType name="boundaryType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="STICK"/>
-            <xs:enumeration value="BOUNCE"/>
+            <xs:enumeration value="HARD"/>
+            <xs:enumeration value="STICKY"/>
             <xs:enumeration value="PERIODIC"/>
             <xs:enumeration value="PERIODIC_REFLECTIVE"/>
         </xs:restriction>

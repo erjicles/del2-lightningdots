@@ -14,5 +14,6 @@ public interface IPositionEvolvingObject extends INamedObject {
     public void setVariableValue(String variableName, double value);
     public void setVariableValue(String variableName, double variableValue, boolean treatAsInitialValue);
     public void randomizeVariableValue(String variableName);
+    public double getMass();
 
 }

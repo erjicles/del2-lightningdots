@@ -3,16 +3,9 @@ package com.delsquared.lightningdots.game;
 import android.content.Context;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
-import com.delsquared.lightningdots.utilities.Polygon;
-import com.delsquared.lightningdots.utilities.PositionEvolver;
-import com.delsquared.lightningdots.utilities.PositionEvolvingObjectContainer;
-import com.delsquared.lightningdots.utilities.PositionEvolvingObjectContainerHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolvingPolygonalObjectContainer;
 import com.delsquared.lightningdots.utilities.PositionEvolvingPolygonalObjectContainerHelper;
-import com.delsquared.lightningdots.utilities.PositionVector;
-import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.Collections;

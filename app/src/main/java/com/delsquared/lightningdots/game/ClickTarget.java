@@ -7,6 +7,7 @@ import android.util.TypedValue;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
+import com.delsquared.lightningdots.utilities.BoundaryType;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingObject;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingPolygonalObject;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
@@ -224,6 +225,14 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
     public Polygon getPolygon() { return this.polygonTargetShape; }
 
+    public double getMass() {
+        ClickTargetProfile clickTargetProfile = clickTargetProfileScript.getCurrentClickTargetProfile();
+        if (clickTargetProfile != null) {
+            return clickTargetProfile.mass;
+        }
+        return 1.0;
+    }
+
     public List<PositionVector> getListCenterPoints() {
 
         // Initialize the result
@@ -246,10 +255,10 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
         // Check if either X or Y has periodic boundary effect
         // If not, then there won't be any secondary points
-        if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
-                || boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE
-                || boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
-                || boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
+        if (boundaryEffectX.boundaryType == BoundaryType.PERIODIC
+                || boundaryEffectX.boundaryType == BoundaryType.PERIODIC_REFLECTIVE
+                || boundaryEffectY.boundaryType == BoundaryType.PERIODIC
+                || boundaryEffectY.boundaryType == BoundaryType.PERIODIC_REFLECTIVE) {
 
             double targetX = positionEvolverXPixels.getX().getValue(0);
             double targetY = positionEvolverXPixels.getX().getValue(1);
@@ -280,7 +289,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
             if (minimumBoundaryReachedX || maximumBoundaryReachedX) {
 
-                if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC) {
+                if (boundaryEffectX.boundaryType == BoundaryType.PERIODIC) {
 
                     if (minimumBoundaryReachedX) {
                         double overflow = (minimumX - radiusMinimumX) % widthX;
@@ -292,7 +301,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
                         newTargetX2 = minimumX + overflow - radius;
                     }
 
-                } else if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
+                } else if (boundaryEffectX.boundaryType == BoundaryType.PERIODIC_REFLECTIVE) {
 
                     if (minimumBoundaryReachedX) {
                         double boundaryOverflow = minimumX - radiusMinimumX;
@@ -324,7 +333,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
             if (minimumBoundaryReachedY || maximumBoundaryReachedY) {
 
-                if (boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC) {
+                if (boundaryEffectY.boundaryType == BoundaryType.PERIODIC) {
 
                     if (minimumBoundaryReachedY) {
                         double overflow = (minimumY - radiusMinimumY) % heightY;
@@ -336,7 +345,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
                         newTargetY2 = minimumY + overflow - radius;
                     }
 
-                } else if (boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
+                } else if (boundaryEffectY.boundaryType == BoundaryType.PERIODIC_REFLECTIVE) {
 
                     if (minimumBoundaryReachedY) {
                         double boundaryOverflow = minimumY - radiusMinimumY;
@@ -429,13 +438,13 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         BoundaryEffect boundaryEffectX = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_X);
         BoundaryEffect boundaryEffectY = positionEvolverXPixels.getBoundaryEffect(VARIABLE_NAME_Y);
 
-        if (boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
-                || boundaryEffectX.boundaryEffect == BoundaryEffect.TYPE.STICK) {
+        if (boundaryEffectX.boundaryType == BoundaryType.HARD
+                || boundaryEffectX.boundaryType == BoundaryType.STICKY) {
             minimumX = radius / 2.0;
             maximumX = canvasWidth - (radius / 2.0);
         }
-        if (boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
-                || boundaryEffectY.boundaryEffect == BoundaryEffect.TYPE.STICK) {
+        if (boundaryEffectY.boundaryType == BoundaryType.HARD
+                || boundaryEffectY.boundaryType == BoundaryType.STICKY) {
             minimumY = radius / 2.0;
             maximumY = canvasHeight - (radius / 2.0);
         }
@@ -728,7 +737,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverD2XNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2X
                 , listPositionEvolverVariablesD2X
-                , PositionEvolver.MODE.POLAR_2D
+                , PositionEvolver.MODE.SPHERICAL
                 , new TimedChangeHandler()
         );
         // -------------------- END D2Position -------------------- //
@@ -792,7 +801,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverDXNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DX
                 , listPositionEvolverVariablesDX
-                , PositionEvolver.MODE.POLAR_2D
+                , PositionEvolver.MODE.SPHERICAL
                 , new TimedChangeHandler()
         );
         // -------------------- END DPosition -------------------- //
@@ -809,13 +818,13 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
                 && positionEvolverRadius != null) {
             currentRadiusPixels = positionEvolverRadius.getX().getValue(0);
         }
-        if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
-                || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.STICK) {
+        if (variableValuesPositionHorizontal.boundaryEffect.boundaryType == BoundaryType.HARD
+                || variableValuesPositionHorizontal.boundaryEffect.boundaryType == BoundaryType.STICKY) {
             minimumPixelsX = currentRadiusPixels / 2.0;
             maximumPixelsX = canvasWidth - (currentRadiusPixels / 2.0);
         }
-        if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.BOUNCE
-                || variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.STICK) {
+        if (variableValuesPositionVertical.boundaryEffect.boundaryType == BoundaryType.HARD
+                || variableValuesPositionVertical.boundaryEffect.boundaryType == BoundaryType.STICKY) {
             minimumPixelsY = currentRadiusPixels / 2.0;
             maximumPixelsY = canvasHeight - (currentRadiusPixels / 2.0);
         }
@@ -834,13 +843,13 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         } else {
 
             // Check if we need to renormalize the min and max position values based on boundary effect
-            if (variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
-                    || variableValuesPositionHorizontal.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
+            if (variableValuesPositionHorizontal.boundaryEffect.boundaryType == BoundaryType.PERIODIC
+                    || variableValuesPositionHorizontal.boundaryEffect.boundaryType == BoundaryType.PERIODIC_REFLECTIVE) {
                 minimumPixelsX = 0.0;
                 maximumPixelsX = width;
             }
-            if (variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC
-                    || variableValuesPositionVertical.boundaryEffect.boundaryEffect == BoundaryEffect.TYPE.PERIODIC_REFLECTIVE) {
+            if (variableValuesPositionVertical.boundaryEffect.boundaryType == BoundaryType.PERIODIC
+                    || variableValuesPositionVertical.boundaryEffect.boundaryType == BoundaryType.PERIODIC_REFLECTIVE) {
                 minimumPixelsY = 0.0;
                 maximumPixelsY = height;
             }
@@ -891,7 +900,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverXNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_X
                 , listPositionEvolverVariablesX
-                , PositionEvolver.MODE.CARTESIAN_2D
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END Position -------------------- //
@@ -935,7 +944,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverD2RadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2RADIUS
                 , listPositionEvolverVariablesD2Radius
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END D2Radius -------------------- //
@@ -979,7 +988,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverDRadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DRADIUS
                 , listPositionEvolverVariablesDRadius
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END DRadius -------------------- //
@@ -1018,7 +1027,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverRadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_RADIUS
                 , listPositionEvolverVariablesRadius
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END Radius -------------------- //
@@ -1057,7 +1066,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverD2RotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2ROTATION
                 , listPositionEvolverVariablesD2Rotation
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END D2Rotation -------------------- //
@@ -1098,7 +1107,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverDRotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DROTATION
                 , listPositionEvolverVariablesDRotation
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END DRotation -------------------- //
@@ -1132,7 +1141,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverRotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_ROTATION
                 , listPositionEvolverVariablesRotation
-                , PositionEvolver.MODE.ONE_DIMENSION
+                , PositionEvolver.MODE.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END Rotation -------------------- //

@@ -3,85 +3,64 @@ package com.delsquared.lightningdots.utilities;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.ntuple.NTupleType;
 
+import java.util.List;
+import java.util.Map;
+
 public class PositionEvolverVariableAttractor {
 
     public final TYPE type;
 
     public final String sourceObjectName;
     public final String sourceObjectProfileName;
-    public final String sourcePositionEvolverFamilyName;
-    public final String sourcePositionEvolverName;
     public final String targetObjectName;
     public final String targetObjectProfileName;
-    public final String targetPositionEvolverFamilyName;
-    public final String targetPositionEvolverName;
-    public final String variableName;
-    public final double initialFixedValue;
+    public final String positionEvolverFamilyName;
+    public final String positionEvolverName;
+    OrderedObjectCollection<PositionEvolverVariableAttractorVariable> collectionAttractorVariables;
 
     public final MODE mode;
     public final double mass;
     public final boolean isRepeller;
-    public final boolean isPercent;
-    private double value;
 
     public PositionEvolverVariableAttractor(
             TYPE type
             , String sourceObjectName
             , String sourceObjectProfileName
-            , String sourcePositionEvolverFamilyName
-            , String sourcePositionEvolverName
             , String targetObjectName
             , String targetObjectProfileName
-            , String targetPositionEvolverFamilyName
-            , String targetPositionEvolverName
-            , String variableName
-            , double initialFixedValue
+            , String positionEvolverFamilyName
+            , String positionEvolverName
+            , OrderedObjectCollection<PositionEvolverVariableAttractorVariable> collectionAttractorVariables
             , MODE mode
             , double mass
-            , boolean isRepeller
-            , boolean isPercent) {
+            , boolean isRepeller) {
         this.type = type;
         this.sourceObjectName = sourceObjectName;
         this.sourceObjectProfileName = sourceObjectProfileName;
-        this.sourcePositionEvolverFamilyName = sourcePositionEvolverFamilyName;
-        this.sourcePositionEvolverName = sourcePositionEvolverName;
         this.targetObjectName = targetObjectName;
         this.targetObjectProfileName = targetObjectProfileName;
-        this.targetPositionEvolverFamilyName = targetPositionEvolverFamilyName;
-        this.targetPositionEvolverName = targetPositionEvolverName;
-        this.variableName = variableName;
-        this.initialFixedValue = initialFixedValue;
+        this.positionEvolverFamilyName = positionEvolverFamilyName;
+        this.positionEvolverName = positionEvolverName;
+        this.collectionAttractorVariables = collectionAttractorVariables;
         this.mode = mode;
         this.mass = mass;
         this.isRepeller = isRepeller;
-        this.isPercent = isPercent;
-        this.value = initialFixedValue;
-    }
-
-    public double getValue() { return this.value; }
-    public void setValue(double value) { this.value = value; }
-    public void resetValue(double minimumValue, double maximumValue) {
-        if (isPercent) {
-            value = minimumValue + (initialFixedValue * (maximumValue - minimumValue));
-        } else {
-            value = initialFixedValue;
-        }
     }
 
     public NTuple getSourceKey() {
         return nTupleTypePositionEvolverVariableAttractorKey.createNTuple(
                 sourceObjectName
                 , sourceObjectProfileName
-                , sourcePositionEvolverFamilyName
-                , sourcePositionEvolverName
+                , positionEvolverFamilyName
+                , positionEvolverName
         );
     }
     public NTuple getTargetKey() {
         return nTupleTypePositionEvolverVariableAttractorKey.createNTuple(
                 targetObjectName
                 , targetObjectProfileName
-                , targetPositionEvolverFamilyName
-                , targetPositionEvolverName
+                , positionEvolverFamilyName
+                , positionEvolverName
         );
     }
 
@@ -91,15 +70,17 @@ public class PositionEvolverVariableAttractor {
     }
 
     public enum MODE {
-        CONSTANT_SPEED
+        SNAP_TO_VECTOR
+        , MAX_TO_VECTOR
+        , GRAVITY_FIELD
         , GRAVITY
     }
 
     public static final NTupleType nTupleTypePositionEvolverVariableAttractorKey =
             NTupleType.DefaultFactory.create(
-                    String.class        // Target object name
-                    , String.class      // Target object profile name
-                    , String.class      // Target position evolver family name
-                    , String.class      // Target position evolver name
+                    String.class        // Source object name
+                    , String.class      // Source object profile name
+                    , String.class      // Position evolver family name
+                    , String.class      // Position evolver name
             );
 }
