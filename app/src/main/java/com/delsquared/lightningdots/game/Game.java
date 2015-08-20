@@ -265,7 +265,7 @@ public class Game {
 
 			// Create the helper
             PositionEvolvingPolygonalObjectContainerHelper<ClickTarget> clickTargetEvolverHelper =
-                    new PositionEvolvingPolygonalObjectContainerHelper<>();
+                    new PositionEvolvingPolygonalObjectContainerHelper<>(context);
 
             // Evolve the time
             clickTargetEvolverHelper.evolveTime(timeElapsedSinceLastUpdateSeconds, containerClickTargets);

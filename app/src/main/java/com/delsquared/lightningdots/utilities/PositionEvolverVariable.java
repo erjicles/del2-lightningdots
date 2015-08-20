@@ -13,6 +13,7 @@ public class PositionEvolverVariable implements INamedObject {
 
     private String name;
     private double value;
+    private double oldValue;
     private double minimumValue;
     private double initialValue;
     private double maximumValue;
@@ -23,11 +24,11 @@ public class PositionEvolverVariable implements INamedObject {
     private TimedChangeHandler timedChangeHandler;
     private BoundaryEffect boundaryEffect;
     private TransitionContinuity transitionContinuity;
-    private List<String> listPositionEvolverVariableAttractorNames;
 
     public PositionEvolverVariable() {
         name = "";
         value = 0.0;
+        oldValue = 0.0;
         minimumValue = 0.0;
         initialValue = 0.0;
         maximumValue = 0.0;
@@ -55,6 +56,7 @@ public class PositionEvolverVariable implements INamedObject {
             , TransitionContinuity transitionContinuity) {
         this.name = name;
         this.value = initialValue;
+        this.oldValue = initialValue;
         this.minimumValue = minimumValue;
         this.initialValue = initialValue;
         this.maximumValue = maximumValue;
@@ -70,6 +72,7 @@ public class PositionEvolverVariable implements INamedObject {
     public PositionEvolverVariable(ClickTargetProfile.ProfileVariableValues profileVariableValues) {
         this.name = profileVariableValues.name;
         this.value = profileVariableValues.initialValue;
+        this.oldValue = profileVariableValues.initialValue;
         this.minimumValue = profileVariableValues.minimumValue;
         this.initialValue = profileVariableValues.initialValue;
         this.maximumValue = profileVariableValues.maximumValue;
@@ -84,6 +87,7 @@ public class PositionEvolverVariable implements INamedObject {
 
     public String getName() { return this.name; }
     public double getValue() { return this.value; }
+    public double getOldValue() { return this.oldValue; }
     public double getMinimumValue() { return this.minimumValue; }
     public double getInitialValue() { return this.initialValue; }
     public double getMaximumValue() { return this.maximumValue; }
@@ -95,15 +99,34 @@ public class PositionEvolverVariable implements INamedObject {
     public BoundaryEffect getBoundaryEffect() { return this.boundaryEffect; }
     public TransitionContinuity getTransitionContinuity() { return this.transitionContinuity; }
 
-    public void setValue(double value) { this.value = value; }
+    /**
+     * Sets the variable value to the new specified value.
+     * Sets the old value to the current value.
+     * @param value
+     */
+    public void setValue(double value) {
+        this.oldValue = this.value;
+        this.value = value;
+    }
+
+    /**
+     * Resets the value to the specified new value.
+     * Resets the old value to the new value.
+     * @param value
+     */
     public void reinitializeValue(double value) {
         if (usesInitialValueMultipliers) {
             this.value = minimumValue + (value * (maximumValue - minimumValue));
         } else {
             this.value = value;
         }
+        this.oldValue = this.value;
     }
 
+    /**
+     * Resets the value to a random value between the minimum and maximum.
+     * Also resets the old value to the new random value.
+     */
     public void randomizeValue() {
 
         // Generate new value
@@ -116,9 +139,16 @@ public class PositionEvolverVariable implements INamedObject {
             value *= UtilityFunctions.getRandomSign();
 
         }
+
+        this.oldValue = this.value;
     }
 
+    /**
+     * Adds dx to the current value. Sets the old value to the current value.
+     * @param dx
+     */
     public void moveValue(double dx) {
+        this.oldValue = this.value;
         value += dx;
     }
 

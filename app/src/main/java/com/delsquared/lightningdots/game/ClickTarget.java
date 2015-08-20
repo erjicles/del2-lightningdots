@@ -8,6 +8,7 @@ import android.util.TypedValue;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
+import com.delsquared.lightningdots.utilities.CoordinateSystemType;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingObject;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingPolygonalObject;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
@@ -175,6 +176,21 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         }
 
          return 0.0;
+    }
+
+    public double getOldVariableValue(String variableName) {
+
+        // Get the position evolver
+        PositionEvolver positionEvolver = getPositionEvolverFromVariableName(variableName);
+
+        if (positionEvolver != null) {
+
+            // Return the value
+            return positionEvolver.getOldVariableValue(variableName);
+
+        }
+
+        return 0.0;
     }
 
     public void setVariableValue(String variableName, double variableValue) {
@@ -737,7 +753,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverD2XNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2X
                 , listPositionEvolverVariablesD2X
-                , PositionEvolver.MODE.SPHERICAL
+                , CoordinateSystemType.SPHERICAL
                 , new TimedChangeHandler()
         );
         // -------------------- END D2Position -------------------- //
@@ -801,7 +817,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverDXNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DX
                 , listPositionEvolverVariablesDX
-                , PositionEvolver.MODE.SPHERICAL
+                , CoordinateSystemType.SPHERICAL
                 , new TimedChangeHandler()
         );
         // -------------------- END DPosition -------------------- //
@@ -900,7 +916,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverXNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_X
                 , listPositionEvolverVariablesX
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END Position -------------------- //
@@ -944,7 +960,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverD2RadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2RADIUS
                 , listPositionEvolverVariablesD2Radius
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END D2Radius -------------------- //
@@ -988,7 +1004,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverDRadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DRADIUS
                 , listPositionEvolverVariablesDRadius
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END DRadius -------------------- //
@@ -1027,7 +1043,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverRadiusNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_RADIUS
                 , listPositionEvolverVariablesRadius
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END Radius -------------------- //
@@ -1066,7 +1082,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverD2RotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_D2ROTATION
                 , listPositionEvolverVariablesD2Rotation
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END D2Rotation -------------------- //
@@ -1107,7 +1123,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverDRotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_DROTATION
                 , listPositionEvolverVariablesDRotation
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END DRotation -------------------- //
@@ -1141,7 +1157,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         PositionEvolver positionEvolverRotationNew = new PositionEvolver(
                 POSITION_EVOLVER_NAME_ROTATION
                 , listPositionEvolverVariablesRotation
-                , PositionEvolver.MODE.CARTESIAN
+                , CoordinateSystemType.CARTESIAN
                 , new TimedChangeHandler()
         );
         // -------------------- END Rotation -------------------- //

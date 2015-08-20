@@ -1,8 +1,13 @@
 package com.delsquared.lightningdots.utilities;
 
+import android.content.Context;
+
 public class PositionEvolvingPolygonalObjectContainerHelper<T extends IPositionEvolvingPolygonalObject> {
 
-    public PositionEvolvingPolygonalObjectContainerHelper() {
+    Context context;
+
+    public PositionEvolvingPolygonalObjectContainerHelper(Context context) {
+        this.context = context;
     }
 
     public void evolveTime(double dt, PositionEvolvingObjectContainer<T> positionEvolvingPolygonalObjectContainer) {
@@ -14,7 +19,7 @@ public class PositionEvolvingPolygonalObjectContainerHelper<T extends IPositionE
 
         // Create the helper
         PositionEvolvingObjectContainerEvolverHelper<T> positionEvolvingObjectContainerEvolverHelper =
-                new PositionEvolvingObjectContainerEvolverHelper<>();
+                new PositionEvolvingObjectContainerEvolverHelper<>(context);
 
         // Evolve the time
         positionEvolvingObjectContainerEvolverHelper.evolveTime(dt, positionEvolvingPolygonalObjectContainer);

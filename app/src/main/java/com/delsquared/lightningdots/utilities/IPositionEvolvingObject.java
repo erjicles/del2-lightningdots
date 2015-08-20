@@ -11,6 +11,7 @@ public interface IPositionEvolvingObject extends INamedObject {
     public PositionEvolverFamily getPositionEvolverFamily(String positionEvolverFamilyName);
     public OrderedObjectCollection<PositionEvolverFamily> getCollectionPositionEvolverFamilies();
     public double getVariableValue(String variableName);
+    public double getOldVariableValue(String variableName);
     public void setVariableValue(String variableName, double value);
     public void setVariableValue(String variableName, double variableValue, boolean treatAsInitialValue);
     public void randomizeVariableValue(String variableName);

@@ -551,6 +551,26 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 , textHandlerClickTargetPropertiesd2Radius
         );
 
+        // Create the click target properties energy text handler
+        Paint paintClickTargetPropertiesEnergy = new Paint(Paint.ANTI_ALIAS_FLAG);
+        paintClickTargetPropertiesEnergy.setTypeface(Typeface.create(Typeface.MONOSPACE, Typeface.NORMAL));
+        paintClickTargetPropertiesEnergy.setColor(context.getResources().getColor(R.color.green));
+        paintClickTargetPropertiesEnergy.setTextSize(1);
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesEnergy = new SurfaceViewTextHandler(
+                context.getString(R.string.game_text_template_click_target_properties_energy)
+                , SurfaceViewTextHandler.JUSTIFY_HORIZONTAL.RIGHT
+                , SurfaceViewTextHandler.JUSTIFY_VERTICAL.BOTTOM
+                , 0.0
+                , 0.0
+                , textClickTargetPropertiesHeightFactor
+                , canvasHeight
+                , paintClickTargetPropertiesEnergy
+        );
+        mapSurfaceViewTextHandler.put(
+                context.getString(R.string.graphics_textkey_click_target_properties_energy)
+                , textHandlerClickTargetPropertiesEnergy
+        );
+
         // Get the award bitmaps
         bitmapAwardEmpty = BitmapFactory.decodeResource(context.getResources(), R.drawable.award_black);
         bitmapAwardFull = BitmapFactory.decodeResource(context.getResources(), R.drawable.award_yellow);
@@ -751,6 +771,8 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_dRadius));
         SurfaceViewTextHandler textHandlerClickTargetPropertiesd2Radius =
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2Radius));
+        SurfaceViewTextHandler textHandlerClickTargetPropertiesEnergy =
+                mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_energy));
 
         // Set the text
         textHandlerStartCountdown.setText(
@@ -831,6 +853,16 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                             context.getString(R.string.game_text_template_click_target_properties_d2Radius)
                             , firstClickTargetSnapshot.getD2RadiusPixels().getValue(0)
                             , firstClickTargetSnapshot.getD2RotationRadians().getValue(0)
+                    )
+            );
+            double energy = 0.0;
+            double PE = firstClickTargetSnapshot.getXPixels().getValue(1) * -9.8;
+            double KE = 0.5 * firstClickTargetSnapshot.getDXdtPixelsPerSecondPolar().getValue(0) * firstClickTargetSnapshot.getDXdtPixelsPerSecondPolar().getValue(0);
+            energy = PE + KE;
+            textHandlerClickTargetPropertiesEnergy.setText(
+                    String.format(
+                            context.getString(R.string.game_text_template_click_target_properties_energy)
+                            , energy
                     )
             );
 
@@ -1020,6 +1052,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerClickTargetPropertiesRadius.drawText(canvas);
             textHandlerClickTargetPropertiesdRadius.drawText(canvas);
             textHandlerClickTargetPropertiesd2Radius.drawText(canvas);
+            textHandlerClickTargetPropertiesEnergy.drawText(canvas);
 
         }
 
@@ -1239,6 +1272,8 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_dRadius));
             SurfaceViewTextHandler textHandlerClickTargetPropertiesd2Radius =
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2Radius));
+            SurfaceViewTextHandler textHandlerClickTargetPropertiesEnergy =
+                    mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_energy));
 
             // Recalculate the text heights
             textHandlerStartCountdown.recalculateTextHeight(height);
@@ -1262,6 +1297,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerClickTargetPropertiesRadius.recalculateTextHeight(height);
             textHandlerClickTargetPropertiesdRadius.recalculateTextHeight(height);
             textHandlerClickTargetPropertiesd2Radius.recalculateTextHeight(height);
+            textHandlerClickTargetPropertiesEnergy.recalculateTextHeight(height);
 
             // Recalculate the text positions
             textHandlerStartCountdown.setPosition(
@@ -1302,24 +1338,33 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerFPS.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding);
+            textHandlerClickTargetPropertiesEnergy.setPosition(
+                    width - borderWidth - borderPadding
+                    , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+            );
             textHandlerClickTargetPropertiesd2Radius.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesEnergy.getTextHeight() - textLineSpacing
             );
             textHandlerClickTargetPropertiesdRadius.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesEnergy.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
             );
             textHandlerClickTargetPropertiesRadius.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesEnergy.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
             );
+
             textHandlerClickTargetPropertiesd2X.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesEnergy.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesRadius.getTextHeight() - textLineSpacing
@@ -1327,6 +1372,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerClickTargetPropertiesdX.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesEnergy.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesRadius.getTextHeight() - textLineSpacing
@@ -1335,6 +1381,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerClickTargetPropertiesX.setPosition(
                     width - borderWidth - borderPadding
                     , height - borderWidth - borderPadding - textHandlerFPS.getTextHeight() - textLineSpacing
+                    - textHandlerClickTargetPropertiesEnergy.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesd2Radius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesdRadius.getTextHeight() - textLineSpacing
                     - textHandlerClickTargetPropertiesRadius.getTextHeight() - textLineSpacing

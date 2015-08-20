@@ -1,5 +1,6 @@
 package com.delsquared.lightningdots.utilities;
 
+import android.content.Context;
 import android.util.Pair;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
@@ -11,7 +12,10 @@ import java.util.Map;
 
 public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvolvingObject> {
 
-    public PositionEvolvingObjectContainerEvolverHelper() {
+    Context context;
+
+    public PositionEvolvingObjectContainerEvolverHelper(Context context) {
+        this.context = context;
     }
 
     public void evolveTime(double dt, PositionEvolvingObjectContainer<T> positionEvolvingObjectContainer) {
@@ -300,7 +304,7 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
 
         // -------------------- BEGIN Process attractors -------------------- //
         PositionEvolverVariableAttractorHelper<T> positionEvolverVariableAttractorHelper =
-                new PositionEvolverVariableAttractorHelper<>();
+                new PositionEvolverVariableAttractorHelper<>(context);
         Map<NTuple, PositionEvolverVariableAttractorVectorCollection> mapAttractorVectorCollections =
                 positionEvolverVariableAttractorHelper.getAttractorVectorCollections(positionEvolvingObjectContainer);
         // -------------------- END Process attractors -------------------- //
@@ -336,28 +340,34 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
                             positionEvolverFamily.getCollectionPositionEvolvers();
 
                     // Loop through the PositionEvolvers
+                    // Evolve derivatives first
                     for (
-                            int currentPositionEvolverIndex = 0;
-                            currentPositionEvolverIndex < collectionPositionEvolvers.size();
-                            currentPositionEvolverIndex++) {
+                            int currentPositionEvolverIndex = collectionPositionEvolvers.size() - 1;
+                            currentPositionEvolverIndex >= 0;
+                            currentPositionEvolverIndex--) {
 
                         // Get the current position evolver and its derivative
                         PositionEvolver positionEvolver = collectionPositionEvolvers.getObject(currentPositionEvolverIndex);
                         PositionEvolver positionEvolverDX = collectionPositionEvolvers.getObject(currentPositionEvolverIndex + 1);
                         PositionEvolver sourcePositionEvolverD2X = collectionPositionEvolvers.getObject(currentPositionEvolverIndex + 2);
 
-                        // Make sure we have a DX
-                        if (positionEvolver != null && positionEvolverDX != null) {
-
-                            // Initialize the list of bounce variables
-                            List<Boolean> listBounceVariables = new ArrayList<>();
+                        // Make sure the position evolver exists
+                        if (positionEvolver != null) {
 
                             // Get the variable collection
                             OrderedObjectCollection<PositionEvolverVariable> collectionPositionEvolverVariables =
                                     positionEvolver.getCollectionPositionEvolverVariables();
 
-                            // Get the dx
-                            PositionVector positionVectorDX = positionEvolverDX.getX(positionEvolver.getMode());
+                            // Initialize the list of bounce variables
+                            List<Boolean> listBounceVariables = new ArrayList<>();
+
+                            // Get the DX position vector as the average of its old and new values
+                            PositionVector positionVectorDX = null;
+                            if (positionEvolverDX != null) {
+                                PositionVector currentDX = positionEvolverDX.getX(positionEvolver.getCoordinateSystemType());
+                                PositionVector oldDX = positionEvolverDX.getOldX(positionEvolver.getCoordinateSystemType());
+                                positionVectorDX = currentDX.add(oldDX).divide(2.0);
+                            }
 
                             // Loop through the PositionEvolverVariables
                             for (
@@ -380,8 +390,8 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
                                 }
 
                                 // This variable is not randomly changing
-                                // Evolve it
-                                else {
+                                // Make sure the position evolver DX exists
+                                else if (positionEvolverDX != null) {
 
                                     // Get the dx for the current variable
                                     double dxdt = positionVectorDX.getValue(currentPositionEvolverVariableIndex);
@@ -434,95 +444,99 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
 
                             }
 
-                            // Process bounce if necessary
-                            if (listBounceVariables.contains(true)) {
-                                positionEvolverDX.bounce(positionEvolver.getMode(), listBounceVariables);
-                            }
+                            // Process bounce and attractors
+                            if (positionEvolverDX != null) {
 
-                            // -------------------- BEGIN Process attractor vector -------------------- //
-
-                            // Get the attractor key
-                            NTuple attractorKey =
-                                    PositionEvolverVariableAttractor
-                                            .nTupleTypePositionEvolverVariableAttractorKey
-                                            .createNTuple(
-                                                    currentObjectName
-                                                    , currentObjectProfileName
-                                                    , positionEvolverFamily.getName()
-                                                    , positionEvolver.getName()
-                                            );
-
-                            // Check if there is an attractor vector collection
-                            if (mapAttractorVectorCollections.containsKey(attractorKey)) {
-
-                                // Get the attractor vector collection
-                                PositionEvolverVariableAttractorVectorCollection attractorVectorCollection =
-                                        mapAttractorVectorCollections.get(attractorKey);
-
-                                PositionVector attractorVectorSnapToVector = attractorVectorCollection.getAttractorVectorSnapToVector();
-                                PositionVector attractorVectorMaxToVector = attractorVectorCollection.getAttractorVectorMaxToVector();
-                                PositionVector attractorVectorGravity = attractorVectorCollection.getAttractorVectorGravity();
-
-                                if (attractorVectorSnapToVector != null) {
-                                    double theta = Math.atan2(attractorVectorSnapToVector.getValue(1), attractorVectorSnapToVector.getValue(0));
-                                    positionEvolver.getCollectionPositionEvolverVariables().getObject(1).setValue(theta);
-                                } else if (attractorVectorMaxToVector != null) {
-                                    double phi = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue();
-                                    double theta = Math.atan2(attractorVectorMaxToVector.getValue(1), attractorVectorMaxToVector.getValue(0));
-                                    double delta1 = theta - phi;
-                                    double delta2 = delta1;
-                                    if (delta1 > 0.0) {
-                                        delta2 = (-2.0 * Math.PI) + delta1;
-                                    } else {
-                                        delta2 = (2.0 * Math.PI) + delta1;
-                                    }
-                                    double deltaToUse = delta1;
-                                    double absDelta1 = Math.abs(delta1);
-                                    double absDelta2 = Math.abs(delta2);
-                                    if (absDelta1 < absDelta2) {
-                                        deltaToUse = delta1;
-                                    } else {
-                                        deltaToUse = delta2;
-                                    }
-                                    if (deltaToUse > 0) {
-                                        positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                .getObject(1)
-                                                .setValue(
-                                                        positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                                .getObject(1)
-                                                                .getMaximumValue()
-                                                );
-                                    } else {
-                                        positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                .getObject(1)
-                                                .setValue(
-                                                        -1.0 * positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                                .getObject(1)
-                                                                .getMaximumValue()
-                                                );
-                                    }
-                                } else if (attractorVectorGravity != null) {
-                                    double theta = Math.atan2(attractorVectorGravity.getValue(1), attractorVectorGravity.getValue(0));
-                                    double delta = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue() - theta;
-                                    double magnitude = attractorVectorGravity.getMagnitude();
-                                    double ds = magnitude * Math.cos(delta);
-                                    double s = positionEvolver.getCollectionPositionEvolverVariables().getObject(0).getValue();
-                                    double dPhi = 0.0;
-                                    if (s != 0.0) {
-                                        dPhi = -1.0 * magnitude * Math.sin(delta) / s;
-                                    }
-                                    positionEvolverDX.getCollectionPositionEvolverVariables().getObject(0).setValue(
-                                            ds
-                                    );
-                                    positionEvolverDX.getCollectionPositionEvolverVariables().getObject(1).setValue(
-                                            dPhi
-                                    );
+                                // Process bounce if necessary
+                                if (listBounceVariables.contains(true)) {
+                                    positionEvolverDX.bounce(positionEvolver.getCoordinateSystemType(), listBounceVariables);
                                 }
 
+                                // -------------------- BEGIN Process attractor vector -------------------- //
+
+                                // Get the attractor key
+                                NTuple attractorKey =
+                                        PositionEvolverVariableAttractor
+                                                .nTupleTypePositionEvolverVariableAttractorKey
+                                                .createNTuple(
+                                                        currentObjectName
+                                                        , currentObjectProfileName
+                                                        , positionEvolverFamily.getName()
+                                                        , positionEvolver.getName()
+                                                );
+
+                                // Check if there is an attractor vector collection
+                                if (mapAttractorVectorCollections.containsKey(attractorKey)) {
+
+                                    // Get the attractor vector collection
+                                    PositionEvolverVariableAttractorVectorCollection attractorVectorCollection =
+                                            mapAttractorVectorCollections.get(attractorKey);
+
+                                    PositionVector attractorVectorSnapToVector = attractorVectorCollection.getAttractorVectorSnapToVector();
+                                    PositionVector attractorVectorMaxToVector = attractorVectorCollection.getAttractorVectorMaxToVector();
+                                    PositionVector attractorVectorGravity = attractorVectorCollection.getAttractorVectorGravity();
+
+                                    if (attractorVectorSnapToVector != null) {
+                                        double theta = Math.atan2(attractorVectorSnapToVector.getValue(1), attractorVectorSnapToVector.getValue(0));
+                                        positionEvolver.getCollectionPositionEvolverVariables().getObject(1).setValue(theta);
+                                    } else if (attractorVectorMaxToVector != null) {
+                                        double phi = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue();
+                                        double theta = Math.atan2(attractorVectorMaxToVector.getValue(1), attractorVectorMaxToVector.getValue(0));
+                                        double delta1 = theta - phi;
+                                        double delta2 = delta1;
+                                        if (delta1 > 0.0) {
+                                            delta2 = (-2.0 * Math.PI) + delta1;
+                                        } else {
+                                            delta2 = (2.0 * Math.PI) + delta1;
+                                        }
+                                        double deltaToUse = delta1;
+                                        double absDelta1 = Math.abs(delta1);
+                                        double absDelta2 = Math.abs(delta2);
+                                        if (absDelta1 < absDelta2) {
+                                            deltaToUse = delta1;
+                                        } else {
+                                            deltaToUse = delta2;
+                                        }
+                                        if (deltaToUse > 0) {
+                                            positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                    .getObject(1)
+                                                    .setValue(
+                                                            positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                                    .getObject(1)
+                                                                    .getMaximumValue()
+                                                    );
+                                        } else {
+                                            positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                    .getObject(1)
+                                                    .setValue(
+                                                            -1.0 * positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                                    .getObject(1)
+                                                                    .getMaximumValue()
+                                                    );
+                                        }
+                                    } else if (attractorVectorGravity != null) {
+                                        double theta = Math.atan2(attractorVectorGravity.getValue(1), attractorVectorGravity.getValue(0));
+                                        double delta = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue() - theta;
+                                        double magnitude = attractorVectorGravity.getMagnitude();
+                                        double ds = magnitude * Math.cos(delta);
+                                        double s = positionEvolver.getCollectionPositionEvolverVariables().getObject(0).getValue();
+                                        double dPhi = 0.0;
+                                        if (s != 0.0) {
+                                            dPhi = -1.0 * magnitude * Math.sin(delta) / s;
+                                        }
+                                        positionEvolverDX.getCollectionPositionEvolverVariables().getObject(0).setValue(
+                                                ds
+                                        );
+                                        positionEvolverDX.getCollectionPositionEvolverVariables().getObject(1).setValue(
+                                                dPhi
+                                        );
+                                    }
+
+                                }
+
+                                // -------------------- END Process attractor vector -------------------- //
+
                             }
-
-                            // -------------------- END Process attractor vector -------------------- //
-
 
                         }
 

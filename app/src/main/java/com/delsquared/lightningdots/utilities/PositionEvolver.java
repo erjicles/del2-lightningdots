@@ -8,23 +8,23 @@ public class PositionEvolver implements INamedObject {
 
     private String name;
     private OrderedObjectCollection<PositionEvolverVariable> collectionPositionEvolverVariables;
-    private MODE mode = MODE.CARTESIAN;
+    private CoordinateSystemType coordinateSystemType = CoordinateSystemType.CARTESIAN;
     private TimedChangeHandler timedChangeHandler;
 
     public PositionEvolver(
             String name
             , List<PositionEvolverVariable> listPositionEvolverVariables
-            , MODE mode
+            , CoordinateSystemType coordinateSystemType
             , TimedChangeHandler timedChangeHandler) {
         this.name = name;
         this.collectionPositionEvolverVariables = new OrderedObjectCollection<PositionEvolverVariable>(listPositionEvolverVariables);
-        this.mode = mode;
+        this.coordinateSystemType = coordinateSystemType;
         this.timedChangeHandler = timedChangeHandler;
     }
 
     public String getName() { return this.name; }
     public OrderedObjectCollection<PositionEvolverVariable> getCollectionPositionEvolverVariables() { return this.collectionPositionEvolverVariables; }
-    public MODE getMode() { return this. mode; }
+    public CoordinateSystemType getCoordinateSystemType() { return this.coordinateSystemType; }
     public TimedChangeHandler getTimedChangeHandler() { return this.timedChangeHandler; }
     public int getCardinality() { return collectionPositionEvolverVariables.size(); }
 
@@ -32,6 +32,14 @@ public class PositionEvolver implements INamedObject {
         PositionEvolverVariable positionEvolverVariable = collectionPositionEvolverVariables.getObject(variableName);
         if (positionEvolverVariable != null) {
             return positionEvolverVariable.getValue();
+        }
+        return 0.0;
+    }
+
+    public double getOldVariableValue(String variableName) {
+        PositionEvolverVariable positionEvolverVariable = collectionPositionEvolverVariables.getObject(variableName);
+        if (positionEvolverVariable != null) {
+            return positionEvolverVariable.getOldValue();
         }
         return 0.0;
     }
@@ -66,39 +74,30 @@ public class PositionEvolver implements INamedObject {
 
     public PositionVector getX() {
         List<Double> resultX = new ArrayList<>();
-        for (PositionEvolverVariable currentVariable : collectionPositionEvolverVariables) {
-            resultX.add(currentVariable.getValue());
+        for (int currentVariableIndex = 0; currentVariableIndex < collectionPositionEvolverVariables.size(); currentVariableIndex++) {
+            PositionEvolverVariable currentVariable = collectionPositionEvolverVariables.getObject(currentVariableIndex);
+            double currentValue = currentVariable.getValue();
+            resultX.add(currentValue);
         }
-        return new PositionVector(resultX);
+        return new PositionVector(resultX, coordinateSystemType);
     }
 
-    public PositionVector getX(MODE convertToMode) {
-        int cardinality = getCardinality();
-        if (this.mode == convertToMode) {
-            return getX();
+    public PositionVector getX(CoordinateSystemType convertToCoordinateSystemType) {
+        return PositionVectorHelper.toCoordinateSystem(getX(), convertToCoordinateSystemType);
+    }
+
+    public PositionVector getOldX() {
+        List<Double> resultX = new ArrayList<>();
+        for (int currentVariableIndex = 0; currentVariableIndex < collectionPositionEvolverVariables.size(); currentVariableIndex++) {
+            PositionEvolverVariable currentVariable = collectionPositionEvolverVariables.getObject(currentVariableIndex);
+            double currentValue = currentVariable.getOldValue();
+            resultX.add(currentValue);
         }
-        else if (this.mode == MODE.SPHERICAL && cardinality == 2
-                && convertToMode == MODE.CARTESIAN) {
-            double X1 = collectionPositionEvolverVariables.getObject(0).getValue();
-            double X2 = collectionPositionEvolverVariables.getObject(1).getValue();
-            return new PositionVector(
-                    X1 * Math.cos(X2)
-                    , X1 * Math.sin(X2)
-            );
-        }
-        else if (this.mode == MODE.SPHERICAL && cardinality == 3
-                && convertToMode == MODE.CARTESIAN) {
-            double X1 = collectionPositionEvolverVariables.getObject(0).getValue();
-            double X2 = collectionPositionEvolverVariables.getObject(1).getValue();
-            double X3 = collectionPositionEvolverVariables.getObject(2).getValue();
-            double sinX3 = Math.sin(X3);
-            return new PositionVector(
-                    X1 * Math.cos(X2) * sinX3
-                    , X1 * Math.sin(X2) * sinX3
-                    , X1 * Math.cos(X3)
-            );
-        }
-        return getX();
+        return new PositionVector(resultX, coordinateSystemType);
+    }
+
+    public PositionVector getOldX(CoordinateSystemType convertToCoordinateSystemType) {
+        return PositionVectorHelper.toCoordinateSystem(getOldX(), convertToCoordinateSystemType);
     }
 
     public double getMinimumValue(String variableName) {
@@ -146,13 +145,13 @@ public class PositionEvolver implements INamedObject {
     public boolean checkTimedChange(double dt) { return timedChangeHandler.checkTimedChange(dt); }
 
     public void bounce(
-            MODE mode
+            CoordinateSystemType coordinateSystemType
             , List<Boolean> bounceVariables) {
 
         int cardinality = getCardinality();
 
         // Check if the modes are the same
-        if (this.mode == mode) {
+        if (this.coordinateSystemType == coordinateSystemType) {
 
             // Loop through the variables
             for (int currentVariableIndex = 0; currentVariableIndex < collectionPositionEvolverVariables.size(); currentVariableIndex++) {
@@ -179,7 +178,7 @@ public class PositionEvolver implements INamedObject {
         }
 
         // Check if we are bouncing from cartesian to polar
-        else if (this.mode == MODE.SPHERICAL && cardinality == 2 && mode == MODE.CARTESIAN) {
+        else if (this.coordinateSystemType == CoordinateSystemType.SPHERICAL && cardinality == 2 && coordinateSystemType == CoordinateSystemType.CARTESIAN) {
 
             // Get the bounce flags
             boolean bounceX = bounceVariables.get(0);
@@ -210,11 +209,6 @@ public class PositionEvolver implements INamedObject {
 
         }
 
-    }
-
-    public enum MODE {
-        CARTESIAN
-        , SPHERICAL
     }
 
 }
