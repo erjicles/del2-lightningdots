@@ -288,7 +288,7 @@ public class PositionEvolverVariableAttractorHelper<T extends IPositionEvolvingO
                             double d3 = Math.pow(d2, 1.5);
 
                             // Make sure there is a difference
-                            if (d3 != 0.0) {
+                            if (d3 > 0.0) {
 
                                 // Get the acceleration vector
                                 // a = GM/r^2 rhat = GM/r^3 r, M = target mass
