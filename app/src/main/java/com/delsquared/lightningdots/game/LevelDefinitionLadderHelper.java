@@ -568,9 +568,10 @@ public class LevelDefinitionLadderHelper {
             double initialValue = this.initialValue;
             double maximumValue = this.maximumValue;
 
-            if (minimumValue != -1.0 && initialValue != -1.0
-                    && !name.contentEquals(ClickTarget.VARIABLE_NAME_X)
-                    && !name.contentEquals(ClickTarget.VARIABLE_NAME_Y)) {
+            if (!(
+                    initialValue == -1.0
+                    && (name.contentEquals(ClickTarget.VARIABLE_NAME_X)
+                        || name.contentEquals(ClickTarget.VARIABLE_NAME_Y)))) {
 
                 // Check if this variable uses initial value multipliers
                 if (usesInitialValueMultipliers) {

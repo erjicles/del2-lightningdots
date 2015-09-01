@@ -1959,4 +1959,413 @@
         </Attractors>
     </Level>
 
+    <Level level="46">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true"/>
+                            <Variable name="position_vertical" randomInitialValue="true"/>
+                            <Variable name="speed" initialValue="1.75" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.4" canChange="true" minimumValue="0.3" maximumValue="0.5"/>
+                            <Variable name="dRadius" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true"/>
+                            <Variable name="position_vertical" randomInitialValue="true"/>
+                            <Variable name="speed" initialValue="1.75" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.4" canChange="true" minimumValue="0.3" maximumValue="0.5"/>
+                            <Variable name="dRadius" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="2">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true"/>
+                            <Variable name="position_vertical" randomInitialValue="true"/>
+                            <Variable name="speed" initialValue="1.75" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.4" canChange="true" minimumValue="0.3" maximumValue="0.5"/>
+                            <Variable name="dRadius" initialValue="1.5"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <Attractors>
+            <Attractor
+                sourceClickTargetName="0" sourceClickTargetProfileName=""
+                targetClickTargetName="1" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="0" sourceClickTargetProfileName=""
+                targetClickTargetName="2" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="1" sourceClickTargetProfileName=""
+                targetClickTargetName="0" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="1" sourceClickTargetProfileName=""
+                targetClickTargetName="2" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="2" sourceClickTargetProfileName=""
+                targetClickTargetName="0" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="2" sourceClickTargetProfileName=""
+                targetClickTargetName="1" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+        </Attractors>
+    </Level>
+
+    <Level level="47">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="" targetShape="RHOMBUS_45">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true"/>
+                            <Variable name="position_vertical" randomInitialValue="true"/>
+                            <Variable name="speed" initialValue="1.75" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable name="rotation" canChange="true"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="" targetShape="STAR_5_POINTS">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true"/>
+                            <Variable name="position_vertical" randomInitialValue="true"/>
+                            <Variable name="speed" initialValue="1.75" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable name="rotation" canChange="true"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="2">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="" targetShape="SQUARE">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true"/>
+                            <Variable name="position_vertical" randomInitialValue="true"/>
+                            <Variable name="speed" initialValue="1.75" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.5"/>
+                            <Variable name="rotation" canChange="true"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <Attractors>
+            <Attractor
+                sourceClickTargetName="0" sourceClickTargetProfileName=""
+                targetClickTargetName="1" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY"
+                isRepeller="true">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="0" sourceClickTargetProfileName=""
+                targetClickTargetName="2" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY"
+                isRepeller="true">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="1" sourceClickTargetProfileName=""
+                targetClickTargetName="0" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY"
+                isRepeller="true">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="1" sourceClickTargetProfileName=""
+                targetClickTargetName="2" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY"
+                isRepeller="true">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="2" sourceClickTargetProfileName=""
+                targetClickTargetName="0" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY"
+                isRepeller="true">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="2" sourceClickTargetProfileName=""
+                targetClickTargetName="1" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="1.0"
+                type="OTHER_OBJECT"
+                mode="GRAVITY"
+                isRepeller="true">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical" />
+                </AttractorVariables>
+            </Attractor>
+        </Attractors>
+    </Level>
+
+    <Level level="48">
+        <ClickTargets>
+            <ClickTarget name="0">
+                <ClickTargetProfileScript scriptTransitionInterval="REGULAR" scriptTransitionMode="CYCLE">
+                    <ClickTargetProfile name="0" scriptTransitionValue="1.5" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" initialValue="1.0"/>
+                            <Variable name="direction" canChange="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.2" transitionContinuity="CONTINUOUS" canChange="true" minimumValue="0.2" maximumValue="0.5">
+                                <BoundaryEffect boundaryEffect="STICKY" bounceOnHardBoundary="false"/>
+                            </Variable>
+                            <Variable name="dRadius" initialValue="-1.0" randomInitialSign="false" transitionContinuity="DISCONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" scriptTransitionValue="1.5">
+                        <Variables>
+                            <Variable name="position_horizontal" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" initialValue="2.0"/>
+                            <Variable name="direction" transitionContinuity="DISCONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5" transitionContinuity="CONTINUOUS" canChange="true" minimumValue="0.2" maximumValue="0.5">
+                                <BoundaryEffect boundaryEffect="STICKY" bounceOnHardBoundary="false"/>
+                            </Variable>
+                            <Variable name="dRadius" initialValue="1.0" randomInitialSign="false" transitionContinuity="DISCONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+            <ClickTarget name="1">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="0">
+                        <Variables>
+                            <Variable name="position_horizontal" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" initialValue="2.0"/>
+                            <Variable name="direction" transitionContinuity="DISCONTINUOUS"/>
+                            <Variable name="radius" initialValue="0.5" transitionContinuity="CONTINUOUS" canChange="true" minimumValue="0.2" maximumValue="0.5">
+                                <BoundaryEffect boundaryEffect="STICKY" bounceOnHardBoundary="false"/>
+                            </Variable>
+                            <Variable name="dRadius" initialValue="1.0" randomInitialSign="false" transitionContinuity="DISCONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                    <ClickTargetProfile name="1" targetIsClickable="false">
+                        <Variables>
+                            <Variable name="position_horizontal" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="position_vertical" randomInitialValue="true" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="speed" initialValue="1.0"/>
+                            <Variable name="direction" transitionContinuity="CONTINUOUS"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dDirection" initialValue="0.0"/>
+                            <Variable name="radius" initialValue="0.2" transitionContinuity="CONTINUOUS" canChange="true" minimumValue="0.2" maximumValue="0.5">
+                                <BoundaryEffect boundaryEffect="STICKY" bounceOnHardBoundary="false"/>
+                            </Variable>
+                            <Variable name="dRadius" initialValue="-1.0" randomInitialSign="false" transitionContinuity="DISCONTINUOUS"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <Attractors>
+            <Attractor
+                sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                targetClickTargetName="1" targetClickTargetProfileName="0"
+                positionEvolverFamilyName="X" positionEvolverName="X" mass="1.0" mode="SNAP_TO_VECTOR" type="OTHER_OBJECT">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical"/>
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="1" sourceClickTargetProfileName="1"
+                targetClickTargetName="0" targetClickTargetProfileName="1"
+                positionEvolverFamilyName="X" positionEvolverName="X" mass="1.0" mode="SNAP_TO_VECTOR" type="OTHER_OBJECT">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" />
+                    <AttractorVariable name="position_vertical"/>
+                </AttractorVariables>
+            </Attractor>
+        </Attractors>
+        <TransitionTriggers>
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="1"
+                targetClickTargetName="1" targetClickTargetProfileName="1"/>
+            <TransitionTrigger
+                sourceClickTargetName="0" sourceClickTargetProfileName="0"
+                targetClickTargetName="1" targetClickTargetProfileName="0"/>
+        </TransitionTriggers>
+    </Level>
+
+    <Level level="49">
+        <ClickTargets>
+            <ClickTarget name="">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable name="speed" initialValue="2.5"/>
+                            <Variable name="radius" initialValue="0.3"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+    </Level>
+
+    <Level level="50">
+        <ClickTargets>
+            <ClickTarget name="">
+                <ClickTargetProfileScript>
+                    <ClickTargetProfile name="">
+                        <Variables>
+                            <Variable name="speed" initialValue="2.5" canChange="true"/>
+                            <Variable name="direction" canChange="true"/>
+                            <Variable name="dSpeed" initialValue="0.0" minimumValue="-20.0" maximumValue="20.0"/>
+                            <Variable name="dDirection" initialValue="0.0" minimumValue="-20.0" maximumValue="20.0"/>
+                            <Variable name="radius" initialValue="0.25"/>
+                        </Variables>
+                    </ClickTargetProfile>
+                </ClickTargetProfileScript>
+            </ClickTarget>
+        </ClickTargets>
+        <Attractors>
+            <Attractor
+                sourceClickTargetName="" sourceClickTargetProfileName=""
+                targetClickTargetName="" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="15.0"
+                mode="GRAVITY"
+                type="FIXED_VALUE">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" initialFixedValue="1.5" isPercent="true" />
+                </AttractorVariables>
+            </Attractor>
+            <Attractor
+                sourceClickTargetName="" sourceClickTargetProfileName=""
+                targetClickTargetName="" targetClickTargetProfileName=""
+                positionEvolverFamilyName="X" positionEvolverName="X"
+                mass="15.0"
+                mode="GRAVITY"
+                type="FIXED_VALUE">
+                <AttractorVariables>
+                    <AttractorVariable name="position_horizontal" initialFixedValue="-0.5" isPercent="true" />
+                </AttractorVariables>
+            </Attractor>
+        </Attractors>
+    </Level>
+
 </Levels>

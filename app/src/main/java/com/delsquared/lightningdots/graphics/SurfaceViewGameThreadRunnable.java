@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 
@@ -698,10 +699,14 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         Map<String, ClickTargetSnapshot> mapClickTargetSnapshots = gameSnapshot.getMapClickTargetSnapshots();
         ClickTargetSnapshot firstClickTargetSnapshot = null;
         Iterator iterator = mapClickTargetSnapshots.entrySet().iterator();
+        int snapshotCounter = 0;
         while (iterator.hasNext()) {
             Map.Entry<String, ClickTargetSnapshot> pair = (Map.Entry) iterator.next();
             firstClickTargetSnapshot = pair.getValue();
-            break;
+            if (snapshotCounter >= 1) {
+                break;
+            }
+            snapshotCounter++;
         }
 
         // Get global app seettings
@@ -856,7 +861,12 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     )
             );
             double energy = 0.0;
-            double PE = firstClickTargetSnapshot.getXPixels().getValue(1) * -9.8;
+            double pixelsPerInch = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_IN
+                    , (float) 1.0
+                    , context.getResources().getDisplayMetrics()
+            );
+            double PE = firstClickTargetSnapshot.getXPixels().getValue(1) * -1.0 * pixelsPerInch;
             double KE = 0.5 * firstClickTargetSnapshot.getDXdtPixelsPerSecondPolar().getValue(0) * firstClickTargetSnapshot.getDXdtPixelsPerSecondPolar().getValue(0);
             energy = PE + KE;
             textHandlerClickTargetPropertiesEnergy.setText(

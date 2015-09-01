@@ -191,7 +191,7 @@ public class PositionEvolver implements INamedObject {
             if (bounceX) {
 
                 // Bounce horizontally
-                variableDirection.reinitializeValue(
+                variableDirection.setValue(
                         Math.PI - variableDirection.getValue()
                 );
 
@@ -201,7 +201,7 @@ public class PositionEvolver implements INamedObject {
             if (bounceY) {
 
                 // Bounce vertically
-                variableDirection.reinitializeValue(
+                variableDirection.setValue(
                         variableDirection.getValue() * -1.0
                 );
 

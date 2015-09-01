@@ -105,7 +105,7 @@ public class PositionEvolverVariable implements INamedObject {
      * @param value
      */
     public void setValue(double value) {
-        this.oldValue = this.value;
+        this.oldValue = value;
         this.value = value;
     }
 
