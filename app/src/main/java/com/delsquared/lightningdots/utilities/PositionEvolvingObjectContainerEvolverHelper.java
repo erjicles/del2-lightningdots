@@ -1,7 +1,6 @@
 package com.delsquared.lightningdots.utilities;
 
 import android.content.Context;
-import android.util.Pair;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
 

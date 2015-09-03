@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.game.ClickTargetProfile;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;

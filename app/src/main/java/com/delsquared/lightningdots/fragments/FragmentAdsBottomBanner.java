@@ -1,14 +1,12 @@
 package com.delsquared.lightningdots.fragments;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.google.android.gms.ads.AdListener;

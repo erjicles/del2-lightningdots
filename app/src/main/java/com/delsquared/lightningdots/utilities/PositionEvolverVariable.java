@@ -2,11 +2,6 @@ package com.delsquared.lightningdots.utilities;
 
 import com.delsquared.lightningdots.game.ClickTargetProfile;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class PositionEvolverVariable implements INamedObject {
 
     private PositionEvolver parentPositionEvolver;

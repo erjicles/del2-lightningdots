@@ -1,10 +1,8 @@
 package com.delsquared.lightningdots.game;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
-import com.delsquared.lightningdots.ntuple.NTupleType;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
 import com.delsquared.lightningdots.utilities.RandomChangeTrigger;
-import com.delsquared.lightningdots.utilities.SyncVariableTrigger;
 import com.delsquared.lightningdots.utilities.TransitionTrigger;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 

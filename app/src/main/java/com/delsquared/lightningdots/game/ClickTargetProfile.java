@@ -1,16 +1,10 @@
 package com.delsquared.lightningdots.game;
 
-import android.util.Pair;
-
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
-import com.delsquared.lightningdots.utilities.PositionEvolver;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariable;
 import com.delsquared.lightningdots.utilities.TimedChangeHandler;
 import com.delsquared.lightningdots.utilities.TransitionContinuity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class ClickTargetProfile {

@@ -2,14 +2,10 @@ package com.delsquared.lightningdots.game;
 
 
 import android.content.Context;
-import android.content.res.Resources;
-import android.util.TypedValue;
 
-import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
 import com.delsquared.lightningdots.utilities.CoordinateSystemType;
-import com.delsquared.lightningdots.utilities.IPositionEvolvingObject;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingPolygonalObject;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.Polygon;
@@ -22,10 +18,8 @@ import com.delsquared.lightningdots.utilities.TimedChangeHandler;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
@@ -875,25 +869,15 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
             if (variableValuesPositionHorizontal.randomInitialValue) {
                 XPixels = minimumPixelsX + (UtilityFunctions.generateRandomValue(0.0, width, false));
             } else { // Do not randomize starting position
-                // Check if we should center
-                if (variableValuesPositionHorizontal.initialValue == -1.0) {
-                    XPixels = minimumPixelsX + (width / 2.0);
-                } else { // Use specific starting position
-                    XPixels = minimumPixelsX + (width * variableValuesPositionHorizontal.initialValue);
-                }
-
+                // Set starting position
+                XPixels = minimumPixelsX + (width * variableValuesPositionHorizontal.initialValue);
             }
             // Check if we should randomize the starting Y position
             if (variableValuesPositionVertical.randomInitialValue) {
                 YPixels = minimumPixelsY + (UtilityFunctions.generateRandomValue(0.0, height, false));
             } else { // Do not randomize starting position
-                // Check if we should center
-                if (variableValuesPositionVertical.initialValue == -1.0) {
-                    YPixels = minimumPixelsY + (height / 2.0);
-                } else { // Use specific starting position
-                    YPixels = minimumPixelsY + (height * variableValuesPositionVertical.initialValue);
-                }
-
+                // Set starting position
+                YPixels = minimumPixelsY + (height * variableValuesPositionVertical.initialValue);
             }
         }
 

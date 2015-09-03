@@ -3,9 +3,6 @@ package com.delsquared.lightningdots.utilities;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.ntuple.NTupleType;
 
-import java.util.List;
-import java.util.Map;
-
 public class PositionEvolverVariableAttractor {
 
     public final TYPE type;

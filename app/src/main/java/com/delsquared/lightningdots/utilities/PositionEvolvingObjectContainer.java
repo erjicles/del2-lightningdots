@@ -1,6 +1,5 @@
 package com.delsquared.lightningdots.utilities;
 
-import com.delsquared.lightningdots.game.LevelDefinitionLadder;
 import com.delsquared.lightningdots.ntuple.NTuple;
 
 import java.util.HashMap;

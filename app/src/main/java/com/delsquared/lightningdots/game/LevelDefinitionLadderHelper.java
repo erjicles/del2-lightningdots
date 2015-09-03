@@ -2,7 +2,6 @@ package com.delsquared.lightningdots.game;
 
 import android.content.Context;
 import android.content.res.XmlResourceParser;
-import android.util.Pair;
 import android.util.TypedValue;
 
 import com.delsquared.lightningdots.R;
@@ -10,10 +9,7 @@ import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
-import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
-import com.delsquared.lightningdots.utilities.PositionEvolver;
-import com.delsquared.lightningdots.utilities.PositionEvolverVariable;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractorVariable;
 import com.delsquared.lightningdots.utilities.RandomChangeEvent;
@@ -25,7 +21,6 @@ import com.delsquared.lightningdots.utilities.TransitionEvent;
 import com.delsquared.lightningdots.utilities.TransitionTrigger;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
-import org.w3c.dom.Attr;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -35,8 +30,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.logging.Level;
 
 public class LevelDefinitionLadderHelper {
 
@@ -568,10 +561,8 @@ public class LevelDefinitionLadderHelper {
             double initialValue = this.initialValue;
             double maximumValue = this.maximumValue;
 
-            if (!(
-                    initialValue == -1.0
-                    && (name.contentEquals(ClickTarget.VARIABLE_NAME_X)
-                        || name.contentEquals(ClickTarget.VARIABLE_NAME_Y)))) {
+            if (!(name.contentEquals(ClickTarget.VARIABLE_NAME_X)
+                    || name.contentEquals(ClickTarget.VARIABLE_NAME_Y))) {
 
                 // Check if this variable uses initial value multipliers
                 if (usesInitialValueMultipliers) {

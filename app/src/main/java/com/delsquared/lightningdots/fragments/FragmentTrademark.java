@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 import java.util.Calendar;
 
@@ -45,22 +44,6 @@ public class FragmentTrademark extends android.support.v4.app.Fragment {
 	    
         return theLayout;
     }
-
-    /*
-    @Override
-    public void onInflate(Activity activity, AttributeSet attrs, Bundle savedInstanceState) {
-        super.onInflate(activity, attrs, savedInstanceState);
-
-        // Get our custom styles
-        TypedArray typedArray = activity.obtainStyledAttributes(attrs, R.styleable.FragmentTrademark);
-
-        // Set the text color
-        textColor = typedArray.getColor(R.styleable.FragmentTrademark_text_color, getResources().getColor(R.color.black));
-
-        // Recycle the typed array
-        typedArray.recycle();
-    }
-    */
 
     public static FragmentTrademark newInstance() {
 

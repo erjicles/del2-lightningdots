@@ -7,8 +7,8 @@
     <integer name="game_values_defaultGameEndingTimeMillis">2000</integer>
 
     <bool name="game_values_defaultRandomInitialTargetPosition">false</bool>
-    <item name="game_values_defaultInitialTargetPositionHorizontal" format="float" type="dimen">-1.0</item>
-    <item name="game_values_defaultInitialTargetPositionVertical" format="float" type="dimen">-1.0</item>
+    <item name="game_values_defaultInitialTargetPositionHorizontal" format="float" type="dimen">0.5</item>
+    <item name="game_values_defaultInitialTargetPositionVertical" format="float" type="dimen">0.5</item>
 
     <item name="game_values_defaultInitialTargetRadiusInches" format="float" type="dimen">1.0</item>
     <item name="game_values_defaultMinimumTargetRadiusInchesMultiplier" format="float" type="dimen">0.5</item>

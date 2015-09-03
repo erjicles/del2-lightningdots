@@ -1,25 +1,19 @@
 package com.delsquared.lightningdots.fragments;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.IabHelper;
 import com.delsquared.lightningdots.billing_utilities.IabResult;
 import com.delsquared.lightningdots.billing_utilities.Inventory;
 import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.billing_utilities.SkuDetails;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.PurchaseHelper;
 
 public class FragmentStore extends android.support.v4.app.Fragment {

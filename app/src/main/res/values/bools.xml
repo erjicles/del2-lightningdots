@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <bool name="activity_game_allow_all_levels">true</bool>
-    <bool name="activity_game_show_click_target_properties">true</bool>
+    <bool name="activity_game_allow_all_levels">false</bool>
+    <bool name="activity_game_show_click_target_properties">false</bool>
 </resources>

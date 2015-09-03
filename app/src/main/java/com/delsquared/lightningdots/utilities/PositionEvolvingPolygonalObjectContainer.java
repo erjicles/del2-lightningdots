@@ -2,7 +2,6 @@ package com.delsquared.lightningdots.utilities;
 
 import com.delsquared.lightningdots.ntuple.NTuple;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 

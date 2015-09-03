@@ -1,10 +1,5 @@
 package com.delsquared.lightningdots.utilities;
 
-import com.delsquared.lightningdots.ntuple.NTuple;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class PositionEvolverVariableAttractorVectorCollection {
 
     private PositionVector attractorVectorSnapToVector;
