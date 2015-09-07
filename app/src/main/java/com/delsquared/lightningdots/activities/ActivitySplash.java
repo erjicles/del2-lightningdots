@@ -12,13 +12,12 @@ import android.preference.PreferenceManager;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.util.EntityUtils;
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class ActivitySplash extends Activity {
 
@@ -105,36 +104,48 @@ public class ActivitySplash extends Activity {
             // Check if we have an internet connection
             if (isConnected) {
 
-                try {
+                URL versionsWebServiceUrl = null;
+                HttpURLConnection versionsUrlConnection = null;
 
-                    // Get the versions web service url
-                    String versionsWebServiceUrl = mContext.getString(R.string.versions_url);
+                try {
 
                     // Get the request timeouts
                     int requestTimeout = Integer.parseInt(mContext.getString(R.string.request_timeout));
                     int requestSocketTimeout = Integer.parseInt(mContext.getString(R.string.request_socket_timeout));
 
-                    // Create the http request parameters
-                    HttpParams httpParameters = new BasicHttpParams();
+                    versionsWebServiceUrl = new URL(mContext.getString(R.string.versions_url));
 
-                    // Set the timeout for waiting for a connection to be established
-                    HttpConnectionParams.setConnectionTimeout(httpParameters, requestTimeout);
+                    versionsUrlConnection =
+                            (HttpURLConnection) versionsWebServiceUrl.openConnection();
+                    versionsUrlConnection.setReadTimeout(requestTimeout);
+                    versionsUrlConnection.setConnectTimeout(requestSocketTimeout);
+                    versionsUrlConnection.setRequestMethod("POST");
+                    versionsUrlConnection.setRequestProperty("Content-type", "application/json");
 
-                    // Set the timeout for waiting for a response
-                    HttpConnectionParams.setSoTimeout(httpParameters, requestSocketTimeout);
+                    InputStream versionsInputStream = new BufferedInputStream(versionsUrlConnection.getInputStream());
 
-                    // Create the http client
-                    DefaultHttpClient httpclient = new DefaultHttpClient(httpParameters);
+                    try {
 
-                    // Create the http post
-                    HttpPost httppost = new HttpPost(versionsWebServiceUrl);
+                        BufferedReader versionsReader = new BufferedReader(new InputStreamReader(versionsInputStream));
 
-                    // Set the post header
-                    httppost.setHeader("Content-type", "application/json");
+                        StringBuilder versionsStringBuilder = new StringBuilder();
 
-                    // Execute the request
-                    HttpResponse response = httpclient.execute(httppost);
-                    jsonResultString = EntityUtils.toString(response.getEntity());
+                        String currentLine;
+                        while ((currentLine = versionsReader.readLine()) != null) {
+                            versionsStringBuilder.append(currentLine);
+                        }
+
+                        jsonResultString = versionsStringBuilder.toString();
+
+                    } catch (Exception e) {
+
+                        throw e;
+
+                    } finally {
+                        if (versionsInputStream != null) {
+                            versionsInputStream.close();
+                        }
+                    }
 
                 } catch (Exception e) {
 
@@ -142,7 +153,9 @@ public class ActivitySplash extends Activity {
                     jsonResultString = "";
 
                 } finally {
-
+                    if (versionsUrlConnection != null) {
+                        versionsUrlConnection.disconnect();
+                    }
                 }
 
             }
