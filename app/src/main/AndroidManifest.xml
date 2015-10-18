@@ -11,13 +11,18 @@
         android:allowBackup="true"
         android:icon="@drawable/icon_lightningdots"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme"
+        android:backupAgent=".backup.LightningDotsBackupAgentHelper"
+        android:restoreAnyVersion="true">
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
         <meta-data
             android:name="com.google.android.gms.analytics.globalConfigResource"
             android:resource="@xml/tracker_config" />
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIROYHsUKjZVrldCCAQjEQXsEl-oadVA2bTD0RLQ" />
 
         <activity
             android:name="com.delsquared.lightningdots.activities.ActivitySplash"

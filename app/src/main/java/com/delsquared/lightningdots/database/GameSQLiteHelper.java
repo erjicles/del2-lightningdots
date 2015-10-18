@@ -13,9 +13,6 @@ public class GameSQLiteHelper extends SQLiteOpenHelper {
 	// Singleton
 	private static GameSQLiteHelper databaseInstance = null;
 
-	private static final String DATABASE_NAME = "";
-	private static final int DATABASE_VERSION = 1;
-
 	// Object for intrinsic lock
 	public static final Object sDataLock = new Object();
 	public static final String sDataLockExceptionTag = "lightningdots";

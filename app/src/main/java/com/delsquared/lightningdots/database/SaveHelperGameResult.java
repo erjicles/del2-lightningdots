@@ -1,8 +1,12 @@
 package com.delsquared.lightningdots.database;
 
+import android.app.backup.BackupManager;
 import android.content.Context;
+import android.util.Log;
 
+import com.delsquared.lightningdots.backup.LightningDotsBackupAgentHelper;
 import com.delsquared.lightningdots.game.GameResult;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class SaveHelperGameResult {
 
@@ -52,6 +56,10 @@ public class SaveHelperGameResult {
 			sqlHandler.beginTransaction();
 			sqlHandler.executeQuery(SQL_GAMERESULT_SAVE, args);
 			sqlHandler.setTransactionSuccessful();
+
+			Log.d(LightningDotsApplication.logTag, "Calling data changed in saveGameResult()...");
+
+			LightningDotsApplication.dataChanged(context);
 
 		} catch (Exception e) {
 

@@ -308,6 +308,10 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                     .commit();
         }
 
+        // Log the data changed
+        LightningDotsApplication.logDebugMessage("Calling dataChanged() in ActivityMain.onDialogPositiveClick()...");
+        LightningDotsApplication.dataChanged(this);
+
     }
 
     @Override

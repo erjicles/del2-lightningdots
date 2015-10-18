@@ -2,6 +2,7 @@ package com.delsquared.lightningdots.utilities;
 
 import android.app.Activity;
 import android.app.Application;
+import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
@@ -106,11 +107,36 @@ public class LightningDotsApplication extends Application {
                     .commit();
 
         }
+
+        logDebugMessage("Calling data changed in setHasPurchasedNoAds()...");
+        dataChanged(context);
+    }
+
+    public static void dataChanged(Context context) {
+        try {
+
+            logDebugMessage("LightningDotsApplication.dataChanged()...");
+
+            // Call the backup manager data changed
+            BackupManager backupManager = new BackupManager(context);
+            backupManager.dataChanged();
+
+            logDebugMessage("dataChanged() call complete.");
+        } catch (Exception e) {
+            logDebugErrorMessage("Call to dataChanged() failed...");
+            logDebugErrorMessage(e.getMessage());
+        }
     }
 
     public static void logDebugMessage(String message) {
         if (BuildConfig.DEBUG) {
             Log.d(logTag, message);
+        }
+    }
+
+    public static void logDebugErrorMessage(String message) {
+        if (BuildConfig.DEBUG) {
+            Log.e(logTag, message);
         }
     }
 
