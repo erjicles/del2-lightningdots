@@ -20,6 +20,9 @@ public class LightningDotsApplication extends Application {
 
     public static boolean hasPurchasedNoAds = false;
 
+    // Variables for settings
+    public static boolean settingShowInstructions = true;
+
     public static int numberOfGameTransitions = 0;
 
     public static boolean hasDisplayedUnableToSetUpBillingAlert = false;
@@ -47,7 +50,9 @@ public class LightningDotsApplication extends Application {
     public static final String logTag = "LightningDots";
 
     public LightningDotsApplication() {
+
         super();
+
     }
 
     /**
@@ -110,6 +115,29 @@ public class LightningDotsApplication extends Application {
 
         logDebugMessage("Calling data changed in setHasPurchasedNoAds()...");
         dataChanged(context);
+    }
+
+    public static void setShowInstructions(Context context, boolean showInstructions) {
+
+        LightningDotsApplication.settingShowInstructions = showInstructions;
+
+        // Get the shared preferences reference
+        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+
+        synchronized (lockSharedPreferences) {
+
+            // Update the shared preferences file
+            sharedPref.edit()
+                    .putBoolean(
+                            context.getString(R.string.pref_setting_show_instructions)
+                            , showInstructions)
+                    .commit();
+
+        }
+
+        logDebugMessage("Calling data changed in setShowInstructions()...");
+        dataChanged(context);
+
     }
 
     public static void dataChanged(Context context) {

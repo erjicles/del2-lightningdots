@@ -14,6 +14,30 @@
             style="@style/MainLinearLayout">
 
             <TextView
+                android:id="@+id/fragment_settings_textview_settings"
+                style="@style/MainMenuSectionHeader"
+                android:text="@string/fragment_settings_textview_settings_title"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_settings_linearlayout_settingsmenu"
+                style="@style/MainMenuSection">
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_linearlayout_settingsmenu_show_instructions"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <CheckBox
+                        android:id="@+id/fragment_settings_checkbox_show_instructions"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fragment_settings_checkbox_show_instructions"
+                        android:onClick="checkChanged_ShowInstructions"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/fragment_settings_textview_game_history_title"
                 style="@style/MainMenuSectionHeader"
                 android:text="@string/fragment_settings_textview_gamehistorymenu_title"/>

@@ -90,6 +90,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.delsquared.lightningdots.activities.ActivityMain" />
         </activity>
+        <activity
+            android:name="com.delsquared.lightningdots.activities.ActivityInstructions"
+            android:label="@string/title_activity_instructions"
+            android:parentActivityName="com.delsquared.lightningdots.activities.ActivityMain"
+            android:noHistory="true">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.delsquared.lightningdots.activities.ActivityInstructions"/>
+        </activity>
     </application>
 
 </manifest>

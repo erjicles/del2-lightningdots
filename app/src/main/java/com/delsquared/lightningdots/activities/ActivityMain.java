@@ -44,6 +44,16 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         // Handle showing the accept terms dialog
         toggleAcceptTermsDialog();
 
+        // ---------- BEGIN Load saved settings ---------- //
+        // Get the saved preferences reference
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferences_file_name), MODE_PRIVATE);
+
+        // Set the global settings flag from the saved prefs
+        LightningDotsApplication.settingShowInstructions =
+                sharedPref.getBoolean(getString(R.string.pref_setting_show_instructions), true);
+
+        // ---------- END Load saved settings ---------- //
+
         // Setup the purchase helper
         purchaseHelper = new PurchaseHelper(
                 this
@@ -121,10 +131,23 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
     private void launchGame(int gameType) {
 
-        // Start the game activity
-        Intent intent = new Intent(this, ActivityGame.class);
-        intent.putExtra(EXTRA_GAME_TYPE, gameType);
-        startActivity(intent);
+        // Check if we should show the instructions
+        if (LightningDotsApplication.settingShowInstructions
+                && gameType == Game.GameType.AGILITY.ordinal()) {
+
+            // Start the instructions activity
+            Intent intent = new Intent(this, ActivityInstructions.class);
+            intent.putExtra(EXTRA_GAME_TYPE, gameType);
+            startActivity(intent);
+
+        } else { // Do not show instructions
+
+            // Start the game activity
+            Intent intent = new Intent(this, ActivityGame.class);
+            intent.putExtra(EXTRA_GAME_TYPE, gameType);
+            startActivity(intent);
+
+        }
 
     }
 

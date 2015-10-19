@@ -3,6 +3,7 @@ package com.delsquared.lightningdots.activities;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.fragments.FragmentSettings;
@@ -37,5 +38,24 @@ public class ActivitySettings extends FragmentActivity {
                 , getString(R.string.event_actionid_settings_googleanalytics)
                 , getString(R.string.fragment_settings_button_delete_game_history)
                 , 0);
+    }
+
+    public void checkChanged_ShowInstructions(View view) {
+
+        FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
+        if (fragmentSettings != null) {
+            CheckBox checkBoxShowInstructions = (CheckBox) view;
+            boolean isChecked = checkBoxShowInstructions.isChecked();
+            fragmentSettings.checkboxChanged_ShowInstructions(isChecked);
+        }
+
+        // Track the button click
+        UtilityFunctions.sendEventTracker(
+                this
+                , getString(R.string.event_category_buttonclick)
+                , getString(R.string.event_actionid_settings_googleanalytics)
+                , getString(R.string.fragment_settings_checkbox_show_instructions)
+                , 0);
+
     }
 }
