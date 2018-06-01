@@ -87,8 +87,8 @@ public class UtilityFunctions {
             globalTracker.setScreenName(screenName);
 
             // Send a screen view.
-            appTracker.send(new HitBuilders.AppViewBuilder().build());
-            globalTracker.send(new HitBuilders.AppViewBuilder().build());
+            appTracker.send(new HitBuilders.ScreenViewBuilder().build());
+            globalTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         } catch (Exception e) {
 

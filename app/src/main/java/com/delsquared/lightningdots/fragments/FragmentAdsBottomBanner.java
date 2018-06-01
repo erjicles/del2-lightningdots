@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.google.ads.consent.ConsentStatus;
+import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -28,6 +30,27 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+	}
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        LightningDotsApplication.logDebugMessage("FragmentAdsBottomBanner.onResume()");
+
+        handleToggleAds();
+
+    }
+
+    public static FragmentAdsBottomBanner newInstance(boolean addMargins) {
+
+		// Create the new instance
+		FragmentAdsBottomBanner f = new FragmentAdsBottomBanner();
+		
+        return f;
+
+	}
+
+	public void handleToggleAds() {
 
         // Get the shared preference for removing ads
         SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
@@ -39,19 +62,22 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
         }
         hasPurchasedNoAds = hasPurchasedNoAds || LightningDotsApplication.hasPurchasedNoAds;
 
-        toggleAds(!hasPurchasedNoAds);
-		
-	}
-	
-	public static FragmentAdsBottomBanner newInstance(boolean addMargins) {
+        // Track if this is a EEA user who hasn't given consent
+        boolean isEEAUserWithoutConsent =
+                LightningDotsApplication.userIsFromEEA
+                        && (
+                        LightningDotsApplication.userPrefersNoAds
+                                || ConsentStatus.UNKNOWN.equals(LightningDotsApplication.consentStatus));
 
-		// Create the new instance
-		FragmentAdsBottomBanner f = new FragmentAdsBottomBanner();
-		
-        return f;
+        LightningDotsApplication.logDebugMessage("hasPurchasedNoAds: " + hasPurchasedNoAds + "; isEEAUserWithoutConsent: " + isEEAUserWithoutConsent);
+        boolean toggleAdsOff = hasPurchasedNoAds || isEEAUserWithoutConsent;
+        LightningDotsApplication.logDebugMessage("toggleAdsOff: " + toggleAdsOff);
+        toggleAds(!toggleAdsOff);
+
     }
 
-    public void toggleAds(boolean toggleOn) {
+    private void toggleAds(boolean toggleOn) {
+	    LightningDotsApplication.logDebugMessage("toggleAds: toggleOn: " + toggleOn);
 
         // Get the adview
         View fragmentView = getView();
@@ -87,6 +113,12 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
 
                 } else {
 
+                    // Enable loading ads
+                    adView.setEnabled(true);
+
+                    // Show the ads
+                    fragmentView.setVisibility(View.VISIBLE);
+
                     // Create the ad request builder
                     AdRequest.Builder adRequestBuilder = new AdRequest.Builder()
                             .addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
@@ -102,8 +134,16 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
 
                     //}
 
+                    // Create the bundle for user ad preferences
+                    Bundle extras = new Bundle();
+                    if (ConsentStatus.NON_PERSONALIZED.equals(LightningDotsApplication.consentStatus)) {
+                        extras.putString("npa", "1");
+                    }
+
                     // Create the ad request
-                    AdRequest adRequest = adRequestBuilder.build();
+                    AdRequest adRequest = adRequestBuilder
+                            .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                            .build();
 
                     // Load the ad
                     adView.loadAd(adRequest);
@@ -115,21 +155,21 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
                         public void onAdLoaded() {
                             super.onAdLoaded();
 
-                            View fragmentView = (View) getView();
-
-                            if (fragmentView != null) {
-
-                                // Get the adview
-                                AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
-
-                                if (adView != null) {
-
-                                    // Show the adView
-                                    adView.setVisibility(View.VISIBLE);
-
-                                }
-
-                            }
+//                            View fragmentView = (View) getView();
+//
+//                            if (fragmentView != null) {
+//
+//                                // Get the adview
+//                                AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
+//
+//                                if (adView != null) {
+//
+//                                    // Show the adView
+//                                    adView.setVisibility(View.VISIBLE);
+//
+//                                }
+//
+//                            }
 
                         }
 

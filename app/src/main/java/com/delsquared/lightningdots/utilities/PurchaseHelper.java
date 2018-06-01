@@ -31,6 +31,9 @@ public class PurchaseHelper {
     public static final String PRODUCT_SKU_REMOVE_ADS = "com.delsquared.lightningdots.products.remove_ads";
     public static final int PRODUCT_RC_REQUEST_REMOVE_ADS = 10001;
 
+    public static final String PRODUCT_SKU_SAY_THANKS = "com.delsquared.lightningdots.products.saythanks";
+    public static final int PRODUCT_RC_REQUEST_SAY_THANKS = 10101;
+
     Context context;
     private IabHelper iabHelper;
     private boolean iabHelperSetupComplete = false;
@@ -101,6 +104,7 @@ public class PurchaseHelper {
 
         ArrayList<String> arrayListProductSKU = new ArrayList<>();
         arrayListProductSKU.add(PRODUCT_SKU_REMOVE_ADS);
+        arrayListProductSKU.add(PRODUCT_SKU_SAY_THANKS);
 
         iabHelper.queryInventoryAsync(
                 true
@@ -221,6 +225,17 @@ public class PurchaseHelper {
             LightningDotsApplication.logDebugMessage("Purchase is remove ads. Congratulating user.");
             alert("Thank you for supporting independent developers! Say goodbye to those pesky ads!");
             LightningDotsApplication.setHasPurchasedNoAds(context, true);
+
+        } else if (purchase.getSku().equals(PRODUCT_SKU_SAY_THANKS)) {
+
+            // The user has bought the "say thanks" item
+            LightningDotsApplication.logDebugMessage("Purchase is say thank you. Congratulating user.");
+            iabHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
+                @Override
+                public void onConsumeFinished(Purchase purchase, IabResult result) {
+                    alert("Thank you for supporting independent developers!!");
+                }
+            });
 
         }
 

@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
+import com.google.ads.consent.ConsentStatus;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
@@ -19,6 +20,9 @@ public class LightningDotsApplication extends Application {
     public static Object lockSharedPreferences = new Object();
 
     public static boolean hasPurchasedNoAds = false;
+    public static ConsentStatus consentStatus = ConsentStatus.UNKNOWN;
+    public static boolean userPrefersNoAds = false;
+    public static boolean userIsFromEEA = false;
 
     // Variables for settings
     public static boolean settingShowInstructions = true;

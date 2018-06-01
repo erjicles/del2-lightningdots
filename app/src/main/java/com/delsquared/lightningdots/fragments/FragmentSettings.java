@@ -2,6 +2,7 @@ package com.delsquared.lightningdots.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
@@ -11,15 +12,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.database.DeleterHelperGameResult;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.utilities.EEAConsentManager;
+import com.delsquared.lightningdots.utilities.IEEAConsentListener;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 
-public class FragmentSettings extends android.support.v4.app.Fragment {
+public class FragmentSettings extends android.support.v4.app.Fragment implements IEEAConsentListener {
 
     public static FragmentSettings newInstance() {
 
@@ -57,6 +61,10 @@ public class FragmentSettings extends android.support.v4.app.Fragment {
 
         // ---------- END Initialize the settings ---------- //
 
+        // ---------- BEGIN Toggle the ad consent ---------- //
+        LinearLayout linearLayoutAdConsent = (LinearLayout) rootView.findViewById(R.id.fragment_settings_linearlayout_settingsmenu_change_consent);
+        linearLayoutAdConsent.setVisibility(LightningDotsApplication.userIsFromEEA ? View.VISIBLE : View.GONE);
+        // ---------- END Toggle the ad consent ---------- //
 
         return rootView;
     }
@@ -117,4 +125,15 @@ public class FragmentSettings extends android.support.v4.app.Fragment {
 
     }
 
+    public void onClick_ChangeConsent() {
+        EEAConsentManager consentManager = new EEAConsentManager(this);
+        consentManager.handleAdConsent(true);
+    }
+
+    @Override
+    public void onHandleConsentFinished() {
+        FragmentAdsBottomBanner fragmentAdsBottomBanner =
+                (FragmentAdsBottomBanner) getChildFragmentManager().findFragmentById(R.id.fragment_main_fragment_ads_bottom_banner);
+        fragmentAdsBottomBanner.handleToggleAds();
+    }
 }

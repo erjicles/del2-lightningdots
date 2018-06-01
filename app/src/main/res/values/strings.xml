@@ -10,6 +10,7 @@
 
     <string name="ads_ad_unit_game_interstitials">ca-app-pub-3137388249745402/5514643977</string>
     <string name="ads_ad_unit_bottom_banner">ca-app-pub-3137388249745402/2671608772</string>
+    <string name="admob_publisher_id">pub-3137388249745402</string>
 
     <!-- Google analytics -->
     <string name="event_category_buttonclick">BUTTON_CLICK</string>
@@ -36,7 +37,7 @@
     <!-- Accept terms dialog requests -->
     <string name="request_timeout">3000</string>
     <string name="request_socket_timeout">5000</string>
-    <string name="versions_url">http://www.delsquaredllc.com/versions.php</string>
+    <string name="versions_url">https://www.delsquaredllc.com/versions.php</string>
     <string name="json_response_key_termsofservice">tos</string>
     <string name="json_response_key_privacypolicy">pp</string>
 
@@ -187,6 +188,7 @@
     <string name="fragment_settings_toast_game_history_deleted">Game history deleted</string>
     <string name="fragment_settings_textview_settings_title">Settings</string>
     <string name="fragment_settings_checkbox_show_instructions">Show instructions</string>
+    <string name="fragment_settings_button_change_consent">Update ad consent</string>
 
 
     <!-- About activity -->
@@ -216,6 +218,10 @@
     <string name="product_remove_ads_title">Remove ads</string>
     <string name="product_remove_ads_price">$0.99</string>
     <string name="product_remove_ads_description">Remove ads</string>
+
+    <string name="product_say_thanks_title">Thank The Developer</string>
+    <string name="product_say_thanks_price">$2.00</string>
+    <string name="product_say_thanks_description">Send the developer a couple of bucks as a thank you for their hard work</string>
 
     <!-- Other settings -->
     <string name="preferences_file_name">LightningDotsPreferences</string>

@@ -28,7 +28,6 @@ import java.util.Date;
 public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
 	public static final String ARGUMENT_GAME_TYPE = "com.delsquared.lightningdots.gametype";
-    private static final String LIGHTNINGDOTS_GAME_INTERSTITIAL_AD_UNIT_ID = "ca-app-pub-3137388249745402/5514643977";
 
 	private int currentGameType = Game.GameType.AGILITY.ordinal();
     private int currentGameLevel = 1;
@@ -255,8 +254,11 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     public void showInterstitialAd() {
 
-        // Check if the user has not purchased the nod ads item
-        if (LightningDotsApplication.hasPurchasedNoAds) {
+        // Check if the user has purchased the no ads item
+        // or if the user is a non-consenting EEU user
+        if (LightningDotsApplication.hasPurchasedNoAds
+                || (LightningDotsApplication.userIsFromEEA
+                    && LightningDotsApplication.userPrefersNoAds)) {
             return;
         }
 
@@ -270,8 +272,11 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     public void loadInterstitialAd() {
 
-        // Check if the user has not purchased the nod ads item
-        if (LightningDotsApplication.hasPurchasedNoAds) {
+        // Check if the user has purchased the no ads item
+        // or if the user is a non-consenting EEU user
+        if (LightningDotsApplication.hasPurchasedNoAds
+                || (LightningDotsApplication.userIsFromEEA
+                && LightningDotsApplication.userPrefersNoAds)) {
             return;
         }
 

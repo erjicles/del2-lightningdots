@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.delsquared.lightningdots.activities.ActivitySettings$FragmentSettings">
+    tools:context="com.delsquared.lightningdots.activities.ActivitySettings">
 
     <ScrollView
         android:id="@+id/fragment_settings_scrollview_main"
@@ -32,6 +32,19 @@
                         android:layout_height="wrap_content"
                         android:text="@string/fragment_settings_checkbox_show_instructions"
                         android:onClick="checkChanged_ShowInstructions"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/fragment_settings_linearlayout_settingsmenu_change_consent"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <Button
+                        android:id="@+id/fragment_settings_button_change_consent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fragment_settings_button_change_consent"
+                        android:onClick="onClick_ChangeConsent"/>
 
                 </LinearLayout>
 

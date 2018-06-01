@@ -9,8 +9,8 @@ android {
         applicationId "com.delsquared.lightningdots"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 17
-        versionName "1.17"
+        versionCode 19
+        versionName "1.19"
     }
     buildTypes {
         release {
@@ -27,6 +27,9 @@ dependencies {
     //implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:support-v4:27.1.1'
     implementation 'com.android.support:customtabs:27.1.1'
+    implementation 'com.android.support:animated-vector-drawable:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
     implementation 'com.google.android.gms:play-services-ads:15.0.1'
-    implementation 'com.google.android.gms:play-services-analytics:15.0.2'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.0'
+    implementation 'com.google.android.ads.consent:consent-library:1.0.2'
 }

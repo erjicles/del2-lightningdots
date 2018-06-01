@@ -8,18 +8,29 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.EEAConsentManager;
+import com.delsquared.lightningdots.utilities.IEEAConsentListener;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
+import com.google.ads.consent.ConsentForm;
+import com.google.ads.consent.ConsentFormListener;
+import com.google.ads.consent.ConsentInfoUpdateListener;
+import com.google.ads.consent.ConsentInformation;
+import com.google.ads.consent.ConsentStatus;
+import com.google.ads.consent.DebugGeography;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
-public class ActivitySplash extends Activity {
+public class ActivitySplash extends Activity implements IEEAConsentListener {
 
     // Splash screen timer
     private static int SPLASH_TIME_OUT = 3000;
@@ -71,6 +82,24 @@ public class ActivitySplash extends Activity {
 
         if (versionsLoadComplete == true && splashTimeoutFinished == true) {
 
+            // Handle checking for consent to show personalized ads
+            EEAConsentManager consentManager = new EEAConsentManager(this);
+            consentManager.handleAdConsent();
+
+        }
+
+    }
+
+    private void continueToApp() {
+
+        // Check if the user is an EEA user who wants no ads
+        if (LightningDotsApplication.userPrefersNoAds) {
+            // Launch the store activity
+            Intent storeIntent = new Intent(ActivitySplash.this, ActivityStore.class);
+            startActivity(storeIntent);
+            finish();
+        } else {
+
             // Launch the main activity
             Intent mainIntent = new Intent(ActivitySplash.this, ActivityMain.class);
             mainIntent.putExtra(JSON_VERSIONS_STRING_KEY, jsonVersionsString);
@@ -82,6 +111,16 @@ public class ActivitySplash extends Activity {
 
         }
 
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void onHandleConsentFinished() {
+        continueToApp();
     }
 
     private class VersionsAsyncTask extends AsyncTask<Void, Void, String> {
@@ -103,6 +142,7 @@ public class ActivitySplash extends Activity {
 
             // Check if we have an internet connection
             if (isConnected) {
+                LightningDotsApplication.logDebugMessage("Internet connection detected...");
 
                 URL versionsWebServiceUrl = null;
                 HttpURLConnection versionsUrlConnection = null;
@@ -149,6 +189,7 @@ public class ActivitySplash extends Activity {
 
                 } catch (Exception e) {
 
+                    LightningDotsApplication.logDebugErrorMessage("Error while requesting versions: " + e.getMessage());
                     // Reset the result string
                     jsonResultString = "";
 
@@ -159,6 +200,7 @@ public class ActivitySplash extends Activity {
                 }
 
             }
+            LightningDotsApplication.logDebugMessage("Versions json result: " + jsonResultString);
 
             return jsonResultString;
         }
@@ -174,4 +216,5 @@ public class ActivitySplash extends Activity {
         }
 
     }
+
 }

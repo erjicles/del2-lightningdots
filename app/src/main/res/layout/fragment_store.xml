@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.delsquared.lightningdots.activities.ActivityStore$PlaceholderFragment">
+    tools:context="com.delsquared.lightningdots.activities.ActivityStore">
 
     <ScrollView
         android:id="@+id/fragment_store_scrollview_main"

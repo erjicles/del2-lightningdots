@@ -58,4 +58,21 @@ public class ActivitySettings extends FragmentActivity {
                 , 0);
 
     }
+
+    public void onClick_ChangeConsent(View view) {
+
+        FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
+        if (fragmentSettings != null) {
+            fragmentSettings.onClick_ChangeConsent();
+        }
+
+        // Track the button click
+        UtilityFunctions.sendEventTracker(
+                this
+                , getString(R.string.event_category_buttonclick)
+                , getString(R.string.event_actionid_settings_googleanalytics)
+                , getString(R.string.fragment_settings_button_change_consent)
+                , 0);
+
+    }
 }

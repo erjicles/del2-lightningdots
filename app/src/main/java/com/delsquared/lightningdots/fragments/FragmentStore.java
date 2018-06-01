@@ -14,6 +14,7 @@ import com.delsquared.lightningdots.billing_utilities.IabResult;
 import com.delsquared.lightningdots.billing_utilities.Inventory;
 import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.billing_utilities.SkuDetails;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.PurchaseHelper;
 
 public class FragmentStore extends android.support.v4.app.Fragment {
@@ -173,7 +174,7 @@ public class FragmentStore extends android.support.v4.app.Fragment {
                 // Inflate the view for non-purchased ads
                 View availableAdsView = layoutInflater.inflate(R.layout.menu_item_store_available, null);
 
-                // Add the new available ads view to the purchased items linear layout
+                // Add the new available ads view to the available items linear layout
                 if (linearLayoutInventory != null) {
 
                     TextView textViewTitle = (TextView) availableAdsView.findViewById(R.id.menu_item_store_title);
@@ -208,14 +209,63 @@ public class FragmentStore extends android.support.v4.app.Fragment {
             }
 
         } catch (Exception e) {
-
+            LightningDotsApplication.logDebugErrorMessage("FragmentStore.updateUI(): " + e.getMessage());
         }
         // ---------- END Handle Item Remove Ads ---------- //
+
+        // ---------- BEGIN Handle Item Say Thanks ---------- //
+
+        try {
+
+            SkuDetails skuDetailsSayThanks = inventory.getSkuDetails(PurchaseHelper.PRODUCT_SKU_SAY_THANKS);
+
+            String titleSayThanks = skuDetailsSayThanks.getTitle();
+            String descriptionSayThanks = skuDetailsSayThanks.getDescription();
+            String priceSayThanks = skuDetailsSayThanks.getPrice();
+
+            // Inflate the view for non-purchased ads
+            View availableThanksView = layoutInflater.inflate(R.layout.menu_item_store_available, null);
+
+            // Add the new available thanks view to the available items linear layout
+            if (linearLayoutInventory != null) {
+
+                TextView textViewTitle = (TextView) availableThanksView.findViewById(R.id.menu_item_store_title);
+                TextView textViewDescription = (TextView) availableThanksView.findViewById(R.id.menu_item_store_description);
+                TextView textViewPrice = (TextView) availableThanksView.findViewById(R.id.menu_item_store_price);
+
+                textViewTitle.setText(titleSayThanks);
+                textViewDescription.setText(descriptionSayThanks);
+                textViewPrice.setText(priceSayThanks);
+
+                linearLayoutInventory.setOnClickListener(new View.OnClickListener() {
+
+                    @Override
+                    public void onClick(View v) {
+
+                        // Launch the purchase flow for removing ads
+                        purchaseHelper.launchPurchaseFlow(
+                                PurchaseHelper.PRODUCT_SKU_SAY_THANKS
+                                , PurchaseHelper.PRODUCT_RC_REQUEST_SAY_THANKS);
+                        updateUI();
+
+                    }
+
+                });
+
+                linearLayoutInventory.addView(availableThanksView);
+
+            }
+
+        } catch (Exception e) {
+            LightningDotsApplication.logDebugErrorMessage("FragmentStore.updateUI(): " + e.getMessage());
+        }
+
+        // ---------- END Handle Item Say Thanks ---------- //
 
         // Update the bottom banner ad fragment
         FragmentAdsBottomBanner fragmentAdsBottomBanner = (FragmentAdsBottomBanner) getChildFragmentManager().findFragmentById(R.id.fragment_main_fragment_ads_bottom_banner);
         if (fragmentAdsBottomBanner != null) {
-            fragmentAdsBottomBanner.toggleAds(!purchaseHelper.getHasPurchasedNoAds());
+            fragmentAdsBottomBanner.handleToggleAds();
         }
 
     }
