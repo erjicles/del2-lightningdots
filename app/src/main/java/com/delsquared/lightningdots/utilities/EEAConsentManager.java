@@ -28,13 +28,20 @@ public class EEAConsentManager {
         // Get the consent information
         ConsentInformation consentInformation = ConsentInformation.getInstance(listener.getContext());
 
+        // Set test devices
+        String[] testDeviceIds = listener.getContext().getResources().getStringArray(R.array.test_device_ids_consent);
+        for (String testDeviceId : testDeviceIds) {
+            consentInformation.addTestDevice(testDeviceId);
+        }
+
         // For debug, set geographical area to EEA
         if (BuildConfig.DEBUG) {
             consentInformation.setDebugGeography(DebugGeography.DEBUG_GEOGRAPHY_EEA);
         }
 
         // Check if the user is in the EEA
-        if (consentInformation.isRequestLocationInEeaOrUnknown()) {
+        if (consentInformation.isRequestLocationInEeaOrUnknown()
+                || consentInformation.isTestDevice()) {
 
             // Set the flag for the user being from the EEA
             LightningDotsApplication.userIsFromEEA = true;

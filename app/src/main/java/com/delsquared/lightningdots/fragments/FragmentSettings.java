@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -16,6 +17,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.activities.ActivityMain;
+import com.delsquared.lightningdots.activities.ActivitySplash;
+import com.delsquared.lightningdots.activities.ActivityStore;
 import com.delsquared.lightningdots.database.DeleterHelperGameResult;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.utilities.EEAConsentManager;
@@ -135,5 +139,12 @@ public class FragmentSettings extends android.support.v4.app.Fragment implements
         FragmentAdsBottomBanner fragmentAdsBottomBanner =
                 (FragmentAdsBottomBanner) getChildFragmentManager().findFragmentById(R.id.fragment_main_fragment_ads_bottom_banner);
         fragmentAdsBottomBanner.handleToggleAds();
+
+        // Check if the user is an EEA user who wants no ads
+        if (LightningDotsApplication.userPrefersNoAds) {
+            // Launch the store activity
+            Intent storeIntent = new Intent(getActivity(), ActivityStore.class);
+            startActivity(storeIntent);
+        }
     }
 }

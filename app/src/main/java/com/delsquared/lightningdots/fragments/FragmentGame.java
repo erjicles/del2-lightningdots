@@ -298,17 +298,11 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         // Optionally populate the ad request builder.
         adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
 
-        // Check if we are in debug mode
-        //if (BuildConfig.DEBUG) {
-
         // Add specific devices to test device list
-        // Motorolla Droid Rarz Maxx HD
-        adRequestBuilder.addTestDevice("8D7B51BEF3C6133F9AF035FCDF3ADF9A");
-        // Samsung Galaxy S5
-        adRequestBuilder.addTestDevice("C9BC6FE19C043A1AD5D28B767D91CE18");
-
-        //}
-
+        String[] testDeviceIds = getResources().getStringArray(R.array.test_device_ids_ads);
+        for (String testDeviceId : testDeviceIds) {
+            adRequestBuilder.addTestDevice(testDeviceId);
+        }
 
         // Start loading the ad now so that it is ready by the time the user is ready to go to
         // the next level.

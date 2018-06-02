@@ -223,7 +223,7 @@ public class PurchaseHelper {
 
             // The user bought the remove ads item
             LightningDotsApplication.logDebugMessage("Purchase is remove ads. Congratulating user.");
-            alert("Thank you for supporting independent developers! Say goodbye to those pesky ads!");
+            alert(context.getString(R.string.product_remove_ads_thanks));
             LightningDotsApplication.setHasPurchasedNoAds(context, true);
 
         } else if (purchase.getSku().equals(PRODUCT_SKU_SAY_THANKS)) {
@@ -233,7 +233,7 @@ public class PurchaseHelper {
             iabHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
                 @Override
                 public void onConsumeFinished(Purchase purchase, IabResult result) {
-                    alert("Thank you for supporting independent developers!!");
+                    alert(context.getString(R.string.product_say_thanks_thanks));
                 }
             });
 

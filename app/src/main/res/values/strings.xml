@@ -218,10 +218,12 @@
     <string name="product_remove_ads_title">Remove ads</string>
     <string name="product_remove_ads_price">$0.99</string>
     <string name="product_remove_ads_description">Remove ads</string>
+    <string name="product_remove_ads_thanks">Thanks for supporting independent developers, say goodbye to those pesky ads!!</string>
 
     <string name="product_say_thanks_title">Thank The Developer</string>
     <string name="product_say_thanks_price">$2.00</string>
     <string name="product_say_thanks_description">Send the developer a couple of bucks as a thank you for their hard work</string>
+    <string name="product_say_thanks_thanks">You\'re an awesome person. Thanks for supporting independent developers, you deserve joy and happiness in your life!!!</string>
 
     <!-- Other settings -->
     <string name="preferences_file_name">LightningDotsPreferences</string>

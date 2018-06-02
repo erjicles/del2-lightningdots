@@ -9,8 +9,8 @@ android {
         applicationId "com.delsquared.lightningdots"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 19
-        versionName "1.19"
+        versionCode 20
+        versionName "1.20"
     }
     buildTypes {
         release {
