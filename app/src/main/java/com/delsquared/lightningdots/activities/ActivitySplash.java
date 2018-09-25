@@ -10,6 +10,12 @@ import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.EEAConsentManager;
 import com.delsquared.lightningdots.utilities.IEEAConsentListener;
@@ -21,6 +27,8 @@ import com.google.ads.consent.ConsentInfoUpdateListener;
 import com.google.ads.consent.ConsentInformation;
 import com.google.ads.consent.ConsentStatus;
 import com.google.ads.consent.DebugGeography;
+
+import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -50,18 +58,9 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
         // Get the shared preferences
         SharedPreferences userPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
-        // Get the setting on whether we should opt out of google analytics
-        //boolean googleAnalyticsOptOut =
-        //        userPrefs.getBoolean(getString(R.string.pref_general_googleanalytics_key), false);
-
-        // Toggle the google analytics opt out app setting
-        //GoogleAnalytics.getInstance(this).setAppOptOut(googleAnalyticsOptOut);
-
-
 
         // Get and execute the thread that gets the current terms of service version
-        VersionsAsyncTask versionsTask = new VersionsAsyncTask(getApplicationContext());
-        versionsTask.execute();
+        startGetVersions();
 
 
         // Initiate the splash wait
@@ -76,6 +75,71 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
             }
 
         }, SPLASH_TIME_OUT);
+    }
+
+    private void startGetVersions() {
+
+        Context context = getContext();
+
+        // If there's no internet connection, use default version
+        if (!UtilityFunctions.getHasInternetConnection(context)) {
+            finishGetVersions("");
+        }
+
+        try {
+
+            // Get the versions web service url
+            String versionsWebServiceUrl = context.getString(R.string.versions_url);
+
+            // Get the request timeouts
+            int requestTimeout = Integer.parseInt(context.getString(R.string.request_timeout));
+            int requestSocketTimeout = Integer.parseInt(context.getString(R.string.request_socket_timeout));
+
+            // Instantiate the RequestQueue.
+            RequestQueue queue = Volley.newRequestQueue(getContext());
+
+            // Make the request
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    versionsWebServiceUrl,
+                    null,
+                    new Response.Listener<JSONObject>() {
+
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            finishGetVersions(response.toString());
+                        }
+
+                    },
+                    new Response.ErrorListener() {
+
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            LightningDotsApplication.logDebugErrorMessage(error.getMessage());
+                            finishGetVersions("");
+                        }
+
+                    }
+            );
+
+            // Add the request to the RequestQueue
+            queue.add(jsonObjectRequest);
+
+        } catch (Exception e) {
+
+            // Reset the result string
+            LightningDotsApplication.logDebugErrorMessage(e.getMessage());
+            finishGetVersions("");
+
+        }
+
+    }
+
+    private void finishGetVersions(String result) {
+        jsonVersionsString = result;
+        versionsLoadComplete = true;
+        versionsLoadSuccessful = (result.length() > 0);
+        finishSplash();
     }
 
     private void finishSplash() {
@@ -121,100 +185,6 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
     @Override
     public void onHandleConsentFinished() {
         continueToApp();
-    }
-
-    private class VersionsAsyncTask extends AsyncTask<Void, Void, String> {
-
-        private Context mContext;
-
-        public VersionsAsyncTask(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        protected String doInBackground(Void... params) {
-
-            // Initialize the result string
-            String jsonResultString = "";
-
-            // Initialize if we are connected
-            boolean isConnected = UtilityFunctions.getHasInternetConnection(mContext);
-
-            // Check if we have an internet connection
-            if (isConnected) {
-                LightningDotsApplication.logDebugMessage("Internet connection detected...");
-
-                URL versionsWebServiceUrl = null;
-                HttpURLConnection versionsUrlConnection = null;
-
-                try {
-
-                    // Get the request timeouts
-                    int requestTimeout = Integer.parseInt(mContext.getString(R.string.request_timeout));
-                    int requestSocketTimeout = Integer.parseInt(mContext.getString(R.string.request_socket_timeout));
-
-                    versionsWebServiceUrl = new URL(mContext.getString(R.string.versions_url));
-
-                    versionsUrlConnection =
-                            (HttpURLConnection) versionsWebServiceUrl.openConnection();
-                    versionsUrlConnection.setReadTimeout(requestTimeout);
-                    versionsUrlConnection.setConnectTimeout(requestSocketTimeout);
-                    versionsUrlConnection.setRequestMethod("POST");
-                    versionsUrlConnection.setRequestProperty("Content-type", "application/json");
-
-                    InputStream versionsInputStream = new BufferedInputStream(versionsUrlConnection.getInputStream());
-
-                    try {
-
-                        BufferedReader versionsReader = new BufferedReader(new InputStreamReader(versionsInputStream));
-
-                        StringBuilder versionsStringBuilder = new StringBuilder();
-
-                        String currentLine;
-                        while ((currentLine = versionsReader.readLine()) != null) {
-                            versionsStringBuilder.append(currentLine);
-                        }
-
-                        jsonResultString = versionsStringBuilder.toString();
-
-                    } catch (Exception e) {
-
-                        throw e;
-
-                    } finally {
-                        if (versionsInputStream != null) {
-                            versionsInputStream.close();
-                        }
-                    }
-
-                } catch (Exception e) {
-
-                    LightningDotsApplication.logDebugErrorMessage("Error while requesting versions: " + e.getMessage());
-                    // Reset the result string
-                    jsonResultString = "";
-
-                } finally {
-                    if (versionsUrlConnection != null) {
-                        versionsUrlConnection.disconnect();
-                    }
-                }
-
-            }
-            LightningDotsApplication.logDebugMessage("Versions json result: " + jsonResultString);
-
-            return jsonResultString;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            jsonVersionsString = result;
-            versionsLoadComplete = true;
-            versionsLoadSuccessful = (result.length() > 0);
-            finishSplash();
-
-        }
-
     }
 
 }
