@@ -175,7 +175,7 @@ public class PurchaseHelper {
             String productSKU
             , int purchaseID) {
 
-        if (iabHelper == null || !iabHelperSetupComplete) {
+        if (iabHelper == null || !iabHelperSetupComplete || iabHelper.getAsyncInProgress()) {
             return;
         }
 
