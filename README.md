@@ -13,7 +13,8 @@ Lightning Dots is currently available in the Google Play Store
 
 ## Background
 
-I created this game mainly as a way to practice my Java skills,
+I created this game mainly during my free time
+as a way to practice my Java skills,
 especially multithreading, Android development, real-time
 graphics processing, and game development. The graphics are 
 purposefully very rudimentary.
