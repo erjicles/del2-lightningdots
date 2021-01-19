@@ -23,6 +23,9 @@
         <meta-data
             android:name="com.google.android.backup.api_key"
             android:value="AEdPqrEAAAAIROYHsUKjZVrldCCAQjEQXsEl-oadVA2bTD0RLQ" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-3137388249745402~4037910779"/>
 
         <activity
             android:name="com.delsquared.lightningdots.activities.ActivitySplash"

@@ -1,6 +1,6 @@
 package com.delsquared.lightningdots.activities;
 
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
@@ -18,8 +18,15 @@ import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.PurchaseHelper;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.RequestConfiguration;
 
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.AcceptTermsDialogListener {
 
@@ -40,6 +47,21 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                     .add(R.id.container, new FragmentMain())
                     .commit();
         }
+
+        // Set global ad request configuration
+        // Add specific devices to test device list
+        List<String> testDeviceIds = new ArrayList<String>();
+        testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR);
+        testDeviceIds.addAll(
+                Arrays.asList(
+                        getResources().getStringArray(R.array.test_device_ids_ads)
+                )
+        );
+        RequestConfiguration requestConfiguration = MobileAds.getRequestConfiguration()
+                .toBuilder()
+                .setTestDeviceIds(testDeviceIds)
+                .build();
+        MobileAds.setRequestConfiguration(requestConfiguration);
 
         // Handle showing the accept terms dialog
         toggleAcceptTermsDialog();
@@ -317,8 +339,6 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
-        // TODO Auto-generated method stub
-
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferences_file_name), MODE_PRIVATE);
         synchronized (LightningDotsApplication.lockSharedPreferences) {
             sharedPref.edit()

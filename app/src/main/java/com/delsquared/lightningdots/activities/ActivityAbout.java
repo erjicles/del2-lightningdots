@@ -3,7 +3,7 @@ package com.delsquared.lightningdots.activities;
 import android.content.Intent;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import androidx.fragment.app.FragmentActivity;
 import android.view.View;
 import android.widget.TextView;
 

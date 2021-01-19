@@ -1,6 +1,6 @@
 package com.delsquared.lightningdots.fragments;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +17,7 @@ import com.delsquared.lightningdots.billing_utilities.SkuDetails;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.PurchaseHelper;
 
-public class FragmentStore extends android.support.v4.app.Fragment {
+public class FragmentStore extends androidx.fragment.app.Fragment {
 
     // The helper for purchases
     PurchaseHelper purchaseHelper;
@@ -90,12 +90,12 @@ public class FragmentStore extends android.support.v4.app.Fragment {
     }
 
     @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         try {
             //mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
     }

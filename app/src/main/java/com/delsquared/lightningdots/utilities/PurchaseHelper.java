@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.billing_utilities.IabHelper;
 import com.delsquared.lightningdots.billing_utilities.IabResult;
@@ -60,8 +61,11 @@ public class PurchaseHelper {
         iabHelper = new IabHelper(context, LightningDotsApplication.constructBase64EncodedPublicKey());
 
         // enable debug logging (for a production application, you should set this to false).
-        // TODO: Set this to false
-        iabHelper.enableDebugLogging(true);
+        if (BuildConfig.DEBUG) {
+            iabHelper.enableDebugLogging(true);
+        } else {
+            iabHelper.enableDebugLogging(false);
+        }
 
         // Setup the purchasing helper
         LightningDotsApplication.logDebugMessage("Creating IAB helper.");
@@ -71,6 +75,7 @@ public class PurchaseHelper {
                 if (!result.isSuccess()) {
                     // Oh noes, there was a problem.
                     if (!LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert) {
+                        LightningDotsApplication.logDebugErrorMessage("Unable to set up billing: " + result.getMessage());
                         LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert = true;
                         //complain("Problem setting up in-app billing: " + result);
                         interfaceSetupFinishedCallback.onSetupFinished(false, result);

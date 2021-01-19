@@ -10,7 +10,7 @@ import com.delsquared.lightningdots.R;
 
 import java.util.Calendar;
 
-public class FragmentTrademark extends android.support.v4.app.Fragment {
+public class FragmentTrademark extends androidx.fragment.app.Fragment {
 
     private int textColor = -1;
 	

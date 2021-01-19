@@ -1,8 +1,6 @@
 package com.delsquared.lightningdots.database;
 
-import android.app.backup.BackupManager;
 import android.content.Context;
-import android.util.Log;
 
 import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;

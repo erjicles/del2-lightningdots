@@ -19,6 +19,9 @@ import com.delsquared.lightningdots.utilities.UtilityFunctions;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.util.Date;
 
@@ -130,7 +133,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         }
 
         // Load the next ad
-        loadInterstitialAd();
+        startLoadingInterstitialAds();
 
     }
 
@@ -270,56 +273,63 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         }
     }
 
-    public void loadInterstitialAd() {
+    public void startLoadingInterstitialAds() {
 
         // Check if the user has purchased the no ads item
         // or if the user is a non-consenting EEU user
         if (LightningDotsApplication.hasPurchasedNoAds
                 || (LightningDotsApplication.userIsFromEEA
                 && LightningDotsApplication.userPrefersNoAds)) {
+            LightningDotsApplication.logDebugMessage("Interstitial ad loading skipped");
             return;
         }
 
-        // Create an interstitial ad. When a natural transition in the app occurs (such as a
-        // level ending in a game), show the interstitial. In this simple example, the press of a
-        // button is used instead.
-        //
-        // If the button is clicked before the interstitial is loaded, the user should proceed to
-        // the next part of the app (in this case, the next level).
-        //
-        // If the interstitial is finished loading, the user will view the interstitial before
-        // proceeding.
-        gameInterstitialAd = new InterstitialAd(getActivity());
-        gameInterstitialAd.setAdUnitId(getString(R.string.ads_ad_unit_game_interstitials));
+        MobileAds.initialize(getActivity(), new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+                // Create an interstitial ad. When a natural transition in the app occurs (such as a
+                // level ending in a game), show the interstitial. In this simple example, the press of a
+                // button is used instead.
+                //
+                // If the button is clicked before the interstitial is loaded, the user should proceed to
+                // the next part of the app (in this case, the next level).
+                //
+                // If the interstitial is finished loading, the user will view the interstitial before
+                // proceeding.
+                gameInterstitialAd = new InterstitialAd(getActivity());
+                gameInterstitialAd.setAdUnitId(getString(R.string.ads_ad_unit_game_interstitials));
 
-        // Create an ad request.
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+                loadInterstitialAd();
 
-        // Optionally populate the ad request builder.
-        adRequestBuilder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
+                // Set an AdListener.
+                gameInterstitialAd.setAdListener(new AdListener() {
+                    @Override
+                    public void onAdLoaded() {
+                        //Toast.makeText(MyActivity.this,
+                        //        "The interstitial is loaded", Toast.LENGTH_SHORT).show();
+                    }
 
-        // Add specific devices to test device list
-        String[] testDeviceIds = getResources().getStringArray(R.array.test_device_ids_ads);
-        for (String testDeviceId : testDeviceIds) {
-            adRequestBuilder.addTestDevice(testDeviceId);
+                    @Override
+                    public void onAdClosed() {
+                        loadInterstitialAd();
+                    }
+                });
+            }
+        });
+
+    }
+
+    private void loadInterstitialAd() {
+        if (gameInterstitialAd == null) {
+            LightningDotsApplication.logDebugErrorMessage("gameInterstitialAd is null");
+            return;
         }
+        // Create an ad request.
+        // Global ad request configuration is set in ActivityMain constructor
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
 
         // Start loading the ad now so that it is ready by the time the user is ready to go to
         // the next level.
         gameInterstitialAd.loadAd(adRequestBuilder.build());
-
-        // Set an AdListener.
-        gameInterstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                //Toast.makeText(MyActivity.this,
-                //        "The interstitial is loaded", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onAdClosed() {
-                loadInterstitialAd();
-            }
-        });
     }
 }

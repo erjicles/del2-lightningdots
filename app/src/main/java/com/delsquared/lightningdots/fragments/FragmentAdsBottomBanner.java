@@ -14,8 +14,12 @@ import com.google.ads.mediation.admob.AdMobAdapter;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
-public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
+public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -119,36 +123,59 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
                     // Show the ads
                     fragmentView.setVisibility(View.VISIBLE);
 
-                    // Create the ad request builder
-                    AdRequest.Builder adRequestBuilder = new AdRequest.Builder()
-                            .addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
-
-                    // Add specific devices to test device list
-                    String[] testDeviceIds = getResources().getStringArray(R.array.test_device_ids_ads);
-                    for (String testDeviceId : testDeviceIds) {
-                        adRequestBuilder.addTestDevice(testDeviceId);
-                    }
-
-                    // Create the bundle for user ad preferences
-                    Bundle extras = new Bundle();
-                    if (ConsentStatus.NON_PERSONALIZED.equals(LightningDotsApplication.consentStatus)) {
-                        extras.putString("npa", "1");
-                    }
-
-                    // Create the ad request
-                    AdRequest adRequest = adRequestBuilder
-                            .addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                            .build();
-
-                    // Load the ad
-                    adView.loadAd(adRequest);
-
-                    // Add a listener to handle when the ad fails to load
-                    adView.setAdListener(new AdListener() {
-
+                    MobileAds.initialize(getContext(), new OnInitializationCompleteListener() {
                         @Override
-                        public void onAdLoaded() {
-                            super.onAdLoaded();
+                        public void onInitializationComplete(InitializationStatus initializationStatus) {
+                            startLoadingAds();
+                        }
+                    });
+
+
+
+                }
+
+            }
+
+        }
+
+    }
+
+    private void startLoadingAds() {
+        // Get the adview
+        View fragmentView = getView();
+        if (fragmentView == null) {
+            LightningDotsApplication.logDebugErrorMessage("Fragment view is null");
+        }
+
+        // Get the adview
+        AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
+
+        // Create the ad request builder
+        // Global request configuration is set in ActivityMain constructor
+        // Test ads:
+        // ca-app-pub-3940256099942544/6300978111
+        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
+
+        // Create the bundle for user ad preferences
+        Bundle extras = new Bundle();
+        if (ConsentStatus.NON_PERSONALIZED.equals(LightningDotsApplication.consentStatus)) {
+            extras.putString("npa", "1");
+        }
+
+        // Create the ad request
+        AdRequest adRequest = adRequestBuilder
+                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
+                .build();
+
+        // Load the ad
+        adView.loadAd(adRequest);
+
+        // Add a listener to handle when the ad fails to load
+        adView.setAdListener(new AdListener() {
+
+            @Override
+            public void onAdLoaded() {
+                super.onAdLoaded();
 
 //                            View fragmentView = (View) getView();
 //
@@ -166,38 +193,31 @@ public class FragmentAdsBottomBanner extends android.support.v4.app.Fragment {
 //
 //                            }
 
-                        }
+            }
 
-                        @Override
-                        public void onAdFailedToLoad(int errorCode) {
-                            super.onAdFailedToLoad(errorCode);
+            @Override
+            public void onAdFailedToLoad(LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
 
-                            View fragmentView = (View) getView();
+                View fragmentView = (View) getView();
 
-                            if (fragmentView != null) {
+                if (fragmentView != null) {
 
-                                // Get the adview
-                                AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
+                    // Get the adview
+                    AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
 
-                                if (adView != null) {
+                    if (adView != null) {
 
-                                    // Hide the adView
-                                    adView.setVisibility(View.GONE);
+                        // Hide the adView
+                        adView.setVisibility(View.GONE);
 
-                                }
-
-                            }
-
-                        }
-
-                    });
+                    }
 
                 }
 
             }
 
-        }
-
+        });
     }
 
 }

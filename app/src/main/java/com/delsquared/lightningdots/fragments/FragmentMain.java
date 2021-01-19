@@ -12,7 +12,7 @@ import com.delsquared.lightningdots.game.LevelDefinitionLadderHelper;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
 
-public class FragmentMain extends android.support.v4.app.Fragment {
+public class FragmentMain extends androidx.fragment.app.Fragment {
 
     public FragmentMain() {
     }
