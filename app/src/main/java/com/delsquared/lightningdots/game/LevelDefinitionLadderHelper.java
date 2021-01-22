@@ -8,6 +8,7 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
@@ -30,31 +31,42 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class LevelDefinitionLadderHelper {
 
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_LEVELS = "Levels";
     private static final String NODE_NAME_LEVEL = "Level";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_CLICK_TARGETS = "ClickTargets";
     private static final String NODE_NAME_CLICK_TARGET = "ClickTarget";
     private static final String NODE_NAME_CLICK_TARGET_PROFILE_SCRIPT = "ClickTargetProfileScript";
     private static final String NODE_NAME_CLICK_TARGET_PROFILE = "ClickTargetProfile";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_VARIABLES = "Variables";
     private static final String NODE_NAME_VARIABLE = "Variable";
     private static final String NODE_NAME_TIMED_CHANGE = "TimedChange";
     private static final String NODE_NAME_BOUNDARY_EFFECT = "BoundaryEffect";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_ATTRACTORS = "Attractors";
     private static final String NODE_NAME_ATTRACTOR = "Attractor";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_ATTRACTOR_VARIABLES = "AttractorVariables";
     private static final String NODE_NAME_ATTRACTOR_VARIABLE = "AttractorVariable";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_TRANSITION_TRIGGERS = "TransitionTriggers";
     private static final String NODE_NAME_TRANSITION_TRIGGER = "TransitionTrigger";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGERS = "RandomChangeTriggers";
     private static final String NODE_NAME_RANDOM_CHANGE_TRIGGER = "RandomChangeTrigger";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_SYNC_VARIABLE_TRIGGERS = "SyncVariableTriggers";
     private static final String NODE_NAME_SYNC_VARIABLE_TRIGGER = "SyncVariableTrigger";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLES = "ClickTargetSettingsShuffles";
     private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE = "ClickTargetSettingsShuffle";
+    @SuppressWarnings("unused")
     private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE_SETTINGS = "ClickTargetSettingsShuffleSettings";
     private static final String NODE_NAME_CLICK_TARGET_SETTINGS_SHUFFLE_SETTING = "ClickTargetSettingsShuffleSetting";
 
@@ -206,7 +218,7 @@ public class LevelDefinitionLadderHelper {
             }
 
         } catch (XmlPullParserException|IOException e) {
-            int blah = 0;
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
 
         return returnValue;
@@ -214,7 +226,7 @@ public class LevelDefinitionLadderHelper {
     }
 
     public static class XMLClickTargetSettingsShuffle {
-        public List<String> listXMLClickTargetSettingsShuffleSettingNames;
+        public final List<String> listXMLClickTargetSettingsShuffleSettingNames;
         public boolean preserveOrder;
 
         public XMLClickTargetSettingsShuffle(Context context) {
@@ -281,7 +293,7 @@ public class LevelDefinitionLadderHelper {
         public final String targetClickTargetProfileName;
         public final boolean randomTargetClickTarget;
         public final boolean randomTargetClickTargetProfile;
-        public List<XMLSyncVariableTrigger> listXMLSyncVariableTriggers;
+        public final List<XMLSyncVariableTrigger> listXMLSyncVariableTriggers;
 
         public XMLTransitionTrigger(
                 String sourceClickTargetName
@@ -328,7 +340,7 @@ public class LevelDefinitionLadderHelper {
         public final String targetClickTargetName;
         public final String targetClickTargetProfileName;
         public final String targetVariable;
-        public List<XMLSyncVariableTrigger> listXMLSyncVariableTriggers;
+        public final List<XMLSyncVariableTrigger> listXMLSyncVariableTriggers;
 
         public XMLRandomChangeTrigger(
                 String sourceClickTargetName
@@ -391,19 +403,19 @@ public class LevelDefinitionLadderHelper {
 
     public static class XMLPositionEvolverVariableAttractor {
 
-        public PositionEvolverVariableAttractor.TYPE type;
+        public final PositionEvolverVariableAttractor.TYPE type;
 
-        public String sourceObjectName;
-        public String sourceObjectProfileName;
-        public String targetObjectName;
-        public String targetObjectProfileName;
-        public String positionEvolverFamilyName;
-        public String positionEvolverName;
-        public List<XMLPositionEvolverVariableAttractorVariable> listXMLPositionEvolverVariableAttractorVariables;
+        public final String sourceObjectName;
+        public final String sourceObjectProfileName;
+        public final String targetObjectName;
+        public final String targetObjectProfileName;
+        public final String positionEvolverFamilyName;
+        public final String positionEvolverName;
+        public final List<XMLPositionEvolverVariableAttractorVariable> listXMLPositionEvolverVariableAttractorVariables;
 
-        public PositionEvolverVariableAttractor.MODE mode;
-        public double mass;
-        public boolean isRepeller;
+        public final PositionEvolverVariableAttractor.MODE mode;
+        public final double mass;
+        public final boolean isRepeller;
 
         public XMLPositionEvolverVariableAttractor(
                 PositionEvolverVariableAttractor.TYPE type
@@ -510,7 +522,6 @@ public class LevelDefinitionLadderHelper {
             return new BoundaryEffect(
                     boundaryType
                     , mirrorAbsoluteValueBoundaries
-                    , bounceOnInternalBoundary
             );
         }
 
@@ -529,8 +540,8 @@ public class LevelDefinitionLadderHelper {
         public boolean canChange;
         public TransitionContinuity transitionContinuity;
 
-        public XMLTimedChangeHandler xmlTimedChangeHandler;
-        public XMLBoundaryEffect xmlBoundaryEffect;
+        public final XMLTimedChangeHandler xmlTimedChangeHandler;
+        public final XMLBoundaryEffect xmlBoundaryEffect;
 
         public boolean isInches;
 
@@ -622,8 +633,8 @@ public class LevelDefinitionLadderHelper {
        public ClickTarget.VISIBILITY visibility;
        public double mass;
 
-       public List<String> listXMLVariableNames;
-       public Map<String, XMLVariable> mapXMLVariables;
+       public final List<String> listXMLVariableNames;
+       public final Map<String, XMLVariable> mapXMLVariables;
 
        public XMLClickTargetProfile(Context context) {
            name = "";
@@ -1057,7 +1068,8 @@ public class LevelDefinitionLadderHelper {
 
                XMLVariable currentXMLVariable = mapXMLVariables.get(currentVariableName);
                // Convert the XMLVariable to a ProfileVariableValues object
-               ClickTargetProfile.ProfileVariableValues currentProfileVariableValues = currentXMLVariable.toProfileVariableValues(context);
+               ClickTargetProfile.ProfileVariableValues currentProfileVariableValues =
+                       Objects.requireNonNull(currentXMLVariable).toProfileVariableValues(context);
 
                // Add the ProfileVariableValues object to the map
                mapProfileVariableValues.put(currentVariableName, currentProfileVariableValues);
@@ -1065,6 +1077,7 @@ public class LevelDefinitionLadderHelper {
            }
 
            // Create the ClickTargetProfile object
+           //noinspection UnnecessaryLocalVariable
            ClickTargetProfile clickTargetProfile = new ClickTargetProfile(
                    this.name
                    , this.scriptTransitionValue
@@ -1089,8 +1102,8 @@ public class LevelDefinitionLadderHelper {
         public String initialClickTargetProfileName;
         public boolean randomInitialClickTargetProfile;
 
-        public List<String> listClickTargetProfileNames;
-        public Map<String, XMLClickTargetProfile> mapXMLClickTargetProfiles;
+        public final List<String> listClickTargetProfileNames;
+        public final Map<String, XMLClickTargetProfile> mapXMLClickTargetProfiles;
 
         public XMLClickTargetProfileScript(Context context) {
 
@@ -1136,19 +1149,17 @@ public class LevelDefinitionLadderHelper {
                     // Reinitialize the initial name to blank
                     initialClickTargetProfileName = "";
 
-                    // Loop through the click target profiles
-                    Iterator xmlClickTargetProfilesIterator = mapXMLClickTargetProfiles.entrySet().iterator();
-                    while (xmlClickTargetProfilesIterator.hasNext()) {
+                    // Get the first click target profile
+                    Iterator<Map.Entry<String, XMLClickTargetProfile>> xmlClickTargetProfilesIterator =
+                            mapXMLClickTargetProfiles.entrySet().iterator();
+                    if (xmlClickTargetProfilesIterator.hasNext()) {
 
                         // Get the current XMLClickTargetProfile
-                        Map.Entry<String, XMLClickTargetProfile> currentXMLClickTargetProfilePair = (Map.Entry) xmlClickTargetProfilesIterator.next();
-                        String currentXMLClickTargetProfileName = currentXMLClickTargetProfilePair.getKey();
+                        Map.Entry<String, XMLClickTargetProfile> currentXMLClickTargetProfilePair =
+                                xmlClickTargetProfilesIterator.next();
 
                         // Set the initial name to this click target profile's name
-                        initialClickTargetProfileName = currentXMLClickTargetProfileName;
-
-                        // Break out of the loop
-                        break;
+                        initialClickTargetProfileName = currentXMLClickTargetProfilePair.getKey();
                     }
 
                 }
@@ -1166,11 +1177,9 @@ public class LevelDefinitionLadderHelper {
             HashMap<String, ClickTargetProfile> mapClickTargetProfiles = new HashMap<>();
 
             // Loop through the XMLClickTargetProfiles
-            Iterator xmlClickTargetProfilesIterator = this.mapXMLClickTargetProfiles.entrySet().iterator();
-            while (xmlClickTargetProfilesIterator.hasNext()) {
+            for (Map.Entry<String, XMLClickTargetProfile> currentXMLClickTargetProfilePair : this.mapXMLClickTargetProfiles.entrySet()) {
 
                 // Get the current XMLClickTargetProfile
-                Map.Entry<String, XMLClickTargetProfile> currentXMLClickTargetProfilePair = (Map.Entry) xmlClickTargetProfilesIterator.next();
                 String currentXMLClickTargetProfileName = currentXMLClickTargetProfilePair.getKey();
                 XMLClickTargetProfile currentXMLClickTargetProfile = currentXMLClickTargetProfilePair.getValue();
 
@@ -1186,6 +1195,7 @@ public class LevelDefinitionLadderHelper {
             }
 
             // Create the ClickTargetProfileScript object
+            //noinspection UnnecessaryLocalVariable
             ClickTargetProfileScript clickTargetProfileScript = new ClickTargetProfileScript(
                     this.scriptTransitionMode
                     , this.scriptTransitionInterval
@@ -1204,7 +1214,7 @@ public class LevelDefinitionLadderHelper {
     public static class XMLClickTarget {
 
         public String name;
-        public XMLClickTargetProfileScript xmlClickTargetProfileScript;
+        public final XMLClickTargetProfileScript xmlClickTargetProfileScript;
 
         public XMLClickTarget(Context context) {
             this.name = "";
@@ -1217,6 +1227,7 @@ public class LevelDefinitionLadderHelper {
             ClickTargetProfileScript clickTargetProfileScript = xmlClickTargetProfileScript.toClickTargetProfileScript(context);
 
             // Create the ClickTargetDefinition object
+            //noinspection UnnecessaryLocalVariable
             ClickTargetDefinition clickTargetDefinition = new ClickTargetDefinition(
                     this.name
                     , clickTargetProfileScript
@@ -1231,12 +1242,12 @@ public class LevelDefinitionLadderHelper {
 
         public int level;
 
-        public List<String> listXMLClickTargetNames;
-        public Map<String, XMLClickTarget> mapXMLClickTargets;
-        public List<XMLTransitionTrigger> listXMLTransitionTriggers;
-        public List<XMLRandomChangeTrigger> listXMLRandomChangeTriggers;
-        public List<XMLClickTargetSettingsShuffle> listXMLClickTargetSettingsShuffles;
-        public List<XMLPositionEvolverVariableAttractor> listXMLPositionEvolverVariableAttractors;
+        public final List<String> listXMLClickTargetNames;
+        public final Map<String, XMLClickTarget> mapXMLClickTargets;
+        public final List<XMLTransitionTrigger> listXMLTransitionTriggers;
+        public final List<XMLRandomChangeTrigger> listXMLRandomChangeTriggers;
+        public final List<XMLClickTargetSettingsShuffle> listXMLClickTargetSettingsShuffles;
+        public final List<XMLPositionEvolverVariableAttractor> listXMLPositionEvolverVariableAttractors;
 
         public XMLLevel() {
             this.level = 1;
@@ -1258,7 +1269,8 @@ public class LevelDefinitionLadderHelper {
                 XMLClickTarget currentXMLClickTarget = mapXMLClickTargets.get(currentClickTargetName);
 
                 // Convert the current XMLClickTarget to a ClickTargetDefinition
-                ClickTargetDefinition currentClickTargetDefinition = currentXMLClickTarget.toClickTargetDefinition(context);
+                ClickTargetDefinition currentClickTargetDefinition =
+                        Objects.requireNonNull(currentXMLClickTarget).toClickTargetDefinition(context);
 
                 // Add the ClickTarget to the map
                 mapClickTargetDefinitions.put(currentClickTargetName, currentClickTargetDefinition);
@@ -1285,7 +1297,8 @@ public class LevelDefinitionLadderHelper {
                 if (mapTransitionTriggers.containsKey(transitionTriggerKey)) {
 
                     // Add the TransitionTrigger to the list for this key
-                    mapTransitionTriggers.get(transitionTriggerKey).add(transitionTrigger);
+                    Objects.requireNonNull(mapTransitionTriggers.get(transitionTriggerKey))
+                            .add(transitionTrigger);
 
                 } else {
 
@@ -1322,7 +1335,8 @@ public class LevelDefinitionLadderHelper {
                 if (mapRandomChangeTriggers.containsKey(randomChangeTriggerKey)) {
 
                     // Add the RandomChangeTrigger to the list for this key
-                    mapRandomChangeTriggers.get(randomChangeTriggerKey).add(currentRandomChangeTrigger);
+                    Objects.requireNonNull(mapRandomChangeTriggers.get(randomChangeTriggerKey))
+                            .add(currentRandomChangeTrigger);
 
                 } else {
 
@@ -1366,8 +1380,8 @@ public class LevelDefinitionLadderHelper {
                 if (mapPositionEvolverVariableAttractors.containsKey(positionEvolverVariableAttractorKey)) {
 
                     // Add the attractor to the list
-                    mapPositionEvolverVariableAttractors
-                            .get(positionEvolverVariableAttractorKey)
+                    Objects.requireNonNull(mapPositionEvolverVariableAttractors
+                            .get(positionEvolverVariableAttractorKey))
                             .add(positionEvolverVariableAttractor);
 
                 } else {
@@ -1385,6 +1399,7 @@ public class LevelDefinitionLadderHelper {
 
 
             // Create the LevelDefinitionLadder
+            //noinspection UnnecessaryLocalVariable
             LevelDefinitionLadder levelDefinitionLadder = new LevelDefinitionLadder(
                     this.level
                     , listXMLClickTargetNames
@@ -1400,6 +1415,7 @@ public class LevelDefinitionLadderHelper {
         }
     }
 
+    @SuppressWarnings("ConstantConditions")
     public static LevelDefinitionLadder getLevelDefinitionLadder(
             Context context
             , int gameLevel) {
@@ -1602,7 +1618,7 @@ public class LevelDefinitionLadderHelper {
                                             ""
                                             : xmlResourceParser.getAttributeValue(null, ATTRIBUTE_NAME_PROFILE_NAME);
                             double scriptTransitionValue =
-                                    (double) xmlResourceParser.getAttributeFloatValue(
+                                    xmlResourceParser.getAttributeFloatValue(
                                             null
                                             , ATTRIBUTE_NAME_PROFILE_SCRIPT_TRANSITION_VALUE
                                             , (float) xmlClickTargetProfile.scriptTransitionValue
@@ -1625,7 +1641,7 @@ public class LevelDefinitionLadderHelper {
                                             , xmlClickTargetProfile.visibility
                                     );
                             double mass =
-                                    (double) xmlResourceParser.getAttributeFloatValue(
+                                    xmlResourceParser.getAttributeFloatValue(
                                             null
                                             , ATTRIBUTE_NAME_PROFILE_MASS
                                             , (float) xmlClickTargetProfile.mass
@@ -1858,7 +1874,7 @@ public class LevelDefinitionLadderHelper {
                                     xmlResourceParser.getAttributeFloatValue(
                                             null
                                             , ATTRIBUTE_NAME_ATTRACTOR_MASS
-                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                            , UtilityFunctions.getResourceFloatValue(
                                                     context
                                                     , R.dimen.game_values_defaultPositionEvolverVariableAttractor_mass)
                                     );
@@ -1909,7 +1925,7 @@ public class LevelDefinitionLadderHelper {
                                     xmlResourceParser.getAttributeFloatValue(
                                             null
                                             , ATTRIBUTE_NAME_ATTRACTORVARIABLE_INITIAL_FIXED_VALUE
-                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                            , UtilityFunctions.getResourceFloatValue(
                                                     context
                                                     , R.dimen.game_values_defaultPositionEvolverVariableAttractorVariable_initialFixedValue)
                                     );
@@ -2092,7 +2108,7 @@ public class LevelDefinitionLadderHelper {
                                     xmlResourceParser.getAttributeFloatValue(
                                             null
                                             , ATTRIBUTE_NAME_SYNCVARIABLE_VALUE
-                                            , (float) UtilityFunctions.getResourceFloatValue(
+                                            , UtilityFunctions.getResourceFloatValue(
                                                     context
                                                     , R.dimen.game_values_defaultSyncVariableValue)
                                     );
@@ -2178,85 +2194,11 @@ public class LevelDefinitionLadderHelper {
                     // Check if we found the level
                     if (foundLevel) {
 
-                        // Initialize the current XML Objects to null
-                        XMLClickTarget currentXMLClickTarget = null;
-                        XMLClickTargetProfile currentXMLClickTargetProfile = null;
-                        XMLVariable currentXMLVariable = null;
-
-                        // Get the current XML Objects
-                        if (currentClickTargetName != null
-                                && xmlLevel.mapXMLClickTargets.containsKey(currentClickTargetName)) {
-                            currentXMLClickTarget = xmlLevel.mapXMLClickTargets.get(currentClickTargetName);
-                        }
-                        if (currentClickTargetProfileName != null
-                                && currentXMLClickTarget != null
-                                && currentXMLClickTarget
-                                .xmlClickTargetProfileScript
-                                .mapXMLClickTargetProfiles.containsKey(currentClickTargetProfileName)) {
-                            currentXMLClickTargetProfile =
-                                    currentXMLClickTarget
-                                            .xmlClickTargetProfileScript
-                                            .mapXMLClickTargetProfiles.get(currentClickTargetProfileName);
-                        }
-                        if (currentVariableName != null
-                                && currentXMLClickTargetProfile != null
-                                && currentXMLClickTargetProfile
-                                .mapXMLVariables.containsKey(currentVariableName)) {
-                            currentXMLVariable =
-                                    currentXMLClickTargetProfile
-                                            .mapXMLVariables.get(currentVariableName);
-                        }
-
                         // Check if this is the end of a <Level> tag
                         if (xmlResourceParser.getName().contentEquals(NODE_NAME_LEVEL)) {
 
                             // Break out of the while loop, we have finished with this level
                             break;
-
-                        }
-
-                        // Check if this is the end of a <ClickTarget> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_CLICK_TARGET)) {
-
-
-
-                        }
-
-                        // Check if this is the end of a <ClickTargetProfileScript> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_CLICK_TARGET_PROFILE_SCRIPT)
-                                && currentXMLClickTarget != null) {
-
-
-
-                        }
-
-                        // Check if this is the end of a <ClickTargetProfile> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_CLICK_TARGET_PROFILE)) {
-
-                        }
-
-                        // Check if this is the end of a <Variable> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_VARIABLE)) {
-
-                        }
-
-                        // Check if this is the end of a <RandomChangeEffect> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_TIMED_CHANGE)) {
-
-                        }
-
-                        // Check if this is the end of a <BoundaryEffect> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_BOUNDARY_EFFECT)) {
-
-                        }
-
-                        // Check if this is the end of a <TransitionTrigger> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_TRANSITION_TRIGGER)) {
-
-                        }
-
-                        // Check if this is the end of a <RandomChangeTrigger> tag
-                        else if (xmlResourceParser.getName().contentEquals(NODE_NAME_RANDOM_CHANGE_TRIGGER)) {
 
                         }
 
@@ -2270,7 +2212,7 @@ public class LevelDefinitionLadderHelper {
             xmlResourceParser.close();
 
         } catch (XmlPullParserException|IOException e) {
-            int blah = 0;
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
 
         // -------------------- BEGIN Perform Validations -------------------- //

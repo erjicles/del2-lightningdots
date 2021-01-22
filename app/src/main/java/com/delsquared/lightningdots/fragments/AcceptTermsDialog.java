@@ -1,35 +1,31 @@
 package com.delsquared.lightningdots.fragments;
 
-import android.app.Activity;
-import android.app.DialogFragment;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+
+import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class AcceptTermsDialog extends DialogFragment {
-	
-	static final int NUMBER_OF_TABS = 2;
+
 	private static final String SHOW_REASON_KEY = "showAcceptTermsDialogReason";
 	
 	// Use this instance of the interface to deliver action events
 	AcceptTermsDialogListener mListener;
 	
 	public interface AcceptTermsDialogListener {
-        public void onDialogPositiveClick(DialogFragment dialog);
-        public void OnFragmentAttached();
-    }
-	
-	public AcceptTermsDialog() {
-        // Empty constructor required for DialogFragment
+        void onDialogPositiveClick(@SuppressWarnings("unused") DialogFragment dialog);
+        void OnFragmentAttached();
     }
 	
 	public static AcceptTermsDialog newInstance(ShowAcceptTermsDialogReason showReason) {
@@ -87,8 +83,8 @@ public class AcceptTermsDialog extends DialogFragment {
 	    try {
 	    	showReason = ShowAcceptTermsDialogReason.values()[showReasonValue];
 	    } catch (Exception e) {
-	    	showReason = ShowAcceptTermsDialogReason.NONE_ACCEPTED;
-	    }
+	    	LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+		}
     	
     	// Initialize the message
 		String messageHtmlString = getString(R.string.dialog_accepttermsnointernet_welcome);
@@ -138,7 +134,7 @@ public class AcceptTermsDialog extends DialogFragment {
 						, getString(R.string.app_name));
 		
 		// Get the webview
-		WebView webViewMessage = (WebView) view.findViewById(R.id.dialog_acceptterms_webview_message);
+		WebView webViewMessage = view.findViewById(R.id.dialog_acceptterms_webview_message);
 		
 		// Set the mime type and encoding
 		String mime = "text/html";
@@ -148,87 +144,49 @@ public class AcceptTermsDialog extends DialogFragment {
 	    webViewMessage.loadData(messageHtmlString, mime, encoding);
         
         // Get the accept terms checkbox
-        CheckBox acceptTermsCheckbox = (CheckBox) view.findViewById(R.id.dialog_acceptterms_checkbox_accept);
+        CheckBox acceptTermsCheckbox = view.findViewById(R.id.dialog_acceptterms_checkbox_accept);
         
         // Get the accept terms button
-        Button acceptTermsButton = (Button) view.findViewById(R.id.dialog_acceptterms_button_accept);
+        Button acceptTermsButton = view.findViewById(R.id.dialog_acceptterms_button_accept);
         
         // Set the checkbox check changed listener
-        acceptTermsCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-        	@Override
-        	public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        		// Toggle the accept terms button
-        		Button acceptButton = (Button) getDialog().findViewById(R.id.dialog_acceptterms_button_accept);
-            	acceptButton.setEnabled(isChecked);
-        	}
-        });
+        acceptTermsCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+			// Toggle the accept terms button
+			Dialog dialog = getDialog();
+			if (dialog == null) {
+				LightningDotsApplication.logDebugErrorMessage("dialog is null");
+				return;
+			}
+			Button acceptButton = dialog.findViewById(R.id.dialog_acceptterms_button_accept);
+			acceptButton.setEnabled(isChecked);
+		});
         
         // Set the accept terms button click listener
-        acceptTermsButton.setOnClickListener(new OnClickListener() {
-        	@Override
-        	public void onClick(View view) {
-        		mListener.onDialogPositiveClick(AcceptTermsDialog.this);
-            	dismiss();
-        	}
-        });
+        acceptTermsButton.setOnClickListener(clickedView -> {
+			mListener.onDialogPositiveClick(AcceptTermsDialog.this);
+			dismiss();
+		});
         
         return view;
         
     }
     
     @Override
-    public void onAttach(Activity activity) {
-    	super.onAttach(activity);
+    public void onAttach(@NonNull Context context) {
+    	super.onAttach(context);
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host
-            mListener = (AcceptTermsDialogListener) activity;
+            mListener = (AcceptTermsDialogListener) context;
             
         } catch (ClassCastException e) {
             // The activity doesn't implement the interface, throw exception
-            throw new ClassCastException(activity.toString()
+            throw new ClassCastException(context.toString()
                     + " must implement NoticeDialogListener");
         }
     }
-
-    /*
-	public class AcceptTermsDialogFragmentPagerAdapter extends PagerAdapter {
-        
-		public AcceptTermsDialogFragmentPagerAdapter(
-				FragmentManager fragmentManager) {
-            super(fragmentManager);
-        }
-
-        @Override
-        public int getCount() {
-            return NUMBER_OF_TABS;
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-        	
-        	if (position == 0) {
-        		return FragmentTermsOfService.newInstance(
-        				true);
-        	}
-        		
-        	return FragmentPrivacyPolicy.newInstance(
-        			true);
-        }
-        
-        @Override
-        public CharSequence getPageTitle(int position) {
-        	
-        	if (position == 0) {
-        		return getResources().getString(R.string.terms_of_service_activity_title);
-        	}
-        	
-            return getResources().getString(R.string.privacy_policy_activity_title);
-        }
-    }
-    */
 	
-	public static enum ShowAcceptTermsDialogReason {
+	public enum ShowAcceptTermsDialogReason {
 		NONE_ACCEPTED(0),
 		NO_INTERNET(1),
 		NEW_VERSION_TERMS(2),
@@ -236,7 +194,7 @@ public class AcceptTermsDialog extends DialogFragment {
 		NEW_VERSION_BOTH(4);
 		
 		private final int value;
-	    private ShowAcceptTermsDialogReason(int value) {
+	    ShowAcceptTermsDialogReason(int value) {
 	        this.value = value;
 	    }
 

@@ -84,17 +84,18 @@ public class PolygonHelper {
 
                         // Get the X and Y values for this vertex
                         double X =
-                                (double) xmlResourceParser.getAttributeFloatValue(
+                                xmlResourceParser.getAttributeFloatValue(
                                         null
                                         , ATTRIBUTE_NAME_VERTEX_X
                                         , 0.0f);
                         double Y =
-                                (double) xmlResourceParser.getAttributeFloatValue(
+                                xmlResourceParser.getAttributeFloatValue(
                                         null
                                         , ATTRIBUTE_NAME_VERTEX_Y
                                         , 0.0f);
 
                         // Add the vertex to the polygon
+                        //noinspection SuspiciousNameCombination
                         arrayListVertices.add(new PositionVector(X, Y));
 
                     }
@@ -125,7 +126,7 @@ public class PolygonHelper {
             xmlResourceParser.close();
 
         } catch (XmlPullParserException | IOException e) {
-            int blah = 0;
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
 
         return new Polygon(arrayListVertices);

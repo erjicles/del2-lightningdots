@@ -31,6 +31,7 @@ public class Polygon {
     private ArrayList<PositionVector> arrayListCurrentVertices;
     private Path currentPath;
 
+    @SuppressWarnings("unused")
     public Polygon() {
         arrayListUnitVertices = new ArrayList<>();
         arrayListScaledVertices = new ArrayList<>();
@@ -211,6 +212,7 @@ public class Polygon {
         }
 
         // The point is inside the bounding circle, check if it's inside the polygon
+        //noinspection SuspiciousNameCombination
         int windingNumber = UtilityFunctions.wn_PnPoly(new PositionVector(pointX, pointY), arrayListCurrentVertices);
         return windingNumber != 0;
     }
@@ -223,6 +225,7 @@ public class Polygon {
         );
 
         // Set the polygon's properties
+        //noinspection SuspiciousNameCombination
         duplicatePolygon.setProperties(
                 new PositionVector(centerX, centerY, 0.0)
                 , radius

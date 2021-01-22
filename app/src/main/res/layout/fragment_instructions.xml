@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.delsquared.lightningdots.activities.ActivityInstructions$FragmentInstructions">
+    tools:context=".activities.ActivityInstructions">
 
     <ImageView
         android:id="@+id/fragment_instructions_imageview_instructions"
@@ -13,6 +13,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="centerInside"
+        android:contentDescription="@string/fragment_instructions_imageview_content_description"
         android:src="@drawable/animation_instructions"/>
 
     <LinearLayout
@@ -26,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="checkChanged_NeverShowThisAgain"
-            android:text="Never show this again"/>
+            android:text="@string/fragment_instructions_checkbox_nevershowthisagain_text"/>
 
         <View
             android:layout_width="0dp"
@@ -39,7 +40,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/DarkGreen"
             android:onClick="onClick_PlayNow"
-            android:text="Play now"/>
+            android:text="@string/fragment_instructions_button_playnow_text"/>
 
     </LinearLayout>
 

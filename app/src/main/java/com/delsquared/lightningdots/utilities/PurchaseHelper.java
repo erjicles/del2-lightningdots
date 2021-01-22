@@ -18,15 +18,15 @@ import java.util.ArrayList;
 public class PurchaseHelper {
 
     public interface InterfaceSetupFinishedCallback {
-        public void onSetupFinished(boolean success, IabResult result);
+        void onSetupFinished(boolean success, IabResult result);
     }
 
     public interface InterfaceQueryInventoryCallback {
-        public void onQueryInventoryFinished();
+        void onQueryInventoryFinished();
     }
 
     public interface InterfacePurchaseFinishedCallback {
-        public void onPurchaseFinished(Purchase info);
+        void onPurchaseFinished(Purchase info);
     }
 
     public static final String PRODUCT_SKU_REMOVE_ADS = "com.delsquared.lightningdots.products.remove_ads";
@@ -35,12 +35,13 @@ public class PurchaseHelper {
     public static final String PRODUCT_SKU_SAY_THANKS = "com.delsquared.lightningdots.products.saythanks";
     public static final int PRODUCT_RC_REQUEST_SAY_THANKS = 10101;
 
-    Context context;
+    final Context context;
     private IabHelper iabHelper;
     private boolean iabHelperSetupComplete = false;
 
     private Inventory inventory;
 
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private final InterfaceSetupFinishedCallback interfaceSetupFinishedCallback;
     private final InterfaceQueryInventoryCallback interfaceQueryInventoryCallback;
     private final InterfacePurchaseFinishedCallback interfacePurchaseFinishedCallback;
@@ -61,38 +62,32 @@ public class PurchaseHelper {
         iabHelper = new IabHelper(context, LightningDotsApplication.constructBase64EncodedPublicKey());
 
         // enable debug logging (for a production application, you should set this to false).
-        if (BuildConfig.DEBUG) {
-            iabHelper.enableDebugLogging(true);
-        } else {
-            iabHelper.enableDebugLogging(false);
-        }
+        iabHelper.enableDebugLogging(BuildConfig.DEBUG);
 
         // Setup the purchasing helper
         LightningDotsApplication.logDebugMessage("Creating IAB helper.");
-        iabHelper.startSetup(new IabHelper.OnIabSetupFinishedListener() {
-            public void onIabSetupFinished(IabResult result) {
+        iabHelper.startSetup(result -> {
 
-                if (!result.isSuccess()) {
-                    // Oh noes, there was a problem.
-                    if (!LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert) {
-                        LightningDotsApplication.logDebugErrorMessage("Unable to set up billing: " + result.getMessage());
-                        LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert = true;
-                        //complain("Problem setting up in-app billing: " + result);
-                        interfaceSetupFinishedCallback.onSetupFinished(false, result);
-                    }
-
-                    return;
+            if (!result.isSuccess()) {
+                // Oh noes, there was a problem.
+                if (!LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert) {
+                    LightningDotsApplication.logDebugErrorMessage("Unable to set up billing: " + result.getMessage());
+                    LightningDotsApplication.hasDisplayedUnableToSetUpBillingAlert = true;
+                    //complain("Problem setting up in-app billing: " + result);
+                    interfaceSetupFinishedCallback.onSetupFinished(false, result);
                 }
 
-                // Flag the iab helper setup completed
-                iabHelperSetupComplete = true;
-                interfaceSetupFinishedCallback.onSetupFinished(true, result);
-
-                // Hooray, IAB is fully set up. Now, let's get an inventory of stuff we own.
-                LightningDotsApplication.logDebugMessage("Setup successful. Querying inventory.");
-                queryInventory();
-
+                return;
             }
+
+            // Flag the iab helper setup completed
+            iabHelperSetupComplete = true;
+            interfaceSetupFinishedCallback.onSetupFinished(true, result);
+
+            // Hooray, IAB is fully set up. Now, let's get an inventory of stuff we own.
+            LightningDotsApplication.logDebugMessage("Setup successful. Querying inventory.");
+            queryInventory();
+
         });
 
     }
@@ -114,34 +109,30 @@ public class PurchaseHelper {
         iabHelper.queryInventoryAsync(
                 true
                 , arrayListProductSKU
-                , new IabHelper.QueryInventoryFinishedListener() {
+                , (result, inventoryResult) -> {
 
-            public void onQueryInventoryFinished(IabResult result, Inventory inventoryResult) {
+                    LightningDotsApplication.logDebugMessage("Query inventory finished.");
+                    if (!result.isSuccess()) {
+                        complain("Failed to query inventory: " + result);
+                        return;
+                    }
 
-                LightningDotsApplication.logDebugMessage("Query inventory finished.");
-                if (result.isFailure()) {
-                    complain("Failed to query inventory: " + result);
-                    return;
-                }
+                    LightningDotsApplication.logDebugMessage("Query inventory was successful.");
 
-                LightningDotsApplication.logDebugMessage("Query inventory was successful.");
+                    // Set the inventory
+                    inventory = inventoryResult;
 
-                // Set the inventory
-                inventory = inventoryResult;
+                    // Process the inventory
+                    processInventory();
 
-                // Process the inventory
-                processIntentory();
+                    // Call the callback
+                    interfaceQueryInventoryCallback.onQueryInventoryFinished();
 
-                // Call the callback
-                interfaceQueryInventoryCallback.onQueryInventoryFinished();
-
-            }
-
-        });
+                });
 
     }
 
-    public void processIntentory() {
+    public void processInventory() {
 
         if (inventory == null) {
             return;
@@ -189,27 +180,24 @@ public class PurchaseHelper {
                 (Activity) context
                 , productSKU
                 , purchaseID
-                , new IabHelper.OnIabPurchaseFinishedListener() {
+                , (result, purchase) -> {
 
-                    public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
-
-                        LightningDotsApplication.logDebugMessage("Purchase finished: " + result + ", purchase: " + purchase);
-                        if (result.isFailure()) {
-                            // Oh noes!
-                            complain("Error purchasing: " + result);
-                            //setWaitScreen(false);
-                            return;
-                        }
-
-                        LightningDotsApplication.logDebugMessage("Purchase successful.");
-
-                        // Process the purchase
-                        processSuccessfulPurchase(purchase);
-
-                        // Call the callback
-                        interfacePurchaseFinishedCallback.onPurchaseFinished(purchase);
-
+                    LightningDotsApplication.logDebugMessage("Purchase finished: " + result + ", purchase: " + purchase);
+                    if (!result.isSuccess()) {
+                        // Oh noes!
+                        complain("Error purchasing: " + result);
+                        //setWaitScreen(false);
+                        return;
                     }
+
+                    LightningDotsApplication.logDebugMessage("Purchase successful.");
+
+                    // Process the purchase
+                    processSuccessfulPurchase(purchase);
+
+                    // Call the callback
+                    interfacePurchaseFinishedCallback.onPurchaseFinished(purchase);
+
                 });
 
     }
@@ -219,9 +207,6 @@ public class PurchaseHelper {
         if (purchase == null) {
             return;
         }
-
-        // Get the shared preferences reference
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
 
         // Handle the purchase
         if (purchase.getSku().equals(PRODUCT_SKU_REMOVE_ADS)) {
@@ -235,12 +220,7 @@ public class PurchaseHelper {
 
             // The user has bought the "say thanks" item
             LightningDotsApplication.logDebugMessage("Purchase is say thank you. Congratulating user.");
-            iabHelper.consumeAsync(purchase, new IabHelper.OnConsumeFinishedListener() {
-                @Override
-                public void onConsumeFinished(Purchase purchase, IabResult result) {
-                    alert(context.getString(R.string.product_say_thanks_thanks));
-                }
-            });
+            iabHelper.consumeAsync(purchase, (purchase1, result) -> alert(context.getString(R.string.product_say_thanks_thanks)));
 
         }
 

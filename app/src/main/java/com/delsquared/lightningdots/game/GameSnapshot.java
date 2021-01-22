@@ -25,7 +25,7 @@ public class GameSnapshot {
 		displayStartTime = 0;
 		endTimeMillis = 0;
 		displayTimeRemaining = 0;
-        arrayListTargetUserClicks = new ArrayList<Integer>();
+        arrayListTargetUserClicks = new ArrayList<>();
         isLevelComplete = false;
         awardLevel = 0;
         isNewHighScore = false;
@@ -79,13 +79,11 @@ public class GameSnapshot {
         if (this.displayStartTime != otherGameSnapshot.getDisplayStartTime()) return false;
         if (this.endTimeMillis != otherGameSnapshot.getEndTimeMillis()) return false;
         if (this.displayTimeRemaining != otherGameSnapshot.getDisplayTimeRemaining()) return false;
-        if (this.arrayListTargetUserClicks.equals(otherGameSnapshot.getArrayListTargetUserClicks()) == false) return false;
+        if (!this.arrayListTargetUserClicks.equals(otherGameSnapshot.getArrayListTargetUserClicks())) return false;
         if (this.isLevelComplete != otherGameSnapshot.getIsLevelComplete()) return false;
         if (this.awardLevel != otherGameSnapshot.getAwardLevel()) return false;
         if (this.isNewHighScore != otherGameSnapshot.getIsNewHighScore()) return false;
-        if (this.mapClickTargetSnapshots.equals(otherGameSnapshot.getMapClickTargetSnapshots()) == false) return false;
-
-        return true;
+        return this.mapClickTargetSnapshots.equals(otherGameSnapshot.getMapClickTargetSnapshots());
 
     }
 }

@@ -17,7 +17,7 @@ import java.util.HashMap;
 
 public class LightningDotsApplication extends Application {
 
-    public static Object lockSharedPreferences = new Object();
+    public static final Object lockSharedPreferences = new Object();
 
     public static boolean hasPurchasedNoAds = false;
     public static ConsentStatus consentStatus = ConsentStatus.UNKNOWN;
@@ -31,6 +31,7 @@ public class LightningDotsApplication extends Application {
 
     public static boolean hasDisplayedUnableToSetUpBillingAlert = false;
 
+    @SuppressWarnings("SpellCheckingInspection")
     public static final String[] base64EncodedPublicKey = {
             "Z2Q2CJOB733BfUyLf0S9ZhzJ5TU5"
             , "AQ8AMIIBCgKCAQEAhdHu+MsgOKKV"
@@ -70,10 +71,11 @@ public class LightningDotsApplication extends Application {
     public enum TrackerName {
         APP_TRACKER, // Tracker used only in this app.
         GLOBAL_TRACKER, // Tracker used by all the apps from a company. eg: roll-up tracking.
-        ECOMMERCE_TRACKER, // Tracker used by all ecommerce transactions from a company.
+        @SuppressWarnings({"SpellCheckingInspection", "unused"})
+        ECOMMERCE_TRACKER, // Tracker used by all e-commerce transactions from a company.
     }
 
-    HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
+    final HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
 
     synchronized Tracker getTracker(TrackerName trackerId) {
 
@@ -92,11 +94,11 @@ public class LightningDotsApplication extends Application {
     }
 
     public static String constructBase64EncodedPublicKey() {
-        String returnString = "";
-        for (int i = 0; i < keySequence.length; i++) {
-            returnString += base64EncodedPublicKey[keySequence[i]];
+        StringBuilder returnString = new StringBuilder();
+        for (int value : keySequence) {
+            returnString.append(base64EncodedPublicKey[value]);
         }
-        return returnString;
+        return returnString.toString();
     }
 
     public static void setHasPurchasedNoAds(Context context, boolean hasPurchasedNoAds) {
@@ -113,7 +115,7 @@ public class LightningDotsApplication extends Application {
                     .putBoolean(
                             context.getString(R.string.pref_product_remove_ads)
                             , hasPurchasedNoAds)
-                    .commit();
+                    .apply();
 
         }
 
@@ -135,7 +137,7 @@ public class LightningDotsApplication extends Application {
                     .putBoolean(
                             context.getString(R.string.pref_setting_show_instructions)
                             , showInstructions)
-                    .commit();
+                    .apply();
 
         }
 

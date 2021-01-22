@@ -29,11 +29,11 @@ public class ActivityAbout extends FragmentActivity {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		TextView textViewVersion = (TextView) findViewById(R.id.about_activity_textview_version);
+		TextView textViewVersion = findViewById(R.id.about_activity_textview_version);
 		textViewVersion.setText(versionName);
 		
 		// Set the copyright message
-		TextView textViewCopyright = (TextView) findViewById(R.id.about_activity_textview_copyright);
+		TextView textViewCopyright = findViewById(R.id.about_activity_textview_copyright);
 		Calendar calendar = Calendar.getInstance();
 		int currentYear = calendar.get(Calendar.YEAR);
 		String yearText = "";
@@ -53,7 +53,7 @@ public class ActivityAbout extends FragmentActivity {
 		
 	}
 	
-	public void termsAndConditions(View view) {
+	public void termsAndConditions(@SuppressWarnings("unused") View view) {
 		
 		// Get the TOS intent
 		Intent intentTermsAndConditions = new Intent(this, ActivityTermsOfService.class);
@@ -62,8 +62,8 @@ public class ActivityAbout extends FragmentActivity {
 		startActivity(intentTermsAndConditions);
 	
 	}
-	
-	public void privacyPolicy(View view) {
+
+	public void privacyPolicy(@SuppressWarnings("unused") View view) {
 		
 		// Get the privacy policy intent
 		Intent intentPrivacyPolicy = new Intent(this, ActivityPrivacyPolicy.class);

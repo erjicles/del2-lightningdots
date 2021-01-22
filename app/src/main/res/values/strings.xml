@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
 
     <string name="app_name">Lightning Dots</string>
     <string name="company_name">Del Squared, LLC</string>
@@ -95,10 +97,10 @@
     <string name="title_activity_main">@string/app_name</string>
     <string name="mainactivity_gamemenu_timeattack_title">Time attack</string>
     <string name="mainactivity_gamemenu_timeattack_description">Strike the ground as many times as you can before time runs out</string>
-    <string name="mainactivity_gamemenu_timeattack_bestscore">Best score: %1$s</string>
+    <string name="mainactivity_gamemenu_timeattack_bestscore">Best score: %d</string>
     <string name="mainactivity_gamemenu_ladder_title">Ladder</string>
     <string name="mainactivity_gamemenu_ladder_description">Test your skill as you ascend to the heavens through increasingly difficult levels</string>
-    <string name="mainactivity_gamemenu_ladder_currentlevel">Current level: %1$s</string>
+    <string name="mainactivity_gamemenu_ladder_currentlevel">Current level: %d</string>
     <string name="mainactivity_settingsmenu_settings_title">Settings</string>
     <string name="mainactivity_settingsmenu_settings_description">Change the game settings</string>
     <string name="mainactivity_settingsmenu_about_title">About</string>
@@ -106,7 +108,10 @@
     <string name="fragment_main_textview_gamemenu_title">Games</string>
     <string name="fragment_main_textview_settingsmenu_title">Options</string>
     <string name="fragment_main_textview_ladder_beat_game">You beat the ladder!</string>
-    <string name="fragment_main_textview_timeattack_achieved_highest_award">You earned %d bolts!</string>
+    <plurals name="fragment_main_textview_timeattack_achieved_highest_award">
+        <item quantity="one">You earned %d bolt!</item>
+        <item quantity="other">You earned %d bolts!</item>
+    </plurals>
     <string name="mainactivity_settingsmenu_store_title">Store</string>
     <string name="mainactivity_settingsmenu_store_description">Browse and purchase extra goodies!</string>
 
@@ -114,17 +119,18 @@
     <string name="title_activity_instructions">How to play</string>
     <string name="fragment_instructions_checkbox_nevershowthisagain">Never show this again</string>
     <string name="fragment_instructions_button_playnow">Play now</string>
+    <string name="fragment_instructions_imageview_content_description">Instructions on how to play</string>
 
     <!-- Game Activity -->
     <string name="title_activity_game">@string/app_name</string>
     <string name="game_text_stopped_tap_to_start">Tap to start</string>
     <string name="game_text_ended_retry">Tap to retry</string>
     <string name="game_text_ended_continue">Tap to continue</string>
-    <string name="game_text_ending_game_over">Ending...</string>
+    <string name="game_text_ending_game_over">Ending…</string>
     <string name="game_text_template_start_countdown">%d</string>
     <string name="game_text_template_timer">%2d</string>
     <string name="game_text_template_counter">%3d</string>
-    <string name="game_text_template_counter_with_goal" formatted="false">%3d/%d</string>
+    <string name="game_text_template_counter_with_goal" formatted="true">%3d/%d</string>
     <string name="game_text_level_decrement"><![CDATA[< ]]></string>
     <string name="game_text_template_current_level">Level %d</string>
     <string name="game_text_level_increment"><![CDATA[ >]]></string>
@@ -135,13 +141,13 @@
     <string name="game_text_level_failed">Level failed</string>
     <string name="game_text_congratulations">Congratulations!</string>
     <string name="game_text_beat_last_level">You beat the ladder!</string>
-    <string name="game_text_template_click_target_properties_X" formatted="false">X: %8.2f, --Y: %8.2f</string>
-    <string name="game_text_template_click_target_properties_dX" formatted="false">S: %8.2f, --D: %8.2f</string>
-    <string name="game_text_template_click_target_properties_d2X" formatted="false">dS: %8.2f, -dD: %8.2f</string>
-    <string name="game_text_template_click_target_properties_Radius" formatted="false">R: %8.2f, Rot: %8.2f</string>
-    <string name="game_text_template_click_target_properties_dRadius" formatted="false">dR: %8.2f, dRo: %8.2f</string>
-    <string name="game_text_template_click_target_properties_d2Radius" formatted="false">d2R: %8.2f, d2R: %8.2f</string>
-    <string name="game_text_template_click_target_properties_energy" formatted="false">E: %8.2f</string>
+    <string name="game_text_template_click_target_properties_X" formatted="true" tools:ignore="TypographyDashes">X: %8.2f, --Y: %8.2f</string>
+    <string name="game_text_template_click_target_properties_dX" formatted="true" tools:ignore="TypographyDashes">S: %8.2f, --D: %8.2f</string>
+    <string name="game_text_template_click_target_properties_d2X" formatted="true">dS: %8.2f, -dD: %8.2f</string>
+    <string name="game_text_template_click_target_properties_Radius" formatted="true">R: %8.2f, Rot: %8.2f</string>
+    <string name="game_text_template_click_target_properties_dRadius" formatted="true">dR: %8.2f, dRo: %8.2f</string>
+    <string name="game_text_template_click_target_properties_d2Radius" formatted="true">d2R: %8.2f, d2R: %8.2f</string>
+    <string name="game_text_template_click_target_properties_energy" formatted="true">E: %8.2f</string>
 
     <!-- Graphics -->
     <string name="graphics_textkey_default">default</string>
@@ -212,9 +218,10 @@
     <string name="menu_item_store_purchased_default_title">Default item</string>
     <string name="menu_item_store_purchased_default_description">Default description</string>
     <string name="menu_item_store_available_tap_to_buy">Tap to buy</string>
+    <string name="menu_item_store_available_imageview_bolt_content_description">Image of a lightning bolt</string>
+    <string name="menu_item_store_purchased_imageview_bolt_content_description">Image of a yellow lightning bolt</string>
 
     <!-- Products -->
-
     <string name="product_remove_ads_title">Remove ads</string>
     <string name="product_remove_ads_price">$0.99</string>
     <string name="product_remove_ads_description">Remove ads</string>
@@ -231,6 +238,9 @@
     <string name="pref_legal_acceptedprivacyversion">preference_legal_acceptedprivacyversion</string>
     <string name="pref_product_remove_ads">preference_product_remove_ads</string>
     <string name="pref_setting_show_instructions">preference_setting_show_instructions</string>
+    <string name="fragment_main_textview_timeattack_achieved_highest_award_default">0 bolts</string>
+    <string name="fragment_instructions_checkbox_nevershowthisagain_text">Never show this again</string>
+    <string name="fragment_instructions_button_playnow_text">Play now</string>
 
 
 </resources>

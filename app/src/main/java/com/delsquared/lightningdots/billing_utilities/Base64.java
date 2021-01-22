@@ -31,6 +31,8 @@ package com.delsquared.lightningdots.billing_utilities;
  * @version 1.3
  */
 
+import android.annotation.SuppressLint;
+
 /**
  * Base64 converter class. This code is not a complete MIME encoder;
  * it simply converts binary data to base64 data and back.
@@ -38,6 +40,7 @@ package com.delsquared.lightningdots.billing_utilities;
  * <p>Note {@link CharBase64} is a GWT-compatible implementation of this
  * class.
  */
+@SuppressWarnings({"ConstantConditions", "JavaDoc", "JavadocReference", "unused"})
 public class Base64 {
     /** Specify encoding (value is {@code true}). */
     public final static boolean ENCODE = true;
@@ -276,7 +279,7 @@ public class Base64 {
 
         // If doPadding is false, set length to truncate '='
         // padding characters
-        while (doPadding == false && outLen > 0) {
+        while (!doPadding && outLen > 0) {
             if (outBuff[outLen - 1] != '=') {
                 break;
             }
@@ -296,8 +299,9 @@ public class Base64 {
      * @param maxLineLength maximum length of one line.
      * @return the BASE64-encoded byte array
      */
+    @SuppressLint("Assert")
     public static byte[] encode(byte[] source, int off, int len, byte[] alphabet,
-            int maxLineLength) {
+                                int maxLineLength) {
         int lenDiv3 = (len + 2) / 3; // ceil(len / 3)
         int len43 = lenDiv3 * 4;
         byte[] outBuff = new byte[len43 // Main 4:3
@@ -507,9 +511,9 @@ public class Base64 {
 
         byte[] b4 = new byte[4];
         int b4Posn = 0;
-        int i = 0;
-        byte sbiCrop = 0;
-        byte sbiDecode = 0;
+        int i;
+        byte sbiCrop;
+        byte sbiDecode;
         for (i = 0; i < len; i++) {
             sbiCrop = (byte) (source[i + off] & 0x7f); // Only the low seven bits
             sbiDecode = decodabet[sbiCrop];
@@ -559,6 +563,7 @@ public class Base64 {
                 throw new Base64DecoderException("single trailing character at offset "
                         + (len - 1));
             }
+            //noinspection UnusedAssignment
             b4[b4Posn++] = EQUALS_SIGN;
             outBuffPosn += decode4to3(b4, 0, outBuff, outBuffPosn, decodabet);
         }

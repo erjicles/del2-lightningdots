@@ -9,10 +9,12 @@ public class GameTimer {
 	int displayTimeElapsedSeconds;
 	int displayTimeRemainingSeconds;
 	private long totalTimeMillis; // Time limit
+	@SuppressWarnings("unused")
 	private long lastPauseStartTimeMillis;
 	private long lastPauseEndTimeMillis;
 	private long lastUpdateTimeMillis;
 
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private GameTimerType gameTimerType;
 	private boolean isRunning;
 
@@ -91,7 +93,7 @@ public class GameTimer {
 
 		long timeElapsedSinceLastUpdateMillis = currentTimeMillis - lastUpdateTimeMillis;
 
-		if (isRunning == true) {
+		if (isRunning) {
 
 			// Update the time elapsed and time remaining
 			timeRemainingMillis = endTimeMillis - currentTimeMillis;

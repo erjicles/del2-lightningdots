@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
     <integer name="game_values_defaultGameTimeLimitMillis">15000</integer>
     <integer name="game_values_defaultGameTimeLimitTimeAttackMillis">15000</integer>
     <integer name="game_values_defaultGameTimeLimitAgilityMillis">15000</integer>

@@ -2,8 +2,6 @@ package com.delsquared.lightningdots.game;
 
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,21 +11,12 @@ public class ClickTargetProfileScript {
     private final SCRIPT_TRANSITION_INTERVAL scriptTransitionInterval;
     private final SCRIPT_CYCLE_DIRECTION scriptCycleDirection;
     private String initialClickTargetProfileName;
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
     private final boolean randomInitialClickTargetProfile;
     private final List<String> listClickTargetProfileNames;
     private final Map<String, ClickTargetProfile> mapClickTargetProfiles;
     private String currentClickTargetProfileName = "";
     private double totalTimeElapsedSinceLastTransitionSeconds = 0.0;
-
-    public ClickTargetProfileScript() {
-        scriptTransitionMode = SCRIPT_TRANSITION_MODE.CONSTANT;
-        scriptTransitionInterval = SCRIPT_TRANSITION_INTERVAL.CONSTANT;
-        scriptCycleDirection = SCRIPT_CYCLE_DIRECTION.INCREASING;
-        initialClickTargetProfileName = "";
-        randomInitialClickTargetProfile = false;
-        listClickTargetProfileNames = new ArrayList<>();
-        mapClickTargetProfiles = new LinkedHashMap<>();
-    }
 
     public ClickTargetProfileScript(
             SCRIPT_TRANSITION_MODE scriptTransitionMode
@@ -56,7 +45,7 @@ public class ClickTargetProfileScript {
 
         }
 
-        // Validate the initial click target profiel name
+        // Validate the initial click target profile name
         validateInitialClickTargetProfileName();
 
         // Set the current click target profile name
@@ -101,18 +90,6 @@ public class ClickTargetProfileScript {
         this.initialClickTargetProfileName = initialClickTargetProfileName;
         validateInitialClickTargetProfileName();
         currentClickTargetProfileName = initialClickTargetProfileName;
-    }
-
-    public SCRIPT_TRANSITION_MODE getScriptTransitionMode() {
-        return this.scriptTransitionMode;
-    }
-
-    public SCRIPT_TRANSITION_INTERVAL getScriptTransitionInterval() {
-        return this.scriptTransitionInterval;
-    }
-
-    public SCRIPT_CYCLE_DIRECTION getScriptCycleDirection() {
-        return this.scriptCycleDirection;
     }
 
     public void setCurrentClickTargetProfileName(String newName) {
@@ -195,7 +172,7 @@ public class ClickTargetProfileScript {
             }
 
             // Check if we should perform a transition
-            if (performTransition == true) {
+            if (performTransition) {
 
                 // Reset the total time elapsed since the last transition
                 totalTimeElapsedSinceLastTransitionSeconds = 0.0;

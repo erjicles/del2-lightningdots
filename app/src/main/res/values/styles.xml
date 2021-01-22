@@ -7,27 +7,15 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
-    <style name="FullscreenTheme" parent="android:Theme.NoTitleBar">
-        <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@null</item>
-        <item name="metaButtonBarStyle">@style/ButtonBar</item>
-        <item name="metaButtonBarButtonStyle">@style/ButtonBarButton</item>
-    </style>
-
-    <style name="ButtonBar">
-        <item name="android:paddingLeft">2dp</item>
-        <item name="android:paddingTop">5dp</item>
-        <item name="android:paddingRight">2dp</item>
-        <item name="android:paddingBottom">0dp</item>
-        <item name="android:background">@android:drawable/bottom_bar</item>
-    </style>
-
-    <style name="ButtonBarButton" />
-
     <!-- Splash screen -->
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:background">@color/black</item>
         <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <!-- Terms of service screen -->
+    <style name="TermsTheme" parent="AppTheme">
+        <item name="android:background">@color/LightGrey</item>
     </style>
 
     <style name="MainScrollView">
@@ -96,10 +84,6 @@
         <item name="android:orientation">vertical</item>
         <item name="android:background">@drawable/mainactivity_menu_submenu_shape</item>
         <item name="android:textColor">@color/DarkOrange</item>
-    </style>
-
-    <style name="MenuItemStoreAvailable" parent="MenuItemStore">
-        <item name="android:clickable">true</item>
     </style>
 
     <style name="MenuItemStoreText">

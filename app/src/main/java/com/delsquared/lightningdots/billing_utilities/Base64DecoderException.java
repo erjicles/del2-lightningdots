@@ -19,6 +19,7 @@ package com.delsquared.lightningdots.billing_utilities;
  *
  * @author nelson
  */
+@SuppressWarnings("unused")
 public class Base64DecoderException extends Exception {
     public Base64DecoderException() {
         super();

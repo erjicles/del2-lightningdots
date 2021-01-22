@@ -11,6 +11,7 @@ class NTupleTypeImpl implements NTupleType {
         this.types = (types != null ? types : new Class<?>[0]);
     }
 
+    @SuppressWarnings("unused")
     public int size() {
         return types.length;
     }
@@ -19,6 +20,7 @@ class NTupleTypeImpl implements NTupleType {
     //public <T> Class<T> getNthType(int i)
 
     //RIGHT - thanks Emil
+    @SuppressWarnings("unused")
     public Class<?> getNthType(int i) {
         return types[i];
     }

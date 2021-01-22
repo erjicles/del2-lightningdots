@@ -1,5 +1,7 @@
 package com.delsquared.lightningdots.ntuple;
 
+import androidx.annotation.NonNull;
+
 import java.util.Arrays;
 
 /**
@@ -20,6 +22,7 @@ class NTupleImpl implements NTuple {
         }
     }
 
+    @SuppressWarnings("unused")
     @Override
     public NTupleType getType() {
         return type;
@@ -70,6 +73,7 @@ class NTupleImpl implements NTuple {
         return hash;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return Arrays.toString(values);

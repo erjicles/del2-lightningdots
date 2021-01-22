@@ -3,15 +3,11 @@ package com.delsquared.lightningdots.activities;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
-import android.preference.PreferenceManager;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.delsquared.lightningdots.R;
@@ -20,12 +16,10 @@ import com.delsquared.lightningdots.utilities.IEEAConsentListener;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
-import org.json.JSONObject;
-
 public class ActivitySplash extends Activity implements IEEAConsentListener {
 
     // Splash screen timer
-    private static int SPLASH_TIME_OUT = 3000;
+    private static final int SPLASH_TIME_OUT = 3000;
     public final static String JSON_VERSIONS_STRING_KEY = "json_versions_string";
     public final static String VERSIONS_LOAD_SUCCESSFUL_KEY = "versions_load_successful";
 
@@ -39,24 +33,15 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        // Get the shared preferences
-        SharedPreferences userPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-
-
         // Get and execute the thread that gets the current terms of service version
         startGetVersions();
 
 
         // Initiate the splash wait
-        new Handler().postDelayed(new Runnable() {
+        new Handler().postDelayed(() -> {
 
-            @Override
-            public void run() {
-
-                splashTimeoutFinished = true;
-                finishSplash();
-
-            }
+            splashTimeoutFinished = true;
+            finishSplash();
 
         }, SPLASH_TIME_OUT);
     }
@@ -75,10 +60,6 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
             // Get the versions web service url
             String versionsWebServiceUrl = context.getString(R.string.versions_url);
 
-            // Get the request timeouts
-            int requestTimeout = Integer.parseInt(context.getString(R.string.request_timeout));
-            int requestSocketTimeout = Integer.parseInt(context.getString(R.string.request_socket_timeout));
-
             // Instantiate the RequestQueue.
             RequestQueue queue = Volley.newRequestQueue(getContext());
 
@@ -87,22 +68,10 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
                     Request.Method.GET,
                     versionsWebServiceUrl,
                     null,
-                    new Response.Listener<JSONObject>() {
-
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            finishGetVersions(response.toString());
-                        }
-
-                    },
-                    new Response.ErrorListener() {
-
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            LightningDotsApplication.logDebugErrorMessage(error.getMessage());
-                            finishGetVersions("");
-                        }
-
+                    response -> finishGetVersions(response.toString()),
+                    error -> {
+                        LightningDotsApplication.logDebugErrorMessage(error.getMessage());
+                        finishGetVersions("");
                     }
             );
 
@@ -128,7 +97,7 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
 
     private void finishSplash() {
 
-        if (versionsLoadComplete == true && splashTimeoutFinished == true) {
+        if (versionsLoadComplete && splashTimeoutFinished) {
 
             // Handle checking for consent to show personalized ads
             EEAConsentManager consentManager = new EEAConsentManager(this);
@@ -145,7 +114,6 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
             // Launch the store activity
             Intent storeIntent = new Intent(ActivitySplash.this, ActivityStore.class);
             startActivity(storeIntent);
-            finish();
         } else {
 
             // Launch the main activity
@@ -153,11 +121,9 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
             mainIntent.putExtra(JSON_VERSIONS_STRING_KEY, jsonVersionsString);
             mainIntent.putExtra(VERSIONS_LOAD_SUCCESSFUL_KEY, versionsLoadSuccessful);
             startActivity(mainIntent);
-
-            // Close this activity
-            finish();
-
         }
+        // Close this activity
+        finish();
 
     }
 

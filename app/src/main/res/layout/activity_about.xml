@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout 
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 	android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
-    tools:context=".AboutActivity">
+    tools:context="com.delsquared.lightningdots.activities.ActivityAbout">
 	
 	<ScrollView
 	    style="@style/MainScrollView">
@@ -39,13 +38,10 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_main_menu_vertical_spacer"></LinearLayout>
-
             <TextView
                 android:id="@+id/activity_about_textview_legalmenu_title"
                 style="@style/MainMenuSectionHeader"
+                android:layout_marginTop="@dimen/activity_main_menu_vertical_spacer"
                 android:text="@string/activity_about_legal_legallabel"/>
 
             <LinearLayout

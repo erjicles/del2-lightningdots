@@ -75,10 +75,6 @@ public class ClickTargetProfile {
             this.transitionContinuity = transitionContinuity;
         }
 
-        public PositionEvolverVariable toPositionEvolverVariable() {
-            return toPositionEvolverVariable(this.initialValue);
-        }
-
         public PositionEvolverVariable toPositionEvolverVariable(double initialValue) {
             return toPositionEvolverVariable(this.minimumValue, initialValue, this.maximumValue);
         }
@@ -86,8 +82,8 @@ public class ClickTargetProfile {
         public PositionEvolverVariable toPositionEvolverVariable(double minimumValue, double initialValue, double maximumValue) {
             return new PositionEvolverVariable(
                     name
-                    , initialValue
-                    , minimumValue
+                    ,
+                    minimumValue
                     , initialValue
                     , maximumValue
                     , usesInitialValueMultipliers

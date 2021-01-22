@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class LevelDefinitionLadder {
 
+    @SuppressWarnings("unused")
     public final int level;
     public final List<String> listClickTargetDefinitionNames;
     public final Map<String, ClickTargetDefinition> mapClickTargetDefinitions;
@@ -65,8 +66,10 @@ public class LevelDefinitionLadder {
                 // Get the click target definition
                 ClickTargetDefinition clickTargetDefinition = mapClickTargetDefinitions.get(clickTargetName);
 
-                // Add the initial click target profile name
-                listShuffledClickTargetProfileNames.add(clickTargetDefinition.clickTargetProfileScript.getInitialClickTargetProfileName());
+                if (clickTargetDefinition != null) {
+                    // Add the initial click target profile name
+                    listShuffledClickTargetProfileNames.add(clickTargetDefinition.clickTargetProfileScript.getInitialClickTargetProfileName());
+                }
 
             }
 
@@ -104,10 +107,12 @@ public class LevelDefinitionLadder {
                         // Get the current ClickTargetDefinition
                         ClickTargetDefinition clickTargetDefinition = mapClickTargetDefinitions.get(clickTargetName);
 
-                        // Set the setting
-                        clickTargetDefinition.clickTargetProfileScript.reinitializeInitialClickTargetProfileName(
-                                listShuffledClickTargetProfileNames.get(currentIndex)
-                        );
+                        if (clickTargetDefinition != null) {
+                            // Set the setting
+                            clickTargetDefinition.clickTargetProfileScript.reinitializeInitialClickTargetProfileName(
+                                    listShuffledClickTargetProfileNames.get(currentIndex)
+                            );
+                        }
 
                     }
 
@@ -125,11 +130,6 @@ public class LevelDefinitionLadder {
 
         public final List<String> listClickTargetSettingsShuffleSettingNames;
         private final boolean preserveOrder;
-
-        public ClickTargetSettingsShuffle() {
-            listClickTargetSettingsShuffleSettingNames = new ArrayList<>();
-            preserveOrder = false;
-        }
 
         public ClickTargetSettingsShuffle(
                 List<String> listClickTargetSettingsShuffleSettingNames

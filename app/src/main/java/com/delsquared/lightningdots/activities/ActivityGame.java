@@ -1,18 +1,18 @@
 package com.delsquared.lightningdots.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.fragments.FragmentGame;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
-public class ActivityGame extends Activity {
-
-    private int gameType = Game.GameType.AGILITY.ordinal();
+public class ActivityGame extends FragmentActivity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,15 +20,15 @@ public class ActivityGame extends Activity {
 
 		// Get the game type from the intent
 		Intent intent = getIntent();
-		gameType = Game.GameType.AGILITY.ordinal();
+        int gameType = Game.GameType.AGILITY.ordinal();
 		try {
 			gameType = intent.getIntExtra(ActivityMain.EXTRA_GAME_TYPE, Game.GameType.AGILITY.ordinal());
 		} catch (Exception e) {
-
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
 		}
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, FragmentGame.newInstance(gameType))
                     .commit();
         }
@@ -60,7 +60,8 @@ public class ActivityGame extends Activity {
     }
     */
 
-	@Override
+	@SuppressWarnings("EmptyMethod")
+    @Override
 	protected void onPause() {
         super.onPause();
 	}
@@ -83,6 +84,7 @@ public class ActivityGame extends Activity {
                 , game.surfaceViewGameThreadSharedData.getCanvasHeight());
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     protected void onDestroy() {
         super.onDestroy();

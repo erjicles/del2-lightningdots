@@ -14,11 +14,13 @@ public class SpanRegion {
 	private int _endIndex;
 	
 	//---------- Constructors ------------//
-	
+
+	@SuppressWarnings("unused")
 	public SpanRegion() {
 		this.setFlag("");
 	}
-	
+
+	@SuppressWarnings("unused")
 	public SpanRegion(
             String flag
             , int startIndex
@@ -35,7 +37,8 @@ public class SpanRegion {
 	public void setFlag(String flag) {
 		this._flag = flag;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public String getFlag() {
 		return this._flag;
 	}
@@ -43,7 +46,8 @@ public class SpanRegion {
 	public void setStartIndex(int startIndex) {
 		this._startIndex = startIndex;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public int getStartIndex() {
 		return this._startIndex;
 	}
@@ -51,7 +55,8 @@ public class SpanRegion {
 	public void setEndIndex(int endIndex) {
 		this._endIndex = endIndex;
 	}
-	
+
+	@SuppressWarnings("unused")
 	public int getEndIndex() {
 		return this._endIndex;
 	}

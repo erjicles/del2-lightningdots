@@ -7,17 +7,18 @@ import android.graphics.RectF;
 public class SurfaceViewTextHandler {
 
     private String text;
-    private JUSTIFY_HORIZONTAL justify_horizontal;
-    private JUSTIFY_VERTICAL justify_vertical;
+    private final JUSTIFY_HORIZONTAL justify_horizontal;
+    private final JUSTIFY_VERTICAL justify_vertical;
     private double X;
     private double Y;
     private double textWidth;
     private double textHeight;
-    private double textHeightFactor;
+    private final double textHeightFactor;
     private double drawX;
     private double drawY;
     private Paint paint;
 
+    @SuppressWarnings("unused")
     public SurfaceViewTextHandler() {
         text = "";
         justify_horizontal = JUSTIFY_HORIZONTAL.LEFT;
@@ -54,14 +55,22 @@ public class SurfaceViewTextHandler {
         calculateActualPosition();
     }
 
+    @SuppressWarnings("unused")
     public String getText() { return text; }
+    @SuppressWarnings("unused")
     public JUSTIFY_HORIZONTAL getJustify_horizontal() { return justify_horizontal; }
+    @SuppressWarnings("unused")
     public JUSTIFY_VERTICAL getJustify_vertical() { return justify_vertical; }
+    @SuppressWarnings("unused")
     public double getX() { return X; }
+    @SuppressWarnings("unused")
     public double getY() { return Y; }
+    @SuppressWarnings("unused")
     public double getDrawX() { return drawX; }
+    @SuppressWarnings("unused")
     public double getDrawY() { return drawY; }
     public double getTextHeight() { return textHeight; }
+    @SuppressWarnings("unused")
     public double getTextHeightFactor() { return textHeightFactor; }
     public double getTextWidth() { return textWidth; }
     public RectF getDrawBoundingRectF(float offsetX, float offsetY, float multiplier) {
@@ -91,6 +100,7 @@ public class SurfaceViewTextHandler {
         calculateActualPosition();
     }
 
+    @SuppressWarnings("unused")
     public void setTextPaint(Paint textPaint) {
         this.paint = textPaint;
         setTextHeightAndWidth(this.textHeight);
@@ -114,6 +124,7 @@ public class SurfaceViewTextHandler {
         switch (justify_horizontal) {
 
             case LEFT:
+                //noinspection DuplicateBranchesInSwitch
                 drawX = X;
                 break;
 
@@ -133,6 +144,7 @@ public class SurfaceViewTextHandler {
         switch (justify_vertical) {
 
             case TOP:
+                //noinspection DuplicateBranchesInSwitch
                 drawY = Y + textHeight;
                 break;
 

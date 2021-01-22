@@ -4,22 +4,24 @@ import com.delsquared.lightningdots.game.ClickTargetProfile;
 
 public class PositionEvolverVariable implements INamedObject {
 
+    @SuppressWarnings("unused")
     private PositionEvolver parentPositionEvolver;
 
-    private String name;
+    private final String name;
     private double value;
     private double oldValue;
     private double minimumValue;
-    private double initialValue;
+    private final double initialValue;
     private double maximumValue;
-    private boolean usesInitialValueMultipliers;
-    private boolean randomInitialValue;
-    private boolean randomInitialSign;
-    private boolean canChange;
-    private TimedChangeHandler timedChangeHandler;
-    private BoundaryEffect boundaryEffect;
-    private TransitionContinuity transitionContinuity;
+    private final boolean usesInitialValueMultipliers;
+    private final boolean randomInitialValue;
+    private final boolean randomInitialSign;
+    private final boolean canChange;
+    private final TimedChangeHandler timedChangeHandler;
+    private final BoundaryEffect boundaryEffect;
+    private final TransitionContinuity transitionContinuity;
 
+    @SuppressWarnings("unused")
     public PositionEvolverVariable() {
         name = "";
         value = 0.0;
@@ -37,9 +39,8 @@ public class PositionEvolverVariable implements INamedObject {
     }
 
     public PositionEvolverVariable(
-            String name
-            , double value
-            , double minimumValue
+            String name,
+            double minimumValue
             , double initialValue
             , double maximumValue
             , boolean usesInitialValueMultipliers
@@ -64,6 +65,7 @@ public class PositionEvolverVariable implements INamedObject {
         this.transitionContinuity = transitionContinuity;
     }
 
+    @SuppressWarnings("unused")
     public PositionEvolverVariable(ClickTargetProfile.ProfileVariableValues profileVariableValues) {
         this.name = profileVariableValues.name;
         this.value = profileVariableValues.initialValue;
@@ -84,20 +86,26 @@ public class PositionEvolverVariable implements INamedObject {
     public double getValue() { return this.value; }
     public double getOldValue() { return this.oldValue; }
     public double getMinimumValue() { return this.minimumValue; }
+    @SuppressWarnings("unused")
     public double getInitialValue() { return this.initialValue; }
     public double getMaximumValue() { return this.maximumValue; }
+    @SuppressWarnings("unused")
     public boolean getUsesInitialValueMultipliers() { return this.usesInitialValueMultipliers; }
+    @SuppressWarnings("unused")
     public boolean getRandomInitialValue() { return this.randomInitialValue; }
+    @SuppressWarnings("unused")
     public boolean getRandomInitialSign() { return this.randomInitialSign; }
     public boolean getCanChange() { return this.canChange; }
+    @SuppressWarnings("unused")
     public TimedChangeHandler getTimedChangeHandler() { return this.timedChangeHandler; }
     public BoundaryEffect getBoundaryEffect() { return this.boundaryEffect; }
+    @SuppressWarnings("unused")
     public TransitionContinuity getTransitionContinuity() { return this.transitionContinuity; }
 
     /**
      * Sets the variable value to the new specified value.
      * Sets the old value to the current value.
-     * @param value
+     * @param value The value to set
      */
     public void setValue(double value) {
         this.oldValue = value;
@@ -107,7 +115,7 @@ public class PositionEvolverVariable implements INamedObject {
     /**
      * Resets the value to the specified new value.
      * Resets the old value to the new value.
-     * @param value
+     * @param value The value to reset
      */
     public void reinitializeValue(double value) {
         if (usesInitialValueMultipliers) {
@@ -140,7 +148,7 @@ public class PositionEvolverVariable implements INamedObject {
 
     /**
      * Adds dx to the current value. Sets the old value to the current value.
-     * @param dx
+     * @param dx The value by which to move
      */
     public void moveValue(double dx) {
         this.oldValue = this.value;
@@ -156,6 +164,7 @@ public class PositionEvolverVariable implements INamedObject {
         return timedChangeHandler.checkTimedChange(dt);
     }
 
+    @SuppressWarnings("unused")
     public int checkBoundaryReachedNoDX() {
 
         // Initialize if we reached a boundary
@@ -330,18 +339,21 @@ public class PositionEvolverVariable implements INamedObject {
 
         switch (boundaryEffect.boundaryType) {
             case STICKY:
+                //noinspection DuplicateBranchesInSwitch
                 newValue = (typeOfBoundaryReached == -1) ? minimumValueToUse : maximumValueToUse;
                 break;
 
             case HARD:
+                double newMinValue = minimumValueToUse + remainingOverflow;
+                double newMaxValue = maximumValueToUse - remainingOverflow;
                 if (numberOfBoundariesReached % 2 == 0) {
                     newValue = (typeOfBoundaryReached == 1) ?
-                            minimumValueToUse + remainingOverflow
-                            : maximumValueToUse - remainingOverflow;
+                            newMinValue
+                            : newMaxValue;
                 } else {
                     newValue = (typeOfBoundaryReached == 1) ?
-                            maximumValueToUse - remainingOverflow
-                            : minimumValueToUse + remainingOverflow;
+                            newMaxValue
+                            : newMinValue;
                     bounce = true;
                 }
                 break;

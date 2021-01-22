@@ -29,6 +29,7 @@ public class TransitionTrigger {
         this.listSyncVariableTriggers = listSyncVariableTriggers;
     }
 
+    @SuppressWarnings("unused")
     public TransitionEvent toTransitionEvent() {
         return new TransitionEvent(
                 targetObjectName

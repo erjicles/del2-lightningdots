@@ -6,7 +6,7 @@ import com.google.ads.consent.ConsentStatus;
 
 public class EEAConsentFormListener extends ConsentFormListener {
 
-    private IEEAConsentListener listener;
+    private final IEEAConsentListener listener;
     private ConsentForm form;
     public EEAConsentFormListener(IEEAConsentListener listener) {
         this.listener = listener;

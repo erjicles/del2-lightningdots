@@ -25,8 +25,8 @@ import java.util.Map;
  * An Inventory is returned by such methods as {@link IabHelper#queryInventory}.
  */
 public class Inventory {
-    Map<String,SkuDetails> mSkuMap = new HashMap<String,SkuDetails>();
-    Map<String,Purchase> mPurchaseMap = new HashMap<String,Purchase>();
+    final Map<String,SkuDetails> mSkuMap = new HashMap<>();
+    final Map<String,Purchase> mPurchaseMap = new HashMap<>();
 
     Inventory() { }
 
@@ -36,6 +36,7 @@ public class Inventory {
     }
 
     /** Returns purchase information for a given product, or null if there is no purchase. */
+    @SuppressWarnings("unused")
     public Purchase getPurchase(String sku) {
         return mPurchaseMap.get(sku);
     }
@@ -46,6 +47,7 @@ public class Inventory {
     }
 
     /** Return whether or not details about the given product are available. */
+    @SuppressWarnings("unused")
     public boolean hasDetails(String sku) {
         return mSkuMap.containsKey(sku);
     }
@@ -58,18 +60,20 @@ public class Inventory {
      * purchase data from the Inventory you already have is quicker than querying for
      * a new Inventory.
      */
+    @SuppressWarnings("unused")
     public void erasePurchase(String sku) {
-        if (mPurchaseMap.containsKey(sku)) mPurchaseMap.remove(sku);
+        mPurchaseMap.remove(sku);
     }
 
     /** Returns a list of all owned product IDs. */
+    @SuppressWarnings("unused")
     List<String> getAllOwnedSkus() {
-        return new ArrayList<String>(mPurchaseMap.keySet());
+        return new ArrayList<>(mPurchaseMap.keySet());
     }
 
     /** Returns a list of all owned product IDs of a given type */
     List<String> getAllOwnedSkus(String itemType) {
-        List<String> result = new ArrayList<String>();
+        List<String> result = new ArrayList<>();
         for (Purchase p : mPurchaseMap.values()) {
             if (p.getItemType().equals(itemType)) result.add(p.getSku());
         }
@@ -77,8 +81,9 @@ public class Inventory {
     }
 
     /** Returns a list of all purchases. */
+    @SuppressWarnings("unused")
     List<Purchase> getAllPurchases() {
-        return new ArrayList<Purchase>(mPurchaseMap.values());
+        return new ArrayList<>(mPurchaseMap.values());
     }
 
     void addSkuDetails(SkuDetails d) {

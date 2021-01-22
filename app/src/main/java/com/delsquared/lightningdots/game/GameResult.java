@@ -6,6 +6,7 @@ import java.util.Date;
 
 public class GameResult {
 
+	@SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private final int _id;
 	private final int game_type;
 	private final int game_level;
@@ -40,6 +41,7 @@ public class GameResult {
 	public boolean getGameSuccess() { return game_success; }
     public int getAwardLevel() { return award_level; }
 	public int getUserClicks() { return user_clicks; }
+	@SuppressWarnings("unused")
 	public Date getGameTimestamp() { return game_timestamp; }
 
     /*
@@ -62,6 +64,7 @@ public class GameResult {
 	public static final String TABLE_GAMERESULTS_COLUMNNAME_USERCLICKS = "user_clicks";
 	public static final String TABLE_GAMERESULTS_COLUMNNAME_GAMETIMESTAMP = "game_timestamp";
 
+	@SuppressWarnings("unused")
 	public static final String TABLENAME_TEMP_GAMERESULT = "gameresults_temp";
 
 	// Database creation SQL statement
@@ -125,6 +128,7 @@ public class GameResult {
 		database.execSQL(DATABASE_CREATE_INDEX_NONUNIQUE_gameresults_gametype_gametimestamp);
 	}
 
+	@SuppressWarnings("unused")
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 								 int newVersion) {
 		//database.execSQL("DROP TABLE IF EXISTS " + DATABASE_CREATE_TABLE_GAMERESULTS);

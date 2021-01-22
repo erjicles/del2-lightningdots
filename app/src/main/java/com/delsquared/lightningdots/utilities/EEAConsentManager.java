@@ -13,7 +13,7 @@ import java.net.URL;
 
 public class EEAConsentManager {
 
-    private IEEAConsentListener listener;
+    private final IEEAConsentListener listener;
 
     public EEAConsentManager(IEEAConsentListener listener) {
         this.listener = listener;

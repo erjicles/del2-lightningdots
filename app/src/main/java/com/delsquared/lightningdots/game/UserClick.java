@@ -30,8 +30,11 @@ public class UserClick {
 						, yPixels + radiusPixels);
 	}
 
+	@SuppressWarnings("unused")
 	public int getXPixels() { return xPixels; }
+	@SuppressWarnings("unused")
 	public int getYPixels() { return yPixels; }
+	@SuppressWarnings("unused")
 	public int getRadiusPixels() { return radiusPixels; }
 	public String getPaintString() { return paintString; }
 	public RectF getBoundingRectangle() { return boundingRectangle; }

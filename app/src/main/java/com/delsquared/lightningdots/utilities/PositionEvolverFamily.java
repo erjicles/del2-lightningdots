@@ -2,10 +2,11 @@ package com.delsquared.lightningdots.utilities;
 
 public class PositionEvolverFamily implements INamedObject {
 
-    private String name;
+    private final String name;
 
-    private OrderedObjectCollection<PositionEvolver> collectionPositionEvolvers;
+    private final OrderedObjectCollection<PositionEvolver> collectionPositionEvolvers;
 
+    @SuppressWarnings("unused")
     public PositionEvolverFamily() {
         name = "";
         collectionPositionEvolvers = new OrderedObjectCollection<>();
@@ -31,6 +32,7 @@ public class PositionEvolverFamily implements INamedObject {
     public int getPositionEvolverIndex(String positionEvolverName) {
         return collectionPositionEvolvers.getObjectIndex(positionEvolverName);
     }
+    @SuppressWarnings("unused")
     public String getPositionEvolverName(int index) {
         return collectionPositionEvolvers.getObjectName(index);
     }

@@ -12,6 +12,7 @@ public class PositionEvolverVariableAttractorVectorCollection {
         attractorVectorGravity = null;
     }
 
+    @SuppressWarnings("unused")
     public PositionEvolverVariableAttractorVectorCollection(
             PositionVector attractorVectorSnapToVector
             , PositionVector attractorVectorMaxToVector

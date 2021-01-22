@@ -4,7 +4,7 @@ import android.content.Context;
 
 public class PositionEvolvingPolygonalObjectContainerHelper<T extends IPositionEvolvingPolygonalObject> {
 
-    Context context;
+    final Context context;
 
     public PositionEvolvingPolygonalObjectContainerHelper(Context context) {
         this.context = context;

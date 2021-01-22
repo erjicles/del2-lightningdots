@@ -23,13 +23,12 @@ public class GameLevelDefinitionHelper {
         }
 
         // Get the target user clicks
-        ArrayList<Integer> arrayListTargetUserClicks = new ArrayList<Integer>();
+        ArrayList<Integer> arrayListTargetUserClicks = new ArrayList<>();
         if (gameType == Game.GameType.AGILITY) {
 
             int[] targetUserClicksArray = context.getResources().getIntArray(R.array.game_values_targetUserClicksAgilityPer15Seconds);
 
-            for (int currentIndex = 0; currentIndex < targetUserClicksArray.length; currentIndex++) {
-                float currentUserClicksPer15Seconds = targetUserClicksArray[currentIndex];
+            for (float currentUserClicksPer15Seconds : targetUserClicksArray) {
                 arrayListTargetUserClicks.add(
                         (int) Math.ceil(currentUserClicksPer15Seconds * gameTimeLimitMillis / 15000.0));
             }
@@ -37,8 +36,7 @@ public class GameLevelDefinitionHelper {
 
             int[] targetUserClicksArray = context.getResources().getIntArray(R.array.game_values_targetUserClicksTimeAttackPer15Seconds);
 
-            for (int currentIndex = 0; currentIndex < targetUserClicksArray.length; currentIndex++) {
-                float currentUserClicksPer15Seconds = targetUserClicksArray[currentIndex];
+            for (float currentUserClicksPer15Seconds : targetUserClicksArray) {
                 arrayListTargetUserClicks.add(
                         (int) Math.ceil(currentUserClicksPer15Seconds * gameTimeLimitMillis / 15000.0));
             }
@@ -52,6 +50,7 @@ public class GameLevelDefinitionHelper {
                 );
 
         // Create the game level definition
+        //noinspection UnnecessaryLocalVariable
         GameLevelDefinition gameLevelDefinition = new GameLevelDefinition(
                 gameTimeLimitMillis
                 , arrayListTargetUserClicks
@@ -61,7 +60,8 @@ public class GameLevelDefinitionHelper {
 
     }
 
-	public static int getAwardLevel(Game game) {
+	@SuppressWarnings("DuplicateBranchesInSwitch")
+    public static int getAwardLevel(Game game) {
 
 		// Initialize the result
 		int levelCompleted = 0;
@@ -107,7 +107,7 @@ public class GameLevelDefinitionHelper {
 					break;
 
 				case ENDURANCE:
-					break;
+                    break;
 
 				case AGILITY:
 

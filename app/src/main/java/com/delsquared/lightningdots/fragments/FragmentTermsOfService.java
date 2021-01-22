@@ -1,6 +1,6 @@
 package com.delsquared.lightningdots.fragments;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class FragmentTermsOfService extends Fragment {
 	
@@ -20,10 +21,10 @@ public class FragmentTermsOfService extends Fragment {
                              Bundle savedInstanceState) {
         
 		// Inflate the layout for this fragment
-		View theLayout = (View) inflater.inflate(R.layout.fragment_terms_of_service, container, false);
+		View theLayout = inflater.inflate(R.layout.fragment_terms_of_service, container, false);
 		
 	    // Get the webview
-	    WebView webViewTerms = (WebView) theLayout.findViewById(R.id.fragment_termsofservice_webview_termsofservice);
+	    WebView webViewTerms = theLayout.findViewById(R.id.fragment_termsofservice_webview_termsofservice);
 	    
 	    // Get the args
 	    Bundle args = getArguments();
@@ -35,10 +36,19 @@ public class FragmentTermsOfService extends Fragment {
 	    webViewTerms.setWebViewClient(new WebViewClient() {
 	    	
 	    	public void onPageFinished(WebView view, String url) {
-	    		
+	    		View mainView = getView();
+	    		if (mainView == null) {
+					LightningDotsApplication.logDebugErrorMessage("mainView is null");
+					return;
+				}
+
 	    		// Get the loading spinner
 	    		ProgressBar loadingProgressBar =
-	    				(ProgressBar) getView().findViewById(R.id.fragment_termsofservice_progressbar_loadingprogressbar);
+                        mainView.findViewById(R.id.fragment_termsofservice_progressbar_loadingprogressbar);
+	    		if (loadingProgressBar == null) {
+	    			LightningDotsApplication.logDebugErrorMessage("loadingProgressBar is null");
+	    			return;
+				}
 	    		
 	    		// Set the visibility to invisible
 	    		loadingProgressBar.setVisibility(View.GONE);
@@ -71,7 +81,7 @@ public class FragmentTermsOfService extends Fragment {
 	    webViewTerms.loadUrl(termsUrl);
 	    
 	    // Check if we need to add margins
-	    if (args != null && args.getBoolean(MARGINS_KEY) == true) {
+	    if (args != null && args.getBoolean(MARGINS_KEY)) {
 	    	
 	    	// Add margins
             webViewTerms.setPadding(
@@ -84,7 +94,8 @@ public class FragmentTermsOfService extends Fragment {
 	    
         return theLayout;
     }
-	
+
+	@SuppressWarnings("unused")
 	public static FragmentTermsOfService newInstance(
 			boolean addMargins) {
 

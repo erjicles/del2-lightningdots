@@ -8,7 +8,8 @@ package com.delsquared.lightningdots.ntuple;
  */
 public interface NTuple {
 
-    public NTupleType getType();
-    public int size();
-    public <T> T getNthValue(int i);
+    @SuppressWarnings("unused")
+    NTupleType getType();
+    int size();
+    <T> T getNthValue(int i);
 }

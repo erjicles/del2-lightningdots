@@ -5,6 +5,7 @@ import java.util.List;
 
 public class PositionVectorHelper {
 
+    @SuppressWarnings("ConstantConditions")
     public static PositionVector toCoordinateSystem(
             PositionVector sourcePositionVector
             , CoordinateSystemType targetCoordinateSystemType) {
@@ -109,10 +110,11 @@ public class PositionVectorHelper {
                 // Handle the azimuthal angle
                 if (currentVariableIndex == 1) {
                     double previousVariableValue = sourcePositionVector.getValue(0);
+                    double aCosPreviousVariableValue = Math.acos(previousVariableValue / Math.sqrt(progressiveMagnitudeSquared));
                     if (currentVariableValue >= 0.0) {
-                        currentValue = Math.acos(previousVariableValue / Math.sqrt(progressiveMagnitudeSquared));
+                        currentValue = aCosPreviousVariableValue;
                     } else {
-                        currentValue = (2.0 * Math.PI) - Math.acos(previousVariableValue / Math.sqrt(progressiveMagnitudeSquared));
+                        currentValue = (2.0 * Math.PI) - aCosPreviousVariableValue;
                     }
                 }
 

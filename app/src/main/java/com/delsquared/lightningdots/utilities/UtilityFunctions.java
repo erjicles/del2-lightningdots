@@ -32,7 +32,6 @@ public class UtilityFunctions {
         } catch (Exception e) {
 
             // Reset the connected flag
-            isConnected = false;
 
         }
 
@@ -64,7 +63,7 @@ public class UtilityFunctions {
             t.send(theEvent.build());
 
         } catch (Exception e) {
-
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
 
     }
@@ -91,13 +90,13 @@ public class UtilityFunctions {
             globalTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         } catch (Exception e) {
-
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
 
     }
 
     public static float getResourceFloatValue(Context context, int resourceID) {
-        float resultValue = 0.0f;
+        float resultValue;
 
         // Get the value
         try {
@@ -111,7 +110,7 @@ public class UtilityFunctions {
         return resultValue;
     }
 
-    public static Random randomizer = new Random();
+    public static final Random randomizer = new Random();
 
     public static int generateRandomIndex(int minIndex, int maxIndex) {
 
@@ -141,7 +140,7 @@ public class UtilityFunctions {
     public static double generateRandomValue(double minimumValue, double maximumValue, boolean mirrorAbsoluteValue, Random randomizer) {
 
         // Initialize the result
-        double resultValue = 0.0;
+        double resultValue;
 
         // Get the random value
         resultValue = getRangeValue(randomizer.nextDouble(), minimumValue, maximumValue);
@@ -167,12 +166,6 @@ public class UtilityFunctions {
 
     public static double getRangeValue(double percent, double minimumValue, double maximumValue) {
         return minimumValue + (percent * (maximumValue - minimumValue));
-    }
-
-    public boolean pointIsLeftOfEdge() {
-        boolean result = false;
-
-        return result;
     }
 
     // isLeft(): tests if a point is Left|On|Right of an infinite line.
@@ -234,7 +227,7 @@ public class UtilityFunctions {
                     , enumValueName
             );
         } catch (Exception e) {
-            resultValue = defaultValue;
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
          return resultValue;
     }

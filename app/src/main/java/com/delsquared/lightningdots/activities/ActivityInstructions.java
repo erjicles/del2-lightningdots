@@ -1,17 +1,19 @@
 package com.delsquared.lightningdots.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 
+import androidx.fragment.app.FragmentActivity;
+
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.fragments.FragmentInstructions;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
-public class ActivityInstructions extends Activity {
+public class ActivityInstructions extends FragmentActivity {
 
     public static final String EXTRA_GAME_TYPE = "com.delsquared.lightningdots.gametype";
 
@@ -27,11 +29,11 @@ public class ActivityInstructions extends Activity {
         try {
             gameType = intent.getIntExtra(ActivityMain.EXTRA_GAME_TYPE, Game.GameType.AGILITY.ordinal());
         } catch (Exception e) {
-
+            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
         }
 
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
+            getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, FragmentInstructions.newInstance(gameType))
                     .commit();
         }
@@ -46,7 +48,7 @@ public class ActivityInstructions extends Activity {
         super.onWindowFocusChanged(hasFocus);
 
         FragmentInstructions fragmentInstructions =
-                (FragmentInstructions) getFragmentManager().findFragmentById(R.id.container);
+                (FragmentInstructions) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentInstructions != null) {
             fragmentInstructions.startInstructionsAnimation();
         }
@@ -55,7 +57,7 @@ public class ActivityInstructions extends Activity {
     public void checkChanged_NeverShowThisAgain(View view) {
 
         FragmentInstructions fragmentInstructions =
-                (FragmentInstructions) getFragmentManager().findFragmentById(R.id.container);
+                (FragmentInstructions) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentInstructions != null) {
             CheckBox checkBoxNeverShowThisAgain = (CheckBox) view;
             boolean isChecked = checkBoxNeverShowThisAgain.isChecked();
@@ -72,7 +74,7 @@ public class ActivityInstructions extends Activity {
 
     }
 
-    public void onClick_PlayNow(View view) {
+    public void onClick_PlayNow(@SuppressWarnings("unused") View view) {
 
         // Start the game activity
         Intent intent = new Intent(this, ActivityGame.class);

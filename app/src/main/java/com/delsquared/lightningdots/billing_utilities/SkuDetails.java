@@ -15,6 +15,8 @@
 
 package com.delsquared.lightningdots.billing_utilities;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,14 +24,16 @@ import org.json.JSONObject;
  * Represents an in-app product's listing details.
  */
 public class SkuDetails {
-    String mItemType;
+    @SuppressWarnings("unused")
+    final String mItemType;
     String mSku;
     String mType;
     String mPrice;
     String mTitle;
     String mDescription;
-    String mJson;
+    final String mJson;
 
+    @SuppressWarnings("unused")
     public SkuDetails(String jsonSkuDetails) throws JSONException {
         this(IabHelper.ITEM_TYPE_INAPP, jsonSkuDetails);
     }
@@ -46,11 +50,13 @@ public class SkuDetails {
     }
 
     public String getSku() { return mSku; }
+    @SuppressWarnings("unused")
     public String getType() { return mType; }
     public String getPrice() { return mPrice; }
     public String getTitle() { return mTitle; }
     public String getDescription() { return mDescription; }
 
+    @NonNull
     @Override
     public String toString() {
         return "SkuDetails:" + mJson;

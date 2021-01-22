@@ -9,9 +9,10 @@ public class PositionVector {
     public final CoordinateSystemType coordinateSystemType;
     public PositionVector() {
         cardinality = 0;
-        X = new ArrayList<Double>();
+        X = new ArrayList<>();
         coordinateSystemType = CoordinateSystemType.CARTESIAN;
     }
+    @SuppressWarnings("unused")
     public PositionVector(final double X1) {
         cardinality = 1;
         X = new ArrayList<Double>() {{
@@ -19,6 +20,7 @@ public class PositionVector {
         }};
         coordinateSystemType = CoordinateSystemType.CARTESIAN;
     }
+    @SuppressWarnings("unused")
     public PositionVector(final double X1, CoordinateSystemType coordinateSystemType) {
         cardinality = 1;
         X = new ArrayList<Double>() {{
@@ -34,6 +36,7 @@ public class PositionVector {
         }};
         coordinateSystemType = CoordinateSystemType.CARTESIAN;
     }
+    @SuppressWarnings("unused")
     public PositionVector(final double X1, final double X2, CoordinateSystemType coordinateSystemType) {
         cardinality = 2;
         X = new ArrayList<Double>() {{
@@ -51,6 +54,7 @@ public class PositionVector {
         }};
         coordinateSystemType = CoordinateSystemType.CARTESIAN;
     }
+    @SuppressWarnings("unused")
     public PositionVector(final double X1, final double X2, final double X3, CoordinateSystemType coordinateSystemType) {
         cardinality = 3;
         X = new ArrayList<Double>() {{
@@ -64,12 +68,11 @@ public class PositionVector {
         if (X == null) {
             cardinality = 0;
             this.X = new ArrayList<>();
-            coordinateSystemType = CoordinateSystemType.CARTESIAN;
         } else {
             cardinality = X.size();
             this.X = X;
-            coordinateSystemType = CoordinateSystemType.CARTESIAN;
         }
+        coordinateSystemType = CoordinateSystemType.CARTESIAN;
     }
     public PositionVector(List<Double> X, CoordinateSystemType coordinateSystemType) {
         cardinality = X.size();
@@ -84,12 +87,11 @@ public class PositionVector {
         } else {
             cardinality = positionVector.cardinality;
             X = new ArrayList<>(positionVector.cardinality);
-            for (double currentItem : positionVector.getX()) {
-                X.add(currentItem);
-            }
+            X.addAll(positionVector.getX());
             coordinateSystemType = positionVector.coordinateSystemType;
         }
     }
+    @SuppressWarnings("unused")
     public PositionVector(int cardinality) {
         this.cardinality = cardinality;
         X = new ArrayList<>();
@@ -98,6 +100,7 @@ public class PositionVector {
         }
         coordinateSystemType = CoordinateSystemType.CARTESIAN;
     }
+    @SuppressWarnings("unused")
     public PositionVector(int cardinality, CoordinateSystemType coordinateSystemType) {
         this.cardinality = cardinality;
         X = new ArrayList<>();
@@ -137,6 +140,7 @@ public class PositionVector {
         return new PositionVector(valueList);
     }
 
+    @SuppressWarnings("unused")
     public PositionVector subtract(PositionVector otherVector) {
         if (otherVector == null) {
             return new PositionVector(this);

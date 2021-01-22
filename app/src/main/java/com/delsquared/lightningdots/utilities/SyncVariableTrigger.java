@@ -31,8 +31,10 @@ public class SyncVariableTrigger {
     }
 
     public double getValue() { return value; }
+    @SuppressWarnings("unused")
     public void setValue(double value) { this.value = value; }
 
+    @SuppressWarnings("unused")
     public NTuple getKey() {
         return nTupleTypeSyncVariableTriggerKey.createNTuple(
                 targetObjectName

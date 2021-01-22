@@ -2,7 +2,6 @@
 <xs:schema targetNamespace="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
     elementFormDefault="qualified"
     xmlns="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
-    xmlns:ctps="http://www.delsquaredllc.com/lightningdots/clicktargetprofilescripts/"
     xmlns:xs="http://www.w3.org/2001/XMLSchema"
     >
 
@@ -21,13 +20,13 @@
 
     <xs:complexType name="level">
         <xs:all>
-            <xs:element name="ClickTargets" type="clickTargets" minOccurs="1" maxOccurs="1">
+            <xs:element name="ClickTargets" type="clickTargets">
                 <!--<xs:unique name="unique-ClickTarget-name">
                     <xs:selector xpath="ctps:ClickTarget"/>
                     <xs:field xpath="@name"/>
                 </xs:unique>-->
             </xs:element>
-            <xs:element name="TransitionTriggers" type="transitionTriggers" minOccurs="0" maxOccurs="1">
+            <xs:element name="TransitionTriggers" type="transitionTriggers" minOccurs="0">
                 <!--<xs:unique name="unique-TransitionTrigger-source-target">
                     <xs:selector xpath="ctps:TransitionTrigger"/>
                     <xs:field xpath="@sourceClickTargetName"/>
@@ -36,7 +35,7 @@
                     <xs:field xpath="@targetClickTargetProfileName"/>
                 </xs:unique>-->
             </xs:element>
-            <xs:element name="RandomChangeTriggers" type="randomChangeTriggers" minOccurs="0" maxOccurs="1">
+            <xs:element name="RandomChangeTriggers" type="randomChangeTriggers" minOccurs="0">
                 <!--<xs:unique name="unique-RandomChangeTrigger-sourceVariable-targetVariable">
                     <xs:selector xpath="ctps:RandomChangeTrigger"/>
                     <xs:field xpath="@sourceClickTargetName"/>
@@ -47,10 +46,10 @@
                     <xs:field xpath="@targetVariable"/>
                 </xs:unique>-->
             </xs:element>
-            <xs:element name="ClickTargetSettingsShuffles" type="clickTargetSettingsShuffles" minOccurs="0" maxOccurs="1">
+            <xs:element name="ClickTargetSettingsShuffles" type="clickTargetSettingsShuffles" minOccurs="0">
 
             </xs:element>
-            <xs:element name="Attractors" type="positionEvolverVariableAttractors" minOccurs="0" maxOccurs="1">
+            <xs:element name="Attractors" type="positionEvolverVariableAttractors" minOccurs="0">
 
             </xs:element>
         </xs:all>
@@ -59,13 +58,15 @@
 
     <xs:complexType name="clickTargets">
         <xs:sequence>
-            <xs:element name="ClickTarget" type="clickTarget" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="ClickTarget" type="clickTarget"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="clickTarget">
         <xs:sequence>
-            <xs:element name="ClickTargetProfileScript" type="clickTargetProfileScript" minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="ClickTargetProfileScript" type="clickTargetProfileScript"
+                maxOccurs="unbounded">
                 <!--<xs:unique name="unique-ClickTargetProfile-name">
                     <xs:selector xpath="ctps:ClickTargetProfile"/>
                     <xs:field xpath="@name"/>
@@ -77,7 +78,8 @@
 
     <xs:complexType name="clickTargetProfileScript">
         <xs:sequence>
-            <xs:element name="ClickTargetProfile" type="clickTargetProfile" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="ClickTargetProfile" type="clickTargetProfile"
+                maxOccurs="unbounded"/>
         </xs:sequence>
         <xs:attribute name="scriptTransitionMode" type="transitionMode"/>
         <xs:attribute name="scriptTransitionInterval" type="transitionInterval"/>
@@ -89,7 +91,7 @@
     <xs:complexType name="clickTargetProfile">
 
         <xs:choice minOccurs="0" maxOccurs="unbounded">
-            <xs:element name="Variables" type="variables" minOccurs="0" maxOccurs="1">
+            <xs:element name="Variables" type="variables" minOccurs="0">
                 <!--<xs:unique name="unique-variable-name">
                     <xs:selector xpath="ctps:Variable"/>
                     <xs:field xpath="@name"/>
@@ -115,8 +117,8 @@
 
     <xs:complexType name="targetVariable">
         <xs:all minOccurs="0">
-            <xs:element name="TimedChange" type="timedChange" minOccurs="0" maxOccurs="1"/>
-            <xs:element name="BoundaryEffect" type="boundaryEffect" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="TimedChange" type="timedChange" minOccurs="0" />
+            <xs:element name="BoundaryEffect" type="boundaryEffect" minOccurs="0" />
         </xs:all>
         <xs:attribute name="name" type="targetVariableName" use="required"/>
         <xs:attribute name="minimumValue" type="xs:float"/>
@@ -144,13 +146,14 @@
 
     <xs:complexType name="positionEvolverVariableAttractors">
         <xs:sequence>
-            <xs:element name="Attractor" type="positionEvolverVariableAttractor" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="Attractor" type="positionEvolverVariableAttractor"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="positionEvolverVariableAttractor">
         <xs:sequence>
-            <xs:element name="AttractorVariables" type="positionEvolverVariableAttractorVariables" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="AttractorVariables" type="positionEvolverVariableAttractorVariables" />
         </xs:sequence>
         <xs:attribute name="type" type="positionEvolverVariableAttractorType"/>
         <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
@@ -166,7 +169,8 @@
 
     <xs:complexType name="positionEvolverVariableAttractorVariables">
         <xs:sequence>
-            <xs:element name="AttractorVariable" type="positionEvolverVariableAttractorVariable" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="AttractorVariable" type="positionEvolverVariableAttractorVariable"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -201,7 +205,7 @@
 
     <xs:complexType name="randomChangeTrigger">
         <xs:sequence>
-            <xs:element name="SyncVariableTriggers" type="syncVariableTriggers" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SyncVariableTriggers" type="syncVariableTriggers" minOccurs="0" />
         </xs:sequence>
         <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
@@ -213,13 +217,14 @@
 
     <xs:complexType name="transitionTriggers">
         <xs:sequence>
-            <xs:element name="TransitionTrigger" type="transitionTrigger" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="TransitionTrigger" type="transitionTrigger"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="transitionTrigger">
         <xs:sequence>
-            <xs:element name="SyncVariableTriggers" type="syncVariableTriggers" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="SyncVariableTriggers" type="syncVariableTriggers" minOccurs="0" />
         </xs:sequence>
         <xs:attribute name="sourceClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="sourceClickTargetProfileName" type="xs:string" use="required"/>
@@ -231,7 +236,8 @@
 
     <xs:complexType name="syncVariableTriggers">
         <xs:sequence>
-            <xs:element name="SyncVariableTrigger" type="syncVariableTrigger" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="SyncVariableTrigger" type="syncVariableTrigger"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -241,8 +247,8 @@
         <xs:attribute name="targetClickTargetName" type="xs:string" use="required"/>
         <xs:attribute name="targetClickTargetProfileName" type="xs:string" use="required"/>
         <xs:attribute name="variableName" type="targetVariableName" use="required"/>
-        <xs:attribute name="mode" type="syncVariableMode" default="SNAP_TO_TARGET" use="optional"/>
-        <xs:attribute name="value" type="xs:float" use="optional"/>
+        <xs:attribute name="mode" type="syncVariableMode" default="SNAP_TO_TARGET" />
+        <xs:attribute name="value" type="xs:float" />
     </xs:complexType>
 
     <xs:simpleType name="syncVariableMode">
@@ -255,20 +261,22 @@
 
     <xs:complexType name="clickTargetSettingsShuffles">
         <xs:sequence>
-            <xs:element name="ClickTargetSettingsShuffle" type="clickTargetSettingsShuffle" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="ClickTargetSettingsShuffle" type="clickTargetSettingsShuffle"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="clickTargetSettingsShuffle">
         <xs:sequence>
-            <xs:element name="ClickTargetSettingsShuffleSettings" type="clickTargetSettingsShuffleSettings" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ClickTargetSettingsShuffleSettings" type="clickTargetSettingsShuffleSettings" />
         </xs:sequence>
         <xs:attribute name="preserveOrder" type="trueOrFalse"/>
     </xs:complexType>
 
     <xs:complexType name="clickTargetSettingsShuffleSettings">
         <xs:sequence>
-            <xs:element name="ClickTargetSettingsShuffleSetting" type="clickTargetSettingsShuffleSetting" minOccurs="1" maxOccurs="unbounded"/>
+            <xs:element name="ClickTargetSettingsShuffleSetting" type="clickTargetSettingsShuffleSetting"
+                maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 

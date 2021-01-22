@@ -10,11 +10,11 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class LoaderHelperGameResult {
 
-	public SQLHandler sqlHandler;
-	Context context;
+	public final SQLHandler sqlHandler;
 
 	private static final String SQL_GAMERESULT_LOADBESTRUN =
 			"SELECT * "
@@ -51,26 +51,24 @@ public class LoaderHelperGameResult {
 		sqlHandler = new SQLHandler(context);
 
 		// Set the context
-		this.context = context;
 
 	}
 
+	@SuppressWarnings("unused")
 	public GameResult loadBestRun(int gameType, int gameTime) {
 
 		// Initialize the result
 		GameResult result = null;
 
 		// Initialize the cursor
-		Cursor resultCursor = null;
 
-		try {
+		try (Cursor resultCursor = sqlHandler.selectQuery(
+				SQL_GAMERESULT_LOADBESTRUN
+				, new String[]{
+						Integer.toString(gameType)
+						, Integer.toString(gameTime)})) {
 
 			// Run the query and get the result cursor
-			resultCursor = sqlHandler.selectQuery(
-					SQL_GAMERESULT_LOADBESTRUN
-					, new String[] {
-							Integer.toString(gameType)
-							, Integer.toString(gameTime)});
 
 			// Check if we received a result
 			if (resultCursor != null) {
@@ -87,13 +85,9 @@ public class LoaderHelperGameResult {
 
 			// TODO: Error handling
 
-		} finally {
-
-			// Close the result cursor
-			if (resultCursor != null)
-				resultCursor.close();
-
 		}
+
+		// Close the result cursor
 
 		return result;
 	}
@@ -104,16 +98,14 @@ public class LoaderHelperGameResult {
 		GameResult result = null;
 
 		// Initialize the cursor
-		Cursor resultCursor = null;
 
-		try {
+		try (Cursor resultCursor = sqlHandler.selectQuery(
+				SQL_GAMERESULT_LOADBESTSUCCESSFULRUN
+				, new String[]{
+						Integer.toString(gameType)
+						, Integer.toString(gameTime)})) {
 
 			// Run the query and get the result cursor
-			resultCursor = sqlHandler.selectQuery(
-					SQL_GAMERESULT_LOADBESTSUCCESSFULRUN
-					, new String[] {
-							Integer.toString(gameType)
-							, Integer.toString(gameTime)});
 
 			// Check if we received a result
 			if (resultCursor != null) {
@@ -130,13 +122,9 @@ public class LoaderHelperGameResult {
 
 			// TODO: Error handling
 
-		} finally {
-
-			// Close the result cursor
-			if (resultCursor != null)
-				resultCursor.close();
-
 		}
+
+		// Close the result cursor
 
 		return result;
 	}
@@ -147,42 +135,36 @@ public class LoaderHelperGameResult {
         GameResult result = null;
 
         // Initialize the cursor
-        Cursor resultCursor = null;
 
-        try {
+		try (Cursor resultCursor = sqlHandler.selectQuery(
+				SQL_GAMERESULT_LOADBESTRUN_FORLEVEL
+				, new String[]{
+						Integer.toString(gameType)
+						, Integer.toString(gameLevel)
+						, Integer.toString(gameTime)})) {
 
-            // Run the query and get the result cursor
-            resultCursor = sqlHandler.selectQuery(
-                    SQL_GAMERESULT_LOADBESTRUN_FORLEVEL
-                    , new String[] {
-                            Integer.toString(gameType)
-                            , Integer.toString(gameLevel)
-                            , Integer.toString(gameTime)});
+			// Run the query and get the result cursor
 
-            // Check if we received a result
-            if (resultCursor != null) {
+			// Check if we received a result
+			if (resultCursor != null) {
 
-                // Loop through the cursor
-                while (resultCursor.moveToNext()) {
+				// Loop through the cursor
+				while (resultCursor.moveToNext()) {
 
-                    // Load the current game info
-                    result = loadGameResult(resultCursor);
+					// Load the current game info
+					result = loadGameResult(resultCursor);
 
-                }
-            }
-        } catch (Exception e) {
+				}
+			}
+		} catch (Exception e) {
 
-            // TODO: Error handling
+			// TODO: Error handling
 
-        } finally {
+		}
 
-            // Close the result cursor
-            if (resultCursor != null)
-                resultCursor.close();
+		// Close the result cursor
 
-        }
-
-        return result;
+		return result;
 
     }
 
@@ -192,8 +174,9 @@ public class LoaderHelperGameResult {
 		GameResult gameResult = null;
 
 		// Check if the cursor is at an invalid position
-		if (resultCursor == null || resultCursor.isBeforeFirst() || resultCursor.isAfterLast())
-			return gameResult;
+		if (resultCursor == null || resultCursor.isBeforeFirst() || resultCursor.isAfterLast()) {
+			return null;
+		}
 
 		// Get the internal id
 		int id = resultCursor.getInt(
@@ -250,7 +233,7 @@ public class LoaderHelperGameResult {
 				)
 		);
 		Date gameDatetime = null;
-		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		DateFormat iso8601Format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 		try {
 			gameDatetime = iso8601Format.parse(gameTimestamp);
 		} catch (ParseException e) {

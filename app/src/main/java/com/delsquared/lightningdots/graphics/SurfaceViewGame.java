@@ -3,6 +3,7 @@ package com.delsquared.lightningdots.graphics;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -45,10 +46,11 @@ public class SurfaceViewGame
     // The runnable that draws the game
     private SurfaceViewGameThreadRunnable surfaceViewGameThreadRunnable;
 
-	private Context context;
+	private final Context context;
 
     // For swipes
     private float touchX1;
+    @SuppressWarnings("FieldCanBeLocal")
     private float touchX2;
     private static final int MINIMUM_SWIPE_DISTANCE = 150;
 
@@ -97,7 +99,7 @@ public class SurfaceViewGame
 
         LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceChanged()");
 		surfaceViewGameThreadRunnable.setSurfaceSize(width, height);
-        gameThreadRunnable.setCanvasWidthAndHeight(true, width, height);
+        gameThreadRunnable.setCanvasWidthAndHeight(width, height);
 
     }
 
@@ -122,6 +124,16 @@ public class SurfaceViewGame
 
     }
 
+    @Override
+    public boolean performClick() {
+        // Calls the super implementation, which generates an AccessibilityEvent
+        // and calls the onClick() listener on the view, if any
+        super.performClick();
+
+        // Handle the action for the custom click here
+
+        return true;
+    }
 
 	@Override
 	public boolean onTouchEvent(MotionEvent motionEvent){
@@ -132,9 +144,6 @@ public class SurfaceViewGame
         } else {
             if (motionEvent.getAction() == MotionEvent.ACTION_DOWN){
                 touchX1 = motionEvent.getX();
-
-            } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-
             } else if (motionEvent.getAction() == MotionEvent.ACTION_UP){
                 touchX2 = motionEvent.getX();
                 float deltaX = touchX2 - touchX1;
@@ -143,9 +152,10 @@ public class SurfaceViewGame
                 } else {
                     boolean gameThreadTouchProcessResult =
                             surfaceViewGameThreadRunnable.processDownTouch(motionEvent);
-                    if (gameThreadTouchProcessResult == false) {
+                    if (!gameThreadTouchProcessResult) {
                         gameThreadRunnable.processDownTouch(motionEvent);
                     }
+                    performClick();
                 }
             }
         }
@@ -168,7 +178,7 @@ public class SurfaceViewGame
                 new SurfaceViewGameThreadRunnable(
                         surfaceHolder
                         , context
-                        , new Handler() {
+                        , new Handler(Looper.getMainLooper()) {
 
                     @Override
                     public void handleMessage(Message m) {
@@ -232,7 +242,7 @@ public class SurfaceViewGame
                 context
                 , currentGameType
                 , currentGameLevel
-                , new Handler() {
+                , new Handler(Looper.getMainLooper()) {
 
             @Override
             public void handleMessage(Message m) {
@@ -267,26 +277,31 @@ public class SurfaceViewGame
                 }
 
                 // Check if this message is to reset the user clicks bitmap and canvas
-                if (messageKey.equals(surfaceViewGame_message_initializeGame)) {
+                switch (messageKey) {
+                    case surfaceViewGame_message_initializeGame:
 
-                    // Make sure the surface view game thread exists
-                    if (surfaceViewGameThreadRunnable != null) {
+                        // Make sure the surface view game thread exists
+                        if (surfaceViewGameThreadRunnable != null) {
 
-                        // Reset the user clicks bitmap and canvas
-                        surfaceViewGameThreadRunnable.initializeGame();
+                            // Reset the user clicks bitmap and canvas
+                            surfaceViewGameThreadRunnable.initializeGame();
 
-                    }
+                        }
 
-                } else if (messageKey.equals(surfaceViewGame_message_levelCompleted)) {
+                        break;
+                    case surfaceViewGame_message_levelCompleted:
 
-                    int nextLevel = bundle.getInt(messageKey);
-                    interfaceGameCallback.onLevelCompleted(nextLevel);
-                    surfaceViewGameThreadRunnable.setGameResultHighScoreCurrentLevel(
-                            interfaceGameCallback.onGetGameResultHighScoreCurrentLevel());
-                } else if (messageKey.equals(surfaceViewGame_message_levelFailed)) {
-                    interfaceGameCallback.onLevelFailed();
-                } else if (messageKey.equals(surfaceViewGame_message_gameEnded)) {
-                    interfaceGameCallback.onGameEnded();
+                        int nextLevel = bundle.getInt(messageKey);
+                        interfaceGameCallback.onLevelCompleted(nextLevel);
+                        surfaceViewGameThreadRunnable.setGameResultHighScoreCurrentLevel(
+                                interfaceGameCallback.onGetGameResultHighScoreCurrentLevel());
+                        break;
+                    case surfaceViewGame_message_levelFailed:
+                        interfaceGameCallback.onLevelFailed();
+                        break;
+                    case surfaceViewGame_message_gameEnded:
+                        interfaceGameCallback.onGameEnded();
+                        break;
                 }
 
             }
@@ -315,11 +330,13 @@ public class SurfaceViewGame
                 gameThread.join();
                 retryGameThread = false;
             } catch (InterruptedException e) {
+                LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
             }
             try {
                 surfaceViewGameThread.join();
                 retrySurfaceViewGameThread = false;
             } catch (InterruptedException e) {
+                LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
             }
         }
 

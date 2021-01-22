@@ -1,5 +1,7 @@
 package com.delsquared.lightningdots.utilities;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ public class OrderedObjectCollection<T extends INamedObject> implements Iterable
         }
     }
 
+    @SuppressWarnings("unused")
     public OrderedObjectCollection(
             List<String> listObjectNames
             , Map<String, T> mapObjects) {
@@ -44,6 +47,7 @@ public class OrderedObjectCollection<T extends INamedObject> implements Iterable
         this.mapObjects = mapObjects;
     }
 
+    @SuppressWarnings("unused")
     public OrderedObjectCollection(
             List<String> listObjectNames
             , Map<String, Integer> mapObjectIndexes
@@ -69,7 +73,11 @@ public class OrderedObjectCollection<T extends INamedObject> implements Iterable
 
     public int getObjectIndex(String objectName) {
         if (mapObjectIndexes.containsKey(objectName)) {
-            return mapObjectIndexes.get(objectName);
+            Integer result = mapObjectIndexes.get(objectName);
+            if (result == null) {
+                return -1;
+            }
+            return result;
         }
         return -1;
     }
@@ -85,9 +93,10 @@ public class OrderedObjectCollection<T extends INamedObject> implements Iterable
         return mapObjects.size();
     }
 
+    @NonNull
     @Override
     public Iterator<T> iterator() {
-        Iterator<T> iterator = new Iterator<T>() {
+        return new Iterator<T>() {
             private int currentIndex = 0;
             @Override
             public boolean hasNext() {
@@ -102,7 +111,6 @@ public class OrderedObjectCollection<T extends INamedObject> implements Iterable
                 throw new UnsupportedOperationException();
             }
         };
-        return iterator;
     }
 
 }

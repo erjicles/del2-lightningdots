@@ -11,6 +11,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/menu_item_store_available_imageview_bolt_content_description"
             android:src="@drawable/store_bolt_transparent"/>
 
         <TextView
@@ -25,7 +26,7 @@
             style="@style/MenuItemStorePrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:gravity="end"
             android:maxLines="1"
             android:text="@string/menu_item_store_available_default_price"/>
 

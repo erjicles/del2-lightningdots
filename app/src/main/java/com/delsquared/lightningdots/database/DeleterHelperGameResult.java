@@ -7,8 +7,8 @@ import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class DeleterHelperGameResult {
 
-    public SQLHandler sqlHandler;
-    Context context;
+    public final SQLHandler sqlHandler;
+    final Context context;
 
     private static final String SQL_GAMERESULT_DELETE_BY_GAMETYPE =
             "DELETE FROM "
@@ -59,6 +59,7 @@ public class DeleterHelperGameResult {
 
     }
 
+    @SuppressWarnings("unused")
     public void deleteGameResultsByGameTypeAndLevel(int gameType, int gameLevel) {
 
         try {

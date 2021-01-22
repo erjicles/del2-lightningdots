@@ -8,6 +8,7 @@ import com.delsquared.lightningdots.utilities.PositionVector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ClickTargetSnapshot {
 
@@ -26,24 +27,7 @@ public class ClickTargetSnapshot {
     private final boolean isClickable;
     private final ClickTarget.VISIBILITY visibility;
 
-	public ClickTargetSnapshot() {
-        name = "";
-        XPixels = new PositionVector();
-        DXdtPixelsPerSecondPolar = new PositionVector();
-        D2Xdt2PixelsPolar = new PositionVector();
-        RadiusPixels = new PositionVector();
-        DRadiusPixels = new PositionVector();
-        D2RadiusPixels = new PositionVector();
-        RotationRadians = new PositionVector();
-        DRotationRadians = new PositionVector();
-        D2RotationRadians = new PositionVector();
-        listCenterPoints = new ArrayList<>();
-        polygonTargetShape = null;
-        isClickable = true;
-        visibility = ClickTarget.VISIBILITY.VISIBLE;
-	}
-
-	public ClickTargetSnapshot(
+    public ClickTargetSnapshot(
             String name
 			, PositionVector XPixels
 			, PositionVector DXdtPixelsPerSecondPolar
@@ -75,6 +59,7 @@ public class ClickTargetSnapshot {
         this.visibility = visibility;
 	}
 
+    @SuppressWarnings("unused")
     public String getName() { return name; }
 	public PositionVector getXPixels() { return XPixels; }
     public PositionVector getDXdtPixelsPerSecondPolar() { return DXdtPixelsPerSecondPolar; }
@@ -90,6 +75,7 @@ public class ClickTargetSnapshot {
     public boolean getIsClickable() { return isClickable; }
     public ClickTarget.VISIBILITY getVisibility() { return visibility; }
 
+    @SuppressWarnings("unused")
     public boolean equals(ClickTargetSnapshot otherClickTargetSnapshot) {
 
         return XPixels.equals(otherClickTargetSnapshot.getXPixels())
@@ -102,7 +88,7 @@ public class ClickTargetSnapshot {
                 && DRotationRadians.equals(otherClickTargetSnapshot.getDRotationRadians())
                 && D2RotationRadians.equals(otherClickTargetSnapshot.getD2RotationRadians())
                 && listCenterPoints.equals(otherClickTargetSnapshot.getListCenterPoints())
-                && polygonTargetShape.equals(otherClickTargetSnapshot.getPolygonTargetShape())
+                && Objects.requireNonNull(polygonTargetShape).equals(otherClickTargetSnapshot.getPolygonTargetShape())
                 && isClickable == otherClickTargetSnapshot.getIsClickable()
                 && visibility == otherClickTargetSnapshot.getVisibility();
 

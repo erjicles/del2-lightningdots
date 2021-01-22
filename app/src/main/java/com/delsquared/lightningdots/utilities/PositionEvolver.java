@@ -5,10 +5,10 @@ import java.util.List;
 
 public class PositionEvolver implements INamedObject {
 
-    private String name;
-    private OrderedObjectCollection<PositionEvolverVariable> collectionPositionEvolverVariables;
-    private CoordinateSystemType coordinateSystemType = CoordinateSystemType.CARTESIAN;
-    private TimedChangeHandler timedChangeHandler;
+    private final String name;
+    private final OrderedObjectCollection<PositionEvolverVariable> collectionPositionEvolverVariables;
+    private final CoordinateSystemType coordinateSystemType;
+    private final TimedChangeHandler timedChangeHandler;
 
     public PositionEvolver(
             String name
@@ -16,7 +16,7 @@ public class PositionEvolver implements INamedObject {
             , CoordinateSystemType coordinateSystemType
             , TimedChangeHandler timedChangeHandler) {
         this.name = name;
-        this.collectionPositionEvolverVariables = new OrderedObjectCollection<PositionEvolverVariable>(listPositionEvolverVariables);
+        this.collectionPositionEvolverVariables = new OrderedObjectCollection<>(listPositionEvolverVariables);
         this.coordinateSystemType = coordinateSystemType;
         this.timedChangeHandler = timedChangeHandler;
     }
@@ -24,6 +24,7 @@ public class PositionEvolver implements INamedObject {
     public String getName() { return this.name; }
     public OrderedObjectCollection<PositionEvolverVariable> getCollectionPositionEvolverVariables() { return this.collectionPositionEvolverVariables; }
     public CoordinateSystemType getCoordinateSystemType() { return this.coordinateSystemType; }
+    @SuppressWarnings("unused")
     public TimedChangeHandler getTimedChangeHandler() { return this.timedChangeHandler; }
     public int getCardinality() { return collectionPositionEvolverVariables.size(); }
 
@@ -43,6 +44,7 @@ public class PositionEvolver implements INamedObject {
         return 0.0;
     }
 
+    @SuppressWarnings("unused")
     public void setVariableValue(String variableName, double variableValue) {
         setVariableValue(variableName, variableValue, false);
     }

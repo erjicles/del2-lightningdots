@@ -10,19 +10,19 @@ import com.delsquared.lightningdots.utilities.PositionEvolvingPolygonalObjectCon
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Game {
 
     // Global objects
-	private static Game singletonGame = new Game();
-	public Object lockGame = new Object();
+	private static final Game singletonGame = new Game();
+	public final Object lockGame = new Object();
 
 	// Objects shared with drawing thread
 	public volatile GameSnapshot gameSnapshot = new GameSnapshot();
-    public volatile Map<String, UserClick> mapValidUserClick = Collections.synchronizedMap(new HashMap<String, UserClick>());
+    public final Map<String, UserClick> mapValidUserClick = Collections.synchronizedMap(new HashMap<>());
 	public volatile GameThreadSharedData gameThreadSharedData = new GameThreadSharedData();
 	public volatile SurfaceViewGameThreadSharedData surfaceViewGameThreadSharedData = new SurfaceViewGameThreadSharedData();
 	public volatile boolean canvasSizeChanged = false;
@@ -44,9 +44,9 @@ public class Game {
     private PositionEvolvingPolygonalObjectContainer<ClickTarget> containerClickTargets;
 
     // User click lists
-    private List<UserClick> listUserClick = new ArrayList<UserClick>();
-    private List<UserClick> listNewUserClick = new ArrayList<UserClick>();
-    private List<UserClick> listValidUserClick = new ArrayList<UserClick>();
+    private final List<UserClick> listUserClick = new ArrayList<>();
+    private final List<UserClick> listNewUserClick = new ArrayList<>();
+    private final List<UserClick> listValidUserClick = new ArrayList<>();
 
     // Objects for the end of the game
     private boolean isLevelComplete;
@@ -120,7 +120,7 @@ public class Game {
 			ClickTarget newClickTarget = new ClickTarget(
 					context
 					, clickTargetName
-					, clickTargetDefinition.clickTargetProfileScript
+					, Objects.requireNonNull(clickTargetDefinition).clickTargetProfileScript
 					, canvasWidthPixels
 					, canvasHeightPixels
 			);
@@ -132,11 +132,11 @@ public class Game {
 
         // Reinitialize the collection of ClickTargets
         containerClickTargets = new PositionEvolvingPolygonalObjectContainer<>(
-                new OrderedObjectCollection(listClickTargets)
-                , gameLevelDefinition.levelDefinitionLadder.mapTransitionTriggers
-                , gameLevelDefinition.levelDefinitionLadder.mapRandomChangeTriggers
-                , gameLevelDefinition.levelDefinitionLadder.mapPositionEvolverVariableAttractors
-        );
+				new OrderedObjectCollection<>(listClickTargets)
+				, gameLevelDefinition.levelDefinitionLadder.mapTransitionTriggers
+				, gameLevelDefinition.levelDefinitionLadder.mapRandomChangeTriggers
+				, gameLevelDefinition.levelDefinitionLadder.mapPositionEvolverVariableAttractors
+		);
 
 		listUserClick.clear();
 		listNewUserClick.clear();
@@ -148,6 +148,7 @@ public class Game {
 		updateGameSnapshot();
 	}
 
+	@SuppressWarnings("DuplicateBranchesInSwitch")
 	public void setGameState(
 			GameState newGameState
 			, long currentTimeMillis) {
@@ -222,8 +223,10 @@ public class Game {
 	public GameState getGameState() { return gameState; }
 	public GameType getGameType() { return gameType; }
 	public int getGameLevel() { return gameLevel; }
+	@SuppressWarnings("unused")
     public long getStartingTimeMillis() { return startingTimeMillis; }
 	public long getGameTimeLimitMillis() { return gameLevelDefinition.gameTimeLimitMillis; }
+	@SuppressWarnings("unused")
 	public List<UserClick> getListUserClick() { return listUserClick; }
 	public List<UserClick> getListValidUserClick() { return listValidUserClick; }
 	public List<UserClick> getListNewUserClick() { return listNewUserClick; }
@@ -330,17 +333,19 @@ public class Game {
 
 	public long getGameEndTimeMillis() { return gameTimer.getEndTimeMillis(); }
 
+	@SuppressWarnings("unused")
 	public long getGameTimeElapsedMillis() { return gameTimer.getTimeElapsedMillis(); }
 
 	public int getDisplayStartTimeRemaining() { return startingTimer.getDisplayTimeRemaining(); }
 
 	public int getDisplayGameTimeRemaining() { return gameTimer.getDisplayTimeRemaining(); }
 
+	@SuppressWarnings("unused")
 	public int getDisplayGameTimeElapsed() { return gameTimer.getDisplayTimeElapsed(); }
 
     public ArrayList<Integer> getArrayListTargetUserClicks() { return gameLevelDefinition.arrayListTargetUserClicks; }
 
-	public void processUserClick(Context context, float clickX, float clickY) {
+	public void processUserClick(float clickX, float clickY) {
 
 		// Initialize the click to being inside the target
 		boolean isInsideTarget = false;
@@ -359,31 +364,29 @@ public class Game {
                 Map<String, ClickTargetSnapshot> mapClickTargetSnapshots = gameSnapshot.getMapClickTargetSnapshots();
 
                 // Iterate through the snapshots
-                Iterator clickTargetSnapshotIterator = mapClickTargetSnapshots.entrySet().iterator();
-                while (clickTargetSnapshotIterator.hasNext()) {
+				for (Map.Entry<String, ClickTargetSnapshot> currentClickTargetSnapshotPair : mapClickTargetSnapshots.entrySet()) {
 
-                    // Get the current click target snapshot
-                    Map.Entry<String, ClickTargetSnapshot> currentClickTargetSnapshotPair = (Map.Entry) clickTargetSnapshotIterator.next();
-                    ClickTargetSnapshot currentClickTargetSnapshot = currentClickTargetSnapshotPair.getValue();
+					// Get the current click target snapshot
+					ClickTargetSnapshot currentClickTargetSnapshot = currentClickTargetSnapshotPair.getValue();
 
-                    // Check if the click target snapshot is visible and clickable
-                    if (currentClickTargetSnapshot.getIsClickable()
-                            && currentClickTargetSnapshot.getVisibility() == ClickTarget.VISIBILITY.VISIBLE) {
+					// Check if the click target snapshot is visible and clickable
+					if (currentClickTargetSnapshot.getIsClickable()
+							&& currentClickTargetSnapshot.getVisibility() == ClickTarget.VISIBILITY.VISIBLE) {
 
-                        // Check if the click is inside the target
-                        isInsideTarget = currentClickTargetSnapshot.pointIsInsideTarget(clickX, clickY);
+						// Check if the click is inside the target
+						isInsideTarget = currentClickTargetSnapshot.pointIsInsideTarget(clickX, clickY);
 
-                    }
+					}
 
-                    // Check if we have a positive result
-                    if (isInsideTarget) {
+					// Check if we have a positive result
+					if (isInsideTarget) {
 
-                        // Break out of the while loop
-                        break;
+						// Break out of the while loop
+						break;
 
-                    }
+					}
 
-                }
+				}
 
             }
 
@@ -408,7 +411,7 @@ public class Game {
 		// Add the user click
 		addUserClick(userClick);
 		addNewUserClick(userClick);
-		if (isInsideTarget == true) {
+		if (isInsideTarget) {
 			addValidUserClick(userClick);
 		}
 

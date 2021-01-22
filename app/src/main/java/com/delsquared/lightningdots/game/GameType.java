@@ -38,7 +38,7 @@ public class GameType {
 			+ TABLE_GAMETYPE_COLUMNNAME_GAMETYPE
 			+ ", "
 			+ TABLE_GAMETYPE_COLUMNNAME_NAME
-			+ ") VALUES (" + Integer.toString(Game.GameType.TIME_ATTACK.ordinal()) + ", 'Time Attack');";
+			+ ") VALUES (" + Game.GameType.TIME_ATTACK.ordinal() + ", 'Time Attack');";
 	private static final String DATABASE_INSERT_GAMETYPE_ENDURANCE =
 			"INSERT INTO "
 			+ TABLENAME_GAMETYPE
@@ -46,7 +46,7 @@ public class GameType {
 			+ TABLE_GAMETYPE_COLUMNNAME_GAMETYPE
 			+ ", "
 			+ TABLE_GAMETYPE_COLUMNNAME_NAME
-			+ ") VALUES (" + Integer.toString(Game.GameType.ENDURANCE.ordinal()) + ", 'Endurance');";
+			+ ") VALUES (" + Game.GameType.ENDURANCE.ordinal() + ", 'Endurance');";
 	private static final String DATABASE_INSERT_GAMETYPE_AGILITY =
 			"INSERT INTO "
 			+ TABLENAME_GAMETYPE
@@ -54,7 +54,7 @@ public class GameType {
 			+ TABLE_GAMETYPE_COLUMNNAME_GAMETYPE
 			+ ", "
 			+ TABLE_GAMETYPE_COLUMNNAME_NAME
-			+ ") VALUES (" + Integer.toString(Game.GameType.AGILITY.ordinal()) + ", 'Agility');";
+			+ ") VALUES (" + Game.GameType.AGILITY.ordinal() + ", 'Agility');";
 
 	public static void onCreate(SQLiteDatabase database) {
 		database.execSQL(DATABASE_CREATE_TABLE_GAMERETYPE);
@@ -64,8 +64,9 @@ public class GameType {
 		database.execSQL(DATABASE_INSERT_GAMETYPE_AGILITY);
 	}
 
+	@SuppressWarnings({"EmptyMethod", "unused"})
 	public static void onUpgrade(SQLiteDatabase database, int oldVersion,
 								 int newVersion) {
-
+		// TODO: Put upgrade code here
 	}
 }

@@ -19,10 +19,10 @@ public class FragmentTrademark extends androidx.fragment.app.Fragment {
                              Bundle savedInstanceState) {
 		
         // Inflate the layout for this fragment
-		View theLayout = (View) inflater.inflate(R.layout.fragment_trademark, container, false);
+		View theLayout = inflater.inflate(R.layout.fragment_trademark, container, false);
 		
 		// Set the copyright message
-		TextView textViewTrademark = (TextView) theLayout.findViewById(R.id.fragment_trademark_textview_trademark);
+		TextView textViewTrademark = theLayout.findViewById(R.id.fragment_trademark_textview_trademark);
 		Calendar calendar = Calendar.getInstance();
 		int currentYear = calendar.get(Calendar.YEAR);
 		String yearText = "";
@@ -45,19 +45,19 @@ public class FragmentTrademark extends androidx.fragment.app.Fragment {
         return theLayout;
     }
 
+    @SuppressWarnings("unused")
     public static FragmentTrademark newInstance() {
 
         // Create the new instance
-        FragmentTrademark f = new FragmentTrademark();
 
-        return f;
+        return new FragmentTrademark();
     }
 
     public void setTextColor(int textColor) {
         this.textColor = textColor;
 
         if (getView() != null) {
-            TextView textViewTrademark = (TextView) getView().findViewById(R.id.fragment_trademark_textview_trademark);
+            TextView textViewTrademark = getView().findViewById(R.id.fragment_trademark_textview_trademark);
             textViewTrademark.setTextColor(textColor);
         }
     }

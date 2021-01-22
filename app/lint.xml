@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="IconDipSize">
+        <ignore path="src/main/res/drawable-hdpi/delsquaredlogo.png" />
+        <ignore path="src/main/res/drawable-hdpi/instructions1.png" />
+        <ignore path="src/main/res/drawable-hdpi/instructions2.png" />
+        <ignore path="src/main/res/drawable-hdpi/instructions2.png" />
+        <ignore path="src/main/res/drawable-mdpi/delsquaredlogo.png" />
+        <ignore path="src/main/res/drawable-mdpi/instructions1.png" />
+        <ignore path="src/main/res/drawable-mdpi/instructions2.png" />
+        <ignore path="src/main/res/drawable-xhdpi/delsquaredlogo.png" />
+        <ignore path="src/main/res/drawable-xhdpi/instructions1.png" />
+        <ignore path="src/main/res/drawable-xhdpi/instructions2.png" />
+        <ignore path="src/main/res/drawable-xxhdpi/instructions1.png" />
+        <ignore path="src/main/res/drawable-xxhdpi/instructions2.png" />
+    </issue>
+    <issue id="IconDuplicates">
+        <ignore path="src/main/res/drawable-hdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-hdpi/award_yellow.png" />
+        <ignore path="src/main/res/drawable-hdpi/store_bolt_transparent.png" />
+        <ignore path="src/main/res/drawable-hdpi/store_bolt_yellow.png" />
+        <ignore path="src/main/res/drawable-mdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-mdpi/award_yellow.png" />
+        <ignore path="src/main/res/drawable-xhdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-xhdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-xhdpi/award_yellow.png" />
+        <ignore path="src/main/res/drawable-xhdpi/store_bolt_transparent.png" />
+        <ignore path="src/main/res/drawable-xhdpi/store_bolt_yellow.png" />
+        <ignore path="src/main/res/drawable-xxhdpi/store_bolt_yellow.png" />
+    </issue>
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/drawable-hdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-hdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-mdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-mdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-xhdpi/award_transparent.png" />
+        <ignore path="src/main/res/drawable-xhdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-xxhdpi/ic_launcher.png" />
+    </issue>
+</lint>

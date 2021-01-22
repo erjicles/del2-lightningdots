@@ -7,6 +7,7 @@ import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
 import com.delsquared.lightningdots.utilities.CoordinateSystemType;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingPolygonalObject;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
@@ -50,25 +51,18 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
     public static final String VARIABLE_NAME_DROTATION = "dRotation";
     public static final String VARIABLE_NAME_D2ROTATION = "d2Rotation";
 
-    private String name;
-    private ClickTargetProfileScript clickTargetProfileScript;
+    private final String name;
+    private final ClickTargetProfileScript clickTargetProfileScript;
     private OrderedObjectCollection<PositionEvolverFamily> collectionPositionEvolverFamilies;
     private Polygon polygonTargetShape = null;
     private boolean isClickable = true;
     private VISIBILITY visibility = VISIBILITY.VISIBLE;
 
-    private Context context;
-    private double canvasWidth = 1.0;
-    private double canvasHeight = 1.0;
+    private final Context context;
+    private double canvasWidth;
+    private double canvasHeight;
 
-    public ClickTarget() {
-        name = "";
-        clickTargetProfileScript = new ClickTargetProfileScript();
-        this.context = null;
-        collectionPositionEvolverFamilies = new OrderedObjectCollection<>();
-    }
-
-	public ClickTarget(
+    public ClickTarget(
             Context context
             , String name
             , ClickTargetProfileScript clickTargetProfileScript
@@ -110,17 +104,6 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         return clickTargetProfileScript.getListClickTargetProfileNames();
     }
 
-    public PositionVector getXPixels() {
-        PositionEvolverFamily positionEvolverFamilyX = collectionPositionEvolverFamilies.getObject(POSITION_EVOLVER_NAME_X);
-        if (positionEvolverFamilyX != null) {
-            PositionEvolver positionEvolverX = positionEvolverFamilyX.getPositionEvolver(0);
-            if (positionEvolverX != null) {
-                return positionEvolverX.getX();
-            }
-        }
-        return null;
-    }
-
     public double getRadiusPixels() {
         PositionEvolverFamily positionEvolverFamilyRadius = collectionPositionEvolverFamilies.getObject(POSITION_EVOLVER_NAME_RADIUS);
         if (positionEvolverFamilyRadius != null) {
@@ -149,7 +132,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
     public PositionEvolver getPositionEvolverRotation() { return getPositionEvolver(POSITION_EVOLVER_NAME_ROTATION); }
 
     public PositionEvolver getPositionEvolverFromVariableName(String variableName) {
-        String positionEvolverName = "";
+        String positionEvolverName;
         if (mapTranslateVariableNameToPositionEvolverName.containsKey(variableName)) {
             positionEvolverName = mapTranslateVariableNameToPositionEvolverName.get(variableName);
             return getPositionEvolver(positionEvolverName);
@@ -172,6 +155,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
          return 0.0;
     }
 
+    @SuppressWarnings("unused")
     public double getOldVariableValue(String variableName) {
 
         // Get the position evolver
@@ -386,34 +370,42 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
             if (minimumBoundaryReachedX) {
                 // newTargetX1, targetY;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(newTargetX1, targetY));
             }
             if (maximumBoundaryReachedX) {
                 //newTargetX2, targetY;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(newTargetX2, targetY));
             }
             if (minimumBoundaryReachedY) {
                 //targetX, newTargetY1;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(targetX, newTargetY1));
             }
             if (maximumBoundaryReachedY) {
                 //targetX, newTargetY2;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(targetX, newTargetY2));
             }
             if (minimumBoundaryReachedX && minimumBoundaryReachedY) {
                 //newTargetX1, newTargetY1;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(newTargetX1, newTargetY1));
             }
             if (minimumBoundaryReachedX && maximumBoundaryReachedY) {
                 //newTargetX1, newTargetY2;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(newTargetX1, newTargetY2));
             }
             if (maximumBoundaryReachedX && minimumBoundaryReachedY) {
                 //newTargetX2, newTargetY1;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(newTargetX2, newTargetY1));
             }
             if (maximumBoundaryReachedX && maximumBoundaryReachedY) {
                 //newTargetX2, newTargetY2;
+                //noinspection SuspiciousNameCombination
                 listCenterPoints.add(new PositionVector(newTargetX2, newTargetY2));
             }
 
@@ -562,6 +554,55 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         ClickTargetProfile.ProfileVariableValues variableValuesD2Rotation =
                 clickTargetProfile.mapProfileVariableValues.get(VARIABLE_NAME_D2ROTATION);
 
+        if (variableValuesPositionHorizontal == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesPositionHorizontal is null");
+            return;
+        }
+        if (variableValuesPositionVertical == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesPositionVertical is null");
+            return;
+        }
+        if (variableValuesSpeed == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesSpeed is null");
+            return;
+        }
+        if (variableValuesDirection == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesDirection is null");
+            return;
+        }
+        if (variableValuesDSpeed == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesDSpeed is null");
+            return;
+        }
+        if (variableValuesDDirection == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesDDirection is null");
+            return;
+        }
+        if (variableValuesRadius == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesRadius is null");
+            return;
+        }
+        if (variableValuesDRadius == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesDRadius is null");
+            return;
+        }
+        if (variableValuesD2Radius == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesD2Radius is null");
+            return;
+        }
+        if (variableValuesRotation == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesRotation is null");
+            return;
+        }
+        if (variableValuesDRotation == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesDRotation is null");
+            return;
+        }
+        if (variableValuesD2Rotation == null) {
+            LightningDotsApplication.logDebugErrorMessage("variableValuesD2Rotation is null");
+            return;
+        }
+
         // Determine continuity
         boolean continuousX = false;
         boolean continuousSpeed = false;
@@ -577,7 +618,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 
         // If we are not initializing the click target, then determine the continuity of the values
         // (if we are initializing, then all need to be discontinuously initialized)
-        if (initializeClickTarget == false) {
+        if (!initializeClickTarget) {
             switch (variableValuesPositionHorizontal.transitionContinuity) {
                 case CONTINUOUS:
                     continuousX = true;
@@ -684,7 +725,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         double targetDSpeedPixelsPerSecondPerSecond = 0.0;
         double targetDDirectionAngleRadiansPerSecond = 0.0;
         // DSpeed
-        if (!initializeClickTarget && continuousDSpeed == true) {
+        if (!initializeClickTarget && continuousDSpeed) {
             if (positionEvolverD2X != null) {
                 targetDSpeedPixelsPerSecondPerSecond = positionEvolverD2X.getX().getValue(0);
             }
@@ -1163,25 +1204,25 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         listPositionEvolversRotation.add(positionEvolverD2RotationNew);
 
         // Create the position evolver families list
-        List<PositionEvolverFamily> listPositionEvolverFamillies = new ArrayList<>();
-        listPositionEvolverFamillies.add(
+        List<PositionEvolverFamily> listPositionEvolverFamilies = new ArrayList<>();
+        listPositionEvolverFamilies.add(
                 new PositionEvolverFamily(
                         POSITION_EVOLVER_FAMILY_NAME_X
                         , new OrderedObjectCollection<>(listPositionEvolversX)
         ));
-        listPositionEvolverFamillies.add(
+        listPositionEvolverFamilies.add(
                 new PositionEvolverFamily(
                         POSITION_EVOLVER_FAMILY_NAME_RADIUS
                         , new OrderedObjectCollection<>(listPositionEvolversRadius)
         ));
-        listPositionEvolverFamillies.add(
+        listPositionEvolverFamilies.add(
                 new PositionEvolverFamily(
                         POSITION_EVOLVER_FAMILY_NAME_ROTATION
                         , new OrderedObjectCollection<>(listPositionEvolversRotation)
         ));
 
         // Replace the collection of position evolver families
-        collectionPositionEvolverFamilies = new OrderedObjectCollection<>(listPositionEvolverFamillies);
+        collectionPositionEvolverFamilies = new OrderedObjectCollection<>(listPositionEvolverFamilies);
 
         // Get the polygon
         polygonTargetShape = PolygonHelper.getPolygon(context, clickTargetProfile.shape);
@@ -1190,6 +1231,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         if (polygonTargetShape != null && context != null) {
 
             // Set the polygon's properties
+            //noinspection SuspiciousNameCombination
             polygonTargetShape.setProperties(
                     new PositionVector(
                             XPixels
@@ -1213,7 +1255,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         , GONE
     }
     
-    private HashMap<String, String> mapTranslatePositionEvolverNameToPositionEvolverFamilyName = new HashMap<String, String>() {{
+    private final HashMap<String, String> mapTranslatePositionEvolverNameToPositionEvolverFamilyName = new HashMap<String, String>() {{
         put(POSITION_EVOLVER_NAME_X, POSITION_EVOLVER_FAMILY_NAME_X);
         put(POSITION_EVOLVER_NAME_DX, POSITION_EVOLVER_FAMILY_NAME_X);
         put(POSITION_EVOLVER_NAME_D2X, POSITION_EVOLVER_FAMILY_NAME_X);
@@ -1225,22 +1267,22 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
         put(POSITION_EVOLVER_NAME_D2ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
     }};
 
-    private HashMap<String, String> mapTranslateVariableNameToPositionEvolverFamilyName = new HashMap<String, String>() {{
-        put(VARIABLE_NAME_X, POSITION_EVOLVER_FAMILY_NAME_X);
-        put(VARIABLE_NAME_Y, POSITION_EVOLVER_FAMILY_NAME_X);
-        put(VARIABLE_NAME_SPEED, POSITION_EVOLVER_FAMILY_NAME_X);
-        put(VARIABLE_NAME_DIRECTION, POSITION_EVOLVER_FAMILY_NAME_X);
-        put(VARIABLE_NAME_DSPEED, POSITION_EVOLVER_FAMILY_NAME_X);
-        put(VARIABLE_NAME_DDIRECTION, POSITION_EVOLVER_FAMILY_NAME_X);
-        put(VARIABLE_NAME_RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
-        put(VARIABLE_NAME_DRADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
-        put(VARIABLE_NAME_D2RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
-        put(VARIABLE_NAME_ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
-        put(VARIABLE_NAME_DROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
-        put(VARIABLE_NAME_D2ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
-    }};
+//    private final HashMap<String, String> mapTranslateVariableNameToPositionEvolverFamilyName = new HashMap<String, String>() {{
+//        put(VARIABLE_NAME_X, POSITION_EVOLVER_FAMILY_NAME_X);
+//        put(VARIABLE_NAME_Y, POSITION_EVOLVER_FAMILY_NAME_X);
+//        put(VARIABLE_NAME_SPEED, POSITION_EVOLVER_FAMILY_NAME_X);
+//        put(VARIABLE_NAME_DIRECTION, POSITION_EVOLVER_FAMILY_NAME_X);
+//        put(VARIABLE_NAME_DSPEED, POSITION_EVOLVER_FAMILY_NAME_X);
+//        put(VARIABLE_NAME_DDIRECTION, POSITION_EVOLVER_FAMILY_NAME_X);
+//        put(VARIABLE_NAME_RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+//        put(VARIABLE_NAME_DRADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+//        put(VARIABLE_NAME_D2RADIUS, POSITION_EVOLVER_FAMILY_NAME_RADIUS);
+//        put(VARIABLE_NAME_ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+//        put(VARIABLE_NAME_DROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+//        put(VARIABLE_NAME_D2ROTATION, POSITION_EVOLVER_FAMILY_NAME_ROTATION);
+//    }};
 
-    private HashMap<String, String> mapTranslateVariableNameToPositionEvolverName = new HashMap<String, String>() {{
+    private final HashMap<String, String> mapTranslateVariableNameToPositionEvolverName = new HashMap<String, String>() {{
         put(VARIABLE_NAME_X, POSITION_EVOLVER_NAME_X);
         put(VARIABLE_NAME_Y, POSITION_EVOLVER_NAME_X);
         put(VARIABLE_NAME_SPEED, POSITION_EVOLVER_NAME_DX);

@@ -7,7 +7,6 @@ import com.delsquared.lightningdots.ntuple.NTuple;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +34,7 @@ public class PositionEvolverVariableAttractorHelper<T extends IPositionEvolvingO
 
         // Initialize the helper
         PositionEvolvingObjectContainerHelper<T> positionEvolvingObjectContainerHelper =
-                new PositionEvolvingObjectContainerHelper(positionEvolvingObjectContainer);
+                new PositionEvolvingObjectContainerHelper<>(positionEvolvingObjectContainer);
 
         // Get the map of attractors
         Map<NTuple, List<PositionEvolverVariableAttractor>> mapPositionEvolverVariableAttractors =
@@ -47,12 +46,9 @@ public class PositionEvolverVariableAttractorHelper<T extends IPositionEvolvingO
         }
 
         // Loop through the attractors
-        Iterator attractorIterator = mapPositionEvolverVariableAttractors.entrySet().iterator();
-        while (attractorIterator.hasNext()) {
+        for (Map.Entry<NTuple, List<PositionEvolverVariableAttractor>> currentEntry : mapPositionEvolverVariableAttractors.entrySet()) {
 
             // Get the current source key
-            Map.Entry<NTuple, List<PositionEvolverVariableAttractor>> currentEntry =
-                    (Map.Entry) attractorIterator.next();
             NTuple sourceKey = currentEntry.getKey();
 
             // Get the current attractor list
@@ -118,11 +114,15 @@ public class PositionEvolverVariableAttractorHelper<T extends IPositionEvolvingO
                                 );
 
                 // Get or create the attractor vector collection
-                PositionEvolverVariableAttractorVectorCollection sourceVectorCollectionDX = null;
+                PositionEvolverVariableAttractorVectorCollection sourceVectorCollectionDX
+                        = new PositionEvolverVariableAttractorVectorCollection();
                 if (resultMap.containsKey(sourceKeyDX)) {
                     sourceVectorCollectionDX = resultMap.get(sourceKeyDX);
+                    if (sourceVectorCollectionDX == null) {
+                        sourceVectorCollectionDX =
+                                new PositionEvolverVariableAttractorVectorCollection();
+                    }
                 } else {
-                    sourceVectorCollectionDX = new PositionEvolverVariableAttractorVectorCollection();
                     resultMap.put(sourceKeyDX, sourceVectorCollectionDX);
                 }
 
@@ -143,8 +143,8 @@ public class PositionEvolverVariableAttractorHelper<T extends IPositionEvolvingO
                             || (sourcePositionEvolverD2X != null)) {
 
                         // Get the target object
-                        T targetObject = null;
-                        PositionEvolverFamily targetPositionEvolverFamily = null;
+                        T targetObject;
+                        PositionEvolverFamily targetPositionEvolverFamily;
                         PositionEvolver targetPositionEvolver = null;
 
                         // Initialize the target mass

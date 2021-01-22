@@ -55,13 +55,4 @@ public class ActivityStore extends FragmentActivity {
         //purchaseHelper.onDestroy();
     }
 
-    public void onMakePurchase() {
-
-    }
-
-    public void queryPurhcases() {
-
-
-    }
-
 }

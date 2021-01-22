@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvolvingObject> {
 
-    Context context;
+    final Context context;
 
     public PositionEvolvingObjectContainerEvolverHelper(Context context) {
         this.context = context;
@@ -26,7 +26,7 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
 
         // Create the helper
         PositionEvolvingObjectContainerHelper<T> positionEvolvingObjectContainerHelper =
-                new PositionEvolvingObjectContainerHelper(positionEvolvingObjectContainer);
+                new PositionEvolvingObjectContainerHelper<>(positionEvolvingObjectContainer);
 
         // -------------------- BEGIN Check for RandomChangeEvents and TransitionEvents -------------------- //
 
@@ -148,24 +148,22 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
                     List<RandomChangeTrigger> listRandomChangeTriggers =
                             positionEvolvingObjectContainer.getMapRandomChangeTriggers().get(randomChangeTriggerKey);
 
-                    // Loop through the associated triggers
-                    for (RandomChangeTrigger randomChangeTrigger : listRandomChangeTriggers) {
+                    if (listRandomChangeTriggers != null) {
+                        // Loop through the associated triggers
+                        for (RandomChangeTrigger randomChangeTrigger : listRandomChangeTriggers) {
 
-                        // Convert the trigger to a RandomChangeEvent
-                        RandomChangeEvent randomChangeEvent =
-                                randomChangeTrigger.toRandomChangeEvent();
+                            // Convert the trigger to a RandomChangeEvent
+                            RandomChangeEvent randomChangeEvent =
+                                    randomChangeTrigger.toRandomChangeEvent();
 
-                        // Add the new RandomChangeEvent to the list of RandomChangeEvents
-                        listRandomChangeEventsUnprocessed.add(randomChangeEvent);
+                            // Add the new RandomChangeEvent to the list of RandomChangeEvents
+                            listRandomChangeEventsUnprocessed.add(randomChangeEvent);
 
-                        // Loop through the SyncVariableTriggers associated with this RandomChangeTrigger
-                        for (SyncVariableTrigger syncVariableTrigger : randomChangeTrigger.listSyncVariableTriggers) {
-
+                            // Loop through the SyncVariableTriggers associated with this RandomChangeTrigger
                             // Add the sync variable trigger to the list
-                            listGeneratedSyncVariableTriggers.add(syncVariableTrigger);
+                            listGeneratedSyncVariableTriggers.addAll(randomChangeTrigger.listSyncVariableTriggers);
 
                         }
-
                     }
 
                 }
@@ -213,83 +211,81 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
                     List<TransitionTrigger> listTransitionTriggers =
                             positionEvolvingObjectContainer.getMapTransitionTriggers().get(transitionTriggerKey);
 
-                    // Loop through the associated triggers
-                    for (TransitionTrigger transitionTrigger : listTransitionTriggers) {
+                    if (listTransitionTriggers != null) {
+                        // Loop through the associated triggers
+                        for (TransitionTrigger transitionTrigger : listTransitionTriggers) {
 
-                        // Initialize the target object name and profile
-                        String targetObjectName = transitionTrigger.targetObjectName;
-                        String targetObjectProfileName = transitionTrigger.targetObjectProfileName;
+                            // Initialize the target object name and profile
+                            String targetObjectName = transitionTrigger.targetObjectName;
+                            String targetObjectProfileName = transitionTrigger.targetObjectProfileName;
 
-                        // Check if the transition trigger should randomize the target object
-                        if (transitionTrigger.randomTargetObject
-                                && positionEvolvingObjectContainer.getCollectionObjects().size() > 1) {
+                            // Check if the transition trigger should randomize the target object
+                            if (transitionTrigger.randomTargetObject
+                                    && positionEvolvingObjectContainer.getCollectionObjects().size() > 1) {
 
-                            // Get the index of the source object for the transition trigger
-                            int sourceObjectIndex =
-                                    positionEvolvingObjectContainer
-                                            .getCollectionObjects()
-                                            .getObjectIndex(transitionTrigger.sourceObjectName);
+                                // Get the index of the source object for the transition trigger
+                                int sourceObjectIndex =
+                                        positionEvolvingObjectContainer
+                                                .getCollectionObjects()
+                                                .getObjectIndex(transitionTrigger.sourceObjectName);
 
-                            // Generate a random index
-                            int randomIndex =
-                                    UtilityFunctions.generateRandomIndex(
-                                            0
-                                            , positionEvolvingObjectContainer.getCollectionObjects().size() - 2);
+                                // Generate a random index
+                                int randomIndex =
+                                        UtilityFunctions.generateRandomIndex(
+                                                0
+                                                , positionEvolvingObjectContainer.getCollectionObjects().size() - 2);
 
-                            // Shift the random index up to ensure that we never select the source
-                            if (randomIndex >= sourceObjectIndex) {
-                                randomIndex++;
+                                // Shift the random index up to ensure that we never select the source
+                                if (randomIndex >= sourceObjectIndex) {
+                                    randomIndex++;
+                                }
+
+                                // Set the name of the target
+                                targetObjectName = positionEvolvingObjectContainer
+                                        .getCollectionObjects()
+                                        .getObjectName(randomIndex);
+
                             }
 
-                            // Set the name of the target
-                            targetObjectName = positionEvolvingObjectContainer
-                                    .getCollectionObjects()
-                                    .getObjectName(randomIndex);
+                            // Check if the transition trigger should randomize the target object profile
+                            if (transitionTrigger.randomTargetObjectProfile) {
 
-                        }
+                                // Get the object
+                                T object =
+                                        positionEvolvingObjectContainer
+                                                .getCollectionObjects()
+                                                .getObject(targetObjectName);
 
-                        // Check if the transition trigger should randomize the target object profile
-                        if (transitionTrigger.randomTargetObjectProfile) {
+                                // Get the list of profile names
+                                List<String> listObjectProfileNames =
+                                        object.getListProfileNames();
 
-                            // Get the object
-                            T object =
-                                    positionEvolvingObjectContainer
-                                            .getCollectionObjects()
-                                            .getObject(targetObjectName);
+                                // Get a random index
+                                int randomIndex =
+                                        UtilityFunctions.generateRandomIndex(
+                                                0
+                                                , listObjectProfileNames.size() - 1
+                                        );
 
-                            // Get the list of profile names
-                            List<String> listObjectProfileNames =
-                                    object.getListProfileNames();
+                                // Set the name of the target
+                                targetObjectProfileName = listObjectProfileNames.get(randomIndex);
 
-                            // Get a random index
-                            int randomIndex =
-                                    UtilityFunctions.generateRandomIndex(
-                                            0
-                                            , listObjectProfileNames.size() - 1
-                                    );
+                            }
 
-                            // Set the name of the target
-                            targetObjectProfileName = listObjectProfileNames.get(randomIndex);
+                            // Convert the trigger to a TransitionEvent
+                            TransitionEvent transitionEvent = new TransitionEvent(
+                                    targetObjectName
+                                    , targetObjectProfileName
+                            );
 
-                        }
+                            // Add the new TransitionEvent to the list of TransitionEvents
+                            listTransitionEventsUnprocessed.add(transitionEvent);
 
-                        // Convert the trigger to a TransitionEvent
-                        TransitionEvent transitionEvent = new TransitionEvent(
-                                targetObjectName
-                                , targetObjectProfileName
-                        );
-
-                        // Add the new TransitionEvent to the list of TransitionEvents
-                        listTransitionEventsUnprocessed.add(transitionEvent);
-
-                        // Loop through the SyncVariableTriggers associated with this TransitionTrigger
-                        for (SyncVariableTrigger syncVariableTrigger : transitionTrigger.listSyncVariableTriggers) {
-
+                            // Loop through the SyncVariableTriggers associated with this TransitionTrigger
                             // Add the sync variable trigger to the list
-                            listGeneratedSyncVariableTriggers.add(syncVariableTrigger);
+                            listGeneratedSyncVariableTriggers.addAll(transitionTrigger.listSyncVariableTriggers);
 
                         }
-
                     }
 
                 }
@@ -348,6 +344,7 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
                         // Get the current position evolver and its derivative
                         PositionEvolver positionEvolver = collectionPositionEvolvers.getObject(currentPositionEvolverIndex);
                         PositionEvolver positionEvolverDX = collectionPositionEvolvers.getObject(currentPositionEvolverIndex + 1);
+                        @SuppressWarnings("unused")
                         PositionEvolver sourcePositionEvolverD2X = collectionPositionEvolvers.getObject(currentPositionEvolverIndex + 2);
 
                         // Make sure the position evolver exists
@@ -471,64 +468,66 @@ public class PositionEvolvingObjectContainerEvolverHelper<T extends IPositionEvo
                                     PositionEvolverVariableAttractorVectorCollection attractorVectorCollection =
                                             mapAttractorVectorCollections.get(attractorKey);
 
-                                    PositionVector attractorVectorSnapToVector = attractorVectorCollection.getAttractorVectorSnapToVector();
-                                    PositionVector attractorVectorMaxToVector = attractorVectorCollection.getAttractorVectorMaxToVector();
-                                    PositionVector attractorVectorGravity = attractorVectorCollection.getAttractorVectorGravity();
+                                    if (attractorVectorCollection != null) {
+                                        PositionVector attractorVectorSnapToVector = attractorVectorCollection.getAttractorVectorSnapToVector();
+                                        PositionVector attractorVectorMaxToVector = attractorVectorCollection.getAttractorVectorMaxToVector();
+                                        PositionVector attractorVectorGravity = attractorVectorCollection.getAttractorVectorGravity();
 
-                                    if (attractorVectorSnapToVector != null) {
-                                        double theta = Math.atan2(attractorVectorSnapToVector.getValue(1), attractorVectorSnapToVector.getValue(0));
-                                        positionEvolver.getCollectionPositionEvolverVariables().getObject(1).setValue(theta);
-                                    } else if (attractorVectorMaxToVector != null) {
-                                        double phi = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue();
-                                        double theta = Math.atan2(attractorVectorMaxToVector.getValue(1), attractorVectorMaxToVector.getValue(0));
-                                        double delta1 = theta - phi;
-                                        double delta2 = delta1;
-                                        if (delta1 > 0.0) {
-                                            delta2 = (-2.0 * Math.PI) + delta1;
-                                        } else {
-                                            delta2 = (2.0 * Math.PI) + delta1;
+                                        if (attractorVectorSnapToVector != null) {
+                                            double theta = Math.atan2(attractorVectorSnapToVector.getValue(1), attractorVectorSnapToVector.getValue(0));
+                                            positionEvolver.getCollectionPositionEvolverVariables().getObject(1).setValue(theta);
+                                        } else if (attractorVectorMaxToVector != null) {
+                                            double phi = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue();
+                                            double theta = Math.atan2(attractorVectorMaxToVector.getValue(1), attractorVectorMaxToVector.getValue(0));
+                                            double delta1 = theta - phi;
+                                            double delta2;
+                                            if (delta1 > 0.0) {
+                                                delta2 = (-2.0 * Math.PI) + delta1;
+                                            } else {
+                                                delta2 = (2.0 * Math.PI) + delta1;
+                                            }
+                                            double deltaToUse;
+                                            double absDelta1 = Math.abs(delta1);
+                                            double absDelta2 = Math.abs(delta2);
+                                            if (absDelta1 < absDelta2) {
+                                                deltaToUse = delta1;
+                                            } else {
+                                                deltaToUse = delta2;
+                                            }
+                                            if (deltaToUse > 0) {
+                                                positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                        .getObject(1)
+                                                        .setValue(
+                                                                positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                                        .getObject(1)
+                                                                        .getMaximumValue()
+                                                        );
+                                            } else {
+                                                positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                        .getObject(1)
+                                                        .setValue(
+                                                                -1.0 * positionEvolverDX.getCollectionPositionEvolverVariables()
+                                                                        .getObject(1)
+                                                                        .getMaximumValue()
+                                                        );
+                                            }
+                                        } else if (attractorVectorGravity != null) {
+                                            double theta = Math.atan2(attractorVectorGravity.getValue(1), attractorVectorGravity.getValue(0));
+                                            double delta = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue() - theta;
+                                            double magnitude = attractorVectorGravity.getMagnitude();
+                                            double ds = magnitude * Math.cos(delta);
+                                            double s = positionEvolver.getCollectionPositionEvolverVariables().getObject(0).getValue();
+                                            double dPhi = 0.0;
+                                            if (s != 0.0) {
+                                                dPhi = -1.0 * magnitude * Math.sin(delta) / s;
+                                            }
+                                            positionEvolverDX.getCollectionPositionEvolverVariables().getObject(0).setValue(
+                                                    ds
+                                            );
+                                            positionEvolverDX.getCollectionPositionEvolverVariables().getObject(1).setValue(
+                                                    dPhi
+                                            );
                                         }
-                                        double deltaToUse = delta1;
-                                        double absDelta1 = Math.abs(delta1);
-                                        double absDelta2 = Math.abs(delta2);
-                                        if (absDelta1 < absDelta2) {
-                                            deltaToUse = delta1;
-                                        } else {
-                                            deltaToUse = delta2;
-                                        }
-                                        if (deltaToUse > 0) {
-                                            positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                    .getObject(1)
-                                                    .setValue(
-                                                            positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                                    .getObject(1)
-                                                                    .getMaximumValue()
-                                                    );
-                                        } else {
-                                            positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                    .getObject(1)
-                                                    .setValue(
-                                                            -1.0 * positionEvolverDX.getCollectionPositionEvolverVariables()
-                                                                    .getObject(1)
-                                                                    .getMaximumValue()
-                                                    );
-                                        }
-                                    } else if (attractorVectorGravity != null) {
-                                        double theta = Math.atan2(attractorVectorGravity.getValue(1), attractorVectorGravity.getValue(0));
-                                        double delta = positionEvolver.getCollectionPositionEvolverVariables().getObject(1).getValue() - theta;
-                                        double magnitude = attractorVectorGravity.getMagnitude();
-                                        double ds = magnitude * Math.cos(delta);
-                                        double s = positionEvolver.getCollectionPositionEvolverVariables().getObject(0).getValue();
-                                        double dPhi = 0.0;
-                                        if (s != 0.0) {
-                                            dPhi = -1.0 * magnitude * Math.sin(delta) / s;
-                                        }
-                                        positionEvolverDX.getCollectionPositionEvolverVariables().getObject(0).setValue(
-                                                ds
-                                        );
-                                        positionEvolverDX.getCollectionPositionEvolverVariables().getObject(1).setValue(
-                                                dPhi
-                                        );
                                     }
 
                                 }

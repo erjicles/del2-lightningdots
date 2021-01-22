@@ -25,6 +25,7 @@ public class SurfaceViewGameThreadSharedData {
 
 	public int getCanvasWidth() { return canvasWidth; }
 	public int getCanvasHeight() { return canvasHeight; }
+	@SuppressWarnings("unused")
 	public double getCurrentAverageTimeBetweenFrames() { return currentAverageTimeBetweenFrames; }
 
 }

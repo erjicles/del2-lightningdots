@@ -5,9 +5,10 @@ public class TimedChangeHandler {
     public final boolean canRandomlyChange;
     public final double value;
     public final INTERVAL interval;
+    @SuppressWarnings("unused")
     public final boolean bounceOnRandomChange;
 
-    private double timeElapsedSinceLastChange = 0.0;
+    private double timeElapsedSinceLastChange;
 
     public TimedChangeHandler() {
         canRandomlyChange = false;
@@ -17,6 +18,7 @@ public class TimedChangeHandler {
         this.timeElapsedSinceLastChange = 0.0;
     }
 
+    @SuppressWarnings("unused")
     public TimedChangeHandler(
             boolean canRandomlyChange
             , double value

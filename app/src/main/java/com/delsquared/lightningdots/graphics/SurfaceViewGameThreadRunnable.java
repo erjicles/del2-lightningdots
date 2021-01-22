@@ -26,6 +26,7 @@ import com.delsquared.lightningdots.game.GameSnapshot;
 import com.delsquared.lightningdots.game.GameThreadSharedData;
 import com.delsquared.lightningdots.game.SurfaceViewGameThreadSharedData;
 import com.delsquared.lightningdots.game.UserClick;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,21 +36,23 @@ import java.util.Map;
 public class SurfaceViewGameThreadRunnable implements Runnable {
 
     // Variables for frames per second calculations
+    @SuppressWarnings("unused")
 	public static final long maximumAverageTimeBetweenFramesMillis = 33;
+    @SuppressWarnings("unused")
 	public static final long targetAverageTimeBetweenFramesMillis = 16;
 	public static final int maximumNumberOfFramesPerSecondPolls = 10;
 	private double currentAverageTimeBetweenFramesMillis = 0.0;
 	private int currentNumberOfFramePolls = -1;
 	private long lastFrameTimeMillis = 0;
-	private long[] timeBetweenFramesRegister = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	private final long[] timeBetweenFramesRegister = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-	private SurfaceHolder surfaceHolder;
-    private Context context;
+	private final SurfaceHolder surfaceHolder;
+    private final Context context;
 	private boolean threadIsRunning = false;
     private boolean threadIsPaused = false;
-    private Handler handler;
+    private final Handler handler;
 
-	private Game game;
+	private final Game game;
     private GameResult gameResultHighScoreCurrentLevel;
     private int highestScriptedLevel;
     private int currentHighestValidUserClickIndex = 0;
@@ -60,50 +63,77 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
 	// ---------- Paint Objects ---------- //
 	// Background paints
-	private Paint paintBackground;
-    private Paint paintGameOverAlphaOverlay;
-	private Paint endBorderPaintLoss;
-    private Paint endBorderPaintWin;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final Paint paintBackground;
+    private final Paint paintGameOverAlphaOverlay;
+	private final Paint endBorderPaintLoss;
+    private final Paint endBorderPaintWin;
 
-    private int gameOverAlphaOverlayAlpha = 150;
-    private int intermediateClickTargetAlpha = 50;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int gameOverAlphaOverlayAlpha = 150;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int intermediateClickTargetAlpha = 50;
 
 	// Target paint
-    private Paint paintIntermediateTarget;
-	private Paint paintTarget;
-    private Paint paintTargetDisabled;
+    private final Paint paintIntermediateTarget;
+	private final Paint paintTarget;
+    private final Paint paintTargetDisabled;
 
 	// User click paints
-	private Paint defaultPaint;
+	private final Paint defaultPaint;
 
-	private HashMap<String, Paint> mapPaint = new HashMap<String, Paint>();
-    private HashMap<String, SurfaceViewTextHandler> mapSurfaceViewTextHandler = new HashMap<String, SurfaceViewTextHandler>();
+	private final HashMap<String, Paint> mapPaint = new HashMap<>();
+    private final HashMap<String, SurfaceViewTextHandler> mapSurfaceViewTextHandler = new HashMap<>();
 
-	private float borderWidthFactor = 0.025f;
-	private float borderPaddingFactor = 0.025f;
-    private float textLineSpacingFactor = 0.025f;
-	private float targetWidthFactor = 0.01f;
-    private float textStartCountdownHeightFactor = 0.05f;
-	private float textTimerHeightFactor = 0.05f;
-	private float textCounterHeightFactor = 0.05f;
-    private float textLevelDecrementHeightFactor = 0.05f;
-    private float textLevelHeightFactor = 0.05f;
-    private float textLevelIncrementHeightFactor = 0.05f;
-    private float textNewHighScoreHeightFactor = 0.05f;
-    private float textLevelCompleteHeightFactor = 0.05f;
-    private float textLevelFailedHeightFactor = 0.05f;
-    private float textFPSHeightFactor = 0.025f;
-    private float textHighScoreHeightFactor = 0.05f;
-	private float textOtherTextHeightFactor = 0.05f;
-    private float textCongratulationsHeightFactor = 0.05f;
-    private float textBeatLastLevelHeighFactor = 0.05f;
-    private float textClickTargetPropertiesHeightFactor = 0.025f;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final float borderWidthFactor = 0.025f;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final float borderPaddingFactor = 0.025f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textLineSpacingFactor = 0.025f;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final float targetWidthFactor = 0.01f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textStartCountdownHeightFactor = 0.05f;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final float textTimerHeightFactor = 0.05f;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final float textCounterHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textLevelDecrementHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textLevelHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textLevelIncrementHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textNewHighScoreHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textLevelCompleteHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textLevelFailedHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textFPSHeightFactor = 0.025f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textHighScoreHeightFactor = 0.05f;
+	@SuppressWarnings("FieldCanBeLocal")
+    private final float textOtherTextHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textCongratulationsHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textBeatLastLevelHeightFactor = 0.05f;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final float textClickTargetPropertiesHeightFactor = 0.025f;
 
 	private int borderWidth = 1;
-	private int borderPadding = 1;
+	@SuppressWarnings("FieldCanBeLocal")
+    private int borderPadding = 1;
+    @SuppressWarnings("FieldCanBeLocal")
     private int textLineSpacing = 1;
-	private int targetWidth = 1;
+	@SuppressWarnings("FieldCanBeLocal")
+    private int targetWidth = 1;
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private int canvasPlayableWidth = 1;
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
 	private int canvasPlayableHeight = 1;
 
     private int bitmapAwardX = 0;
@@ -113,12 +143,14 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 	private Canvas canvasUserClicks;
 
     // The award bitmaps
-    private Bitmap bitmapAwardEmpty;
-    private Bitmap bitmapAwardFull;
-    private int bitmapAwardEmptyWidth = 1;
-    private int bitmapAwardEmptyHeight = 1;
-    private int bitmapAwardFullWidth = 1;
-    private int bitmapAwardFullHeight = 1;
+    private final Bitmap bitmapAwardEmpty;
+    private final Bitmap bitmapAwardFull;
+    private final int bitmapAwardEmptyWidth;
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
+    private final int bitmapAwardEmptyHeight;
+    private final int bitmapAwardFullWidth;
+    @SuppressWarnings({"unused", "FieldCanBeLocal"})
+    private final int bitmapAwardFullHeight;
 
     public SurfaceViewGameThreadRunnable(
             SurfaceHolder surfaceHolder
@@ -425,7 +457,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 , SurfaceViewTextHandler.JUSTIFY_VERTICAL.TOP
                 , 0.0
                 , 0.0
-                , textBeatLastLevelHeighFactor
+                , textBeatLastLevelHeightFactor
                 , canvasHeight
                 , paintTextBeatLastLevel);
         mapSurfaceViewTextHandler.put(
@@ -609,7 +641,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
         while (threadIsRunning) {
 
-            if (threadIsPaused == false) {
+            if (!threadIsPaused) {
 
                 // Get the game snapshot
                 GameSnapshot gameSnapshot = game.gameSnapshot;
@@ -618,10 +650,10 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
                     if (gameSnapshot != null) {
 
-                        boolean blah = gameSnapshot.equals(oldGameSnapshot);
+                        boolean isTheSame = gameSnapshot.equals(oldGameSnapshot);
 
                         // Check if the game snapshot is different from the old one
-                        if (true) {
+                        if (!isTheSame) {
 
                             /// Perform drawing
                             // Initialize the canvas to null
@@ -646,9 +678,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                                 }
 
                             } catch (Exception e) {
-
-                                int asdf = 0;
-
+                                LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
                             } finally {
 
                                 // Check if the canvas is not null
@@ -665,7 +695,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     }
 
                 } catch (Exception e) {
-
+                    LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
                 } finally {
 
                     // Set the old game snapshot to the current one
@@ -698,10 +728,11 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         boolean isNewHighScore = gameSnapshot.getIsNewHighScore();
         Map<String, ClickTargetSnapshot> mapClickTargetSnapshots = gameSnapshot.getMapClickTargetSnapshots();
         ClickTargetSnapshot firstClickTargetSnapshot = null;
-        Iterator iterator = mapClickTargetSnapshots.entrySet().iterator();
+        Iterator<Map.Entry<String, ClickTargetSnapshot>> iterator =
+                mapClickTargetSnapshots.entrySet().iterator();
         int snapshotCounter = 0;
         while (iterator.hasNext()) {
-            Map.Entry<String, ClickTargetSnapshot> pair = (Map.Entry) iterator.next();
+            Map.Entry<String, ClickTargetSnapshot> pair = iterator.next();
             firstClickTargetSnapshot = pair.getValue();
             if (snapshotCounter >= 1) {
                 break;
@@ -709,10 +740,10 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             snapshotCounter++;
         }
 
-        // Get global app seettings
+        // Get global app settings
         boolean showClickTargetProperties = context.getResources().getBoolean(R.bool.activity_game_show_click_target_properties);
 
-        //Calculate the framerate
+        //Calculate the frame rate
         double framerate = currentAverageTimeBetweenFramesMillis;
         if (currentAverageTimeBetweenFramesMillis != 0.0) {
             framerate = 1000.0 / currentAverageTimeBetweenFramesMillis;
@@ -778,6 +809,91 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2Radius));
         SurfaceViewTextHandler textHandlerClickTargetPropertiesEnergy =
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_energy));
+
+        if (textHandlerStartCountdown == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerStartCountdown is null");
+            return;
+        }
+        if (textHandlerTimer == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerTimer is null");
+            return;
+        }
+        if (textHandlerCounter == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerCounter is null");
+            return;
+        }
+        if (textHandlerLevelDecrement == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelDecrement is null");
+            return;
+        }
+        if (textHandlerLevel == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerLevel is null");
+            return;
+        }
+        if (textHandlerLevelIncrement == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelIncrement is null");
+            return;
+        }
+        if (textHandlerNewHighScore == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerNewHighScore is null");
+            return;
+        }
+        if (textHandlerLevelComplete == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelComplete is null");
+            return;
+        }
+        if (textHandlerLevelFailed == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelFailed is null");
+            return;
+        }
+        if (textHandlerFPS == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerFPS is null");
+            return;
+        }
+        if (textHandlerHighScore == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerHighScore is null");
+            return;
+        }
+        if (textHandlerOther == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerOther is null");
+            return;
+        }
+        if (textHandlerCongratulations == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerCongratulations is null");
+            return;
+        }
+        if (textHandlerBeatLastLevel == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerBeatLastLevel is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesX == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesX is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesdX == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdX is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesd2X == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2X is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesRadius == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesRadius is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesdRadius == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdRadius is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesd2Radius == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2Radius is null");
+            return;
+        }
+        if (textHandlerClickTargetPropertiesEnergy == null) {
+            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesEnergy is null");
+            return;
+        }
 
         // Set the text
         textHandlerStartCountdown.setText(
@@ -860,7 +976,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                             , firstClickTargetSnapshot.getD2RotationRadians().getValue(0)
                     )
             );
-            double energy = 0.0;
+            double energy;
             double pixelsPerInch = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_IN
                     , (float) 1.0
@@ -881,7 +997,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         // The status text
         switch (gameState) {
             case ENDED:
-                if (isLevelComplete == true) {
+                if (isLevelComplete) {
                     textHandlerOther.setText(
                             context.getString(R.string.game_text_ended_continue));
                 } else {
@@ -905,6 +1021,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
         }
 
 		// Get the time elapsed since the game end
+        @SuppressWarnings("unused")
 		long timeElapsedSinceGameEndMillis = currentTimeMillis - endTimeMillis;
 
 		// ---------- BEGIN BACKGROUND DRAWING ---------- //
@@ -919,6 +1036,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
                 // Draw the red border
                 canvas.drawRect(0, 0, borderWidth, canvasHeight, endBorderPaintLoss);
+                //noinspection SuspiciousNameCombination
                 canvas.drawRect(0, 0, canvasWidth, borderWidth, endBorderPaintLoss);
                 canvas.drawRect(0, canvasHeight - borderWidth, canvasWidth, canvasHeight, endBorderPaintLoss);
                 canvas.drawRect(canvasWidth - borderWidth, 0, canvasWidth, canvasHeight, endBorderPaintLoss);
@@ -927,6 +1045,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
                 // Draw the green border
                 canvas.drawRect(0, 0, borderWidth, canvasHeight, endBorderPaintWin);
+                //noinspection SuspiciousNameCombination
                 canvas.drawRect(0, 0, canvasWidth, borderWidth, endBorderPaintWin);
                 canvas.drawRect(0, canvasHeight - borderWidth, canvasWidth, canvasHeight, endBorderPaintWin);
                 canvas.drawRect(canvasWidth - borderWidth, 0, canvasWidth, canvasHeight, endBorderPaintWin);
@@ -956,8 +1075,12 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     String currentUserClickKey = Integer.toString(currentUserClickIndex + 1);
                     UserClick userClick = game.mapValidUserClick.get(currentUserClickKey);
 
+                    if (userClick == null) {
+                        continue;
+                    }
+
                     // Check if this is a valid user click
-                    if (userClick.getIsInsideTarget() == true) {
+                    if (userClick.getIsInsideTarget()) {
 
                         // Get the paint for this click
                         Paint currentPaint = defaultPaint;
@@ -1000,11 +1123,9 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 					|| gameState == Game.GameState.PAUSED) {
 
                 // Loop through the click target snapshots
-                Iterator clickTargetSnapshotIterator = mapClickTargetSnapshots.entrySet().iterator();
-                while (clickTargetSnapshotIterator.hasNext()) {
+                for (Map.Entry<String, ClickTargetSnapshot> currentClickTargetSnapshotPair : mapClickTargetSnapshots.entrySet()) {
 
                     // Get the current click target snapshot
-                    Map.Entry<String, ClickTargetSnapshot> currentClickTargetSnapshotPair = (Map.Entry) clickTargetSnapshotIterator.next();
                     ClickTargetSnapshot currentClickTargetSnapshot = currentClickTargetSnapshotPair.getValue();
 
                     // Check if the click target is visible
@@ -1157,7 +1278,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             textHandlerOther.drawText(canvas);
 
             // Check if the level was completed
-            if (isLevelComplete == true) {
+            if (isLevelComplete) {
 
                 // Check if the current level is the highest scripted level
                 if (gameSnapshot.getGameLevel() >= highestScriptedLevel
@@ -1183,7 +1304,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
             }
 
             // Check if there is a new high score
-            if (isNewHighScore == true
+            if (isNewHighScore
                     && !(gameSnapshot.getGameLevel() >= highestScriptedLevel
                         && gameType == Game.GameType.AGILITY)) {
 
@@ -1284,6 +1405,95 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_d2Radius));
             SurfaceViewTextHandler textHandlerClickTargetPropertiesEnergy =
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_energy));
+
+            if(textHandlerStartCountdown == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerStartCountdown is null");
+                return;
+            }
+            if(textHandlerTimer == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerTimer is null");
+                return;
+            }
+            if(textHandlerCounter == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerCounter is null");
+                return;
+            }
+            if(textHandlerCounterGoalAchieved == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerCounterGoalAchieved is null");
+                return;
+            }
+            if(textHandlerLevelDecrement == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelDecrement is null");
+                return;
+            }
+            if(textHandlerLevel == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerLevel is null");
+                return;
+            }
+            if(textHandlerLevelIncrement == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelIncrement is null");
+                return;
+            }
+            if(textHandlerNewHighScore == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerNewHighScore is null");
+                return;
+            }
+            if(textHandlerLevelComplete == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelComplete is null");
+                return;
+            }
+            if(textHandlerLevelFailed == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelFailed is null");
+                return;
+            }
+            if(textHandlerFPS == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerFPS is null");
+                return;
+            }
+            if(textHandlerHighScore == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerHighScore is null");
+                return;
+            }
+            if(textHandlerOther == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerOther is null");
+                return;
+            }
+            if(textHandlerCongratulations == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerCongratulations is null");
+                return;
+            }
+            if(textHandlerBeatLastLevel == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerBeatLastLevel is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesX == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesX is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesdX == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdX is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesd2X == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2X is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesRadius == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesRadius is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesdRadius == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdRadius is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesd2Radius == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2Radius is null");
+                return;
+            }
+            if(textHandlerClickTargetPropertiesEnergy == null) {
+                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesEnergy is null");
+                return;
+            }
 
             // Recalculate the text heights
             textHandlerStartCountdown.recalculateTextHeight(height);
@@ -1458,11 +1668,13 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 try {
 
                     for (int currentUserClickIndex = 0; currentUserClickIndex < game.mapValidUserClick.size(); currentUserClickIndex++) {
-                        //for (UserClick userClick : game.getListValidUserClick()) {
 
                         // Get the current user click
                         String currentUserClickKey = Integer.toString(currentUserClickIndex + 1);
                         UserClick userClick = game.mapValidUserClick.get(currentUserClickKey);
+                        if (userClick == null) {
+                            continue;
+                        }
 
                         // Get the paint for this click
                         Paint currentPaint = defaultPaint;
@@ -1497,36 +1709,30 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 && gameSnapshot.getGameType() == Game.GameType.AGILITY) {
 
             Game.GameState gameState = gameSnapshot.getGameState();
-            switch (gameState) {
+            if (gameState == Game.GameState.STOPPED) {// Check for left swipe
+                if (deltaX > 0.0) {
 
-                case STOPPED:
-                    // Check for left swipe
-                    if (deltaX > 0.0) {
+                    // Send the message to decrement the level
+                    Message message = handler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(
+                            SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel
+                            , SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
 
-                        // Send the message to decrement the level
-                        Message message = handler.obtainMessage();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(
-                                SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel
-                                , SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
+                } else {
 
-                    } else {
+                    // Send the message to increment the level
+                    Message message = handler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(
+                            SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel
+                            , SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
 
-                        // Send the message to increment the level
-                        Message message = handler.obtainMessage();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(
-                                SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel
-                                , SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
-
-                    }
-                    break;
-
-                default:
+                }
             }
 
         }
@@ -1546,52 +1752,61 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 && gameSnapshot.getGameType() == Game.GameType.AGILITY) {
 
             Game.GameState gameState = gameSnapshot.getGameState();
-            switch (gameState) {
-                case STOPPED:
-                    SurfaceViewTextHandler textHandlerLevelDecrement =
-                            mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level_decrement));
-                    SurfaceViewTextHandler textHandlerLevel =
-                            mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level));
-                    SurfaceViewTextHandler textHandlerLevelIncrement =
-                            mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level_increment));
-                    RectF decrementLevelRectangle = textHandlerLevelDecrement.getDrawBoundingRectF(0.0f, 0.0f, 2.0f);
-                    RectF incrementLevelRectangle = textHandlerLevelIncrement.getDrawBoundingRectF(
-                            (float) textHandlerLevelDecrement.getTextWidth()
-                            + (float) textHandlerLevel.getTextWidth()
-                            , 0.0f
-                            , 2.0f);
-                    if (decrementLevelRectangle.contains(X, Y) == true) {
+            if (gameState == Game.GameState.STOPPED) {
+                SurfaceViewTextHandler textHandlerLevelDecrement =
+                        mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level_decrement));
+                SurfaceViewTextHandler textHandlerLevel =
+                        mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level));
+                SurfaceViewTextHandler textHandlerLevelIncrement =
+                        mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level_increment));
+                if (textHandlerLevelDecrement == null) {
+                    LightningDotsApplication.logDebugErrorMessage("textHandlerLevelDecrement is null");
+                    return false;
+                }
+                if (textHandlerLevel == null) {
+                    LightningDotsApplication.logDebugErrorMessage("textHandlerLevel is null");
+                    return false;
+                }
+                if (textHandlerLevelIncrement == null) {
+                    LightningDotsApplication.logDebugErrorMessage("textHandlerLevelIncrement is null");
+                    return false;
+                }
 
-                        // Send the message that the decrement level button was pressed
-                        Message message = handler.obtainMessage();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(
-                                SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel
-                                , SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
+                RectF decrementLevelRectangle = textHandlerLevelDecrement.getDrawBoundingRectF(0.0f, 0.0f, 2.0f);
+                RectF incrementLevelRectangle = textHandlerLevelIncrement.getDrawBoundingRectF(
+                        (float) textHandlerLevelDecrement.getTextWidth()
+                                + (float) textHandlerLevel.getTextWidth()
+                        , 0.0f
+                        , 2.0f);
+                if (decrementLevelRectangle.contains(X, Y)) {
 
-                        // Set the result to true (meaning a button was pressed)
-                        result = true;
+                    // Send the message that the decrement level button was pressed
+                    Message message = handler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(
+                            SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel
+                            , SurfaceViewGame.surfaceViewGame_message_buttonPressed_decrementLevel);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
 
-                    } else if (incrementLevelRectangle.contains(X, Y) == true) {
+                    // Set the result to true (meaning a button was pressed)
+                    result = true;
 
-                        // Send the message that the increment level button was pressed
-                        Message message = handler.obtainMessage();
-                        Bundle bundle = new Bundle();
-                        bundle.putString(
-                                SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel
-                                , SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel);
-                        message.setData(bundle);
-                        handler.sendMessage(message);
+                } else if (incrementLevelRectangle.contains(X, Y)) {
 
-                        // Set the result to true (meaning a button was pressed)
-                        result = true;
+                    // Send the message that the increment level button was pressed
+                    Message message = handler.obtainMessage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(
+                            SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel
+                            , SurfaceViewGame.surfaceViewGame_message_buttonPressed_incrementLevel);
+                    message.setData(bundle);
+                    handler.sendMessage(message);
 
-                    }
-                    break;
+                    // Set the result to true (meaning a button was pressed)
+                    result = true;
 
-                default:
+                }
             }
 
         }

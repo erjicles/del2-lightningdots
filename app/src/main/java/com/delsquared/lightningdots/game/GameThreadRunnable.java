@@ -13,25 +13,23 @@ import com.delsquared.lightningdots.graphics.SurfaceViewGame;
 
 public class GameThreadRunnable implements Runnable {
 
+    @SuppressWarnings("unused")
 	public static final long maximumGameProcessDelay = 33;
+    @SuppressWarnings("unused")
 	public static final long targetGameProcessDelay = 10;
-	public int currentGameProcessDelay = 33;
+	public final int currentGameProcessDelay = 33;
 
-	Context context;
-	private Handler handler;
+	final Context context;
+	private final Handler handler;
 
-	private boolean firstTimeInitialization = true;
-	private boolean threadIsRunning = false;
+    private boolean threadIsRunning = false;
     private boolean threadIsPaused = false;
 
-	private Game game;
+	private final Game game;
 
-	private int gameType = Game.GameType.AGILITY.ordinal();
-	private int gameLevel = 1;
+	private final int gameType;
+	private int gameLevel;
     private int highestScriptedLevel = 1;
-
-    double canvasWidth = 1.0;
-    double canvasHeight = 1.0;
 
 	public GameThreadRunnable(
             Context context
@@ -48,22 +46,13 @@ public class GameThreadRunnable implements Runnable {
 	@Override
 	public void run() {
 
-		// Loop while the thread running flag is true
-        while (threadIsRunning) {
-
-            if (threadIsPaused == false) {
-
+	    if (threadIsRunning) {
+	        if (!threadIsPaused) {
                 // Get the current system time
                 long currentTimeMillis = SystemClock.elapsedRealtime();
-
                 processNewTime(currentTimeMillis);
-
-                try {
-                    Thread.sleep(currentGameProcessDelay);
-                } catch(InterruptedException e) {}
-
             }
-
+	        handler.postDelayed(this, currentGameProcessDelay);
         }
 
 	}
@@ -79,7 +68,7 @@ public class GameThreadRunnable implements Runnable {
     public synchronized void setThreadIsPaused(boolean threadIsPaused) {
         this.threadIsPaused = threadIsPaused;
         long currentTimeMillis = SystemClock.elapsedRealtime();
-        if (threadIsPaused == true) {
+        if (threadIsPaused) {
             game.pauseTimers(currentTimeMillis);
         } else {
             game.resumeTimers(currentTimeMillis);
@@ -95,9 +84,7 @@ public class GameThreadRunnable implements Runnable {
         }
     }
 
-    public synchronized void setCanvasWidthAndHeight(boolean toggleNew, double canvasWidth, double canvasHeight) {
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
+    public synchronized void setCanvasWidthAndHeight(double canvasWidth, double canvasHeight) {
         game.setCanvasWidthAndHeight(canvasWidth, canvasHeight);
     }
 
@@ -239,7 +226,8 @@ public class GameThreadRunnable implements Runnable {
 
 	}
 
-	public void processDownTouch(MotionEvent motionEvent) {
+	@SuppressWarnings("DuplicateBranchesInSwitch")
+    public void processDownTouch(MotionEvent motionEvent) {
 
         long currentTimeMillis = SystemClock.elapsedRealtime();
 
@@ -264,7 +252,7 @@ public class GameThreadRunnable implements Runnable {
 
             case RUNNING:
 
-                game.processUserClick(context, clickX, clickY);
+                game.processUserClick(clickX, clickY);
 
                 break;
 
@@ -285,29 +273,25 @@ public class GameThreadRunnable implements Runnable {
 
 	}
 
+    @SuppressWarnings("unused")
 	public Bundle saveState(Bundle bundle) {
 
 		// Check if the bundle is null
-		if (bundle != null) {
-			// Save the game state to the bundle
-		}
+        // TODO: Save the game state to the bundle
 
-		return bundle;
+        return bundle;
 	}
 
-	public synchronized void restoreState(Bundle savedState) {
+	@SuppressWarnings({"EmptyMethod", "unused"})
+    public synchronized void restoreState(Bundle savedState) {
 
 		// Check if the bundle is null
-		if (savedState != null) {
-			// Restore the saved state
-		}
+        // TODO: Restore the saved state
 
-	}
+    }
 
+    @SuppressWarnings("DuplicateBranchesInSwitch")
 	public void processNewTime(long currentTimeMillis) {
-
-		// Get the surface view game thread shared data
-		SurfaceViewGameThreadSharedData surfaceViewGameThreadSharedData = game.surfaceViewGameThreadSharedData;
 
 		// Set shared data
 		updateGameThreadSharedData(currentTimeMillis);
@@ -320,8 +304,7 @@ public class GameThreadRunnable implements Runnable {
 			case STOPPED:
 				if (game.canvasSizeChanged) {
 					initializeGame(currentTimeMillis);
-					firstTimeInitialization = false;
-					game.canvasSizeChanged = false;
+                    game.canvasSizeChanged = false;
 				}
 				break;
 
@@ -329,7 +312,7 @@ public class GameThreadRunnable implements Runnable {
 				break;
 
 			case STARTING:
-				if (game.getStartTimerExpired() == true) {
+				if (game.getStartTimerExpired()) {
 					game.setGameState(Game.GameState.RUNNING, currentTimeMillis);
 				}
 				break;
@@ -337,7 +320,7 @@ public class GameThreadRunnable implements Runnable {
 			case RUNNING:
 
 				// Check if the game is over
-				if (game.getGameTimeExpired() == true) {
+				if (game.getGameTimeExpired()) {
 
 					// End the game
 					endGame(currentTimeMillis);
@@ -347,14 +330,14 @@ public class GameThreadRunnable implements Runnable {
 				break;
 
 			case PAUSED:
-				break;
+                break;
 
 			case RESUMING:
-				break;
+                break;
 
 			case ENDING:
 
-                if (game.getEndingTimerExpired() == true) {
+                if (game.getEndingTimerExpired()) {
                     game.setGameState(Game.GameState.ENDED, currentTimeMillis);
 
                     // Send the message that the game has ended
@@ -369,7 +352,7 @@ public class GameThreadRunnable implements Runnable {
 				break;
 
 			case ENDED:
-				break;
+                break;
 
 			default:
 

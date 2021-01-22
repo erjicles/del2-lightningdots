@@ -7,9 +7,8 @@ import android.util.Log;
 
 public class SQLHandler {
 
-	Context context;
 	SQLiteDatabase sqlDatabase;
-	GameSQLiteHelper dbHelper;
+	final GameSQLiteHelper dbHelper;
 
 	public SQLHandler(Context context) {
 		dbHelper = GameSQLiteHelper.getInstance(context);
@@ -46,6 +45,7 @@ public class SQLHandler {
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void executeQuery(String query) {
 		//try {
 		//if (sqlDatabase.isOpen()) {
@@ -90,6 +90,7 @@ public class SQLHandler {
 		//}
 	}
 
+	@SuppressWarnings("unused")
 	public Cursor selectQuery(String query) {
 		Cursor c1 = null;
 		//try {

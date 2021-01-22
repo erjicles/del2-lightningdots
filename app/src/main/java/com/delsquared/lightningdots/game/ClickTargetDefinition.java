@@ -1,13 +1,9 @@
 package com.delsquared.lightningdots.game;
 
 public class ClickTargetDefinition {
+    @SuppressWarnings("unused")
     public final String name;
     public final ClickTargetProfileScript clickTargetProfileScript;
-
-    public ClickTargetDefinition() {
-        name = "";
-        clickTargetProfileScript = new ClickTargetProfileScript();
-    }
 
     public ClickTargetDefinition(
             String name

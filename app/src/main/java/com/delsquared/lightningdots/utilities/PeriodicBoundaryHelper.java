@@ -5,6 +5,7 @@ import java.util.List;
 
 public class PeriodicBoundaryHelper {
 
+    @SuppressWarnings("unused")
     public static double getEquivalentRangeValue(
             double value
             , double minimumValue
@@ -13,6 +14,7 @@ public class PeriodicBoundaryHelper {
         return value;
     }
 
+    @SuppressWarnings("unused")
     public List<Double> getListPeriodicValues(
             double value
             , double minimumValue

@@ -2,7 +2,7 @@ package com.delsquared.lightningdots.utilities;
 
 public class PositionEvolvingObjectContainerHelper<T extends IPositionEvolvingObject> {
 
-    private PositionEvolvingObjectContainer<T> positionEvolvingObjectContainer;
+    private final PositionEvolvingObjectContainer<T> positionEvolvingObjectContainer;
 
     public PositionEvolvingObjectContainerHelper(PositionEvolvingObjectContainer<T> positionEvolvingObjectContainer) {
         this.positionEvolvingObjectContainer = positionEvolvingObjectContainer;
@@ -54,6 +54,7 @@ public class PositionEvolvingObjectContainerHelper<T extends IPositionEvolvingOb
         return null;
     }
 
+    @SuppressWarnings("unused")
     public PositionEvolverVariable getPositionEvolverVariable(String objectName, String positionEvolverFamilyName, String positionEvolverName, String variableName) {
         PositionEvolver positionEvolver = getPositionEvolver(objectName, positionEvolverFamilyName, positionEvolverName);
         if (positionEvolver != null) {
@@ -62,6 +63,7 @@ public class PositionEvolvingObjectContainerHelper<T extends IPositionEvolvingOb
         return null;
     }
 
+    @SuppressWarnings("unused")
     public PositionEvolverVariable getPositionEvolverVariable(String objectName, String objectProfileName, String positionEvolverFamilyName, String positionEvolverName, String variableName) {
         PositionEvolver positionEvolver = getPositionEvolver(objectName, objectProfileName, positionEvolverFamilyName, positionEvolverName);
         if (positionEvolver != null) {

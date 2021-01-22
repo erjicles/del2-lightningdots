@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.delsquared.lightningdots.activities.ActivityMain$FragmentMain">
+    tools:context=".activities.ActivityMain">
 
     <ScrollView
         android:id="@+id/fragment_main_scrollview_main"
@@ -80,19 +80,16 @@
                         style="@style/MainMenuSectionSubsectionText"
                         android:textColor="@color/green"
                         android:visibility="gone"
-                        android:text="@string/fragment_main_textview_timeattack_achieved_highest_award"/>
+                        android:text="@string/fragment_main_textview_timeattack_achieved_highest_award_default"/>
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_main_menu_vertical_spacer"></LinearLayout>
-
             <TextView
                 android:id="@+id/fragment_main_textview_settingsmenu_title"
                 style="@style/MainMenuSectionHeader"
+                android:layout_marginTop="@dimen/activity_main_menu_vertical_spacer"
                 android:text="@string/fragment_main_textview_settingsmenu_title"/>
 
             <LinearLayout

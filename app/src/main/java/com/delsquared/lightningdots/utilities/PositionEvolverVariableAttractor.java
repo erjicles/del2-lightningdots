@@ -13,7 +13,7 @@ public class PositionEvolverVariableAttractor {
     public final String targetObjectProfileName;
     public final String positionEvolverFamilyName;
     public final String positionEvolverName;
-    OrderedObjectCollection<PositionEvolverVariableAttractorVariable> collectionAttractorVariables;
+    final OrderedObjectCollection<PositionEvolverVariableAttractorVariable> collectionAttractorVariables;
 
     public final MODE mode;
     public final double mass;
@@ -52,6 +52,7 @@ public class PositionEvolverVariableAttractor {
                 , positionEvolverName
         );
     }
+    @SuppressWarnings("unused")
     public NTuple getTargetKey() {
         return nTupleTypePositionEvolverVariableAttractorKey.createNTuple(
                 targetObjectName

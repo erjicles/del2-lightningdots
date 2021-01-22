@@ -1,17 +1,16 @@
 package com.delsquared.lightningdots.activities;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.IabResult;
-import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.fragments.AcceptTermsDialog;
 import com.delsquared.lightningdots.fragments.FragmentMain;
 import com.delsquared.lightningdots.game.Game;
@@ -50,7 +49,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
         // Set global ad request configuration
         // Add specific devices to test device list
-        List<String> testDeviceIds = new ArrayList<String>();
+        List<String> testDeviceIds = new ArrayList<>();
         testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR);
         testDeviceIds.addAll(
                 Arrays.asList(
@@ -79,25 +78,12 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         // Setup the purchase helper
         purchaseHelper = new PurchaseHelper(
                 this
-                , new PurchaseHelper.InterfaceSetupFinishedCallback() {
-
-                    @Override
-                    public void onSetupFinished(boolean success, IabResult result) {
-
-                    }
+                , (success, result) -> {
 
                 }
-                , new PurchaseHelper.InterfaceQueryInventoryCallback() {
-
-                    @Override
-                    public void onQueryInventoryFinished() {
-                    }
+                , () -> {
                 }
-                , new PurchaseHelper.InterfacePurchaseFinishedCallback() {
-
-                    @Override
-                    public void onPurchaseFinished(Purchase purchase) {
-                    }
+                , purchase -> {
                 }
         );
 
@@ -115,41 +101,19 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         purchaseHelper = null;
     }
 
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            launchSettings();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
-    public void clicked_timeAttack(View view) {
+    public void clicked_timeAttack(@SuppressWarnings("unused") View view) {
         launchGame(Game.GameType.TIME_ATTACK.ordinal());
     }
 
-    public void clicked_ladder(View view) {
+    public void clicked_ladder(@SuppressWarnings("unused") View view) {
         launchGame(Game.GameType.AGILITY.ordinal());
     }
 
-    public void clicked_settings(View view) { launchSettings(); }
+    public void clicked_settings(@SuppressWarnings("unused") View view) { launchSettings(); }
 
-    public void clicked_about(View view) { launchAbout(); }
+    public void clicked_about(@SuppressWarnings("unused") View view) { launchAbout(); }
 
-    public void clicked_store(View view) { launchStore(); }
+    public void clicked_store(@SuppressWarnings("unused") View view) { launchStore(); }
 
     private void launchGame(int gameType) {
 
@@ -213,7 +177,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                         , getString(R.string.privacy_policy_defaultversion));
 
         // Initialize the currently accepted major versions
-        int acceptedTermsMajorVersion = 0;
+        int acceptedTermsMajorVersion;
         int acceptedPrivacyPolicyMajorVersion = 0;
 
         try
@@ -227,14 +191,13 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
             // Reset the currently accepted major versions
             acceptedTermsMajorVersion = 0;
-            acceptedPrivacyPolicyMajorVersion = 0;
 
         }
 
         // Initialize the current version strings
         currentTermsVersion = "";
         currentPrivacyPolicyVersion = "";
-        int currentTermsMajorVersion = 0;
+        int currentTermsMajorVersion;
         int currentPrivacyPolicyMajorVersion = 0;
 
         // Get the data from the intent
@@ -242,7 +205,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         String jsonVersionsString = intent.getStringExtra(ActivitySplash.JSON_VERSIONS_STRING_KEY);
         boolean versionsLoadSuccessful = intent.getBooleanExtra(ActivitySplash.VERSIONS_LOAD_SUCCESSFUL_KEY, false);
 
-        if (versionsLoadSuccessful == true) {
+        if (versionsLoadSuccessful) {
 
             // Get the json keys for the versions
             String key1 = getString(R.string.json_response_key_termsofservice);
@@ -265,7 +228,6 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                 currentTermsVersion = "";
                 currentPrivacyPolicyVersion = "";
                 currentTermsMajorVersion = 0;
-                currentPrivacyPolicyMajorVersion = 0;
 
             }
 
@@ -287,8 +249,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                     showAcceptTermsDialog(AcceptTermsDialog.ShowAcceptTermsDialogReason.NEW_VERSION_TERMS);
 
                     // Check if there is only a new version of the privacy policy
-                } else if (acceptedTermsMajorVersion >= currentPrivacyPolicyMajorVersion
-                        && acceptedPrivacyPolicyMajorVersion < currentPrivacyPolicyMajorVersion) {
+                } else if (acceptedTermsMajorVersion >= currentPrivacyPolicyMajorVersion) {
 
                     // Show the dialog indicating a new version of the privacy policy
                     showAcceptTermsDialog(AcceptTermsDialog.ShowAcceptTermsDialogReason.NEW_VERSION_PRIVACYPOLICY);
@@ -312,8 +273,6 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                 // Save a value of -1, so that this won't show again the next time there is not
                 // an internet connection, but so that the saved value is always less than the
                 // current value
-                currentTermsMajorVersion = -1;
-                currentPrivacyPolicyMajorVersion = -1;
                 currentTermsVersion = "-1.00";
                 currentPrivacyPolicyVersion = "-1.00";
 
@@ -329,7 +288,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     private void showAcceptTermsDialog(AcceptTermsDialog.ShowAcceptTermsDialogReason showReason) {
 
         // Get the support fragment manager
-        FragmentManager fragmentManager = getFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Create and show the dialog
         termsDialog = AcceptTermsDialog.newInstance(showReason);
@@ -348,7 +307,7 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
                     .putString(
                             getString(R.string.pref_legal_acceptedprivacyversion)
                             , currentPrivacyPolicyVersion)
-                    .commit();
+                    .apply();
         }
 
         // Log the data changed
@@ -361,7 +320,11 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     public void OnFragmentAttached() {
 
         // Get the dialog
-        Dialog td = (Dialog) termsDialog.getDialog();
+        Dialog td = termsDialog.getDialog();
+        if (td == null) {
+            LightningDotsApplication.logDebugErrorMessage("terms dialog is null");
+            return;
+        }
 
         // Make it so that touching outside the dialog does not close it
         td.setCanceledOnTouchOutside(false);

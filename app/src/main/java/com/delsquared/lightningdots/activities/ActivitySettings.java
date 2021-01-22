@@ -25,7 +25,7 @@ public class ActivitySettings extends FragmentActivity {
         UtilityFunctions.registerScreenView(this, getString(R.string.ga_screenname_activitysettings));
     }
 
-    public void clicked_button_delete_game_history(View view) {
+    public void clicked_button_delete_game_history(@SuppressWarnings("unused") View view) {
         FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentSettings != null) {
             fragmentSettings.clicked_button_delete_game_history();
@@ -59,7 +59,7 @@ public class ActivitySettings extends FragmentActivity {
 
     }
 
-    public void onClick_ChangeConsent(View view) {
+    public void onClick_ChangeConsent(@SuppressWarnings("unused") View view) {
 
         FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentSettings != null) {

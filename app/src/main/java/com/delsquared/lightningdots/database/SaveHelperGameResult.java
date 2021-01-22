@@ -8,8 +8,8 @@ import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class SaveHelperGameResult {
 
-	public SQLHandler sqlHandler;
-	Context context;
+	public final SQLHandler sqlHandler;
+	final Context context;
 
 	private static final String SQL_GAMERESULT_SAVE =
 			"INSERT INTO "

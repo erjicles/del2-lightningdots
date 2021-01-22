@@ -16,7 +16,9 @@ import java.io.IOException;
 
 public class LightningDotsBackupAgentHelper extends BackupAgentHelper {
 
+    @SuppressWarnings("FieldCanBeLocal")
     private final String BACKUP_KEY_SHARED_PREFERENCES = "com.delsquared.lightningdots.backup.SharedPreferences";
+    @SuppressWarnings("FieldCanBeLocal")
     private final String BACKUP_KEY_DATABASE = "com.delsquared.lightningdots.backup.Database";
 
     @Override

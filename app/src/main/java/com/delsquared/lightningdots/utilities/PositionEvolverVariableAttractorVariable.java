@@ -18,7 +18,9 @@ public class PositionEvolverVariableAttractorVariable implements INamedObject {
 
     public String getName() { return this.name; }
     public double getValue() { return this.value; }
+    @SuppressWarnings("unused")
     public void setValue(double value) { this.value = value; }
+    @SuppressWarnings("unused")
     public void resetValue(double minimumValue, double maximumValue) {
         if (isPercent) {
             value = minimumValue + (initialFixedValue * (maximumValue - minimumValue));

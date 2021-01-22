@@ -9,12 +9,12 @@ import java.util.Map;
 public class PositionEvolvingObjectContainer<T extends IPositionEvolvingObject> {
 
     // Ordered collection of objects
-    protected OrderedObjectCollection<T> collectionObjects;
+    protected final OrderedObjectCollection<T> collectionObjects;
 
     // Maps for triggers of various kinds
-    protected Map<NTuple, List<TransitionTrigger>> mapTransitionTriggers;
-    protected Map<NTuple, List<RandomChangeTrigger>> mapRandomChangeTriggers;
-    protected Map<NTuple, List<PositionEvolverVariableAttractor>> mapPositionEvolverVariableAttractors;
+    protected final Map<NTuple, List<TransitionTrigger>> mapTransitionTriggers;
+    protected final Map<NTuple, List<RandomChangeTrigger>> mapRandomChangeTriggers;
+    protected final Map<NTuple, List<PositionEvolverVariableAttractor>> mapPositionEvolverVariableAttractors;
 
     public PositionEvolvingObjectContainer() {
         this.collectionObjects = new OrderedObjectCollection<>();

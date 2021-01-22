@@ -9,10 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.IabResult;
 import com.delsquared.lightningdots.billing_utilities.Inventory;
-import com.delsquared.lightningdots.billing_utilities.Purchase;
 import com.delsquared.lightningdots.billing_utilities.SkuDetails;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.PurchaseHelper;
@@ -22,10 +22,10 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     // The helper for purchases
     PurchaseHelper purchaseHelper;
 
+    @SuppressWarnings("unused")
     public static FragmentStore newInstance() {
-        FragmentStore fragment = new FragmentStore();
 
-        return fragment;
+        return new FragmentStore();
     }
 
     public FragmentStore() {
@@ -53,31 +53,16 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
         // Setup the purchase helper
         purchaseHelper = new PurchaseHelper(
                 getActivity()
-                , new PurchaseHelper.InterfaceSetupFinishedCallback() {
+                , (success, result) -> {
 
-                    @Override
-                    public void onSetupFinished(boolean success, IabResult result) {
-
-                        if (!success) {
-                            Toast.makeText(getActivity(), "Problem setting up in-app billing: " + result, Toast.LENGTH_SHORT);
-                        }
-                    }
-
-                }
-                , new PurchaseHelper.InterfaceQueryInventoryCallback() {
-
-                    @Override
-                    public void onQueryInventoryFinished() {
-                        updateUI();
+                    if (!success) {
+                        LightningDotsApplication.logDebugErrorMessage("Problem setting up in-app billing: " + result.getMessage());
+                        Toast.makeText(getActivity(), "Problem setting up in-app billing", Toast.LENGTH_SHORT)
+                                .show();
                     }
                 }
-                , new PurchaseHelper.InterfacePurchaseFinishedCallback() {
-
-                    @Override
-                    public void onPurchaseFinished(Purchase purchase) {
-                        updateUI();
-                    }
-                }
+                , this::updateUI
+                , purchase -> updateUI()
         );
 
         return rootView;
@@ -90,16 +75,11 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
-        try {
-            //mListener = (OnFragmentInteractionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void onDetach() {
         super.onDetach();
@@ -130,11 +110,17 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
         // Get the layout inflater
         LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
 
+        View view = getView();
+        if (view == null) {
+            LightningDotsApplication.logDebugErrorMessage("view is null");
+            return;
+        }
+
         // Get the purchased items linear layout
-        LinearLayout linearLayoutPurchasedItems = (LinearLayout) getView().findViewById(R.id.fragment_store_linearlayout_purchasedmenu);
+        LinearLayout linearLayoutPurchasedItems = view.findViewById(R.id.fragment_store_linearlayout_purchasedmenu);
 
         // Get the inventory menu linear layout
-        LinearLayout linearLayoutInventory = (LinearLayout) getView().findViewById(R.id.fragment_store_linearlayout_inventorymenu);
+        LinearLayout linearLayoutInventory = view.findViewById(R.id.fragment_store_linearlayout_inventorymenu);
 
         // First clear the linear layouts
         if (linearLayoutPurchasedItems != null) {
@@ -160,8 +146,8 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
                 // Add the new purchased ads view to the purchased items linear layout
                 if (linearLayoutPurchasedItems != null) {
 
-                    TextView textViewTitle = (TextView) purchasedAdsView.findViewById(R.id.menu_item_store_title);
-                    TextView textViewDescription = (TextView) purchasedAdsView.findViewById(R.id.menu_item_store_description);
+                    TextView textViewTitle = purchasedAdsView.findViewById(R.id.menu_item_store_title);
+                    TextView textViewDescription = purchasedAdsView.findViewById(R.id.menu_item_store_description);
 
                     textViewTitle.setText(titleRemoveAds);
                     textViewDescription.setText(descriptionRemoveAds);
@@ -177,28 +163,22 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
                 // Add the new available ads view to the available items linear layout
                 if (linearLayoutInventory != null) {
 
-                    TextView textViewTitle = (TextView) availableAdsView.findViewById(R.id.menu_item_store_title);
-                    TextView textViewDescription = (TextView) availableAdsView.findViewById(R.id.menu_item_store_description);
-                    TextView textViewPrice = (TextView) availableAdsView.findViewById(R.id.menu_item_store_price);
+                    TextView textViewTitle = availableAdsView.findViewById(R.id.menu_item_store_title);
+                    TextView textViewDescription = availableAdsView.findViewById(R.id.menu_item_store_description);
+                    TextView textViewPrice = availableAdsView.findViewById(R.id.menu_item_store_price);
 
                     textViewTitle.setText(titleRemoveAds);
                     textViewDescription.setText(descriptionRemoveAds);
                     textViewPrice.setText(priceRemoveAds);
 
-                    linearLayoutInventory.setOnClickListener(new View.OnClickListener() {
+                    linearLayoutInventory.setOnClickListener(v -> {
 
-                        @Override
-                        public void onClick(View v)
-                        {
-
-                            // Launch the purchase flow for removing ads
-                            purchaseHelper.launchPurchaseFlow(
-                                    PurchaseHelper.PRODUCT_SKU_REMOVE_ADS
-                                    , PurchaseHelper.PRODUCT_RC_REQUEST_REMOVE_ADS);
-                            //LightningDotsApplication.setHasPurchasedNoAds(getActivity(), true);
-                            updateUI();
-
-                        }
+                        // Launch the purchase flow for removing ads
+                        purchaseHelper.launchPurchaseFlow(
+                                PurchaseHelper.PRODUCT_SKU_REMOVE_ADS
+                                , PurchaseHelper.PRODUCT_RC_REQUEST_REMOVE_ADS);
+                        //LightningDotsApplication.setHasPurchasedNoAds(getActivity(), true);
+                        updateUI();
 
                     });
 
@@ -229,26 +209,21 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             // Add the new available thanks view to the available items linear layout
             if (linearLayoutInventory != null) {
 
-                TextView textViewTitle = (TextView) availableThanksView.findViewById(R.id.menu_item_store_title);
-                TextView textViewDescription = (TextView) availableThanksView.findViewById(R.id.menu_item_store_description);
-                TextView textViewPrice = (TextView) availableThanksView.findViewById(R.id.menu_item_store_price);
+                TextView textViewTitle = availableThanksView.findViewById(R.id.menu_item_store_title);
+                TextView textViewDescription = availableThanksView.findViewById(R.id.menu_item_store_description);
+                TextView textViewPrice = availableThanksView.findViewById(R.id.menu_item_store_price);
 
                 textViewTitle.setText(titleSayThanks);
                 textViewDescription.setText(descriptionSayThanks);
                 textViewPrice.setText(priceSayThanks);
 
-                linearLayoutInventory.setOnClickListener(new View.OnClickListener() {
+                linearLayoutInventory.setOnClickListener(v -> {
 
-                    @Override
-                    public void onClick(View v) {
-
-                        // Launch the purchase flow for removing ads
-                        purchaseHelper.launchPurchaseFlow(
-                                PurchaseHelper.PRODUCT_SKU_SAY_THANKS
-                                , PurchaseHelper.PRODUCT_RC_REQUEST_SAY_THANKS);
-                        updateUI();
-
-                    }
+                    // Launch the purchase flow for removing ads
+                    purchaseHelper.launchPurchaseFlow(
+                            PurchaseHelper.PRODUCT_SKU_SAY_THANKS
+                            , PurchaseHelper.PRODUCT_RC_REQUEST_SAY_THANKS);
+                    updateUI();
 
                 });
 

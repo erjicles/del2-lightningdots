@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ActivitySplash">
+    tools:context="com.delsquared.lightningdots.activities.ActivitySplash">
 
     <ImageView
         android:src="@drawable/splash_background"
         android:contentDescription="@string/app_name"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:scaleType="fitXY"/>
 
@@ -22,7 +22,7 @@
         android:contentDescription="@string/trademark_name"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

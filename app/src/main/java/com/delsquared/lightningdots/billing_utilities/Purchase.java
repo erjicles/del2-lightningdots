@@ -15,6 +15,8 @@
 
 package com.delsquared.lightningdots.billing_utilities;
 
+import androidx.annotation.NonNull;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,7 +24,7 @@ import org.json.JSONObject;
  * Represents an in-app billing purchase.
  */
 public class Purchase {
-    String mItemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
+    final String mItemType;  // ITEM_TYPE_INAPP or ITEM_TYPE_SUBS
     String mOrderId;
     String mPackageName;
     String mSku;
@@ -30,7 +32,7 @@ public class Purchase {
     int mPurchaseState;
     String mDeveloperPayload;
     String mToken;
-    String mOriginalJson;
+    final String mOriginalJson;
     String mSignature;
 
     public Purchase(String itemType, String jsonPurchaseInfo, String signature) throws JSONException {
@@ -48,16 +50,24 @@ public class Purchase {
     }
 
     public String getItemType() { return mItemType; }
+    @SuppressWarnings("unused")
     public String getOrderId() { return mOrderId; }
+    @SuppressWarnings("unused")
     public String getPackageName() { return mPackageName; }
     public String getSku() { return mSku; }
+    @SuppressWarnings("unused")
     public long getPurchaseTime() { return mPurchaseTime; }
+    @SuppressWarnings("unused")
     public int getPurchaseState() { return mPurchaseState; }
+    @SuppressWarnings("unused")
     public String getDeveloperPayload() { return mDeveloperPayload; }
     public String getToken() { return mToken; }
+    @SuppressWarnings("unused")
     public String getOriginalJson() { return mOriginalJson; }
+    @SuppressWarnings("unused")
     public String getSignature() { return mSignature; }
 
+    @NonNull
     @Override
     public String toString() { return "PurchaseInfo(type:" + mItemType + "):" + mOriginalJson; }
 }

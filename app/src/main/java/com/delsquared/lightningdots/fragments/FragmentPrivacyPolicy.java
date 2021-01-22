@@ -1,6 +1,6 @@
 package com.delsquared.lightningdots.fragments;
 
-import android.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +10,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 
 public class FragmentPrivacyPolicy extends Fragment {
 	
@@ -20,10 +21,10 @@ public class FragmentPrivacyPolicy extends Fragment {
                              Bundle savedInstanceState) {
 		
         // Inflate the layout for this fragment
-		View theLayout = (View) inflater.inflate(R.layout.fragment_privacy_policy, container, false);
+		View theLayout = inflater.inflate(R.layout.fragment_privacy_policy, container, false);
 		
 		// Get the webview
-	    WebView webViewPrivacyPolicy = (WebView) theLayout.findViewById(R.id.fragment_privacypolicy_webview_privacypolicy);
+	    WebView webViewPrivacyPolicy = theLayout.findViewById(R.id.fragment_privacypolicy_webview_privacypolicy);
 	    
 	    // Get the args
 	    Bundle args = getArguments();
@@ -35,10 +36,18 @@ public class FragmentPrivacyPolicy extends Fragment {
 	    webViewPrivacyPolicy.setWebViewClient(new WebViewClient() {
 	    	
 	    	public void onPageFinished(WebView view, String url) {
-	    		
+	    		View mainView = getView();
+	    		if (mainView == null) {
+					LightningDotsApplication.logDebugErrorMessage("main view is null");
+					return;
+				}
 	    		// Get the loading spinner
 	    		ProgressBar loadingProgressBar =
-	    				(ProgressBar) getView().findViewById(R.id.fragment_privacypolicy_progressbar_loadingprogressbar);
+						mainView.findViewById(R.id.fragment_privacypolicy_progressbar_loadingprogressbar);
+	    		if (loadingProgressBar == null) {
+	    			LightningDotsApplication.logDebugErrorMessage("loading progress bar is null");
+	    			return;
+				}
 	    		
 	    		// Set the visibility to invisible
 	    		loadingProgressBar.setVisibility(View.GONE);
@@ -71,7 +80,7 @@ public class FragmentPrivacyPolicy extends Fragment {
 	    webViewPrivacyPolicy.loadUrl(privacyPolicyUrl);
 	    
 	    // Check if we need to add margins
-	    if (args != null && args.getBoolean(MARGINS_KEY) == true) {
+	    if (args != null && args.getBoolean(MARGINS_KEY)) {
 	    	
 	    	// Add margins
             webViewPrivacyPolicy.setPadding(
@@ -84,7 +93,8 @@ public class FragmentPrivacyPolicy extends Fragment {
 	    
         return theLayout;
     }
-	
+
+	@SuppressWarnings("unused")
 	public static FragmentPrivacyPolicy newInstance(
 			boolean addMargins) {
 
