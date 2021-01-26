@@ -15,7 +15,6 @@ import com.delsquared.lightningdots.fragments.AcceptTermsDialog;
 import com.delsquared.lightningdots.fragments.FragmentMain;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
-import com.delsquared.lightningdots.utilities.PurchaseHelper;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
@@ -34,8 +33,6 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     AcceptTermsDialog termsDialog;
     protected String currentTermsVersion = "";
     protected String currentPrivacyPolicyVersion = "";
-
-    PurchaseHelper purchaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,30 +72,26 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
         // ---------- END Load saved settings ---------- //
 
-        // Setup the purchase helper
-        purchaseHelper = new PurchaseHelper(
-                this
-                , (success, result) -> {
-
-                }
-                , () -> {
-                }
-                , purchase -> {
-                }
-        );
+        // Get the billing helper instance
+        LightningDotsApplication application = (LightningDotsApplication)getApplication();
+        application.getBillingHelperInstanceAndStartConnection();
 
         // Register screen view
         UtilityFunctions.registerScreenView(this, getString(R.string.ga_screenname_activitymain));
 
 	}
 
+	@Override
+    public void onResume() {
+        super.onResume();
+        // Get the billing helper instance
+        LightningDotsApplication application = (LightningDotsApplication)getApplication();
+        application.getBillingHelperInstanceAndStartConnection();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (purchaseHelper != null) {
-            purchaseHelper.onDestroy();
-        }
-        purchaseHelper = null;
     }
 
     public void clicked_timeAttack(@SuppressWarnings("unused") View view) {
@@ -333,6 +326,5 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         td.setCancelable(false);
 
     }
-
 
 }

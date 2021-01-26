@@ -7,8 +7,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.util.Log;
 
+import androidx.lifecycle.MutableLiveData;
+
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.billing_utilities.BillingHelper;
 import com.google.ads.consent.ConsentStatus;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
@@ -19,38 +22,17 @@ public class LightningDotsApplication extends Application {
 
     public static final Object lockSharedPreferences = new Object();
 
-    public static boolean hasPurchasedNoAds = false;
-    public static ConsentStatus consentStatus = ConsentStatus.UNKNOWN;
-    public static boolean userPrefersNoAds = false;
-    public static boolean userIsFromEEA = false;
+    public static final MutableLiveData<Object> adStatusObservable = new MutableLiveData<>();
+
+    private static boolean hasPurchasedNoAds = false;
+    private static ConsentStatus consentStatus = ConsentStatus.UNKNOWN;
+    private static boolean userPrefersNoAds = false;
+    private static boolean userIsFromEEA = false;
 
     // Variables for settings
     public static boolean settingShowInstructions = true;
 
     public static int numberOfGameTransitions = 0;
-
-    public static boolean hasDisplayedUnableToSetUpBillingAlert = false;
-
-    @SuppressWarnings("SpellCheckingInspection")
-    public static final String[] base64EncodedPublicKey = {
-            "Z2Q2CJOB733BfUyLf0S9ZhzJ5TU5"
-            , "AQ8AMIIBCgKCAQEAhdHu+MsgOKKV"
-            , "giUawlAtbIwkNICKo/KwriBzZ+Zb"
-            , "MIIBIjANBgkqhkiG9w0BAQEFAAOC"
-            , "h0gRdlv8zcqjuD1I3j+AUhmm1mFU"
-            , "215HgjLs9eLUTN4l7BFU9I6lrFsV"
-            , "q78XLVNXTVjf4pO2LBgHHrcAVGFq"
-            , "lEUNVB3gGdOWANARWD58qLOMKRDT"
-            , "N/8QWq6exwbvmQ02xTz7KT5tNSiY"
-            , "7ZkCFyd1gD6SlXO5XnH2CniB/oWd"
-            , "Dm/ashzxpphzzAwqzTE4ydSpWcXF"
-            , "JTMQVg4dQzKMblpwnAMBSqzqZj3v"
-            , "txZZKwi04f8SJ5EzWggPowIDAQAB"
-            , "k5588KBGtmNxcR/5weRuwtKJifi7"
-    };
-    public static final int[] keySequence = {
-            3, 1, 2, 13, 7, 0, 10, 5, 6, 8, 4, 9, 11, 12
-    };
 
     public static final String logTag = "LightningDots";
 
@@ -93,34 +75,55 @@ public class LightningDotsApplication extends Application {
 
     }
 
-    public static String constructBase64EncodedPublicKey() {
-        StringBuilder returnString = new StringBuilder();
-        for (int value : keySequence) {
-            returnString.append(base64EncodedPublicKey[value]);
-        }
-        return returnString.toString();
+    public BillingHelper getBillingHelperInstanceAndStartConnection() {
+        BillingHelper billingHelper = BillingHelper.getInstance(this);
+        billingHelper.startConnection();
+        return billingHelper;
     }
 
-    public static void setHasPurchasedNoAds(Context context, boolean hasPurchasedNoAds) {
-
+    public static void setHasPurchasedNoAds(boolean hasPurchasedNoAds) {
+        logDebugMessage("Setting hasPurchasedNoAds: " + hasPurchasedNoAds);
         LightningDotsApplication.hasPurchasedNoAds = hasPurchasedNoAds;
+        adStatusObservable.postValue(null);
+    }
 
-        // Get the shared preferences reference
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
+    public static ConsentStatus getConsentStatus() {
+        logDebugMessage("Getting consentStatus: " + consentStatus);
+        return LightningDotsApplication.consentStatus;
+    }
+    public static void setConsentStatus(ConsentStatus consentStatus) {
+        logDebugMessage("Setting consentStatus: " + consentStatus);
+        LightningDotsApplication.consentStatus = consentStatus;
+        adStatusObservable.postValue(null);
+    }
 
-        synchronized (lockSharedPreferences) {
+    public static boolean getUserIsFromEEA() {
+        logDebugMessage("Getting userIsFromEEA: " + userIsFromEEA);
+        return LightningDotsApplication.userIsFromEEA;
+    }
+    public static void setUserIsFromEEA(boolean userIsFromEEA) {
+        logDebugMessage("Setting userIsFromEEA: " + userIsFromEEA);
+        LightningDotsApplication.userIsFromEEA = userIsFromEEA;
+    }
 
-            // Update the shared preferences file
-            sharedPref.edit()
-                    .putBoolean(
-                            context.getString(R.string.pref_product_remove_ads)
-                            , hasPurchasedNoAds)
-                    .apply();
+    public static boolean getUserPrefersNoAds() {
+        logDebugMessage("Getting userPrefersNoAds: " + userPrefersNoAds);
+        return LightningDotsApplication.userPrefersNoAds;
+    }
+    public static void setUserPrefersNoAds(boolean userPrefersNoAds) {
+        logDebugMessage("Setting userPrefersNoAds: " + userPrefersNoAds);
+        LightningDotsApplication.userPrefersNoAds = userPrefersNoAds;
+        adStatusObservable.postValue(null);
+    }
 
-        }
-
-        logDebugMessage("Calling data changed in setHasPurchasedNoAds()...");
-        dataChanged(context);
+    public static boolean getAreAdsEnabled() {
+        logDebugMessage("getAreAdsEnabled(): hasPurchasedNoAds: " + hasPurchasedNoAds
+                + "; userIsFromEEA: " + userIsFromEEA
+                + "; userPrefersNoAds: " + userPrefersNoAds);
+        boolean areAdsEnabled = !hasPurchasedNoAds
+                && !(userIsFromEEA && userPrefersNoAds);
+        logDebugMessage("...areAdsEnabled: " + areAdsEnabled);
+        return areAdsEnabled;
     }
 
     public static void setShowInstructions(Context context, boolean showInstructions) {

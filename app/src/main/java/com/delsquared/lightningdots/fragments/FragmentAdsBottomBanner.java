@@ -1,7 +1,6 @@
 package com.delsquared.lightningdots.fragments;
 
 import android.app.Activity;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +17,17 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 
 public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
-	
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 		
         // Inflate the layout for this fragment
-
         return inflater.inflate(R.layout.fragment_ads_bottom_banner, container, false);
     }
 	
@@ -38,6 +41,11 @@ public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
         super.onResume();
         LightningDotsApplication.logDebugMessage("FragmentAdsBottomBanner.onResume()");
 
+        // Set up observer to keep track of global ad status
+        LightningDotsApplication.adStatusObservable.observe(this, object -> {
+            LightningDotsApplication.logDebugMessage("adStatusObservable callback in FragmentAdsBottomBanner");
+            handleToggleAds();
+        });
         handleToggleAds();
 
     }
@@ -58,28 +66,10 @@ public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
 	        LightningDotsApplication.logDebugErrorMessage("activity is null");
 	        return;
         }
-        // Get the shared preference for removing ads
-        SharedPreferences sharedPref = activity.getSharedPreferences(getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
 
-	    boolean hasPurchasedNoAds = false;
-        synchronized (LightningDotsApplication.lockSharedPreferences) {
-            if (sharedPref.contains(getString(R.string.pref_product_remove_ads))) {
-                hasPurchasedNoAds = sharedPref.getBoolean(getString(R.string.pref_product_remove_ads), false);
-            }
-        }
-        hasPurchasedNoAds = hasPurchasedNoAds || LightningDotsApplication.hasPurchasedNoAds;
-
-        // Track if this is a EEA user who hasn't given consent
-        boolean isEEAUserWithoutConsent =
-                LightningDotsApplication.userIsFromEEA
-                        && (
-                        LightningDotsApplication.userPrefersNoAds
-                                || ConsentStatus.UNKNOWN.equals(LightningDotsApplication.consentStatus));
-
-        LightningDotsApplication.logDebugMessage("hasPurchasedNoAds: " + hasPurchasedNoAds + "; isEEAUserWithoutConsent: " + isEEAUserWithoutConsent);
-        boolean toggleAdsOff = hasPurchasedNoAds || isEEAUserWithoutConsent;
-        LightningDotsApplication.logDebugMessage("toggleAdsOff: " + toggleAdsOff);
-        toggleAds(!toggleAdsOff);
+	    boolean areAdsEnabled = LightningDotsApplication.getAreAdsEnabled();
+        LightningDotsApplication.logDebugMessage("areAdsEnabled: " + areAdsEnabled);
+        toggleAds(areAdsEnabled);
 
     }
 
@@ -95,19 +85,6 @@ public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
                 LightningDotsApplication.logDebugErrorMessage("activity is null");
                 return;
             }
-            // Get the value for removing ads
-            SharedPreferences sharedPref = activity.getSharedPreferences(getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
-            boolean hasPurchasedNoAds = false;
-            if (sharedPref.contains(getString(R.string.pref_product_remove_ads))) {
-                hasPurchasedNoAds = sharedPref.getBoolean(getString(R.string.pref_product_remove_ads), false);
-            }
-            hasPurchasedNoAds = hasPurchasedNoAds || LightningDotsApplication.hasPurchasedNoAds;
-            sharedPref.edit()
-                    .putBoolean(
-                            getString(R.string.pref_product_remove_ads)
-                            , hasPurchasedNoAds)
-                    .apply();
-            LightningDotsApplication.hasPurchasedNoAds = hasPurchasedNoAds;
 
             // Get the adview
             AdView adView = fragmentView.findViewById(R.id.adView);
@@ -132,8 +109,6 @@ public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
                     fragmentView.setVisibility(View.VISIBLE);
 
                     MobileAds.initialize(getContext(), initializationStatus -> startLoadingAds());
-
-
 
                 }
 
@@ -162,7 +137,7 @@ public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
 
         // Create the bundle for user ad preferences
         Bundle extras = new Bundle();
-        if (ConsentStatus.NON_PERSONALIZED.equals(LightningDotsApplication.consentStatus)) {
+        if (ConsentStatus.NON_PERSONALIZED.equals(LightningDotsApplication.getConsentStatus())) {
             extras.putString("npa", "1");
         }
 
@@ -181,23 +156,6 @@ public class FragmentAdsBottomBanner extends androidx.fragment.app.Fragment {
             @Override
             public void onAdLoaded() {
                 super.onAdLoaded();
-
-//                            View fragmentView = (View) getView();
-//
-//                            if (fragmentView != null) {
-//
-//                                // Get the adview
-//                                AdView adView = (AdView) fragmentView.findViewById(R.id.adView);
-//
-//                                if (adView != null) {
-//
-//                                    // Show the adView
-//                                    adView.setVisibility(View.VISIBLE);
-//
-//                                }
-//
-//                            }
-
             }
 
             @Override

@@ -236,11 +236,11 @@
     <string name="preferences_file_name">LightningDotsPreferences</string>
     <string name="pref_legal_acceptedtermsversion">preference_legal_acceptedtermsversion</string>
     <string name="pref_legal_acceptedprivacyversion">preference_legal_acceptedprivacyversion</string>
-    <string name="pref_product_remove_ads">preference_product_remove_ads</string>
     <string name="pref_setting_show_instructions">preference_setting_show_instructions</string>
     <string name="fragment_main_textview_timeattack_achieved_highest_award_default">0 bolts</string>
     <string name="fragment_instructions_checkbox_nevershowthisagain_text">Never show this again</string>
     <string name="fragment_instructions_button_playnow_text">Play now</string>
+    <string name="fragment_store_textview_billing_unavailable_text">Oops! We were unable to connect to Google Play. To see available and purchased items, please log into the Google Play app.</string>
 
 
 </resources>

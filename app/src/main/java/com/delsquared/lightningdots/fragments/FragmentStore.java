@@ -10,17 +10,27 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.SkuDetails;
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.Inventory;
-import com.delsquared.lightningdots.billing_utilities.SkuDetails;
+import com.delsquared.lightningdots.billing_utilities.BillingHelper;
+import com.delsquared.lightningdots.billing_utilities.Constants;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
-import com.delsquared.lightningdots.utilities.PurchaseHelper;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class FragmentStore extends androidx.fragment.app.Fragment {
 
-    // The helper for purchases
-    PurchaseHelper purchaseHelper;
+    // The helper for billing
+    BillingHelper billingHelper;
 
     @SuppressWarnings("unused")
     public static FragmentStore newInstance() {
@@ -36,6 +46,12 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get the billing helper instance
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            LightningDotsApplication application = (LightningDotsApplication) activity.getApplication();
+            this.billingHelper = application.getBillingHelperInstanceAndStartConnection();
+        }
     }
 
     @Override
@@ -50,33 +66,54 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             fragmentTrademark.setTextColor(getResources().getColor(R.color.white));
         }
 
-        // Setup the purchase helper
-        purchaseHelper = new PurchaseHelper(
-                getActivity()
-                , (success, result) -> {
-
-                    if (!success) {
-                        LightningDotsApplication.logDebugErrorMessage("Problem setting up in-app billing: " + result.getMessage());
-                        Toast.makeText(getActivity(), "Problem setting up in-app billing", Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                }
-                , this::updateUI
-                , purchase -> updateUI()
-        );
-
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        this.billingHelper.skusWithSkuDetails.observe(this, skusWithSkuDetails -> {
+            LightningDotsApplication.logDebugMessage("skusWithSkuDetails callback in FragmentStore");
+            updateStoreUI();
+        });
+
+        this.billingHelper.purchases.observe(this, purchaseList -> {
+            LightningDotsApplication.logDebugMessage("purchases observer callback in FragmentStore");
+            updateStoreUI();
+        });
+
+        this.billingHelper.billingResponseCode.observe(this, responseCode -> {
+            LightningDotsApplication.logDebugMessage("billingResponseCode observer callback in FragmentStore");
+            handleBillingResponseCode(responseCode);
+        });
+
+        this.billingHelper.successfulPurchaseObservable.observe(this, purchase -> {
+            LightningDotsApplication.logDebugMessage("FragmentStore: successfulPurchaseSkuObserver callback");
+            showThanksToCustomer(purchase);
+        });
+
+        handleBillingResponseCode(this.billingHelper.billingResponseCode.getValue());
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // Get the billing helper instance
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            LightningDotsApplication application = (LightningDotsApplication) activity.getApplication();
+            this.billingHelper = application.getBillingHelperInstanceAndStartConnection();
+            handleBillingResponseCode(this.billingHelper.billingResponseCode.getValue());
+        }
     }
 
     @SuppressWarnings("EmptyMethod")
@@ -85,26 +122,46 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
         super.onDetach();
     }
 
+    @SuppressWarnings("EmptyMethod")
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (purchaseHelper != null) {
-            purchaseHelper.onDestroy();
-        }
-        purchaseHelper = null;
     }
 
-    public void updateUI() {
-
-        if (purchaseHelper == null) {
+    private void handleBillingResponseCode(int responseCode) {
+        View rootView = getView();
+        if (rootView == null) {
+            LightningDotsApplication.logDebugErrorMessage("rootView is null");
+            return;
+        }
+        TextView textViewBillingUnavailable = rootView.findViewById(R.id.fragment_store_textview_billing_unavailable_text);
+        if (textViewBillingUnavailable == null) {
+            LightningDotsApplication.logDebugErrorMessage("textViewBillingUnavailable is null");
             return;
         }
 
-        // Get the inventory
-        Inventory inventory = purchaseHelper.getInventory();
+        if (BillingClient.BillingResponseCode.BILLING_UNAVAILABLE == responseCode) {
+            textViewBillingUnavailable.setVisibility(View.VISIBLE);
+        } else {
+            textViewBillingUnavailable.setVisibility(View.GONE);
+        }
 
-        if (inventory == null) {
+    }
+
+    private void updateStoreUI() {
+        if (billingHelper == null) {
             return;
+        }
+        LightningDotsApplication.logDebugMessage("updateStoreUI()");
+
+        Map<String, SkuDetails> mapSkuDetails = billingHelper.skusWithSkuDetails.getValue();
+        List<Purchase> listPurchases = billingHelper.purchases.getValue();
+        if (listPurchases == null) {
+            listPurchases = new ArrayList<>();
+        }
+        Set<String> hashSetPurchaseSkus = new HashSet<>();
+        for (Purchase purchase : listPurchases) {
+            hashSetPurchaseSkus.add(purchase.getSku());
         }
 
         // Get the layout inflater
@@ -118,9 +175,17 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
 
         // Get the purchased items linear layout
         LinearLayout linearLayoutPurchasedItems = view.findViewById(R.id.fragment_store_linearlayout_purchasedmenu);
+        if (linearLayoutPurchasedItems == null) {
+            LightningDotsApplication.logDebugErrorMessage("linearLayoutPurchasedItems is null");
+            return;
+        }
 
         // Get the inventory menu linear layout
         LinearLayout linearLayoutInventory = view.findViewById(R.id.fragment_store_linearlayout_inventorymenu);
+        if (linearLayoutInventory == null) {
+            LightningDotsApplication.logDebugErrorMessage("linearLayoutInventory is null");
+            return;
+        }
 
         // First clear the linear layouts
         if (linearLayoutPurchasedItems != null) {
@@ -130,117 +195,122 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             linearLayoutInventory.removeAllViews();
         }
 
-        // ---------- BEGIN Handle Item Remove Ads ---------- //
-        try {
+        if (mapSkuDetails == null) {
+            return;
+        }
 
-            SkuDetails skuDetailsRemoveAds = inventory.getSkuDetails(PurchaseHelper.PRODUCT_SKU_REMOVE_ADS);
-            boolean hasPurchaseRemoveAds = purchaseHelper.getHasPurchasedNoAds();
-            String titleRemoveAds = skuDetailsRemoveAds.getTitle();
-            String descriptionRemoveAds = skuDetailsRemoveAds.getDescription();
-            String priceRemoveAds = skuDetailsRemoveAds.getPrice();
-            if (hasPurchaseRemoveAds) {
+        // Loop through all skus
+        // Add to inventory if it hasn't been purchased or otherwise is available
+        // Add to purchased list if it's been purchased
+        int countAvailableItems = 0;
+        int countPurchasedItems = 0;
+        for (Map.Entry<String, SkuDetails> entry : mapSkuDetails.entrySet()) {
+            String sku = entry.getKey();
+            SkuDetails skuDetails = entry.getValue();
+            LightningDotsApplication.logDebugMessage("Processing SKU: " + sku);
+            boolean isPurchased = hashSetPurchaseSkus.contains(sku);
+            LightningDotsApplication.logDebugMessage("isPurchased: " + isPurchased);
 
-                // Inflate the view for purchased ads
-                View purchasedAdsView = layoutInflater.inflate(R.layout.menu_item_store_purchased, null);
+            LinearLayout linearLayoutMenuToWhichToAddItem;
+            View viewItem;
+            int countItemsInMenu;
+
+            if (isPurchased) {
+                linearLayoutMenuToWhichToAddItem = linearLayoutPurchasedItems;
+                countPurchasedItems++;
+                countItemsInMenu = countPurchasedItems;
+
+                //  Inflate the view for purchased item
+                View viewPurchasedItem = layoutInflater.inflate(
+                        R.layout.menu_item_store_purchased,
+                        linearLayoutMenuToWhichToAddItem,
+                        false);
 
                 // Add the new purchased ads view to the purchased items linear layout
-                if (linearLayoutPurchasedItems != null) {
+                TextView textViewTitle = viewPurchasedItem.findViewById(R.id.menu_item_store_title);
+                TextView textViewDescription = viewPurchasedItem.findViewById(R.id.menu_item_store_description);
 
-                    TextView textViewTitle = purchasedAdsView.findViewById(R.id.menu_item_store_title);
-                    TextView textViewDescription = purchasedAdsView.findViewById(R.id.menu_item_store_description);
+                textViewTitle.setText(skuDetails.getTitle());
+                textViewDescription.setText(skuDetails.getDescription());
 
-                    textViewTitle.setText(titleRemoveAds);
-                    textViewDescription.setText(descriptionRemoveAds);
-
-                    linearLayoutPurchasedItems.addView(purchasedAdsView);
-                }
+                viewItem = viewPurchasedItem;
 
             } else {
+                linearLayoutMenuToWhichToAddItem = linearLayoutInventory;
+                countAvailableItems++;
+                countItemsInMenu = countAvailableItems;
 
-                // Inflate the view for non-purchased ads
-                View availableAdsView = layoutInflater.inflate(R.layout.menu_item_store_available, null);
+                // Inflate the view for available item
+                View viewAvailableItem = layoutInflater.inflate(
+                        R.layout.menu_item_store_available,
+                        linearLayoutMenuToWhichToAddItem,
+                        false);
 
                 // Add the new available ads view to the available items linear layout
-                if (linearLayoutInventory != null) {
+                TextView textViewTitle = viewAvailableItem.findViewById(R.id.menu_item_store_title);
+                TextView textViewDescription = viewAvailableItem.findViewById(R.id.menu_item_store_description);
+                TextView textViewPrice = viewAvailableItem.findViewById(R.id.menu_item_store_price);
 
-                    TextView textViewTitle = availableAdsView.findViewById(R.id.menu_item_store_title);
-                    TextView textViewDescription = availableAdsView.findViewById(R.id.menu_item_store_description);
-                    TextView textViewPrice = availableAdsView.findViewById(R.id.menu_item_store_price);
+                textViewTitle.setText(skuDetails.getTitle());
+                textViewDescription.setText(skuDetails.getDescription());
+                textViewPrice.setText(skuDetails.getPrice());
 
-                    textViewTitle.setText(titleRemoveAds);
-                    textViewDescription.setText(descriptionRemoveAds);
-                    textViewPrice.setText(priceRemoveAds);
-
-                    linearLayoutInventory.setOnClickListener(v -> {
-
-                        // Launch the purchase flow for removing ads
-                        purchaseHelper.launchPurchaseFlow(
-                                PurchaseHelper.PRODUCT_SKU_REMOVE_ADS
-                                , PurchaseHelper.PRODUCT_RC_REQUEST_REMOVE_ADS);
-                        //LightningDotsApplication.setHasPurchasedNoAds(getActivity(), true);
-                        updateUI();
-
-                    });
-
-                    linearLayoutInventory.addView(availableAdsView);
-
-                }
-
-            }
-
-        } catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("FragmentStore.updateUI(): " + e.getMessage());
-        }
-        // ---------- END Handle Item Remove Ads ---------- //
-
-        // ---------- BEGIN Handle Item Say Thanks ---------- //
-
-        try {
-
-            SkuDetails skuDetailsSayThanks = inventory.getSkuDetails(PurchaseHelper.PRODUCT_SKU_SAY_THANKS);
-
-            String titleSayThanks = skuDetailsSayThanks.getTitle();
-            String descriptionSayThanks = skuDetailsSayThanks.getDescription();
-            String priceSayThanks = skuDetailsSayThanks.getPrice();
-
-            // Inflate the view for non-purchased ads
-            View availableThanksView = layoutInflater.inflate(R.layout.menu_item_store_available, null);
-
-            // Add the new available thanks view to the available items linear layout
-            if (linearLayoutInventory != null) {
-
-                TextView textViewTitle = availableThanksView.findViewById(R.id.menu_item_store_title);
-                TextView textViewDescription = availableThanksView.findViewById(R.id.menu_item_store_description);
-                TextView textViewPrice = availableThanksView.findViewById(R.id.menu_item_store_price);
-
-                textViewTitle.setText(titleSayThanks);
-                textViewDescription.setText(descriptionSayThanks);
-                textViewPrice.setText(priceSayThanks);
-
-                linearLayoutInventory.setOnClickListener(v -> {
-
-                    // Launch the purchase flow for removing ads
-                    purchaseHelper.launchPurchaseFlow(
-                            PurchaseHelper.PRODUCT_SKU_SAY_THANKS
-                            , PurchaseHelper.PRODUCT_RC_REQUEST_SAY_THANKS);
-                    updateUI();
-
+                viewAvailableItem.setOnClickListener(v -> {
+                    LightningDotsApplication.logDebugMessage("Store item clicked: " + sku);
+                    // Launch the purchase flow for this item
+                    BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
+                            .setSkuDetails(skuDetails)
+                            .build();
+                    billingHelper.launchBillingFlow(getActivity(), billingFlowParams);
                 });
 
-                linearLayoutInventory.addView(availableThanksView);
+                viewItem = viewAvailableItem;
 
             }
 
-        } catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("FragmentStore.updateUI(): " + e.getMessage());
+            if (linearLayoutMenuToWhichToAddItem == null) {
+                LightningDotsApplication.logDebugErrorMessage("linearLayoutMenuToWhichToAddItem is null");
+                continue;
+            }
+            if (viewItem == null) {
+                LightningDotsApplication.logDebugErrorMessage("viewItem is null");
+                continue;
+            }
+            if (countItemsInMenu > 1) {
+                LightningDotsApplication.logDebugMessage("Adding divider view");
+                LinearLayout viewDivider = (LinearLayout) layoutInflater.inflate(
+                        R.layout.menu_item_store_divider,
+                        linearLayoutMenuToWhichToAddItem,
+                        false);
+                linearLayoutMenuToWhichToAddItem.addView(viewDivider);
+            }
+            linearLayoutMenuToWhichToAddItem.addView(viewItem);
+        }
+    }
+
+    private void showThanksToCustomer(@NonNull Purchase purchase) {
+        String sku = purchase.getSku();
+        LightningDotsApplication.logDebugMessage("Showing thanks to customer: " + sku);
+        Context context = getContext();
+        if (context == null) {
+            LightningDotsApplication.logDebugErrorMessage("context is null");
+            return;
         }
 
-        // ---------- END Handle Item Say Thanks ---------- //
+        if (sku.equals(Constants.PRODUCT_SKU_REMOVE_ADS)) {
 
-        // Update the bottom banner ad fragment
-        FragmentAdsBottomBanner fragmentAdsBottomBanner = (FragmentAdsBottomBanner) getChildFragmentManager().findFragmentById(R.id.fragment_main_fragment_ads_bottom_banner);
-        if (fragmentAdsBottomBanner != null) {
-            fragmentAdsBottomBanner.handleToggleAds();
+            // The user bought the remove ads item
+            Toast toastThanks = Toast.makeText(context, context.getString(R.string.product_remove_ads_thanks), Toast.LENGTH_SHORT);
+            toastThanks.show();
+
+        } else if (sku.equals(Constants.PRODUCT_SKU_SAY_THANKS)) {
+
+            // The user bought the say thanks item
+            Toast toastThanks = Toast.makeText(context, context.getString(R.string.product_say_thanks_thanks), Toast.LENGTH_SHORT);
+            toastThanks.show();
+
+        } else {
+            LightningDotsApplication.logDebugErrorMessage("Unknown sku: " + sku);
         }
 
     }

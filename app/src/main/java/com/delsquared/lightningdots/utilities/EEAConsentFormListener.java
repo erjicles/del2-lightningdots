@@ -35,8 +35,8 @@ public class EEAConsentFormListener extends ConsentFormListener {
             ConsentStatus consentStatus, Boolean userPrefersAdFree) {
         // Consent form was closed.
         LightningDotsApplication.logDebugMessage("Consent form closed; consentStatus: " + consentStatus.toString() + "; userPrefersAdFree: " + userPrefersAdFree.toString());
-        LightningDotsApplication.consentStatus = consentStatus;
-        LightningDotsApplication.userPrefersNoAds = userPrefersAdFree;
+        LightningDotsApplication.setConsentStatus(consentStatus);
+        LightningDotsApplication.setUserPrefersNoAds(userPrefersAdFree);
         listener.onHandleConsentFinished();
     }
 

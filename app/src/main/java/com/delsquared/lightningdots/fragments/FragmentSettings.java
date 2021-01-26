@@ -64,7 +64,7 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
 
         // ---------- BEGIN Toggle the ad consent ---------- //
         LinearLayout linearLayoutAdConsent = rootView.findViewById(R.id.fragment_settings_linearlayout_settingsmenu_change_consent);
-        linearLayoutAdConsent.setVisibility(LightningDotsApplication.userIsFromEEA ? View.VISIBLE : View.GONE);
+        linearLayoutAdConsent.setVisibility(LightningDotsApplication.getUserIsFromEEA() ? View.VISIBLE : View.GONE);
         // ---------- END Toggle the ad consent ---------- //
 
         return rootView;
@@ -133,16 +133,8 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
 
     @Override
     public void onHandleConsentFinished() {
-        FragmentAdsBottomBanner fragmentAdsBottomBanner =
-                (FragmentAdsBottomBanner) getChildFragmentManager().findFragmentById(R.id.fragment_main_fragment_ads_bottom_banner);
-        if (fragmentAdsBottomBanner == null) {
-            LightningDotsApplication.logDebugErrorMessage("fragmentAdsBottomBanner is null");
-            return;
-        }
-        fragmentAdsBottomBanner.handleToggleAds();
-
         // Check if the user is an EEA user who wants no ads
-        if (LightningDotsApplication.userPrefersNoAds) {
+        if (LightningDotsApplication.getUserPrefersNoAds()) {
             // Launch the store activity
             Intent storeIntent = new Intent(getActivity(), ActivityStore.class);
             startActivity(storeIntent);

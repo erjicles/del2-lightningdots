@@ -110,7 +110,7 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
     private void continueToApp() {
 
         // Check if the user is an EEA user who wants no ads
-        if (LightningDotsApplication.userPrefersNoAds) {
+        if (LightningDotsApplication.getUserPrefersNoAds()) {
             // Launch the store activity
             Intent storeIntent = new Intent(ActivitySplash.this, ActivityStore.class);
             startActivity(storeIntent);

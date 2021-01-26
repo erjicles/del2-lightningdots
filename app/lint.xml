@@ -31,10 +31,18 @@
     <issue id="UnusedResources">
         <ignore path="src/main/res/drawable-hdpi/award_transparent.png" />
         <ignore path="src/main/res/drawable-hdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-hdpi/store_bolt_transparent.png" />
+        <ignore path="src/main/res/drawable-hdpi/store_bolt_yellow.png" />
         <ignore path="src/main/res/drawable-mdpi/award_transparent.png" />
         <ignore path="src/main/res/drawable-mdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-mdpi/store_bolt_transparent.png" />
+        <ignore path="src/main/res/drawable-mdpi/store_bolt_yellow.png" />
         <ignore path="src/main/res/drawable-xhdpi/award_transparent.png" />
         <ignore path="src/main/res/drawable-xhdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-xhdpi/store_bolt_transparent.png" />
+        <ignore path="src/main/res/drawable-xhdpi/store_bolt_yellow.png" />
         <ignore path="src/main/res/drawable-xxhdpi/ic_launcher.png" />
+        <ignore path="src/main/res/drawable-xxhdpi/store_bolt_transparent.png" />
+        <ignore path="src/main/res/drawable-xxhdpi/store_bolt_yellow.png" />
     </issue>
 </lint>

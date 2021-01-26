@@ -42,6 +42,10 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     private InterstitialAd gameInterstitialAd;
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
@@ -118,9 +122,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     @Override
     public void onResume() {
-
         super.onResume();
-
         LightningDotsApplication.logDebugMessage("FragmentGame onResume()");
 
         // Get the fragment view
@@ -276,9 +278,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
         // Check if the user has purchased the no ads item
         // or if the user is a non-consenting EEU user
-        if (LightningDotsApplication.hasPurchasedNoAds
-                || (LightningDotsApplication.userIsFromEEA
-                    && LightningDotsApplication.userPrefersNoAds)) {
+        if (!LightningDotsApplication.getAreAdsEnabled()) {
             return;
         }
 
@@ -294,9 +294,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
         // Check if the user has purchased the no ads item
         // or if the user is a non-consenting EEU user
-        if (LightningDotsApplication.hasPurchasedNoAds
-                || (LightningDotsApplication.userIsFromEEA
-                && LightningDotsApplication.userPrefersNoAds)) {
+        if (!LightningDotsApplication.getAreAdsEnabled()) {
             LightningDotsApplication.logDebugMessage("Interstitial ad loading skipped");
             return;
         }
@@ -343,6 +341,11 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
             LightningDotsApplication.logDebugErrorMessage("gameInterstitialAd is null");
             return;
         }
+        if (!LightningDotsApplication.getAreAdsEnabled()) {
+            LightningDotsApplication.logDebugMessage("Ads are disabled");
+            return;
+        }
+
         // Create an ad request.
         // Global ad request configuration is set in ActivityMain constructor
         AdRequest.Builder adRequestBuilder = new AdRequest.Builder();

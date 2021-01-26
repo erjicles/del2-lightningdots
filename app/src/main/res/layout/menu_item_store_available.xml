@@ -8,18 +8,12 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/menu_item_store_available_imageview_bolt_content_description"
-            android:src="@drawable/store_bolt_transparent"/>
-
         <TextView
             android:id="@+id/menu_item_store_title"
             style="@style/MenuItemStoreTitle"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:text="@string/menu_item_store_available_default_title"/>
+            android:text="@string/menu_item_store_available_default_title" />
 
         <TextView
             android:id="@+id/menu_item_store_price"

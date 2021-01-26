@@ -44,7 +44,7 @@ public class EEAConsentManager {
                 || consentInformation.isTestDevice()) {
 
             // Set the flag for the user being from the EEA
-            LightningDotsApplication.userIsFromEEA = true;
+            LightningDotsApplication.setUserIsFromEEA(true);
 
             // Retrieve the EEA user's consent
             handleEEAConsent(forceShowDialog, consentInformation);
@@ -94,7 +94,7 @@ public class EEAConsentManager {
 
                 } else { // The user's consent status is known
 
-                    LightningDotsApplication.consentStatus = consentStatus;
+                    LightningDotsApplication.setConsentStatus(consentStatus);
                     listener.onHandleConsentFinished();
 
                 }
