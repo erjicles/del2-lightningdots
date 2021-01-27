@@ -187,11 +187,6 @@ public class BillingHelper implements
     public void onSkuDetailsResponse(
             @NonNull BillingResult billingResult,
             @Nullable List<SkuDetails> skuDetailsList) {
-        if (billingResult == null) {
-            Log.wtf(LOG_TAG, "onSkuDetailsResponse: null BillingResult");
-            return;
-        }
-
         int responseCode = billingResult.getResponseCode();
         String debugMessage = billingResult.getDebugMessage();
         switch (responseCode) {
@@ -241,20 +236,14 @@ public class BillingHelper implements
         }
         Log.d(LOG_TAG, "queryPurchases: SUBS");
         Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
-        if (result == null) {
-            Log.i(LOG_TAG, "queryPurchases: null purchase result");
+        List<Purchase> purchaseList = result.getPurchasesList();
+        if (purchaseList == null) {
+            Log.i(LOG_TAG, "queryPurchases: null purchase list");
             processPurchases(null);
             this.purchases.postValue(null);
         } else {
-            List<Purchase> purchaseList = result.getPurchasesList();
-            if (purchaseList == null) {
-                Log.i(LOG_TAG, "queryPurchases: null purchase list");
-                processPurchases(null);
-                this.purchases.postValue(null);
-            } else {
-                processPurchases(purchaseList);
-                this.purchases.postValue(purchaseList);
-            }
+            processPurchases(purchaseList);
+            this.purchases.postValue(purchaseList);
         }
     }
 
@@ -265,10 +254,6 @@ public class BillingHelper implements
     public void onPurchasesUpdated(
             @NonNull BillingResult billingResult,
             @Nullable List<Purchase> purchases) {
-        if (billingResult == null) {
-            Log.wtf(LOG_TAG, "onPurchasesUpdated: null BillingResult");
-            return;
-        }
         int responseCode = billingResult.getResponseCode();
         String debugMessage = billingResult.getDebugMessage();
         Log.d(LOG_TAG, "onPurchasesUpdated: " + responseCode + "; " + debugMessage);
@@ -299,11 +284,11 @@ public class BillingHelper implements
     }
 
     private void processPurchases(List<Purchase> purchasesList) {
-        if (purchasesList != null) {
-            Log.d(LOG_TAG, "processPurchases: " + purchasesList.size() + " purchase(s)");
-        } else {
+        if (purchasesList == null) {
             Log.d(LOG_TAG, "processPurchases: with no purchases");
+            return;
         }
+        Log.d(LOG_TAG, "processPurchases: " + purchasesList.size() + " purchase(s)");
 
         // Process each purchase
         for (Purchase purchase : purchasesList) {

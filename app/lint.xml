@@ -44,5 +44,11 @@
         <ignore path="src/main/res/drawable-xxhdpi/ic_launcher.png" />
         <ignore path="src/main/res/drawable-xxhdpi/store_bolt_transparent.png" />
         <ignore path="src/main/res/drawable-xxhdpi/store_bolt_yellow.png" />
+        <ignore path="src/main/res/mipmap-hdpi/ic_launcher_round.png" />
+        <ignore path="src/main/res/mipmap-hdpi/ic_launcher_round.png" />
+        <ignore path="src/main/res/mipmap-mdpi/ic_launcher_round.png" />
+        <ignore path="src/main/res/mipmap-xhdpi/ic_launcher_round.png" />
+        <ignore path="src/main/res/mipmap-xxhdpi/ic_launcher_round.png" />
+        <ignore path="src/main/res/mipmap-xxxhdpi/ic_launcher_round.png" />
     </issue>
 </lint>

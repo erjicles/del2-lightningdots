@@ -91,7 +91,10 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             showThanksToCustomer(purchase);
         });
 
-        handleBillingResponseCode(this.billingHelper.billingResponseCode.getValue());
+        Integer billingResponseCode = this.billingHelper.billingResponseCode.getValue();
+        if (billingResponseCode != null) {
+            handleBillingResponseCode(billingResponseCode);
+        }
     }
 
     @Override
@@ -112,7 +115,10 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
         if (activity != null) {
             LightningDotsApplication application = (LightningDotsApplication) activity.getApplication();
             this.billingHelper = application.getBillingHelperInstanceAndStartConnection();
-            handleBillingResponseCode(this.billingHelper.billingResponseCode.getValue());
+            Integer billingResponseCode = this.billingHelper.billingResponseCode.getValue();
+            if (billingResponseCode != null) {
+                handleBillingResponseCode(billingResponseCode);
+            }
         }
     }
 
@@ -188,12 +194,8 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
         }
 
         // First clear the linear layouts
-        if (linearLayoutPurchasedItems != null) {
-            linearLayoutPurchasedItems.removeAllViews();
-        }
-        if (linearLayoutInventory != null) {
-            linearLayoutInventory.removeAllViews();
-        }
+        linearLayoutPurchasedItems.removeAllViews();
+        linearLayoutInventory.removeAllViews();
 
         if (mapSkuDetails == null) {
             return;
@@ -268,14 +270,6 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
 
             }
 
-            if (linearLayoutMenuToWhichToAddItem == null) {
-                LightningDotsApplication.logDebugErrorMessage("linearLayoutMenuToWhichToAddItem is null");
-                continue;
-            }
-            if (viewItem == null) {
-                LightningDotsApplication.logDebugErrorMessage("viewItem is null");
-                continue;
-            }
             if (countItemsInMenu > 1) {
                 LightningDotsApplication.logDebugMessage("Adding divider view");
                 LinearLayout viewDivider = (LinearLayout) layoutInflater.inflate(
