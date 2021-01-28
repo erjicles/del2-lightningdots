@@ -14,11 +14,12 @@ import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.game.GameThreadRunnable;
 import com.delsquared.lightningdots.game.InterfaceGameCallback;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class SurfaceViewGame
 		extends SurfaceView
 		implements SurfaceHolder.Callback {
+    private static final String CLASS_NAME = SurfaceViewGame.class.getSimpleName();
 
     // Create the interface between the surface view and the fragment to set and retrieve game parameters
     public InterfaceGameCallback interfaceGameCallback;
@@ -56,6 +57,8 @@ public class SurfaceViewGame
 
     public SurfaceViewGame(Context context) {
         super(context);
+        String methodName = CLASS_NAME + ".constructor(Context context)";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
 		this.context = context;
 
@@ -65,6 +68,8 @@ public class SurfaceViewGame
 
 	public SurfaceViewGame(Context context, AttributeSet attrs) {
 		super(context, attrs);
+        String methodName = CLASS_NAME + ".constructor(Context context, AttributeSet attrs)";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
 		this.context = context;
 
@@ -74,6 +79,8 @@ public class SurfaceViewGame
 
 	public SurfaceViewGame(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
+        String methodName = CLASS_NAME + ".constructor(Context context, AttributeSet attrs, int defStyle)";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
 		this.context = context;
 
@@ -82,6 +89,9 @@ public class SurfaceViewGame
 	}
 
     private void registerSurfaceHolder() {
+        String methodName = CLASS_NAME + ".registerSurfaceHolder";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Register our interest in hearing about changes to our surface
         SurfaceHolder surfaceHolder = getHolder();
         surfaceHolder.addCallback(this);
@@ -89,15 +99,17 @@ public class SurfaceViewGame
 
 	@Override
     public void surfaceCreated(SurfaceHolder holder) {
+        String methodName = CLASS_NAME + ".surfaceCreated";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceCreated()");
         startThreads();
     }
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        String methodName = CLASS_NAME + ".surfaceChanged";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceChanged()");
 		surfaceViewGameThreadRunnable.setSurfaceSize(width, height);
         gameThreadRunnable.setCanvasWidthAndHeight(width, height);
 
@@ -109,7 +121,9 @@ public class SurfaceViewGame
 	 */
 	@Override
 	public void onWindowFocusChanged(boolean hasWindowFocus) {
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame onWindowFocusChanged()");
+        String methodName = CLASS_NAME + ".onWindowFocusChanged";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (!hasWindowFocus) {
             pauseThreads();
         } else {
@@ -119,7 +133,9 @@ public class SurfaceViewGame
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame surfaceDestroyed()");
+        String methodName = CLASS_NAME + ".surfaceDestroyed";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         stopThreads();
 
     }
@@ -163,8 +179,8 @@ public class SurfaceViewGame
 	}
 
     private void startThreads() {
-
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame startThreads()");
+        String methodName = CLASS_NAME + ".startThreads";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         SurfaceHolder surfaceHolder = getHolder();
 
@@ -320,7 +336,9 @@ public class SurfaceViewGame
     }
 
     private void stopThreads() {
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame stopThreads()");
+        String methodName = CLASS_NAME + ".stopThreads";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         boolean retryGameThread = true;
         boolean retrySurfaceViewGameThread = true;
         gameThreadRunnable.setThreadIsRunning(false);
@@ -330,20 +348,21 @@ public class SurfaceViewGame
                 gameThread.join();
                 retryGameThread = false;
             } catch (InterruptedException e) {
-                LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+                UtilityFunctions.logError(methodName, "Exception while attempting gameThread.join()", e);
             }
             try {
                 surfaceViewGameThread.join();
                 retrySurfaceViewGameThread = false;
             } catch (InterruptedException e) {
-                LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+                UtilityFunctions.logError(methodName, "Exception while attempting surfaceViewGameThread.join()", e);
             }
         }
 
     }
 
     public void pauseThreads() {
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame pauseThreads()");
+        String methodName = CLASS_NAME + ".pauseThreads";
+        UtilityFunctions.logDebug(methodName, "Entered");
         if (gameThreadRunnable != null) {
             gameThreadRunnable.setThreadIsPaused(true);
         }
@@ -353,7 +372,8 @@ public class SurfaceViewGame
     }
 
     public void resumeThreads() {
-        LightningDotsApplication.logDebugMessage("SurfaceViewGame resumeThreads()");
+        String methodName = CLASS_NAME + ".resumeThreads";
+        UtilityFunctions.logDebug(methodName, "Entered");
         if (surfaceViewGameThreadRunnable != null) {
             surfaceViewGameThreadRunnable.setThreadIsPaused(false);
         }

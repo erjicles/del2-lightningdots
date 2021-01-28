@@ -10,16 +10,18 @@ import androidx.fragment.app.FragmentActivity;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.fragments.FragmentInstructions;
 import com.delsquared.lightningdots.game.Game;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivityInstructions extends FragmentActivity {
+    private static final String CLASS_NAME = ActivityInstructions.class.getSimpleName();
 
     public static final String EXTRA_GAME_TYPE = "com.delsquared.lightningdots.gametype";
 
     private int gameType = Game.GameType.AGILITY.ordinal();
 
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instructions);
 
@@ -29,7 +31,7 @@ public class ActivityInstructions extends FragmentActivity {
         try {
             gameType = intent.getIntExtra(ActivityMain.EXTRA_GAME_TYPE, Game.GameType.AGILITY.ordinal());
         } catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception getting gameType EXTRA from intent", e);
         }
 
         if (savedInstanceState == null) {
@@ -45,6 +47,8 @@ public class ActivityInstructions extends FragmentActivity {
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
+        String methodName = CLASS_NAME + ".onWindowFocusChanged";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onWindowFocusChanged(hasFocus);
 
         FragmentInstructions fragmentInstructions =
@@ -55,6 +59,8 @@ public class ActivityInstructions extends FragmentActivity {
     }
 
     public void checkChanged_NeverShowThisAgain(View view) {
+        String methodName = CLASS_NAME + ".checkChanged_NeverShowThisAgain";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         FragmentInstructions fragmentInstructions =
                 (FragmentInstructions) getSupportFragmentManager().findFragmentById(R.id.container);
@@ -75,6 +81,8 @@ public class ActivityInstructions extends FragmentActivity {
     }
 
     public void onClick_PlayNow(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".onClick_PlayNow";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Start the game activity
         Intent intent = new Intent(this, ActivityGame.class);

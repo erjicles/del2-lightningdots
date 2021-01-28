@@ -14,9 +14,10 @@ import android.widget.Button;
 import android.widget.CheckBox;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class AcceptTermsDialog extends DialogFragment {
+	private static final String CLASS_NAME = AcceptTermsDialog.class.getSimpleName();
 
 	private static final String SHOW_REASON_KEY = "showAcceptTermsDialogReason";
 	
@@ -29,6 +30,8 @@ public class AcceptTermsDialog extends DialogFragment {
     }
 	
 	public static AcceptTermsDialog newInstance(ShowAcceptTermsDialogReason showReason) {
+		String methodName = CLASS_NAME + ".newInstance";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Create the new instance
 		AcceptTermsDialog f = new AcceptTermsDialog();
@@ -43,7 +46,10 @@ public class AcceptTermsDialog extends DialogFragment {
 
     @Override
     public void onResume() {
+		String methodName = CLASS_NAME + ".onResume";
+		UtilityFunctions.logDebug(methodName, "Entered");
         super.onResume();
+
         if (mListener != null) {
             mListener.OnFragmentAttached();
         }
@@ -51,6 +57,8 @@ public class AcceptTermsDialog extends DialogFragment {
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
+		String methodName = CLASS_NAME + ".onCreate";
+		UtilityFunctions.logDebug(methodName, "Entered");
     	super.onCreate(savedInstanceState);
     	
     	// Remove the title bar and footer bar
@@ -59,6 +67,8 @@ public class AcceptTermsDialog extends DialogFragment {
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		String methodName = CLASS_NAME + ".onCreateView";
+		UtilityFunctions.logDebug(methodName, "Entered");
     	
     	// Inflate the view for the dialog
     	View view = inflater.inflate(R.layout.dialog_acceptterms, container);
@@ -83,7 +93,7 @@ public class AcceptTermsDialog extends DialogFragment {
 	    try {
 	    	showReason = ShowAcceptTermsDialogReason.values()[showReasonValue];
 	    } catch (Exception e) {
-	    	LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+	    	UtilityFunctions.logError(methodName, "Exception getting showReason from showReasonValue: " + showReasonValue, e);
 		}
     	
     	// Initialize the message
@@ -154,7 +164,7 @@ public class AcceptTermsDialog extends DialogFragment {
 			// Toggle the accept terms button
 			Dialog dialog = getDialog();
 			if (dialog == null) {
-				LightningDotsApplication.logDebugErrorMessage("dialog is null");
+				UtilityFunctions.logError(methodName, "dialog is null", null);
 				return;
 			}
 			Button acceptButton = dialog.findViewById(R.id.dialog_acceptterms_button_accept);
@@ -173,7 +183,10 @@ public class AcceptTermsDialog extends DialogFragment {
     
     @Override
     public void onAttach(@NonNull Context context) {
+		String methodName = CLASS_NAME + ".onAttach";
+		UtilityFunctions.logDebug(methodName, "Entered");
     	super.onAttach(context);
+
         // Verify that the host activity implements the callback interface
         try {
             // Instantiate the NoticeDialogListener so we can send events to the host

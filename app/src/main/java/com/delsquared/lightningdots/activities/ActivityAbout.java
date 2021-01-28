@@ -13,11 +13,14 @@ import com.delsquared.lightningdots.utilities.UtilityFunctions;
 import java.util.Calendar;
 
 public class ActivityAbout extends FragmentActivity {
+	private static final String CLASS_NAME = ActivityAbout.class.getSimpleName();
 	
 	String versionName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		String methodName = CLASS_NAME + ".onCreate";
+		UtilityFunctions.logDebug(methodName, "Entered");
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_about);
 
@@ -54,6 +57,8 @@ public class ActivityAbout extends FragmentActivity {
 	}
 	
 	public void termsAndConditions(@SuppressWarnings("unused") View view) {
+		String methodName = CLASS_NAME + ".termsAndConditions";
+		UtilityFunctions.logDebug(methodName, "Entered");
 		
 		// Get the TOS intent
 		Intent intentTermsAndConditions = new Intent(this, ActivityTermsOfService.class);
@@ -64,7 +69,9 @@ public class ActivityAbout extends FragmentActivity {
 	}
 
 	public void privacyPolicy(@SuppressWarnings("unused") View view) {
-		
+		String methodName = CLASS_NAME + ".privacyPolicy";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		// Get the privacy policy intent
 		Intent intentPrivacyPolicy = new Intent(this, ActivityPrivacyPolicy.class);
 		

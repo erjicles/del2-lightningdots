@@ -7,7 +7,6 @@ import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
 import com.delsquared.lightningdots.utilities.CoordinateSystemType;
 import com.delsquared.lightningdots.utilities.IPositionEvolvingPolygonalObject;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.Polygon;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
@@ -23,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ClickTarget implements IPositionEvolvingPolygonalObject {
+    private static final String CLASS_NAME = ClickTarget.class.getSimpleName();
 
     public static final String POSITION_EVOLVER_FAMILY_NAME_X = "X";
     public static final String POSITION_EVOLVER_FAMILY_NAME_RADIUS = "radius";
@@ -510,6 +510,7 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
 	}
 
     public void transitionClickTargetProfile(boolean initializeClickTarget) {
+        String methodName = CLASS_NAME + ".transitionClickTargetProfile";
 
         ClickTargetProfile clickTargetProfile = clickTargetProfileScript.getCurrentClickTargetProfile();
 
@@ -555,51 +556,51 @@ public class ClickTarget implements IPositionEvolvingPolygonalObject {
                 clickTargetProfile.mapProfileVariableValues.get(VARIABLE_NAME_D2ROTATION);
 
         if (variableValuesPositionHorizontal == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesPositionHorizontal is null");
+            UtilityFunctions.logError(methodName, "variableValuesPositionHorizontal is null", null);
             return;
         }
         if (variableValuesPositionVertical == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesPositionVertical is null");
+            UtilityFunctions.logError(methodName, "variableValuesPositionVertical is null", null);
             return;
         }
         if (variableValuesSpeed == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesSpeed is null");
+            UtilityFunctions.logError(methodName, "variableValuesSpeed is null", null);
             return;
         }
         if (variableValuesDirection == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesDirection is null");
+            UtilityFunctions.logError(methodName, "variableValuesDirection is null", null);
             return;
         }
         if (variableValuesDSpeed == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesDSpeed is null");
+            UtilityFunctions.logError(methodName, "variableValuesDSpeed is null", null);
             return;
         }
         if (variableValuesDDirection == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesDDirection is null");
+            UtilityFunctions.logError(methodName, "variableValuesDDirection is null", null);
             return;
         }
         if (variableValuesRadius == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesRadius is null");
+            UtilityFunctions.logError(methodName, "variableValuesRadius is null", null);
             return;
         }
         if (variableValuesDRadius == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesDRadius is null");
+            UtilityFunctions.logError(methodName, "variableValuesDRadius is null", null);
             return;
         }
         if (variableValuesD2Radius == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesD2Radius is null");
+            UtilityFunctions.logError(methodName, "variableValuesD2Radius is null", null);
             return;
         }
         if (variableValuesRotation == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesRotation is null");
+            UtilityFunctions.logError(methodName, "variableValuesRotation is null", null);
             return;
         }
         if (variableValuesDRotation == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesDRotation is null");
+            UtilityFunctions.logError(methodName, "variableValuesDRotation is null", null);
             return;
         }
         if (variableValuesD2Rotation == null) {
-            LightningDotsApplication.logDebugErrorMessage("variableValuesD2Rotation is null");
+            UtilityFunctions.logError(methodName, "variableValuesD2Rotation is null", null);
             return;
         }
 

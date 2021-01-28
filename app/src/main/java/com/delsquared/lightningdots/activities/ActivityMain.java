@@ -26,7 +26,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.AcceptTermsDialogListener {
+public class ActivityMain extends FragmentActivity implements
+        AcceptTermsDialog.AcceptTermsDialogListener {
+    private static final String CLASS_NAME = ActivityMain.class.getSimpleName();
 
 	public static final String EXTRA_GAME_TYPE = "com.delsquared.lightningdots.gametype";
 
@@ -36,6 +38,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
@@ -83,6 +87,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
 	@Override
     public void onResume() {
+        String methodName = CLASS_NAME + ".onResume";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onResume();
         // Get the billing helper instance
         LightningDotsApplication application = (LightningDotsApplication)getApplication();
@@ -91,24 +97,44 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
     @Override
     public void onDestroy() {
+        String methodName = CLASS_NAME + ".onDestroy";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDestroy();
     }
 
     public void clicked_timeAttack(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".clicked_timeAttack";
+        UtilityFunctions.logDebug(methodName, "Entered");
         launchGame(Game.GameType.TIME_ATTACK.ordinal());
     }
 
     public void clicked_ladder(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".clicked_ladder";
+        UtilityFunctions.logDebug(methodName, "Entered");
         launchGame(Game.GameType.AGILITY.ordinal());
     }
 
-    public void clicked_settings(@SuppressWarnings("unused") View view) { launchSettings(); }
+    public void clicked_settings(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".clicked_settings";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        launchSettings();
+    }
 
-    public void clicked_about(@SuppressWarnings("unused") View view) { launchAbout(); }
+    public void clicked_about(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".clicked_about";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        launchAbout();
+    }
 
-    public void clicked_store(@SuppressWarnings("unused") View view) { launchStore(); }
+    public void clicked_store(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".clicked_store";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        launchStore();
+    }
 
     private void launchGame(int gameType) {
+        String methodName = CLASS_NAME + ".launchGame";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if we should show the instructions
         if (LightningDotsApplication.settingShowInstructions
@@ -131,6 +157,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     }
 
     public void launchSettings() {
+        String methodName = CLASS_NAME + ".launchSettings";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Start the settings activity
         Intent settingsIntent = new Intent(this, ActivitySettings.class);
@@ -139,6 +167,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     }
 
     public void launchAbout() {
+        String methodName = CLASS_NAME + ".launchAbout";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Start the about activity
         Intent aboutActivityIntent = new Intent(this, ActivityAbout.class);
@@ -147,6 +177,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     }
 
     public void launchStore() {
+        String methodName = CLASS_NAME + ".launchStore";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Start the store activity
         Intent intentStoreActivity = new Intent(this, ActivityStore.class);
@@ -155,6 +187,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     }
 
     private void toggleAcceptTermsDialog() {
+        String methodName = CLASS_NAME + ".toggleAcceptTermsDialog";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Get the terms of service saved preference
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferences_file_name), MODE_PRIVATE);
@@ -279,6 +313,8 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
     }
 
     private void showAcceptTermsDialog(AcceptTermsDialog.ShowAcceptTermsDialogReason showReason) {
+        String methodName = CLASS_NAME + ".showAcceptTermsDialog";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Get the support fragment manager
         FragmentManager fragmentManager = getSupportFragmentManager();
@@ -291,6 +327,9 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
 
     @Override
     public void onDialogPositiveClick(DialogFragment dialog) {
+        String methodName = CLASS_NAME + ".onDialogPositiveClick";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferences_file_name), MODE_PRIVATE);
         synchronized (LightningDotsApplication.lockSharedPreferences) {
             sharedPref.edit()
@@ -304,18 +343,20 @@ public class ActivityMain extends FragmentActivity implements AcceptTermsDialog.
         }
 
         // Log the data changed
-        LightningDotsApplication.logDebugMessage("Calling dataChanged() in ActivityMain.onDialogPositiveClick()...");
+        UtilityFunctions.logDebug(methodName, "...calling dataChanged()");
         LightningDotsApplication.dataChanged(this);
 
     }
 
     @Override
     public void OnFragmentAttached() {
+        String methodName = CLASS_NAME + ".OnFragmentAttached";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Get the dialog
         Dialog td = termsDialog.getDialog();
         if (td == null) {
-            LightningDotsApplication.logDebugErrorMessage("terms dialog is null");
+            UtilityFunctions.logWarning(methodName, "...terms dialog is null");
             return;
         }
 

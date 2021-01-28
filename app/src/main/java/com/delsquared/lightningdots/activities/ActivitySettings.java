@@ -10,9 +10,12 @@ import com.delsquared.lightningdots.fragments.FragmentSettings;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivitySettings extends FragmentActivity {
+    private static final String CLASS_NAME = ActivitySettings.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         if (savedInstanceState == null) {
@@ -26,6 +29,9 @@ public class ActivitySettings extends FragmentActivity {
     }
 
     public void clicked_button_delete_game_history(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".clicked_button_delete_game_history";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentSettings != null) {
             fragmentSettings.clicked_button_delete_game_history();
@@ -41,6 +47,8 @@ public class ActivitySettings extends FragmentActivity {
     }
 
     public void checkChanged_ShowInstructions(View view) {
+        String methodName = CLASS_NAME + ".checkChanged_ShowInstructions";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentSettings != null) {
@@ -60,6 +68,8 @@ public class ActivitySettings extends FragmentActivity {
     }
 
     public void onClick_ChangeConsent(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".onClick_ChangeConsent";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentSettings != null) {

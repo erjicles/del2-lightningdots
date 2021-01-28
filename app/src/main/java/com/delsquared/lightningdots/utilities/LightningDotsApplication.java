@@ -5,11 +5,9 @@ import android.app.Application;
 import android.app.backup.BackupManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.billing_utilities.BillingHelper;
 import com.google.ads.consent.ConsentStatus;
@@ -19,6 +17,7 @@ import com.google.android.gms.analytics.Tracker;
 import java.util.HashMap;
 
 public class LightningDotsApplication extends Application {
+    private static final String CLASS_NAME = LightningDotsApplication.class.getSimpleName();
 
     public static final Object lockSharedPreferences = new Object();
 
@@ -37,9 +36,9 @@ public class LightningDotsApplication extends Application {
     public static final String logTag = "LightningDots";
 
     public LightningDotsApplication() {
-
         super();
-
+        String methodName = CLASS_NAME + ".constructor";
+        UtilityFunctions.logDebug(methodName, "Entered");
     }
 
     /**
@@ -60,6 +59,8 @@ public class LightningDotsApplication extends Application {
     final HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
 
     synchronized Tracker getTracker(TrackerName trackerId) {
+        String methodName = CLASS_NAME + ".getTracker";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         if (!mTrackers.containsKey(trackerId)) {
 
@@ -76,57 +77,62 @@ public class LightningDotsApplication extends Application {
     }
 
     public BillingHelper getBillingHelperInstanceAndStartConnection() {
+        String methodName = CLASS_NAME + ".getBillingHelperInstanceAndStartConnection";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         BillingHelper billingHelper = BillingHelper.getInstance(this);
         billingHelper.startConnection();
         return billingHelper;
     }
 
     public static void setHasPurchasedNoAds(boolean hasPurchasedNoAds) {
-        logDebugMessage("Setting hasPurchasedNoAds: " + hasPurchasedNoAds);
+        String methodName = CLASS_NAME + ".setHasPurchasedNoAds";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        UtilityFunctions.logInfo(methodName, "Setting hasPurchasedNoAds: " + hasPurchasedNoAds);
         LightningDotsApplication.hasPurchasedNoAds = hasPurchasedNoAds;
         adStatusObservable.postValue(null);
     }
 
     public static ConsentStatus getConsentStatus() {
-        logDebugMessage("Getting consentStatus: " + consentStatus);
         return LightningDotsApplication.consentStatus;
     }
     public static void setConsentStatus(ConsentStatus consentStatus) {
-        logDebugMessage("Setting consentStatus: " + consentStatus);
         LightningDotsApplication.consentStatus = consentStatus;
         adStatusObservable.postValue(null);
     }
 
     public static boolean getUserIsFromEEA() {
-        logDebugMessage("Getting userIsFromEEA: " + userIsFromEEA);
         return LightningDotsApplication.userIsFromEEA;
     }
     public static void setUserIsFromEEA(boolean userIsFromEEA) {
-        logDebugMessage("Setting userIsFromEEA: " + userIsFromEEA);
         LightningDotsApplication.userIsFromEEA = userIsFromEEA;
     }
 
     public static boolean getUserPrefersNoAds() {
-        logDebugMessage("Getting userPrefersNoAds: " + userPrefersNoAds);
         return LightningDotsApplication.userPrefersNoAds;
     }
     public static void setUserPrefersNoAds(boolean userPrefersNoAds) {
-        logDebugMessage("Setting userPrefersNoAds: " + userPrefersNoAds);
         LightningDotsApplication.userPrefersNoAds = userPrefersNoAds;
         adStatusObservable.postValue(null);
     }
 
     public static boolean getAreAdsEnabled() {
-        logDebugMessage("getAreAdsEnabled(): hasPurchasedNoAds: " + hasPurchasedNoAds
+        String methodName = CLASS_NAME + ".getAreAdsEnabled";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        UtilityFunctions.logDebug(methodName,
+                "getAreAdsEnabled(): hasPurchasedNoAds: " + hasPurchasedNoAds
                 + "; userIsFromEEA: " + userIsFromEEA
                 + "; userPrefersNoAds: " + userPrefersNoAds);
         boolean areAdsEnabled = !hasPurchasedNoAds
                 && !(userIsFromEEA && userPrefersNoAds);
-        logDebugMessage("...areAdsEnabled: " + areAdsEnabled);
+        UtilityFunctions.logDebug(methodName, "...areAdsEnabled: " + areAdsEnabled);
         return areAdsEnabled;
     }
 
     public static void setShowInstructions(Context context, boolean showInstructions) {
+        String methodName = CLASS_NAME + ".setShowInstructions";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         LightningDotsApplication.settingShowInstructions = showInstructions;
 
@@ -144,36 +150,24 @@ public class LightningDotsApplication extends Application {
 
         }
 
-        logDebugMessage("Calling data changed in setShowInstructions()...");
+        UtilityFunctions.logDebug(methodName, "Calling data changed in setShowInstructions()...");
         dataChanged(context);
 
     }
 
     public static void dataChanged(Context context) {
-        try {
+        String methodName = CLASS_NAME + ".dataChanged";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
-            logDebugMessage("LightningDotsApplication.dataChanged()...");
+        try {
 
             // Call the backup manager data changed
             BackupManager backupManager = new BackupManager(context);
             backupManager.dataChanged();
 
-            logDebugMessage("dataChanged() call complete.");
+            UtilityFunctions.logDebug(methodName,"dataChanged() call complete.");
         } catch (Exception e) {
-            logDebugErrorMessage("Call to dataChanged() failed...");
-            logDebugErrorMessage(e.getMessage());
-        }
-    }
-
-    public static void logDebugMessage(String message) {
-        if (BuildConfig.DEBUG) {
-            Log.d(logTag, message);
-        }
-    }
-
-    public static void logDebugErrorMessage(String message) {
-        if (BuildConfig.DEBUG) {
-            Log.e(logTag, message);
+            UtilityFunctions.logError(methodName, "Call to dataChanged() failed", e);
         }
     }
 

@@ -17,6 +17,7 @@ import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivitySplash extends Activity implements IEEAConsentListener {
+    private static final String CLASS_NAME = ActivitySplash.class.getSimpleName();
 
     // Splash screen timer
     private static final int SPLASH_TIME_OUT = 3000;
@@ -30,7 +31,10 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_splash);
 
         // Get and execute the thread that gets the current terms of service version
@@ -47,6 +51,8 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
     }
 
     private void startGetVersions() {
+        String methodName = CLASS_NAME + ".startGetVersions";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         Context context = getContext();
 
@@ -56,7 +62,6 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
         }
 
         try {
-
             // Get the versions web service url
             String versionsWebServiceUrl = context.getString(R.string.versions_url);
 
@@ -70,7 +75,7 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
                     null,
                     response -> finishGetVersions(response.toString()),
                     error -> {
-                        LightningDotsApplication.logDebugErrorMessage(error.getMessage());
+                        UtilityFunctions.logError(methodName, "Exception retrieving versions", error);
                         finishGetVersions("");
                     }
             );
@@ -81,7 +86,7 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
         } catch (Exception e) {
 
             // Reset the result string
-            LightningDotsApplication.logDebugErrorMessage(e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception retrieving versions", e);
             finishGetVersions("");
 
         }
@@ -89,13 +94,19 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
     }
 
     private void finishGetVersions(String result) {
+        String methodName = CLASS_NAME + ".finishGetVersions";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         jsonVersionsString = result;
         versionsLoadComplete = true;
         versionsLoadSuccessful = (result.length() > 0);
+        UtilityFunctions.logDebug(methodName, "Result: " + result);
         finishSplash();
     }
 
     private void finishSplash() {
+        String methodName = CLASS_NAME + ".finishSplash";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         if (versionsLoadComplete && splashTimeoutFinished) {
 
@@ -108,6 +119,8 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
     }
 
     private void continueToApp() {
+        String methodName = CLASS_NAME + ".continueToApp";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if the user is an EEA user who wants no ads
         if (LightningDotsApplication.getUserPrefersNoAds()) {
@@ -129,11 +142,15 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
 
     @Override
     public Context getContext() {
+        String methodName = CLASS_NAME + ".getContext";
+        UtilityFunctions.logDebug(methodName, "Entered");
         return this;
     }
 
     @Override
     public void onHandleConsentFinished() {
+        String methodName = CLASS_NAME + ".onHandleConsentFinished";
+        UtilityFunctions.logDebug(methodName, "Entered");
         continueToApp();
     }
 

@@ -26,7 +26,7 @@ import com.delsquared.lightningdots.game.GameSnapshot;
 import com.delsquared.lightningdots.game.GameThreadSharedData;
 import com.delsquared.lightningdots.game.SurfaceViewGameThreadSharedData;
 import com.delsquared.lightningdots.game.UserClick;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +34,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 public class SurfaceViewGameThreadRunnable implements Runnable {
+    private static final String CLASS_NAME = SurfaceViewGameThreadRunnable.class.getSimpleName();
 
     // Variables for frames per second calculations
     @SuppressWarnings("unused")
@@ -638,6 +639,8 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 
     @Override
     public void run() {
+        String methodName = CLASS_NAME + ".run";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         while (threadIsRunning) {
 
@@ -678,7 +681,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                                 }
 
                             } catch (Exception e) {
-                                LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+                                UtilityFunctions.logError(methodName, "Exception in drawing block", e);
                             } finally {
 
                                 // Check if the canvas is not null
@@ -695,7 +698,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     }
 
                 } catch (Exception e) {
-                    LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+                    UtilityFunctions.logError(methodName, "Exception in drawing loop", e);
                 } finally {
 
                     // Set the old game snapshot to the current one
@@ -710,6 +713,7 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
     }
 
 	private void doDraw(Canvas canvas) {
+        String methodName = CLASS_NAME + ".doDraw";
 
 		// Get the game snapshot
 		GameSnapshot gameSnapshot = game.gameSnapshot;
@@ -811,87 +815,87 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_energy));
 
         if (textHandlerStartCountdown == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerStartCountdown is null");
+            UtilityFunctions.logError(methodName, "textHandlerStartCountdown is null", null);
             return;
         }
         if (textHandlerTimer == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerTimer is null");
+            UtilityFunctions.logError(methodName, "textHandlerTimer is null", null);
             return;
         }
         if (textHandlerCounter == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerCounter is null");
+            UtilityFunctions.logError(methodName, "textHandlerCounter is null", null);
             return;
         }
         if (textHandlerLevelDecrement == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelDecrement is null");
+            UtilityFunctions.logError(methodName, "textHandlerLevelDecrement is null", null);
             return;
         }
         if (textHandlerLevel == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerLevel is null");
+            UtilityFunctions.logError(methodName, "textHandlerLevel is null", null);
             return;
         }
         if (textHandlerLevelIncrement == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelIncrement is null");
+            UtilityFunctions.logError(methodName, "textHandlerLevelIncrement is null", null);
             return;
         }
         if (textHandlerNewHighScore == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerNewHighScore is null");
+            UtilityFunctions.logError(methodName, "textHandlerNewHighScore is null", null);
             return;
         }
         if (textHandlerLevelComplete == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelComplete is null");
+            UtilityFunctions.logError(methodName, "textHandlerLevelComplete is null", null);
             return;
         }
         if (textHandlerLevelFailed == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerLevelFailed is null");
+            UtilityFunctions.logError(methodName, "textHandlerLevelFailed is null", null);
             return;
         }
         if (textHandlerFPS == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerFPS is null");
+            UtilityFunctions.logError(methodName, "textHandlerFPS is null", null);
             return;
         }
         if (textHandlerHighScore == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerHighScore is null");
+            UtilityFunctions.logError(methodName, "textHandlerHighScore is null", null);
             return;
         }
         if (textHandlerOther == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerOther is null");
+            UtilityFunctions.logError(methodName, "textHandlerOther is null", null);
             return;
         }
         if (textHandlerCongratulations == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerCongratulations is null");
+            UtilityFunctions.logError(methodName, "textHandlerCongratulations is null", null);
             return;
         }
         if (textHandlerBeatLastLevel == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerBeatLastLevel is null");
+            UtilityFunctions.logError(methodName, "textHandlerBeatLastLevel is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesX == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesX is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesX is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesdX == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdX is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesdX is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesd2X == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2X is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesd2X is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesRadius == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesRadius is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesRadius is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesdRadius == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdRadius is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesdRadius is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesd2Radius == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2Radius is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesd2Radius is null", null);
             return;
         }
         if (textHandlerClickTargetPropertiesEnergy == null) {
-            LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesEnergy is null");
+            UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesEnergy is null", null);
             return;
         }
 
@@ -1331,6 +1335,8 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
 	}
 
 	public void setSurfaceSize(int width, int height) {
+        String methodName = CLASS_NAME + ".setSurfaceSize";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
 		// synchronized to make sure these all change atomically
 		synchronized (surfaceHolder) {
@@ -1407,91 +1413,91 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                     mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_click_target_properties_energy));
 
             if(textHandlerStartCountdown == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerStartCountdown is null");
+                UtilityFunctions.logError(methodName, "textHandlerStartCountdown is null", null);
                 return;
             }
             if(textHandlerTimer == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerTimer is null");
+                UtilityFunctions.logError(methodName, "textHandlerTimer is null", null);
                 return;
             }
             if(textHandlerCounter == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerCounter is null");
+                UtilityFunctions.logError(methodName, "textHandlerCounter is null", null);
                 return;
             }
             if(textHandlerCounterGoalAchieved == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerCounterGoalAchieved is null");
+                UtilityFunctions.logError(methodName, "textHandlerCounterGoalAchieved is null", null);
                 return;
             }
             if(textHandlerLevelDecrement == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelDecrement is null");
+                UtilityFunctions.logError(methodName, "textHandlerLevelDecrement is null", null);
                 return;
             }
             if(textHandlerLevel == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerLevel is null");
+                UtilityFunctions.logError(methodName, "textHandlerLevel is null", null);
                 return;
             }
             if(textHandlerLevelIncrement == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelIncrement is null");
+                UtilityFunctions.logError(methodName, "textHandlerLevelIncrement is null", null);
                 return;
             }
             if(textHandlerNewHighScore == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerNewHighScore is null");
+                UtilityFunctions.logError(methodName, "textHandlerNewHighScore is null", null);
                 return;
             }
             if(textHandlerLevelComplete == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelComplete is null");
+                UtilityFunctions.logError(methodName, "textHandlerLevelComplete is null", null);
                 return;
             }
             if(textHandlerLevelFailed == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerLevelFailed is null");
+                UtilityFunctions.logError(methodName, "textHandlerLevelFailed is null", null);
                 return;
             }
             if(textHandlerFPS == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerFPS is null");
+                UtilityFunctions.logError(methodName, "textHandlerFPS is null", null);
                 return;
             }
             if(textHandlerHighScore == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerHighScore is null");
+                UtilityFunctions.logError(methodName, "textHandlerHighScore is null", null);
                 return;
             }
             if(textHandlerOther == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerOther is null");
+                UtilityFunctions.logError(methodName, "textHandlerOther is null", null);
                 return;
             }
             if(textHandlerCongratulations == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerCongratulations is null");
+                UtilityFunctions.logError(methodName, "textHandlerCongratulations is null", null);
                 return;
             }
             if(textHandlerBeatLastLevel == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerBeatLastLevel is null");
+                UtilityFunctions.logError(methodName, "textHandlerBeatLastLevel is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesX == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesX is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesX is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesdX == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdX is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesdX is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesd2X == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2X is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesd2X is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesRadius == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesRadius is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesRadius is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesdRadius == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesdRadius is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesdRadius is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesd2Radius == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesd2Radius is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesd2Radius is null", null);
                 return;
             }
             if(textHandlerClickTargetPropertiesEnergy == null) {
-                LightningDotsApplication.logDebugErrorMessage("textHandlerClickTargetPropertiesEnergy is null");
+                UtilityFunctions.logError(methodName, "textHandlerClickTargetPropertiesEnergy is null", null);
                 return;
             }
 
@@ -1740,6 +1746,9 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
     }
 
     public boolean processDownTouch(MotionEvent motionEvent) {
+        String methodName = CLASS_NAME + ".processDownTouch";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         boolean result = false;
 
         // Get the game snapshot
@@ -1760,15 +1769,15 @@ public class SurfaceViewGameThreadRunnable implements Runnable {
                 SurfaceViewTextHandler textHandlerLevelIncrement =
                         mapSurfaceViewTextHandler.get(context.getString(R.string.graphics_textkey_level_increment));
                 if (textHandlerLevelDecrement == null) {
-                    LightningDotsApplication.logDebugErrorMessage("textHandlerLevelDecrement is null");
+                    UtilityFunctions.logError(methodName, "textHandlerLevelDecrement is null", null);
                     return false;
                 }
                 if (textHandlerLevel == null) {
-                    LightningDotsApplication.logDebugErrorMessage("textHandlerLevel is null");
+                    UtilityFunctions.logError(methodName, "textHandlerLevel is null", null);
                     return false;
                 }
                 if (textHandlerLevelIncrement == null) {
-                    LightningDotsApplication.logDebugErrorMessage("textHandlerLevelIncrement is null");
+                    UtilityFunctions.logError(methodName, "textHandlerLevelIncrement is null", null);
                     return false;
                 }
 

@@ -14,9 +14,10 @@ import com.delsquared.lightningdots.database.LoaderHelperGameResult;
 import com.delsquared.lightningdots.game.LevelDefinitionLadderHelper;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class FragmentMain extends androidx.fragment.app.Fragment {
+    private static final String CLASS_NAME = FragmentMain.class.getSimpleName();
 
     public FragmentMain() {
     }
@@ -26,15 +27,18 @@ public class FragmentMain extends androidx.fragment.app.Fragment {
             LayoutInflater inflater,
             ViewGroup container,
             Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreateView";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
         FragmentActivity activity = getActivity();
         if (activity == null) {
-            LightningDotsApplication.logDebugErrorMessage("activity is null");
+            UtilityFunctions.logError(methodName, "activity is null", null);
             return rootView;
         }
         Context applicationContext = activity.getApplicationContext();
         if (applicationContext == null) {
-            LightningDotsApplication.logDebugErrorMessage("application context is null");
+            UtilityFunctions.logWtf(methodName, "applicationContext is null");
             return rootView;
         }
 

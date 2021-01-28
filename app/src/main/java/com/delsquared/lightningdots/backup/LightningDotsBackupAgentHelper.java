@@ -11,10 +11,12 @@ import android.util.Log;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.database.GameSQLiteHelper;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.io.IOException;
 
 public class LightningDotsBackupAgentHelper extends BackupAgentHelper {
+    private static final String CLASS_NAME = LightningDotsBackupAgentHelper.class.getSimpleName();
 
     @SuppressWarnings("FieldCanBeLocal")
     private final String BACKUP_KEY_SHARED_PREFERENCES = "com.delsquared.lightningdots.backup.SharedPreferences";
@@ -23,6 +25,8 @@ public class LightningDotsBackupAgentHelper extends BackupAgentHelper {
 
     @Override
     public void onCreate() {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Create the backup helper for the shared preferences
         String fileNameSharedPreferences = getString(R.string.preferences_file_name);
@@ -41,10 +45,12 @@ public class LightningDotsBackupAgentHelper extends BackupAgentHelper {
     @Override
     public void onBackup(ParcelFileDescriptor oldState, BackupDataOutput data,
                          ParcelFileDescriptor newState) throws IOException {
-        Log.d(LightningDotsApplication.logTag, "onBackup called");
+        String methodName = CLASS_NAME + ".onBackup";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Hold the lock while the FileBackupHelper performs backup
         synchronized (GameSQLiteHelper.sDataLock) {
-            Log.d(LightningDotsApplication.logTag, "...in backup synchronized block");
+            UtilityFunctions.logDebug(methodName, "...in sDataLock synchronized block");
             super.onBackup(oldState, data, newState);
         }
     }
@@ -52,10 +58,12 @@ public class LightningDotsBackupAgentHelper extends BackupAgentHelper {
     @Override
     public void onRestore(BackupDataInput data, int appVersionCode,
                           ParcelFileDescriptor newState) throws IOException {
-        Log.d(LightningDotsApplication.logTag, "onRestore called");
+        String methodName = CLASS_NAME + ".onRestore";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Hold the lock while the FileBackupHelper restores the file
         synchronized (GameSQLiteHelper.sDataLock) {
-            Log.d(LightningDotsApplication.logTag, "...in restore synchronized block");
+            UtilityFunctions.logDebug(methodName, "...in sDataLock synchronized block");
             super.onRestore(data, appVersionCode, newState);
         }
     }

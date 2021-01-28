@@ -8,7 +8,6 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.ntuple.NTuple;
 import com.delsquared.lightningdots.utilities.BoundaryEffect;
 import com.delsquared.lightningdots.utilities.BoundaryType;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.OrderedObjectCollection;
 import com.delsquared.lightningdots.utilities.PolygonHelper;
 import com.delsquared.lightningdots.utilities.PositionEvolverVariableAttractor;
@@ -34,6 +33,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class LevelDefinitionLadderHelper {
+    private static final String CLASS_NAME = LevelDefinitionLadderHelper.class.getSimpleName();
 
     @SuppressWarnings("unused")
     private static final String NODE_NAME_LEVELS = "Levels";
@@ -181,6 +181,8 @@ public class LevelDefinitionLadderHelper {
 
 
     public static int getHighestScriptedLevel(Context context) {
+        String methodName = CLASS_NAME + ".getHighestScriptedLevel";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         int returnValue = 0;
 
@@ -218,7 +220,7 @@ public class LevelDefinitionLadderHelper {
             }
 
         } catch (XmlPullParserException|IOException e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception parsing xml", e);
         }
 
         return returnValue;
@@ -1419,6 +1421,8 @@ public class LevelDefinitionLadderHelper {
     public static LevelDefinitionLadder getLevelDefinitionLadder(
             Context context
             , int gameLevel) {
+        String methodName = CLASS_NAME + ".getLevelDefinitionLadder";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Initialize the XMLLevel
         XMLLevel xmlLevel = new XMLLevel();
@@ -2212,7 +2216,7 @@ public class LevelDefinitionLadderHelper {
             xmlResourceParser.close();
 
         } catch (XmlPullParserException|IOException e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception parsing xml", e);
         }
 
         // -------------------- BEGIN Perform Validations -------------------- //

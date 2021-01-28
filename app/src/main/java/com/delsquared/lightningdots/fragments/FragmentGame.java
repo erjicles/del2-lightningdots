@@ -26,10 +26,8 @@ import com.google.android.gms.ads.MobileAds;
 
 import java.util.Date;
 
-/**
- * A placeholder fragment containing a simple view.
- */
 public class FragmentGame extends Fragment implements InterfaceGameCallback {
+    private static final String CLASS_NAME = FragmentGame.class.getSimpleName();
 
 	public static final String ARGUMENT_GAME_TYPE = "com.delsquared.lightningdots.gametype";
 
@@ -43,11 +41,16 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
     }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreateView";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View rootView = inflater.inflate(R.layout.fragment_game, container, false);
 
 		// Get the game type from the bundle
@@ -93,6 +96,8 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
 	public static FragmentGame newInstance(int gameType) {
+        String methodName = CLASS_NAME + ".newInstance";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Create the new instance
 		FragmentGame f = new FragmentGame();
@@ -109,21 +114,23 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onActivityCreated";
+        UtilityFunctions.logDebug(methodName, "Entered");
 		super.onActivityCreated(savedInstanceState);
 	}
 
     @Override
     public void onPause() {
-
+        String methodName = CLASS_NAME + ".onPause";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onPause();
-
-        LightningDotsApplication.logDebugMessage("FragmentGame onPause()");
     }
 
     @Override
     public void onResume() {
+        String methodName = CLASS_NAME + ".onResume";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onResume();
-        LightningDotsApplication.logDebugMessage("FragmentGame onResume()");
 
         // Get the fragment view
         View fragmentView = getView();
@@ -146,18 +153,25 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     @SuppressWarnings("EmptyMethod")
     @Override
-    public void onStop() { super.onStop(); }
+    public void onStop() {
+        String methodName = CLASS_NAME + ".onStop";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        super.onStop();
+    }
 
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onDestroy() {
+        String methodName = CLASS_NAME + ".onDestroy";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDestroy();
     }
 
-
-
     @Override
     public void onLevelCompleted(int nextLevel) {
+        String methodName = CLASS_NAME + ".onLevelCompleted";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (nextLevel <= highestScriptedLevel) {
             setCurrentGameLevel(nextLevel);
         }
@@ -166,14 +180,22 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     @Override
     public void onLevelFailed() {
-        LightningDotsApplication.logDebugMessage("Level failed");
+        String methodName = CLASS_NAME + ".onLevelFailed";
+        UtilityFunctions.logDebug(methodName, "Entered");
     }
 
     @Override
-    public void onGameEnded() { processEndOfGameAd(); }
+    public void onGameEnded() {
+        String methodName = CLASS_NAME + ".onGameEnded";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        processEndOfGameAd();
+    }
 
     @Override
     public void onLevelDecrementSelected() {
+        String methodName = CLASS_NAME + ".onLevelDecrementSelected";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (currentGameLevel > 1) {
            setCurrentGameLevel(currentGameLevel - 1);
         }
@@ -181,6 +203,9 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     @Override
     public void onLevelIncrementSelected() {
+        String methodName = CLASS_NAME + ".onLevelIncrementSelected";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (gameResultHighScoreOverall != null) {
             if (currentGameLevel < gameResultHighScoreOverall.getGameLevel() + 1) {
                 if (currentGameLevel < highestScriptedLevel) {
@@ -192,28 +217,48 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
     @Override
     public int onGetCurrentLevel() {
+        String methodName = CLASS_NAME + ".onGetCurrentLevel";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         return this.currentGameLevel;
     }
 
     @Override
     public int onGetCurrentGameType() {
+        String methodName = CLASS_NAME + ".onGetCurrentGameType";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         return this.currentGameType;
     }
 
     @Override
-    public int onGetHighestScriptedLevel() { return this.highestScriptedLevel; }
+    public int onGetHighestScriptedLevel() {
+        String methodName = CLASS_NAME + ".onGetHighestScriptedLevel";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        return this.highestScriptedLevel;
+    }
 
     @Override
     public GameResult onGetGameResultHighScoreOverall() {
+        String methodName = CLASS_NAME + ".onGetGameResultHighScoreOverall";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         return this.gameResultHighScoreOverall;
     }
 
     @Override
     public GameResult onGetGameResultHighScoreCurrentLevel() {
+        String methodName = CLASS_NAME + ".onGetGameResultHighScoreCurrentLevel";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         return this.gameResultHighScoreCurrentLevel;
     }
 
     public void setCurrentGameLevel(int currentGameLevel) {
+        String methodName = CLASS_NAME + ".setCurrentGameLevel";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         this.currentGameLevel = currentGameLevel;
         if (currentGameType == Game.GameType.TIME_ATTACK.ordinal()) {
             this.currentGameLevel = 1;
@@ -222,9 +267,12 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void loadGameResultHighScoreOverall() {
+        String methodName = CLASS_NAME + ".loadGameResultHighScoreOverall";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         Activity activity = getActivity();
         if (activity == null) {
-            LightningDotsApplication.logDebugErrorMessage("activity is null");
+            UtilityFunctions.logError(methodName, "activity is null", null);
             return;
         }
         LoaderHelperGameResult loaderHelperGameResult = new LoaderHelperGameResult(activity.getApplicationContext());
@@ -253,9 +301,12 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void loadGameResultHighScoreCurrentLevel() {
+        String methodName = CLASS_NAME + ".loadGameResultHighScoreCurrentLevel";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         Activity activity = getActivity();
         if (activity == null) {
-            LightningDotsApplication.logDebugErrorMessage("activity is null");
+            UtilityFunctions.logError(methodName, "activity is null", null);
             return;
         }
         LoaderHelperGameResult loaderHelperGameResult = new LoaderHelperGameResult(activity.getApplicationContext());
@@ -267,6 +318,9 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void processEndOfGameAd() {
+        String methodName = CLASS_NAME + ".processEndOfGameAd";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         int randomInt = UtilityFunctions.generateRandomIndex(0, 4);
         if ((LightningDotsApplication.numberOfGameTransitions - randomInt) % 4 == 0) {
             showInterstitialAd();
@@ -275,6 +329,8 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void showInterstitialAd() {
+        String methodName = CLASS_NAME + ".showInterstitialAd";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if the user has purchased the no ads item
         // or if the user is a non-consenting EEU user
@@ -291,11 +347,13 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     public void startLoadingInterstitialAds() {
+        String methodName = CLASS_NAME + ".startLoadingInterstitialAds";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if the user has purchased the no ads item
         // or if the user is a non-consenting EEU user
         if (!LightningDotsApplication.getAreAdsEnabled()) {
-            LightningDotsApplication.logDebugMessage("Interstitial ad loading skipped");
+            UtilityFunctions.logInfo(methodName, "Interstitial ad loading skipped");
             return;
         }
 
@@ -311,7 +369,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
             // proceeding.
             Context context = getContext();
             if (context == null) {
-                LightningDotsApplication.logDebugErrorMessage("context is null");
+                UtilityFunctions.logError(methodName, "context is null", null);
                 return;
             }
             gameInterstitialAd = new InterstitialAd(context);
@@ -337,12 +395,15 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
     }
 
     private void loadInterstitialAd() {
+        String methodName = CLASS_NAME + ".loadInterstitialAd";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (gameInterstitialAd == null) {
-            LightningDotsApplication.logDebugErrorMessage("gameInterstitialAd is null");
+            UtilityFunctions.logError(methodName, "gameInterstitialAd is null", null);
             return;
         }
         if (!LightningDotsApplication.getAreAdsEnabled()) {
-            LightningDotsApplication.logDebugMessage("Ads are disabled");
+            UtilityFunctions.logInfo(methodName, "Ads are disabled, skipping");
             return;
         }
 

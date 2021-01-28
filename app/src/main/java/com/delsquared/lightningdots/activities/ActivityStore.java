@@ -10,9 +10,12 @@ import com.delsquared.lightningdots.fragments.FragmentStore;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivityStore extends FragmentActivity {
+    private static final String CLASS_NAME = ActivityStore.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
         if (savedInstanceState == null) {
@@ -29,6 +32,9 @@ public class ActivityStore extends FragmentActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        String methodName = CLASS_NAME + ".onCreateOptionsMenu";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_activity_store, menu);
         return true;
@@ -36,6 +42,9 @@ public class ActivityStore extends FragmentActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        String methodName = CLASS_NAME + ".onOptionsItemSelected";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -51,8 +60,9 @@ public class ActivityStore extends FragmentActivity {
 
     @Override
     public void onDestroy() {
+        String methodName = CLASS_NAME + ".onDestroy";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDestroy();
-        //purchaseHelper.onDestroy();
     }
 
 }

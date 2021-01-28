@@ -20,6 +20,7 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.billing_utilities.BillingHelper;
 import com.delsquared.lightningdots.billing_utilities.Constants;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,12 +29,15 @@ import java.util.Map;
 import java.util.Set;
 
 public class FragmentStore extends androidx.fragment.app.Fragment {
+    private static final String CLASS_NAME = FragmentStore.class.getSimpleName();
 
     // The helper for billing
     BillingHelper billingHelper;
 
     @SuppressWarnings("unused")
     public static FragmentStore newInstance() {
+        String methodName = CLASS_NAME + ".newInstance";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         return new FragmentStore();
     }
@@ -44,6 +48,8 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
 
         // Get the billing helper instance
@@ -57,6 +63,9 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreateView";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View rootView = inflater.inflate(R.layout.fragment_store, container, false);
 
         // Set the trademark text color
@@ -71,23 +80,26 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onViewCreated";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         this.billingHelper.skusWithSkuDetails.observe(this, skusWithSkuDetails -> {
-            LightningDotsApplication.logDebugMessage("skusWithSkuDetails callback in FragmentStore");
+            UtilityFunctions.logDebug(methodName, "skusWithSkuDetails callback in FragmentStore");
             updateStoreUI();
         });
 
         this.billingHelper.purchases.observe(this, purchaseList -> {
-            LightningDotsApplication.logDebugMessage("purchases observer callback in FragmentStore");
+            UtilityFunctions.logDebug(methodName, "purchases observer callback in FragmentStore");
             updateStoreUI();
         });
 
         this.billingHelper.billingResponseCode.observe(this, responseCode -> {
-            LightningDotsApplication.logDebugMessage("billingResponseCode observer callback in FragmentStore");
+            UtilityFunctions.logDebug(methodName, "billingResponseCode observer callback in FragmentStore");
             handleBillingResponseCode(responseCode);
         });
 
         this.billingHelper.successfulPurchaseObservable.observe(this, purchase -> {
-            LightningDotsApplication.logDebugMessage("FragmentStore: successfulPurchaseSkuObserver callback");
+            UtilityFunctions.logDebug(methodName, "FragmentStore: successfulPurchaseSkuObserver callback");
             showThanksToCustomer(purchase);
         });
 
@@ -99,16 +111,22 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onActivityCreated";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onActivityCreated(savedInstanceState);
     }
 
     @Override
     public void onAttach(@NonNull Context context) {
+        String methodName = CLASS_NAME + ".onAttach";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onAttach(context);
     }
 
     @Override
     public void onResume() {
+        String methodName = CLASS_NAME + ".onResume";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onResume();
         // Get the billing helper instance
         FragmentActivity activity = getActivity();
@@ -125,24 +143,31 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onDetach() {
+        String methodName = CLASS_NAME + ".onDetach";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDetach();
     }
 
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onDestroy() {
+        String methodName = CLASS_NAME + ".onDestroy";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDestroy();
     }
 
     private void handleBillingResponseCode(int responseCode) {
+        String methodName = CLASS_NAME + ".handleBillingResponseCode";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View rootView = getView();
         if (rootView == null) {
-            LightningDotsApplication.logDebugErrorMessage("rootView is null");
+            UtilityFunctions.logError(methodName, "rootView is null", null);
             return;
         }
         TextView textViewBillingUnavailable = rootView.findViewById(R.id.fragment_store_textview_billing_unavailable_text);
         if (textViewBillingUnavailable == null) {
-            LightningDotsApplication.logDebugErrorMessage("textViewBillingUnavailable is null");
+            UtilityFunctions.logError(methodName, "textViewBillingUnavailable is null", null);
             return;
         }
 
@@ -155,10 +180,12 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     }
 
     private void updateStoreUI() {
+        String methodName = CLASS_NAME + ".updateStoreUI";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (billingHelper == null) {
             return;
         }
-        LightningDotsApplication.logDebugMessage("updateStoreUI()");
 
         Map<String, SkuDetails> mapSkuDetails = billingHelper.skusWithSkuDetails.getValue();
         List<Purchase> listPurchases = billingHelper.purchases.getValue();
@@ -175,21 +202,21 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
 
         View view = getView();
         if (view == null) {
-            LightningDotsApplication.logDebugErrorMessage("view is null");
+            UtilityFunctions.logError(methodName, "view is null", null);
             return;
         }
 
         // Get the purchased items linear layout
         LinearLayout linearLayoutPurchasedItems = view.findViewById(R.id.fragment_store_linearlayout_purchasedmenu);
         if (linearLayoutPurchasedItems == null) {
-            LightningDotsApplication.logDebugErrorMessage("linearLayoutPurchasedItems is null");
+            UtilityFunctions.logError(methodName, "linearLayoutPurchasedItems is null", null);
             return;
         }
 
         // Get the inventory menu linear layout
         LinearLayout linearLayoutInventory = view.findViewById(R.id.fragment_store_linearlayout_inventorymenu);
         if (linearLayoutInventory == null) {
-            LightningDotsApplication.logDebugErrorMessage("linearLayoutInventory is null");
+            UtilityFunctions.logError(methodName, "linearLayoutInventory is null", null);
             return;
         }
 
@@ -209,9 +236,9 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
         for (Map.Entry<String, SkuDetails> entry : mapSkuDetails.entrySet()) {
             String sku = entry.getKey();
             SkuDetails skuDetails = entry.getValue();
-            LightningDotsApplication.logDebugMessage("Processing SKU: " + sku);
+            UtilityFunctions.logDebug(methodName, "Processing SKU: " + sku);
             boolean isPurchased = hashSetPurchaseSkus.contains(sku);
-            LightningDotsApplication.logDebugMessage("isPurchased: " + isPurchased);
+            UtilityFunctions.logDebug(methodName, "isPurchased: " + isPurchased);
 
             LinearLayout linearLayoutMenuToWhichToAddItem;
             View viewItem;
@@ -258,7 +285,7 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
                 textViewPrice.setText(skuDetails.getPrice());
 
                 viewAvailableItem.setOnClickListener(v -> {
-                    LightningDotsApplication.logDebugMessage("Store item clicked: " + sku);
+                    UtilityFunctions.logDebug(methodName, "Store item clicked: " + sku);
                     // Launch the purchase flow for this item
                     BillingFlowParams billingFlowParams = BillingFlowParams.newBuilder()
                             .setSkuDetails(skuDetails)
@@ -271,7 +298,7 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             }
 
             if (countItemsInMenu > 1) {
-                LightningDotsApplication.logDebugMessage("Adding divider view");
+                UtilityFunctions.logDebug(methodName, "Adding divider LinearLayout");
                 LinearLayout viewDivider = (LinearLayout) layoutInflater.inflate(
                         R.layout.menu_item_store_divider,
                         linearLayoutMenuToWhichToAddItem,
@@ -283,11 +310,14 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
     }
 
     private void showThanksToCustomer(@NonNull Purchase purchase) {
+        String methodName = CLASS_NAME + ".showThanksToCustomer";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         String sku = purchase.getSku();
-        LightningDotsApplication.logDebugMessage("Showing thanks to customer: " + sku);
+        UtilityFunctions.logDebug(methodName, "...for sku: " + sku);
         Context context = getContext();
         if (context == null) {
-            LightningDotsApplication.logDebugErrorMessage("context is null");
+            UtilityFunctions.logError(methodName, "context is null", null);
             return;
         }
 
@@ -304,7 +334,7 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             toastThanks.show();
 
         } else {
-            LightningDotsApplication.logDebugErrorMessage("Unknown sku: " + sku);
+            UtilityFunctions.logWtf(methodName, "Unknown sku: " + sku);
         }
 
     }

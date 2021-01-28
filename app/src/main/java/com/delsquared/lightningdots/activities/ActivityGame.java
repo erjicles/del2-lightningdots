@@ -9,12 +9,14 @@ import androidx.fragment.app.FragmentActivity;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.fragments.FragmentGame;
 import com.delsquared.lightningdots.game.Game;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivityGame extends FragmentActivity {
+    private static final String CLASS_NAME = ActivityGame.class.getSimpleName();
 
     protected void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
 
@@ -24,7 +26,7 @@ public class ActivityGame extends FragmentActivity {
 		try {
 			gameType = intent.getIntExtra(ActivityMain.EXTRA_GAME_TYPE, Game.GameType.AGILITY.ordinal());
 		} catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception getting gameType EXTRA from intent", e);
 		}
 
         if (savedInstanceState == null) {
@@ -38,36 +40,18 @@ public class ActivityGame extends FragmentActivity {
 
     }
 
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.activity_game, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
-
 	@SuppressWarnings("EmptyMethod")
     @Override
 	protected void onPause() {
+        String methodName = CLASS_NAME + ".onPause";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onPause();
 	}
 
     @Override
     protected void onStop() {
+        String methodName = CLASS_NAME + ".onStop";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onStop();
 
         // Get the current system time
@@ -87,6 +71,8 @@ public class ActivityGame extends FragmentActivity {
     @SuppressWarnings("EmptyMethod")
     @Override
     protected void onDestroy() {
+        String methodName = CLASS_NAME + ".onDestroy";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDestroy();
     }
 }

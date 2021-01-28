@@ -3,7 +3,6 @@ package com.delsquared.lightningdots.billing_utilities;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +22,7 @@ import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +45,7 @@ public class BillingHelper implements
         PurchasesUpdatedListener,
         ConsumeResponseListener,
         AcknowledgePurchaseResponseListener {
-    public static final String LOG_TAG = BillingHelper.class.getName();
+    private static final String CLASS_NAME = BillingHelper.class.getSimpleName();
 
     // Values for API requests
     private final int exponentialBackoffDelayMsDefault = 1000;
@@ -83,6 +83,8 @@ public class BillingHelper implements
     private static volatile BillingHelper INSTANCE;
 
     public BillingHelper(@NonNull Context context) {
+        String methodName = CLASS_NAME + ".constructor";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Create the billing client
         this.billingClient = BillingClient.newBuilder(context)
@@ -94,6 +96,9 @@ public class BillingHelper implements
     }
 
     public static BillingHelper getInstance(Application app) {
+        String methodName = CLASS_NAME + ".getInstance";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (INSTANCE == null) {
             synchronized (BillingHelper.class) {
                 if (INSTANCE == null) {
@@ -105,12 +110,15 @@ public class BillingHelper implements
     }
 
     public void startConnection() {
+        String methodName = CLASS_NAME + ".startConnection";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         synchronized (this) {
             if (!isStartingConnection
                 && !billingClient.isReady()) {
                 isStartingConnection = true;
                 this.numberOfConnectionAttempts++;
-                LightningDotsApplication.logDebugMessage("Starting billingClient connection (attempt " + numberOfConnectionAttempts + ")...");
+                UtilityFunctions.logDebug(methodName, "Starting billingClient connection (attempt " + numberOfConnectionAttempts + ")...");
                 billingClient.startConnection(this);
             }
         }
@@ -118,29 +126,35 @@ public class BillingHelper implements
 
     @Override
     public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+        String methodName = CLASS_NAME + ".onBillingSetupFinished";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         isStartingConnection = false;
         int responseCode = billingResult.getResponseCode();
         this.billingResponseCode.postValue(responseCode);
         String debugMessage = billingResult.getDebugMessage();
-        LightningDotsApplication.logDebugMessage("onBillingSetupFinished: " + responseCode + " " + debugMessage);
+        UtilityFunctions.logInfo(methodName, "ResponseCode: " + responseCode + "; debugMessage: " + debugMessage);
         switch (responseCode) {
             case BillingClient.BillingResponseCode.OK:
-                LightningDotsApplication.logDebugMessage("billing response OK");
+                UtilityFunctions.logDebug(methodName, "...billing response: OK");
                 // Query SKU details and purchases
                 querySkuDetails();
                 queryPurchases();
                 break;
             case BillingClient.BillingResponseCode.BILLING_UNAVAILABLE:
-                LightningDotsApplication.logDebugErrorMessage("Billing unavailable");
+                UtilityFunctions.logInfo(methodName, "...billing response: Billing unavailable");
                 break;
             default:
-                LightningDotsApplication.logDebugErrorMessage("Default switch case");
+                UtilityFunctions.logDebug(methodName, "...default switch case");
         }
 
     }
 
     @Override
     public void onBillingServiceDisconnected() {
+        String methodName = CLASS_NAME + ".onBillingServiceDisconnected";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Try to start a connection again using exponential backoff
         // Algorithm inspired by this article:
         // https://cloud.google.com/iot/docs/how-tos/exponential-backoff
@@ -160,7 +174,7 @@ public class BillingHelper implements
         int delayMs = exponentialBackoffDelayMs + randomDelayOffset;
         scheduler.schedule(task, delayMs, TimeUnit.MILLISECONDS);
         scheduler.shutdown();
-        LightningDotsApplication.logDebugErrorMessage("billing service disconnected, attempting to reconnect in " + delayMs + "ms");
+        UtilityFunctions.logInfo(methodName, "Attempting to reconnect in " + delayMs + "ms");
     }
 
     /**
@@ -168,7 +182,8 @@ public class BillingHelper implements
      * This is an asynchronous call that will receive a result in {@link #onSkuDetailsResponse}.
      */
     private void querySkuDetails() {
-        Log.d(LOG_TAG, "querySkuDetails");
+        String methodName = CLASS_NAME + ".querySkuDetails";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         List<String> skus = new ArrayList<>();
         skus.add(Constants.PRODUCT_SKU_SAY_THANKS);
@@ -179,7 +194,7 @@ public class BillingHelper implements
                 .setSkusList(skus)
                 .build();
 
-        Log.i(LOG_TAG, "querySkuDetailsAsync");
+        UtilityFunctions.logInfo(methodName, "Calling querySkuDetailsAsync");
         billingClient.querySkuDetailsAsync(params, this);
     }
 
@@ -187,21 +202,28 @@ public class BillingHelper implements
     public void onSkuDetailsResponse(
             @NonNull BillingResult billingResult,
             @Nullable List<SkuDetails> skuDetailsList) {
+        String methodName = CLASS_NAME + ".onSkuDetailsResponse";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         int responseCode = billingResult.getResponseCode();
         String debugMessage = billingResult.getDebugMessage();
+        UtilityFunctions.logInfo(methodName, "ResponseCode: " + responseCode + "; debugMessage: " + debugMessage);
         switch (responseCode) {
             case BillingClient.BillingResponseCode.OK:
-                Log.i(LOG_TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                UtilityFunctions.logInfo(methodName, "Billing response: OK");
                 if (skuDetailsList == null) {
-                    Log.w(LOG_TAG, "onSkuDetailsResponse: null SkuDetails list");
+                    UtilityFunctions.logWarning(methodName, "...skuDetailsList is null");
                     skusWithSkuDetails.postValue(Collections.emptyMap());
                 } else {
+                    UtilityFunctions.logDebug(methodName, "...creating new detail list to post...");
                     Map<String, SkuDetails> newSkusDetailList = new HashMap<>();
                     for (SkuDetails skuDetails : skuDetailsList) {
-                        newSkusDetailList.put(skuDetails.getSku(), skuDetails);
+                        String sku = skuDetails.getSku();
+                        newSkusDetailList.put(sku, skuDetails);
+                        UtilityFunctions.logDebug(methodName, "......adding sku: " + sku);
                     }
                     skusWithSkuDetails.postValue(newSkusDetailList);
-                    Log.i(LOG_TAG, "onSkuDetailsResponse: count " + newSkusDetailList.size());
+                    UtilityFunctions.logInfo(methodName, "...skuDetailsList count: " + newSkusDetailList.size());
                 }
                 break;
             case BillingClient.BillingResponseCode.SERVICE_DISCONNECTED:
@@ -210,17 +232,17 @@ public class BillingHelper implements
             case BillingClient.BillingResponseCode.ITEM_UNAVAILABLE:
             case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
             case BillingClient.BillingResponseCode.ERROR:
-                Log.e(LOG_TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                UtilityFunctions.logError(methodName, "Received error response: " + debugMessage, null);
                 break;
             case BillingClient.BillingResponseCode.USER_CANCELED:
-                Log.i(LOG_TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                UtilityFunctions.logInfo(methodName, "User cancelled response");
                 break;
             // These response codes are not expected.
             case BillingClient.BillingResponseCode.FEATURE_NOT_SUPPORTED:
             case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
             case BillingClient.BillingResponseCode.ITEM_NOT_OWNED:
             default:
-                Log.wtf(LOG_TAG, "onSkuDetailsResponse: " + responseCode + " " + debugMessage);
+                UtilityFunctions.logWtf(methodName, "Should never receive this sku details response");
         }
     }
 
@@ -231,14 +253,18 @@ public class BillingHelper implements
      * You still need to check the Google Play Billing API to know when purchase tokens are removed.
      */
     private void queryPurchases() {
+        String methodName = CLASS_NAME + ".queryPurchases";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (!billingClient.isReady()) {
-            Log.e(LOG_TAG, "queryPurchases: BillingClient is not ready");
+            UtilityFunctions.logError(methodName, "billingClient is not ready", null);
+            return;
         }
-        Log.d(LOG_TAG, "queryPurchases: SUBS");
+        UtilityFunctions.logInfo(methodName, "Calling queryPurchases: INAPP");
         Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
         List<Purchase> purchaseList = result.getPurchasesList();
         if (purchaseList == null) {
-            Log.i(LOG_TAG, "queryPurchases: null purchase list");
+            UtilityFunctions.logInfo(methodName, "...purchaseList is null");
             processPurchases(null);
             this.purchases.postValue(null);
         } else {
@@ -254,41 +280,51 @@ public class BillingHelper implements
     public void onPurchasesUpdated(
             @NonNull BillingResult billingResult,
             @Nullable List<Purchase> purchases) {
+        String methodName = CLASS_NAME + ".onPurchasesUpdated";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         int responseCode = billingResult.getResponseCode();
         String debugMessage = billingResult.getDebugMessage();
-        Log.d(LOG_TAG, "onPurchasesUpdated: " + responseCode + "; " + debugMessage);
+        UtilityFunctions.logInfo(methodName, "ResponseCode: " + responseCode + "; debugMessage: " + debugMessage);
         switch (responseCode) {
             case BillingClient.BillingResponseCode.OK:
+                UtilityFunctions.logDebug(methodName, "responseCode: OK");
                 if (purchases == null) {
-                    Log.d(LOG_TAG, "onPurchasesUpdated: null purchase list");
+                    UtilityFunctions.logInfo(methodName, "purchases is null");
                     processPurchases(null);
                 } else {
                     processPurchases(purchases);
                 }
                 break;
             case BillingClient.BillingResponseCode.USER_CANCELED:
-                Log.i(LOG_TAG, "onPurchasesUpdated: User canceled the purchase");
+                UtilityFunctions.logInfo(methodName, "responseCode: User canceled the purchase");
                 break;
             case BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED:
-                Log.i(LOG_TAG, "onPurchasesUpdated: The user already owns this item");
+                UtilityFunctions.logInfo(methodName, "responseCode: The user already owns this item");
                 break;
             case BillingClient.BillingResponseCode.DEVELOPER_ERROR:
-                Log.e(LOG_TAG, "onPurchasesUpdated: Developer error means that Google Play " +
+                UtilityFunctions.logError(
+                        methodName,
+                        "Developer error means that Google Play " +
                         "does not recognize the configuration. If you are just getting started, " +
                         "make sure you have configured the application correctly in the " +
                         "Google Play Console. The SKU product ID must match and the APK you " +
-                        "are using must be signed with release keys."
+                        "are using must be signed with release keys.",
+                        null
                 );
                 break;
         }
     }
 
     private void processPurchases(List<Purchase> purchasesList) {
+        String methodName = CLASS_NAME + ".processPurchases";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (purchasesList == null) {
-            Log.d(LOG_TAG, "processPurchases: with no purchases");
+            UtilityFunctions.logDebug(methodName, "purchaseList is null");
             return;
         }
-        Log.d(LOG_TAG, "processPurchases: " + purchasesList.size() + " purchase(s)");
+        UtilityFunctions.logDebug(methodName, "purchaseList count: " + purchasesList.size());
 
         // Process each purchase
         for (Purchase purchase : purchasesList) {
@@ -298,8 +334,11 @@ public class BillingHelper implements
     }
 
     private void processPurchase(Purchase purchase) {
+        String methodName = CLASS_NAME + ".processPurchase";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         String sku = purchase.getSku();
-        LightningDotsApplication.logDebugMessage("Processing purchase: " + sku);
+        UtilityFunctions.logInfo(methodName, "Processing purchase: " + sku);
 
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
             // TODO: Verify validity:
@@ -315,15 +354,22 @@ public class BillingHelper implements
     }
 
     private void processConsumablePurchase(Purchase purchase) {
+        String methodName = CLASS_NAME + ".processConsumablePurchase";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         String sku = purchase.getSku();
-        LightningDotsApplication.logDebugMessage("Consuming purchase: " + sku);
+        UtilityFunctions.logDebug(methodName, "...sku: " + sku);
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            UtilityFunctions.logDebug(methodName, "purchaseState: PURCHASED...");
             grantPurchaseEntitlement(purchase);
             successfulPurchaseObservable.postValue(purchase);
 
+            String purchaseToken = purchase.getPurchaseToken();
+            UtilityFunctions.logInfo(methodName, "Calling billingClient.consumeAsync() for sku: " + sku);
+            UtilityFunctions.logDebug(methodName, "...and purchase token: " + purchaseToken);
             ConsumeParams consumeParams =
                     ConsumeParams.newBuilder()
-                            .setPurchaseToken(purchase.getPurchaseToken())
+                            .setPurchaseToken(purchaseToken)
                             .build();
             billingClient.consumeAsync(consumeParams, this);
         }
@@ -331,22 +377,32 @@ public class BillingHelper implements
 
     @Override
     public void onConsumeResponse(@NonNull BillingResult billingResult, @NonNull String purchaseToken) {
-        LightningDotsApplication.logDebugMessage("onConsumeResponse");
-        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+        String methodName = CLASS_NAME + ".onConsumeResponse";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        int responseCode = billingResult.getResponseCode();
+        String debugMessage = billingResult.getDebugMessage();
+        UtilityFunctions.logInfo(methodName, "ResponseCode: " + responseCode + "; debugMessage: " + debugMessage);
+
+        if (responseCode == BillingClient.BillingResponseCode.OK) {
             // Handle the success of the consume operation.
-            LightningDotsApplication.logDebugMessage("...successful.");
+            UtilityFunctions.logInfo(methodName, "...successful.");
             // Refresh the list of purchases
             queryPurchases();
         } else {
-            LightningDotsApplication.logDebugErrorMessage("...not successful: " + billingResult.getResponseCode());
+            UtilityFunctions.logError(methodName, "...unsuccessful, debugMessage: " + debugMessage, null);
         }
     }
 
     private void processNonConsumablePurchase(Purchase purchase) {
+        String methodName = CLASS_NAME + ".processNonConsumablePurchase";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         String sku = purchase.getSku();
-        LightningDotsApplication.logDebugMessage("Processing non-consumable purchase: " + sku);
+        UtilityFunctions.logDebug(methodName, "...sku: " + sku);
 
         if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED) {
+            UtilityFunctions.logDebug(methodName, "purchaseState: PURCHASED...");
             grantPurchaseEntitlement(purchase);
             if (!purchase.isAcknowledged()) {
                 successfulPurchaseObservable.postValue(purchase);
@@ -366,8 +422,11 @@ public class BillingHelper implements
      * The next time the purchase list is updated, it will contain acknowledged purchases.
      */
     private void logAcknowledgementStatus(List<Purchase> purchasesList) {
+        String methodName = CLASS_NAME + ".logAcknowledgementStatus";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         if (purchasesList == null) {
-            Log.d(LOG_TAG, "logAcknowledgementStatus: purchaseList is null");
+            UtilityFunctions.logDebug(methodName, "purchaseList is null");
             return;
         }
         int ack_yes = 0;
@@ -379,8 +438,8 @@ public class BillingHelper implements
                 ack_no++;
             }
         }
-        Log.d(LOG_TAG, "logAcknowledgementStatus: acknowledged=" + ack_yes +
-                " unacknowledged=" + ack_no);
+        UtilityFunctions.logDebug(methodName, "Acknowledged:" + ack_yes
+                + ";  Unacknowledged: " + ack_no);
     }
 
     /**
@@ -390,16 +449,19 @@ public class BillingHelper implements
      */
     @SuppressWarnings("UnusedReturnValue")
     public BillingResult launchBillingFlow(Activity activity, BillingFlowParams params) {
+        String methodName = CLASS_NAME + ".launchBillingFlow";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         String sku = params.getSku();
         String oldSku = params.getOldSku();
-        Log.i(LOG_TAG, "launchBillingFlow: sku: " + sku + ", oldSku: " + oldSku);
+        UtilityFunctions.logDebug(methodName, "Sku: " + sku + "; oldSku: " + oldSku);
         if (!billingClient.isReady()) {
-            Log.e(LOG_TAG, "launchBillingFlow: BillingClient is not ready");
+            UtilityFunctions.logError(methodName, "billingClient is not ready", null);
         }
         BillingResult billingResult = billingClient.launchBillingFlow(activity, params);
         int responseCode = billingResult.getResponseCode();
         String debugMessage = billingResult.getDebugMessage();
-        Log.d(LOG_TAG, "launchBillingFlow: BillingResponse " + responseCode + " " + debugMessage);
+        UtilityFunctions.logDebug(methodName, "responseCode: " + responseCode + "; debugMessage: " + debugMessage);
         return billingResult;
     }
 
@@ -425,18 +487,27 @@ public class BillingHelper implements
      * that they paid for something that the app is not giving to them.
      */
     private void acknowledgePurchase(Purchase purchase) {
-        Log.d(LOG_TAG, "acknowledgePurchase");
+        String methodName = CLASS_NAME + ".acknowledgePurchase";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        String sku = purchase.getSku();
+        String purchaseToken = purchase.getPurchaseToken();
+        UtilityFunctions.logInfo(methodName, "Calling billingClient.acknowledgePurchase() for sku: " + sku);
+        UtilityFunctions.logDebug(methodName, "...and purchaseToken: " + purchaseToken);
         AcknowledgePurchaseParams params = AcknowledgePurchaseParams.newBuilder()
-                .setPurchaseToken(purchase.getPurchaseToken())
+                .setPurchaseToken(purchaseToken)
                 .build();
         billingClient.acknowledgePurchase(params, this);
     }
 
     @Override
     public void onAcknowledgePurchaseResponse(@NonNull BillingResult billingResult) {
+        String methodName = CLASS_NAME + ".acknowledgePurchase";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         int responseCode = billingResult.getResponseCode();
         String debugMessage = billingResult.getDebugMessage();
-        Log.d(LOG_TAG, "acknowledgePurchase: " + responseCode + " " + debugMessage);
+        UtilityFunctions.logInfo(methodName, "ResponseCode: " + responseCode + "; debugMessage: " + debugMessage);
         // Refresh the list of purchases
         if (responseCode == BillingClient.BillingResponseCode.OK) {
             queryPurchases();
@@ -444,8 +515,11 @@ public class BillingHelper implements
     }
 
     private void grantPurchaseEntitlement(Purchase purchase) {
+        String methodName = CLASS_NAME + ".grantPurchaseEntitlement";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         String sku = purchase.getSku();
-        LightningDotsApplication.logDebugMessage("Granting purchase entitlement: " + sku);
+        UtilityFunctions.logInfo(methodName, "Granting purchase entitlement for sku: " + sku);
 
         if (sku.equals(Constants.PRODUCT_SKU_REMOVE_ADS)) {
 
@@ -459,7 +533,7 @@ public class BillingHelper implements
             // TODO: create some sort of prize for this
 
         } else {
-            LightningDotsApplication.logDebugErrorMessage("Unknown sku: " + sku);
+            UtilityFunctions.logWtf(methodName, "Unknown sku: " + sku);
         }
     }
 

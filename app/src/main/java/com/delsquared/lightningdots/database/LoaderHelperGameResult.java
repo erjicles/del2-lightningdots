@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.util.Log;
 
 import com.delsquared.lightningdots.game.GameResult;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -13,6 +14,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class LoaderHelperGameResult {
+	private static final String CLASS_NAME = LoaderHelperGameResult.class.getSimpleName();
 
 	public final SQLHandler sqlHandler;
 
@@ -46,6 +48,8 @@ public class LoaderHelperGameResult {
 			+ "LIMIT 1";
 
 	public LoaderHelperGameResult(Context context) {
+		String methodName = CLASS_NAME + ".constructor";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Initialize the sql handler
 		sqlHandler = new SQLHandler(context);
@@ -56,6 +60,8 @@ public class LoaderHelperGameResult {
 
 	@SuppressWarnings("unused")
 	public GameResult loadBestRun(int gameType, int gameTime) {
+		String methodName = CLASS_NAME + ".loadBestRun";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Initialize the result
 		GameResult result = null;
@@ -93,6 +99,8 @@ public class LoaderHelperGameResult {
 	}
 
 	public GameResult loadBestSuccessfulRun(int gameType, int gameTime) {
+		String methodName = CLASS_NAME + ".loadBestSuccessfulRun";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Initialize the result
 		GameResult result = null;
@@ -130,6 +138,8 @@ public class LoaderHelperGameResult {
 	}
 
     public GameResult loadBestRunForLevel(int gameType, int gameLevel, int gameTime) {
+		String methodName = CLASS_NAME + ".loadBestRunForLevel";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
         // Initialize the result
         GameResult result = null;
@@ -169,6 +179,8 @@ public class LoaderHelperGameResult {
     }
 
 	public static GameResult loadGameResult(Cursor resultCursor) {
+		String methodName = CLASS_NAME + ".loadGameResult";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Initialize the result
 		GameResult gameResult = null;

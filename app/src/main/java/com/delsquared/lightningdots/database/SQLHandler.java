@@ -5,17 +5,26 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
+
 public class SQLHandler {
+	private static final String CLASS_NAME = SQLHandler.class.getSimpleName();
 
 	SQLiteDatabase sqlDatabase;
 	final GameSQLiteHelper dbHelper;
 
 	public SQLHandler(Context context) {
+		String methodName = CLASS_NAME + ".constructor";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		dbHelper = GameSQLiteHelper.getInstance(context);
 		sqlDatabase = dbHelper.getWritableDatabase();
 	}
 
 	public void beginTransaction() {
+		String methodName = CLASS_NAME + ".beginTransaction";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {
 				sqlDatabase.beginTransaction();
@@ -26,6 +35,9 @@ public class SQLHandler {
 	}
 
 	public void setTransactionSuccessful() {
+		String methodName = CLASS_NAME + ".setTransactionSuccessful";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {
 				sqlDatabase.setTransactionSuccessful();
@@ -36,6 +48,9 @@ public class SQLHandler {
 	}
 
 	public void endTransaction() {
+		String methodName = CLASS_NAME + ".endTransaction";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {
 				sqlDatabase.endTransaction();
@@ -47,10 +62,8 @@ public class SQLHandler {
 
 	@SuppressWarnings("unused")
 	public void executeQuery(String query) {
-		//try {
-		//if (sqlDatabase.isOpen()) {
-		//	sqlDatabase.close();
-		//}
+		String methodName = CLASS_NAME + ".executeQuery(String query)";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {
@@ -60,19 +73,11 @@ public class SQLHandler {
 		} catch (Exception e) {
 			Log.e(GameSQLiteHelper.sDataLockExceptionTag, "SQLHandler.executeQuery(String query): " + e.getMessage());
 		}
-
-		//System.out.println("Query executed successfully.");
-
-		//} catch (Exception e) {
-		//	System.out.println("DATABASE ERROR " + e);
-		//}
 	}
 
 	public void executeQuery(String query, Object[] args) {
-		//try {
-		//if (sqlDatabase.isOpen()) {
-		//	sqlDatabase.close();
-		//}
+		String methodName = CLASS_NAME + ".executeQuery(String query, Object[] args)";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {
@@ -82,21 +87,14 @@ public class SQLHandler {
 		} catch (Exception e) {
 			Log.e(GameSQLiteHelper.sDataLockExceptionTag, "SQLHandler.executeQuery(String query, Object[] args): " + e.getMessage());
 		}
-
-		//System.out.println("Query executed successfully.");
-
-		//} catch (Exception e) {
-		//	System.out.println("DATABASE ERROR " + e);
-		//}
 	}
 
 	@SuppressWarnings("unused")
 	public Cursor selectQuery(String query) {
+		String methodName = CLASS_NAME + ".selectQuery(String query)";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		Cursor c1 = null;
-		//try {
-		//if (sqlDatabase.isOpen()) {
-		//	sqlDatabase.close();
-		//}
 
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {
@@ -107,21 +105,14 @@ public class SQLHandler {
 			Log.e(GameSQLiteHelper.sDataLockExceptionTag, "SQLHandler.selectQuery(String query): " + e.getMessage());
 		}
 
-		//} catch (Exception e) {
-		//	System.out.println("DATABASE ERROR " + e);
-		//}
-
-		//System.out.println("Select query successful.");
-
 		return c1;
 	}
 
 	public Cursor selectQuery(String query, String[] selectionArgs) {
-		Cursor c1 = null;
+		String methodName = CLASS_NAME + ".selectQuery(String query, String[] selectionArgs)";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
-		//if (sqlDatabase.isOpen()) {
-		//	sqlDatabase.close();
-		//}
+		Cursor c1 = null;
 
 		try {
 			synchronized (GameSQLiteHelper.sDataLock) {

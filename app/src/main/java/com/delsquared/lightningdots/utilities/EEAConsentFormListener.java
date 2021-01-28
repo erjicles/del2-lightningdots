@@ -5,6 +5,7 @@ import com.google.ads.consent.ConsentFormListener;
 import com.google.ads.consent.ConsentStatus;
 
 public class EEAConsentFormListener extends ConsentFormListener {
+    private static final String CLASS_NAME = EEAConsentFormListener.class.getSimpleName();
 
     private final IEEAConsentListener listener;
     private ConsentForm form;
@@ -17,8 +18,10 @@ public class EEAConsentFormListener extends ConsentFormListener {
 
     @Override
     public void onConsentFormLoaded() {
+        String methodName = CLASS_NAME + ".onConsentFormLoaded";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Consent form loaded successfully
-        LightningDotsApplication.logDebugMessage("Consent form loaded");
         if (this.form != null) {
             this.form.show();
         }
@@ -26,15 +29,21 @@ public class EEAConsentFormListener extends ConsentFormListener {
 
     @Override
     public void onConsentFormOpened() {
-        // Consent form was displayed.
-        LightningDotsApplication.logDebugMessage("Consent form opened");
+        String methodName = CLASS_NAME + ".onConsentFormOpened";
+        UtilityFunctions.logDebug(methodName, "Entered");
     }
 
     @Override
     public void onConsentFormClosed(
             ConsentStatus consentStatus, Boolean userPrefersAdFree) {
+        String methodName = CLASS_NAME + ".onConsentFormClosed";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Consent form was closed.
-        LightningDotsApplication.logDebugMessage("Consent form closed; consentStatus: " + consentStatus.toString() + "; userPrefersAdFree: " + userPrefersAdFree.toString());
+        UtilityFunctions.logInfo(
+                methodName,
+                "ConsentStatus: " + consentStatus.toString()
+                + "; userPrefersAdFree: " + userPrefersAdFree.toString());
         LightningDotsApplication.setConsentStatus(consentStatus);
         LightningDotsApplication.setUserPrefersNoAds(userPrefersAdFree);
         listener.onHandleConsentFinished();
@@ -42,8 +51,11 @@ public class EEAConsentFormListener extends ConsentFormListener {
 
     @Override
     public void onConsentFormError(String errorDescription) {
+        String methodName = CLASS_NAME + ".onConsentFormError";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Consent form error.
-        LightningDotsApplication.logDebugErrorMessage("Consent form error: " + errorDescription);
+        UtilityFunctions.logError(methodName, "errorDescription: " + errorDescription, null);
         listener.onHandleConsentFinished();
     }
 

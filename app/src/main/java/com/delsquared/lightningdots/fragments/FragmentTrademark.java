@@ -7,16 +7,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.Calendar;
 
 public class FragmentTrademark extends androidx.fragment.app.Fragment {
+    private static final String CLASS_NAME = FragmentTrademark.class.getSimpleName();
 
     private int textColor = -1;
 	
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreateView";
+        UtilityFunctions.logDebug(methodName, "Entered");
 		
         // Inflate the layout for this fragment
 		View theLayout = inflater.inflate(R.layout.fragment_trademark, container, false);
@@ -47,13 +51,17 @@ public class FragmentTrademark extends androidx.fragment.app.Fragment {
 
     @SuppressWarnings("unused")
     public static FragmentTrademark newInstance() {
+        String methodName = CLASS_NAME + ".newInstance";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Create the new instance
-
         return new FragmentTrademark();
     }
 
     public void setTextColor(int textColor) {
+        String methodName = CLASS_NAME + ".setTextColor";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         this.textColor = textColor;
 
         if (getView() != null) {

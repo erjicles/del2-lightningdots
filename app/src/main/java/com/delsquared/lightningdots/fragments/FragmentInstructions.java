@@ -11,10 +11,12 @@ import android.widget.ImageView;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.Objects;
 
 public class FragmentInstructions extends Fragment {
+    private static final String CLASS_NAME = FragmentInstructions.class.getSimpleName();
 
     public static final String ARGUMENT_GAME_TYPE = "com.delsquared.lightningdots.gametype";
 
@@ -23,6 +25,9 @@ public class FragmentInstructions extends Fragment {
             LayoutInflater inflater
             , ViewGroup container
             , Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreateView";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View rootView = inflater.inflate(R.layout.fragment_instructions, container, false);
 
         // ---------- BEGIN Initialize the settings ---------- //
@@ -37,6 +42,8 @@ public class FragmentInstructions extends Fragment {
     }
 
     public static FragmentInstructions newInstance(int gameType) {
+        String methodName = CLASS_NAME + ".newInstance";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Create the new instance
         FragmentInstructions f = new FragmentInstructions();
@@ -53,26 +60,31 @@ public class FragmentInstructions extends Fragment {
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onActivityCreated";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onActivityCreated(savedInstanceState);
     }
 
     public void startInstructionsAnimation() {
+        String methodName = CLASS_NAME + ".startInstructionsAnimation";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View view = getView();
         if (view == null) {
-            LightningDotsApplication.logDebugErrorMessage("view is null");
+            UtilityFunctions.logError(methodName, "view is null", null);
             return;
         }
         // Get the instructions image view
         ImageView imageViewInstructions = view.findViewById(R.id.fragment_instructions_imageview_instructions);
         if (imageViewInstructions == null) {
-            LightningDotsApplication.logDebugErrorMessage("instructions image view is null");
+            UtilityFunctions.logError(methodName, "imageViewInstructions is null", null);
             return;
         }
 
         // Get the animation from the src, which has been compiled to an AnimationDrawable object.
         AnimationDrawable animationDrawableInstructions = (AnimationDrawable) imageViewInstructions.getDrawable();
         if (animationDrawableInstructions == null) {
-            LightningDotsApplication.logDebugErrorMessage("instructions animation drawable is null");
+            UtilityFunctions.logError(methodName, "animationDrawableInstructions is null", null);
             return;
         }
 
@@ -82,6 +94,8 @@ public class FragmentInstructions extends Fragment {
     }
 
     public void checkChanged_NeverShowThisAgain(boolean isChecked) {
+        String methodName = CLASS_NAME + ".checkChanged_NeverShowThisAgain";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Set the show instructions setting
         LightningDotsApplication.setShowInstructions(Objects.requireNonNull(getActivity()), !isChecked);

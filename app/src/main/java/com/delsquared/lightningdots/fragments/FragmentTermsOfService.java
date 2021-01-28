@@ -10,16 +10,19 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class FragmentTermsOfService extends Fragment {
+	private static final String CLASS_NAME = FragmentTermsOfService.class.getSimpleName();
 	
 	private static final String MARGINS_KEY = "addMargins";
 
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        
+		String methodName = CLASS_NAME + ".onCreateView";
+		UtilityFunctions.logDebug(methodName, "Entered");
+
 		// Inflate the layout for this fragment
 		View theLayout = inflater.inflate(R.layout.fragment_terms_of_service, container, false);
 		
@@ -38,7 +41,7 @@ public class FragmentTermsOfService extends Fragment {
 	    	public void onPageFinished(WebView view, String url) {
 	    		View mainView = getView();
 	    		if (mainView == null) {
-					LightningDotsApplication.logDebugErrorMessage("mainView is null");
+					UtilityFunctions.logError(methodName, "mainView is null", null);
 					return;
 				}
 
@@ -46,7 +49,7 @@ public class FragmentTermsOfService extends Fragment {
 	    		ProgressBar loadingProgressBar =
                         mainView.findViewById(R.id.fragment_termsofservice_progressbar_loadingprogressbar);
 	    		if (loadingProgressBar == null) {
-	    			LightningDotsApplication.logDebugErrorMessage("loadingProgressBar is null");
+	    			UtilityFunctions.logError(methodName, "loadingProgressBar is null", null);
 	    			return;
 				}
 	    		
@@ -98,6 +101,8 @@ public class FragmentTermsOfService extends Fragment {
 	@SuppressWarnings("unused")
 	public static FragmentTermsOfService newInstance(
 			boolean addMargins) {
+		String methodName = CLASS_NAME + ".newInstance";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Create the new instance
 		FragmentTermsOfService f = new FragmentTermsOfService();

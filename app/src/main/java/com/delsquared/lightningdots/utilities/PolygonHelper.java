@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class PolygonHelper {
+    private static final String CLASS_NAME = PolygonHelper.class.getSimpleName();
 
     public static final String NODE_NAME_CLICK_TARGET_SHAPE = "ClickTargetShape";
     public static final String ATTRIBUTE_NAME_SHAPE_NAME = "name";
@@ -31,6 +32,8 @@ public class PolygonHelper {
     public static Polygon getPolygon(
             Context context
             , String targetShapeName) {
+        String methodName = CLASS_NAME + ".getPolygon";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if it's a circle
         if (targetShapeName.contentEquals(CLICK_TARGET_SHAPES.get(0))) {
@@ -126,7 +129,7 @@ public class PolygonHelper {
             xmlResourceParser.close();
 
         } catch (XmlPullParserException | IOException e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception parsing xml", e);
         }
 
         return new Polygon(arrayListVertices);

@@ -12,6 +12,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class EEAConsentManager {
+    private static final String CLASS_NAME = EEAConsentManager.class.getSimpleName();
 
     private final IEEAConsentListener listener;
 
@@ -24,6 +25,8 @@ public class EEAConsentManager {
     }
 
     public void handleAdConsent(boolean forceShowDialog) {
+        String methodName = CLASS_NAME + ".handleAdConsent(boolean forceShowDialog)";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Get the consent information
         ConsentInformation consentInformation = ConsentInformation.getInstance(listener.getContext());
@@ -56,6 +59,8 @@ public class EEAConsentManager {
     }
 
     private void handleEEAConsent(final boolean forceShowDialog, final ConsentInformation consentInformation) {
+        String methodName = CLASS_NAME + ".handleEEAConsent(final boolean forceShowDialog, final ConsentInformation consentInformation)";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Create the publisher ids
         String[] publisherIds = {listener.getContext().getString(R.string.admob_publisher_id)};
@@ -64,7 +69,7 @@ public class EEAConsentManager {
         consentInformation.requestConsentInfoUpdate(publisherIds, new ConsentInfoUpdateListener() {
             @Override
             public void onConsentInfoUpdated(ConsentStatus consentStatus) {
-                LightningDotsApplication.logDebugMessage("Consent status updated: " + consentStatus.toString());
+                UtilityFunctions.logInfo(methodName, "Consent status updated: " + consentStatus.toString());
 
                 // Check if the user's consent status is unknown
                 if (consentStatus.equals(ConsentStatus.UNKNOWN)
@@ -103,7 +108,7 @@ public class EEAConsentManager {
             @Override
             public void onFailedToUpdateConsentInfo(String errorDescription) {
                 // User's consent status failed to update.
-                LightningDotsApplication.logDebugMessage("Failed to update consent status: " + errorDescription);
+                UtilityFunctions.logError(methodName, "onFailedToUpdateConsentInfo called, errorDescription: " + errorDescription, null);
                 listener.onHandleConsentFinished();
             }
         });

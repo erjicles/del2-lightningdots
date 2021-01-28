@@ -5,8 +5,10 @@ import android.util.Log;
 
 import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class SaveHelperGameResult {
+	private static final String CLASS_NAME = SaveHelperGameResult.class.getSimpleName();
 
 	public final SQLHandler sqlHandler;
 	final Context context;
@@ -29,6 +31,8 @@ public class SaveHelperGameResult {
 			+ ") VALUES (?, ?, ?, ?, ?, ?);";
 
 	public SaveHelperGameResult(Context context) {
+		String methodName = CLASS_NAME + ".constructor";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		// Initialize the sql handler
 		sqlHandler = new SQLHandler(context);
@@ -39,6 +43,8 @@ public class SaveHelperGameResult {
 	}
 
 	public void saveGameResult(GameResult gameResult) {
+		String methodName = CLASS_NAME + ".saveGameResult";
+		UtilityFunctions.logDebug(methodName, "Entered");
 
 		try {
 

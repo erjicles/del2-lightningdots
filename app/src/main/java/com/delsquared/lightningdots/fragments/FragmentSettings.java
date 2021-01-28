@@ -21,11 +21,13 @@ import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.utilities.EEAConsentManager;
 import com.delsquared.lightningdots.utilities.IEEAConsentListener;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.Objects;
 
 
 public class FragmentSettings extends androidx.fragment.app.Fragment implements IEEAConsentListener {
+    private static final String CLASS_NAME = FragmentSettings.class.getSimpleName();
 
     @SuppressWarnings("unused")
     public static FragmentSettings newInstance() {
@@ -39,12 +41,17 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        String methodName = CLASS_NAME + ".onCreateView";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
 
         // Set the trademark text color
@@ -72,17 +79,22 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
 
     @Override
     public void onAttach(@NonNull Context context) {
+        String methodName = CLASS_NAME + ".onAttach";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onAttach(context);
     }
 
     @SuppressWarnings("EmptyMethod")
     @Override
     public void onDetach() {
+        String methodName = CLASS_NAME + ".onDetach";
+        UtilityFunctions.logDebug(methodName, "Entered");
         super.onDetach();
-        //mListener = null;
     }
 
     public void clicked_button_delete_game_history() {
+        String methodName = CLASS_NAME + ".clicked_button_delete_game_history";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         new AlertDialog.Builder(getActivity())
                 .setTitle(getString(R.string.fragment_settings_text_dialog_delete_game_history_title))
@@ -90,12 +102,12 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
                     FragmentActivity activity = getActivity();
                     if (activity == null) {
-                        LightningDotsApplication.logDebugErrorMessage("activity is null");
+                        UtilityFunctions.logError(methodName, "activity is null", null);
                         return;
                     }
                     Context applicationContext = activity.getApplicationContext();
                     if (applicationContext == null) {
-                        LightningDotsApplication.logDebugErrorMessage("application context is null");
+                        UtilityFunctions.logWtf(methodName, "applicationContext is null");
                         return;
                     }
 
@@ -120,6 +132,8 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
     }
 
     public void checkboxChanged_ShowInstructions(boolean isChecked) {
+        String methodName = CLASS_NAME + ".checkboxChanged_ShowInstructions";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         // Set the show instructions setting
         LightningDotsApplication.setShowInstructions(Objects.requireNonNull(getContext()), isChecked);
@@ -127,12 +141,18 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
     }
 
     public void onClick_ChangeConsent() {
+        String methodName = CLASS_NAME + ".onClick_ChangeConsent";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         EEAConsentManager consentManager = new EEAConsentManager(this);
         consentManager.handleAdConsent(true);
     }
 
     @Override
     public void onHandleConsentFinished() {
+        String methodName = CLASS_NAME + ".onHandleConsentFinished";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
         // Check if the user is an EEA user who wants no ads
         if (LightningDotsApplication.getUserPrefersNoAds()) {
             // Launch the store activity

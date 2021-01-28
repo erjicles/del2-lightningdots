@@ -5,15 +5,18 @@ import android.content.Context;
 import android.content.res.XmlResourceParser;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.util.TypedValue;
 
+import com.delsquared.lightningdots.globals.GlobalConstants;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class UtilityFunctions {
+public abstract class UtilityFunctions {
+    private static final String CLASS_NAME = UtilityFunctions.class.getSimpleName();
 
     public static boolean getHasInternetConnection(Context context) {
 
@@ -45,6 +48,8 @@ public class UtilityFunctions {
             , String action
             , String label
             , long value) {
+        String methodName = CLASS_NAME + ".sendEventTracker";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         try {
 
@@ -63,12 +68,14 @@ public class UtilityFunctions {
             t.send(theEvent.build());
 
         } catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception encountered", e);
         }
 
     }
 
     public static void registerScreenView(Activity activity, String screenName) {
+        String methodName = CLASS_NAME + ".registerScreenView";
+        UtilityFunctions.logDebug(methodName, "Entered");
 
         try {
 
@@ -90,7 +97,7 @@ public class UtilityFunctions {
             globalTracker.send(new HitBuilders.ScreenViewBuilder().build());
 
         } catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            UtilityFunctions.logError(methodName, "Exception encountered", e);
         }
 
     }
@@ -217,6 +224,7 @@ public class UtilityFunctions {
             String enumValueName
             , final Class<T> enumClass
             , T defaultValue) {
+        String methodName = CLASS_NAME + ".getEnumValue";
 
         // Initialize the result
         T resultValue = defaultValue;
@@ -227,7 +235,7 @@ public class UtilityFunctions {
                     , enumValueName
             );
         } catch (Exception e) {
-            LightningDotsApplication.logDebugErrorMessage("Exception encountered: " + e.getMessage());
+            logError(methodName, "Exception encountered", e);
         }
          return resultValue;
     }
@@ -252,6 +260,34 @@ public class UtilityFunctions {
 
         return resultValue;
 
+    }
+
+    public static void logDebug(String source, String message) {
+        Log.d(GlobalConstants.LOG_TAG, source + ": " + message);
+    }
+
+    public static void logInfo(String source, String message) {
+        Log.i(GlobalConstants.LOG_TAG, source + ": " + message);
+    }
+
+    public static void logWarning(String source, String message) {
+        Log.w(GlobalConstants.LOG_TAG, source + ": " + message);
+    }
+
+    public static void logError(String source, String message) {
+        logError(source, message, null);
+    }
+
+    public static void logError(String source, String message, Exception e) {
+        if (e == null) {
+            Log.e(GlobalConstants.LOG_TAG, source + ": " + message);
+        } else {
+            Log.e(GlobalConstants.LOG_TAG, source + ": " + message, e);
+        }
+    }
+
+    public static void logWtf(String source, String message) {
+        Log.wtf(GlobalConstants.LOG_TAG, source + ": " + message);
     }
 
 }

@@ -7,10 +7,14 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivityTermsOfService extends FragmentActivity {
+	private static final String CLASS_NAME = ActivityTermsOfService.class.getSimpleName();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		String methodName = CLASS_NAME + ".onCreate";
+		UtilityFunctions.logDebug(methodName, "Entered");
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.activity_terms_of_service);
 		
 		// Register screen view
