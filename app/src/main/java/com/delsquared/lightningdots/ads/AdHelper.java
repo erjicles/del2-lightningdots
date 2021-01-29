@@ -1,5 +1,6 @@
 package com.delsquared.lightningdots.ads;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -11,11 +12,14 @@ import com.delsquared.lightningdots.globals.GlobalState;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 import com.google.ads.consent.ConsentStatus;
 import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -80,44 +84,14 @@ public abstract class AdHelper {
     }
 
     /**
-     * Creates a new InterstitialAd using the {@link R.string#ads_ad_unit_game_interstitials} ad
-     * unit id. Starts loading the ad and sets up a listener to load a new ad after the previous
-     * ad is closed.
-     * @param context The context of the activity/fragment creating the interstitial ad
-     * @return The new interstitial ad
+     * Loads an InterstitialAd using the {@link R.string#ads_ad_unit_game_interstitials} ad
+     * unit id. When the ad is loaded, passes the interstitial ad instance to the provided
+     * {@link IInterstitialAdHolder} activity/fragment.
+     * @param context The context of the activity/fragment that will show the interstitial ad
      */
-    public static InterstitialAd getAndStartLoadingInterstitialAd(@NonNull Context context) {
-        String methodName = CLASS_NAME + ".getInterstitialAd";
-        UtilityFunctions.logDebug(methodName, "Entered");
-
-        InterstitialAd interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(context.getString(R.string.ads_ad_unit_game_interstitials));
-
-        loadInterstitialAd(interstitialAd);
-
-        // Set an AdListener.
-        interstitialAd.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                UtilityFunctions.logInfo(methodName, "Entered onAdLoaded() for interstitial ad");
-            }
-
-            @Override
-            public void onAdClosed() {
-                UtilityFunctions.logInfo(methodName, "Entered onAdClosed() for interstitial ad");
-                // Start loading the next ad so it's ready to show when needed
-                loadInterstitialAd(interstitialAd);
-            }
-        });
-
-        return interstitialAd;
-    }
-
-    /**
-     * Starts loading an interstitial ad by calling loadAd() on the provided interstitialAd
-     * @param interstitialAd The interstitial ad object to start loading ads
-     */
-    public static void loadInterstitialAd(@NonNull InterstitialAd interstitialAd) {
+    public static void loadInterstitialAd(
+            @NonNull Context context,
+            @NonNull IInterstitialAdHolder interstitialAdHolder) {
         String methodName = CLASS_NAME + ".loadInterstitialAd";
         UtilityFunctions.logDebug(methodName, "Entered");
 
@@ -134,39 +108,82 @@ public abstract class AdHelper {
             return;
         }
 
-        if (interstitialAd.isLoaded()) {
-            UtilityFunctions.logDebug(methodName, "interstitialAd.isLoaded() is true, skipping");
-            return;
-        }
-        if (interstitialAd.isLoading()) {
-            UtilityFunctions.logDebug(methodName, "interstitialAd.isLoading() is true, skipping");
-            return;
-        }
-
         // Get the ad request
         AdRequest adRequest = getAdRequest();
 
-        // Start loading the ad
-        UtilityFunctions.logDebug(methodName, "Calling interstitialAd.loadAd()");
-        interstitialAd.loadAd(adRequest);
+        // Load the interstitial ad
+        // Documentation found here:
+        // https://developers.google.com/admob/android/interstitial-fullscreen
+        // Test ad unit:
+        // ca-app-pub-3940256099942544/1033173712
+        InterstitialAd.load(
+                context,
+                context.getString(R.string.ads_ad_unit_game_interstitials),
+                adRequest,
+                new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                UtilityFunctions.logInfo(methodName, "Entered onAdLoaded");
+
+                // Setup the full screen callback listener
+                setupInterstitialAdFullScreenContentCallback(interstitialAd, interstitialAdHolder);
+
+                // Pass the interstitialAd instance to the interstitialAdDisplayer activity
+                interstitialAdHolder.onInterstitialAdLoaded(interstitialAd);
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                UtilityFunctions.logDebug(methodName, "Entered onAdFailedToLoad");
+                UtilityFunctions.logWarning(methodName, "loadAdError message: " + loadAdError.getMessage());
+            }
+        });
+    }
+
+    private static void setupInterstitialAdFullScreenContentCallback(
+            @NonNull InterstitialAd interstitialAd,
+            @NonNull IInterstitialAdHolder interstitialAdHolder) {
+        String methodName = CLASS_NAME + ".setupInterstitialAdFullScreenContentCallback";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        interstitialAd.setFullScreenContentCallback(new FullScreenContentCallback(){
+            @Override
+            public void onAdDismissedFullScreenContent() {
+                // Called when fullscreen content is dismissed.
+                UtilityFunctions.logDebug(methodName, "Entered onAdDismissedFullScreenContent()");
+            }
+
+            @Override
+            public void onAdFailedToShowFullScreenContent(AdError adError) {
+                // Called when fullscreen content failed to show.
+                UtilityFunctions.logDebug(methodName, "Entered onAdFailedToShowFullScreenContent()");
+                UtilityFunctions.logWarning(methodName, "adError message: " + adError.getMessage());
+            }
+
+            @Override
+            public void onAdShowedFullScreenContent() {
+                // Called when fullscreen content is shown.
+                // Make sure to set your reference to null so you don't
+                // show it a second time.
+                UtilityFunctions.logDebug(methodName, "Entered onAdShowedFullScreenContent()");
+
+                interstitialAdHolder.onAdShowedFullScreenContent();
+            }
+        });
     }
 
     /**
-     * Shows an interstitial ad if the ad is loaded.
-     * If the ad is not loaded, and no ad is loading, then attempts to start loading an ad
+     * Shows an interstitial ad
      * @param interstitialAd The interstitial ad object
+     * @param activity The activity that should show the ad
      */
-    public static void showInterstitialAd(@NonNull InterstitialAd interstitialAd) {
+    public static void showInterstitialAd(
+            @NonNull InterstitialAd interstitialAd,
+            Activity activity) {
         String methodName = CLASS_NAME + ".showInterstitialAd";
         UtilityFunctions.logDebug(methodName, "Entered");
 
-        if (interstitialAd.isLoaded()) {
-            UtilityFunctions.logInfo(methodName, "Showing interstitial ad");
-            interstitialAd.show();
-        } else if (!interstitialAd.isLoading()) {
-            UtilityFunctions.logInfo(methodName, "Interstitial ad is neither loaded nor loading; starting loading...");
-            loadInterstitialAd(interstitialAd);
-        }
+        interstitialAd.show(activity);
 
     }
 

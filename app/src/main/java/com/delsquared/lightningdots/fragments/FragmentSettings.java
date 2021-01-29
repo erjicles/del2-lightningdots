@@ -9,11 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
+import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.activities.ActivityStore;
 import com.delsquared.lightningdots.database.DeleterHelperGameResult;
@@ -76,6 +78,18 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
         LinearLayout linearLayoutAdConsent = rootView.findViewById(R.id.fragment_settings_linearlayout_settingsmenu_change_consent);
         linearLayoutAdConsent.setVisibility(GlobalSettings.getInstance().getIsUserFromEEA() ? View.VISIBLE : View.GONE);
         // ---------- END Toggle the ad consent ---------- //
+
+        // Display the action menu if we're in debug mode
+        if (BuildConfig.BUILD_TYPE.equals("debug")) {
+            TextView textViewActionsMenuTitle = rootView.findViewById(R.id.fragment_settings_textview_actionsmenu_title);
+            LinearLayout linearLayoutActionsMenu = rootView.findViewById(R.id.fragment_settings_linearlayout_actionsmenu);
+            if (textViewActionsMenuTitle != null) {
+                textViewActionsMenuTitle.setVisibility(View.VISIBLE);
+            }
+            if (linearLayoutActionsMenu != null) {
+                linearLayoutActionsMenu.setVisibility(View.VISIBLE);
+            }
+        }
 
         return rootView;
     }

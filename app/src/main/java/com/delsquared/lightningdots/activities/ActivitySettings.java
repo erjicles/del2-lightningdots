@@ -6,11 +6,18 @@ import android.view.View;
 import android.widget.CheckBox;
 
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.billing.BillingConstants;
+import com.delsquared.lightningdots.billing.BillingHelper;
 import com.delsquared.lightningdots.fragments.FragmentSettings;
+import com.delsquared.lightningdots.globals.GlobalSettings;
+import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivitySettings extends FragmentActivity {
     private static final String CLASS_NAME = ActivitySettings.class.getSimpleName();
+
+    // The helper for billing
+    BillingHelper billingHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +30,9 @@ public class ActivitySettings extends FragmentActivity {
                     .add(R.id.container, new FragmentSettings())
                     .commit();
         }
+
+        LightningDotsApplication application = (LightningDotsApplication) getApplication();
+        this.billingHelper = application.getBillingHelperInstanceAndStartConnection();
 
         // Register screen view
         UtilityFunctions.registerScreenView(this, getString(R.string.ga_screenname_activitysettings));
@@ -104,5 +114,24 @@ public class ActivitySettings extends FragmentActivity {
                 , getString(R.string.fragment_settings_button_change_consent)
                 , 0);
 
+    }
+
+    public void onClickConsumeAdZap(@SuppressWarnings("unused") View view) {
+        String methodName = CLASS_NAME + ".onClickConsumeAdZap";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        boolean isConsumingPurchase = this.billingHelper.consumePurchaseBySku(BillingConstants.PRODUCT_SKU_REMOVE_ADS);
+        if (isConsumingPurchase) {
+            UtilityFunctions.logInfo(methodName, "Consuming AdZap, setting hasPurchasedNoAds global flag to false");
+            GlobalSettings.getInstance().setHasPurchasedNoAds(false);
+        }
+
+        // Track the button click
+        UtilityFunctions.sendEventTracker(
+                this
+                , getString(R.string.event_category_buttonclick)
+                , getString(R.string.event_actionid_settings_googleanalytics)
+                , getString(R.string.fragment_settings_actionsmenu_button_consume_adzap_text)
+                , 0);
     }
 }

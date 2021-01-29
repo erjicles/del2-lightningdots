@@ -537,4 +537,33 @@ public class BillingHelper implements
         }
     }
 
+    public boolean consumePurchaseBySku(String sku) {
+        String methodName = CLASS_NAME + ".consumePurchaseBySku";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        UtilityFunctions.logInfo(methodName, "Consuming purchase for sku: " + sku);
+
+        if (!billingClient.isReady()) {
+            UtilityFunctions.logError(methodName, "billingClient is not ready", null);
+            return false;
+        }
+        UtilityFunctions.logInfo(methodName, "Calling queryPurchases: INAPP");
+        Purchase.PurchasesResult result = billingClient.queryPurchases(BillingClient.SkuType.INAPP);
+        List<Purchase> purchaseList = result.getPurchasesList();
+        if (purchaseList == null) {
+            UtilityFunctions.logInfo(methodName, "...purchaseList is null");
+            return false;
+        }
+
+        for (Purchase purchase : purchaseList) {
+            String purchaseSku = purchase.getSku();
+            if (sku.equals(purchaseSku)) {
+                UtilityFunctions.logInfo(methodName, "...purchase found, calling processConsumablePurchase(purchase)...");
+                processConsumablePurchase(purchase);
+                return true;
+            }
+        }
+        UtilityFunctions.logInfo(methodName, "...purchase not found for sku: " + sku);
+        return false;
+    }
+
 }

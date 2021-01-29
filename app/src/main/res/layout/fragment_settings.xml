@@ -71,6 +71,7 @@
             <TextView
                 android:id="@+id/fragment_settings_textview_game_history_title"
                 style="@style/MainMenuSectionHeader"
+                android:layout_marginTop="@dimen/activity_main_menu_vertical_spacer"
                 android:text="@string/fragment_settings_textview_gamehistorymenu_title"/>
 
             <LinearLayout
@@ -94,6 +95,27 @@
                         android:text="@string/fragment_settings_textview_gamehistorymenu_delete_game_history_warning"/>
 
                 </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/fragment_settings_textview_actionsmenu_title"
+                style="@style/MainMenuSectionHeader"
+                android:layout_marginTop="@dimen/activity_main_menu_vertical_spacer"
+                android:text="@string/fragment_settings_textview_actionsmenu_title"
+                android:visibility="gone"/>
+
+            <LinearLayout
+                android:id="@+id/fragment_settings_linearlayout_actionsmenu"
+                style="@style/MainMenuSection"
+                android:visibility="gone">
+
+                <Button
+                    android:id="@+id/fragment_settings_actionsmenu_button_consume_adzap"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fragment_settings_actionsmenu_button_consume_adzap_text"
+                    android:onClick="onClickConsumeAdZap"/>
 
             </LinearLayout>
 

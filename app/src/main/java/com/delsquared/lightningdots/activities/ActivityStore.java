@@ -64,5 +64,4 @@ public class ActivityStore extends FragmentActivity {
         UtilityFunctions.logDebug(methodName, "Entered");
         super.onDestroy();
     }
-
 }

@@ -1,5 +1,6 @@
 package com.delsquared.lightningdots.fragments;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.app.Activity;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.ads.AdHelper;
+import com.delsquared.lightningdots.ads.IInterstitialAdHolder;
 import com.delsquared.lightningdots.database.LoaderHelperGameResult;
 import com.delsquared.lightningdots.game.LevelDefinitionLadderHelper;
 import com.delsquared.lightningdots.game.Game;
@@ -21,11 +23,13 @@ import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.graphics.SurfaceViewGame;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 
 import java.util.Date;
 
-public class FragmentGame extends Fragment implements InterfaceGameCallback {
+public class FragmentGame extends Fragment implements
+        InterfaceGameCallback,
+        IInterstitialAdHolder {
     private static final String CLASS_NAME = FragmentGame.class.getSimpleName();
 
 	public static final String ARGUMENT_GAME_TYPE = "com.delsquared.lightningdots.gametype";
@@ -146,7 +150,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         }
 
         // Begin loading interstitial ads
-        startLoadingInterstitialAds();
+        startLoadingInterstitialAd();
 
     }
 
@@ -326,24 +330,24 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         LightningDotsApplication.numberOfGameTransitions++;
     }
 
-    public void startLoadingInterstitialAds() {
+    public void startLoadingInterstitialAd() {
         String methodName = CLASS_NAME + ".startLoadingInterstitialAds";
         UtilityFunctions.logDebug(methodName, "Entered");
 
         Context context = getContext();
         if (context == null) {
-            UtilityFunctions.logError(methodName, "context is null", null);
+            UtilityFunctions.logError(methodName, "getActivity() is null", null);
             return;
         }
 
         if (this.gameInterstitialAd != null) {
             UtilityFunctions.logDebug(methodName, "gameInterstitialAd already exists");
-            AdHelper.loadInterstitialAd(this.gameInterstitialAd);
             return;
         }
 
-        // Get the interstitial ad, and begin loading the ads so it's ready when needed
-        this.gameInterstitialAd = AdHelper.getAndStartLoadingInterstitialAd(context);
+        // Load the interstitial ad
+        // Once loaded, will receive the instance via the onInterstitialAdLoaded() function
+        AdHelper.loadInterstitialAd(context, this);
 
     }
 
@@ -358,11 +362,36 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
             return;
         }
 
-        if (gameInterstitialAd != null) {
-            AdHelper.showInterstitialAd(gameInterstitialAd);
-        } else {
-            UtilityFunctions.logDebug(methodName, "gameInterstitial ad is null, calling startLoadingInterstitialAds()");
-            startLoadingInterstitialAds();
+        Activity activity = getActivity();
+        if (activity == null) {
+            UtilityFunctions.logError(methodName, "getActivity() returned null");
+            return;
         }
+
+        if (gameInterstitialAd != null) {
+            AdHelper.showInterstitialAd(gameInterstitialAd, activity);
+        } else {
+            UtilityFunctions.logDebug(methodName, "gameInterstitial ad is null, calling startLoadingInterstitialAd()");
+            startLoadingInterstitialAd();
+        }
+    }
+
+    @Override
+    public void onInterstitialAdLoaded(@NonNull com.google.android.gms.ads.interstitial.InterstitialAd interstitialAd) {
+        String methodName = CLASS_NAME + ".onInterstitialAdLoaded";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        this.gameInterstitialAd = interstitialAd;
+    }
+
+    @Override
+    public void onAdShowedFullScreenContent() {
+        String methodName = CLASS_NAME + ".onAdShowedFullScreenContent";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        this.gameInterstitialAd = null;
+
+        // Start loading the next ad
+        startLoadingInterstitialAd();
     }
 }

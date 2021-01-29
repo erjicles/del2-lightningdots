@@ -243,6 +243,8 @@
     <string name="fragment_instructions_checkbox_nevershowthisagain_text">Never show this again</string>
     <string name="fragment_instructions_button_playnow_text">Play now</string>
     <string name="fragment_store_textview_billing_unavailable_text">Oops! We were unable to connect to Google Play. To see available and purchased items, please log into the Google Play app.</string>
+    <string name="fragment_settings_textview_actionsmenu_title">Actions</string>
+    <string name="fragment_settings_actionsmenu_button_consume_adzap_text">Consume Ad Zap</string>
 
 
 </resources>
