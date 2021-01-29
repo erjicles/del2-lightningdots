@@ -1,6 +1,8 @@
 package com.delsquared.lightningdots.fragments;
 
 import androidx.fragment.app.Fragment;
+
+import android.app.Activity;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,10 +12,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
-
-import java.util.Objects;
 
 public class FragmentInstructions extends Fragment {
     private static final String CLASS_NAME = FragmentInstructions.class.getSimpleName();
@@ -34,7 +34,7 @@ public class FragmentInstructions extends Fragment {
 
         // Initialize the never show this again checkbox
         CheckBox checkBoxNeverShowThisAgain = rootView.findViewById(R.id.fragment_instructions_checkbox_nevershowthisagain);
-        checkBoxNeverShowThisAgain.setChecked(!LightningDotsApplication.settingShowInstructions);
+        checkBoxNeverShowThisAgain.setChecked(!GlobalSettings.getInstance().getIsShowInstructions());
 
         // ---------- END Initialize the settings ---------- //
 
@@ -97,8 +97,13 @@ public class FragmentInstructions extends Fragment {
         String methodName = CLASS_NAME + ".checkChanged_NeverShowThisAgain";
         UtilityFunctions.logDebug(methodName, "Entered");
 
+        Activity activity = getActivity();
+        if (activity == null) {
+            UtilityFunctions.logError(methodName, "activity is null");
+        }
+
         // Set the show instructions setting
-        LightningDotsApplication.setShowInstructions(Objects.requireNonNull(getActivity()), !isChecked);
+        GlobalSettings.getInstance().setIsShowInstructions(activity, !isChecked);
 
     }
 

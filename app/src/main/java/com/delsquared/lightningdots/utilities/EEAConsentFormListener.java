@@ -1,5 +1,6 @@
 package com.delsquared.lightningdots.utilities;
 
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.google.ads.consent.ConsentForm;
 import com.google.ads.consent.ConsentFormListener;
 import com.google.ads.consent.ConsentStatus;
@@ -44,8 +45,9 @@ public class EEAConsentFormListener extends ConsentFormListener {
                 methodName,
                 "ConsentStatus: " + consentStatus.toString()
                 + "; userPrefersAdFree: " + userPrefersAdFree.toString());
-        LightningDotsApplication.setConsentStatus(consentStatus);
-        LightningDotsApplication.setUserPrefersNoAds(userPrefersAdFree);
+        final GlobalSettings globalSettings = GlobalSettings.getInstance();
+        globalSettings.setConsentStatus(consentStatus);
+        globalSettings.setUserPrefersNoAds(userPrefersAdFree);
         listener.onHandleConsentFinished();
     }
 

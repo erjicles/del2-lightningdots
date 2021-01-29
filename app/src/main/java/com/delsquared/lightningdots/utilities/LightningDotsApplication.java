@@ -1,16 +1,11 @@
 package com.delsquared.lightningdots.utilities;
 
-import android.app.Activity;
 import android.app.Application;
 import android.app.backup.BackupManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-
-import androidx.lifecycle.MutableLiveData;
 
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.BillingHelper;
-import com.google.ads.consent.ConsentStatus;
+import com.delsquared.lightningdots.billing.BillingHelper;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
@@ -21,24 +16,21 @@ public class LightningDotsApplication extends Application {
 
     public static final Object lockSharedPreferences = new Object();
 
-    public static final MutableLiveData<Object> adStatusObservable = new MutableLiveData<>();
-
-    private static boolean hasPurchasedNoAds = false;
-    private static ConsentStatus consentStatus = ConsentStatus.UNKNOWN;
-    private static boolean userPrefersNoAds = false;
-    private static boolean userIsFromEEA = false;
-
-    // Variables for settings
-    public static boolean settingShowInstructions = true;
-
     public static int numberOfGameTransitions = 0;
-
-    public static final String logTag = "LightningDots";
 
     public LightningDotsApplication() {
         super();
         String methodName = CLASS_NAME + ".constructor";
         UtilityFunctions.logDebug(methodName, "Entered");
+    }
+
+    @Override
+    public void onCreate() {
+        String methodName = CLASS_NAME + ".onCreate";
+        UtilityFunctions.logDebug(methodName, "Entered");
+        super.onCreate();
+
+        ApplicationStartupHelper.performStartupTasks(this);
     }
 
     /**
@@ -83,76 +75,6 @@ public class LightningDotsApplication extends Application {
         BillingHelper billingHelper = BillingHelper.getInstance(this);
         billingHelper.startConnection();
         return billingHelper;
-    }
-
-    public static void setHasPurchasedNoAds(boolean hasPurchasedNoAds) {
-        String methodName = CLASS_NAME + ".setHasPurchasedNoAds";
-        UtilityFunctions.logDebug(methodName, "Entered");
-
-        UtilityFunctions.logInfo(methodName, "Setting hasPurchasedNoAds: " + hasPurchasedNoAds);
-        LightningDotsApplication.hasPurchasedNoAds = hasPurchasedNoAds;
-        adStatusObservable.postValue(null);
-    }
-
-    public static ConsentStatus getConsentStatus() {
-        return LightningDotsApplication.consentStatus;
-    }
-    public static void setConsentStatus(ConsentStatus consentStatus) {
-        LightningDotsApplication.consentStatus = consentStatus;
-        adStatusObservable.postValue(null);
-    }
-
-    public static boolean getUserIsFromEEA() {
-        return LightningDotsApplication.userIsFromEEA;
-    }
-    public static void setUserIsFromEEA(boolean userIsFromEEA) {
-        LightningDotsApplication.userIsFromEEA = userIsFromEEA;
-    }
-
-    public static boolean getUserPrefersNoAds() {
-        return LightningDotsApplication.userPrefersNoAds;
-    }
-    public static void setUserPrefersNoAds(boolean userPrefersNoAds) {
-        LightningDotsApplication.userPrefersNoAds = userPrefersNoAds;
-        adStatusObservable.postValue(null);
-    }
-
-    public static boolean getAreAdsEnabled() {
-        String methodName = CLASS_NAME + ".getAreAdsEnabled";
-        UtilityFunctions.logDebug(methodName, "Entered");
-        UtilityFunctions.logDebug(methodName,
-                "getAreAdsEnabled(): hasPurchasedNoAds: " + hasPurchasedNoAds
-                + "; userIsFromEEA: " + userIsFromEEA
-                + "; userPrefersNoAds: " + userPrefersNoAds);
-        boolean areAdsEnabled = !hasPurchasedNoAds
-                && !(userIsFromEEA && userPrefersNoAds);
-        UtilityFunctions.logDebug(methodName, "...areAdsEnabled: " + areAdsEnabled);
-        return areAdsEnabled;
-    }
-
-    public static void setShowInstructions(Context context, boolean showInstructions) {
-        String methodName = CLASS_NAME + ".setShowInstructions";
-        UtilityFunctions.logDebug(methodName, "Entered");
-
-        LightningDotsApplication.settingShowInstructions = showInstructions;
-
-        // Get the shared preferences reference
-        SharedPreferences sharedPref = context.getSharedPreferences(context.getString(R.string.preferences_file_name), Activity.MODE_PRIVATE);
-
-        synchronized (lockSharedPreferences) {
-
-            // Update the shared preferences file
-            sharedPref.edit()
-                    .putBoolean(
-                            context.getString(R.string.pref_setting_show_instructions)
-                            , showInstructions)
-                    .apply();
-
-        }
-
-        UtilityFunctions.logDebug(methodName, "Calling data changed in setShowInstructions()...");
-        dataChanged(context);
-
     }
 
     public static void dataChanged(Context context) {

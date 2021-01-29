@@ -2,6 +2,7 @@ package com.delsquared.lightningdots.utilities;
 
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.google.ads.consent.ConsentForm;
 import com.google.ads.consent.ConsentInfoUpdateListener;
 import com.google.ads.consent.ConsentInformation;
@@ -47,7 +48,7 @@ public class EEAConsentManager {
                 || consentInformation.isTestDevice()) {
 
             // Set the flag for the user being from the EEA
-            LightningDotsApplication.setUserIsFromEEA(true);
+            GlobalSettings.getInstance().setIsUserFromEEA(true);
 
             // Retrieve the EEA user's consent
             handleEEAConsent(forceShowDialog, consentInformation);
@@ -99,7 +100,7 @@ public class EEAConsentManager {
 
                 } else { // The user's consent status is known
 
-                    LightningDotsApplication.setConsentStatus(consentStatus);
+                    GlobalSettings.getInstance().setConsentStatus(consentStatus);
                     listener.onHandleConsentFinished();
 
                 }

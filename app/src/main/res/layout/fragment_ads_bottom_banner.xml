@@ -1,18 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
+	android:id="@+id/fragment_ads_bottom_banner_linearlayout_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="center_horizontal">
-    
-    <com.google.android.gms.ads.AdView
-	    android:id="@+id/adView"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:layout_gravity="center_horizontal"
-	    android:background="@color/black"
-	    ads:adUnitId="@string/ads_ad_unit_bottom_banner"
-	    ads:adSize="@string/ad_size"/>
+
+	<!-- AdView is added programmatically
+	<include layout="@layout/adview_bottom_banner"/>
+	-->
 
 </LinearLayout>

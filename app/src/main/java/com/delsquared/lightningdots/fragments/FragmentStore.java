@@ -17,8 +17,8 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.SkuDetails;
 import com.delsquared.lightningdots.R;
-import com.delsquared.lightningdots.billing_utilities.BillingHelper;
-import com.delsquared.lightningdots.billing_utilities.Constants;
+import com.delsquared.lightningdots.billing.BillingHelper;
+import com.delsquared.lightningdots.billing.BillingConstants;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
@@ -321,13 +321,13 @@ public class FragmentStore extends androidx.fragment.app.Fragment {
             return;
         }
 
-        if (sku.equals(Constants.PRODUCT_SKU_REMOVE_ADS)) {
+        if (sku.equals(BillingConstants.PRODUCT_SKU_REMOVE_ADS)) {
 
             // The user bought the remove ads item
             Toast toastThanks = Toast.makeText(context, context.getString(R.string.product_remove_ads_thanks), Toast.LENGTH_SHORT);
             toastThanks.show();
 
-        } else if (sku.equals(Constants.PRODUCT_SKU_SAY_THANKS)) {
+        } else if (sku.equals(BillingConstants.PRODUCT_SKU_SAY_THANKS)) {
 
             // The user bought the say thanks item
             Toast toastThanks = Toast.makeText(context, context.getString(R.string.product_say_thanks_thanks), Toast.LENGTH_SHORT);

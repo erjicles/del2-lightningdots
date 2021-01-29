@@ -18,12 +18,10 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.activities.ActivityStore;
 import com.delsquared.lightningdots.database.DeleterHelperGameResult;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.utilities.EEAConsentManager;
 import com.delsquared.lightningdots.utilities.IEEAConsentListener;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
-
-import java.util.Objects;
 
 
 public class FragmentSettings extends androidx.fragment.app.Fragment implements IEEAConsentListener {
@@ -63,15 +61,20 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
 
         // ---------- BEGIN Initialize the settings ---------- //
 
+        // Initialize the mute audio checkbox
+        CheckBox checkBoxMuteAudio = rootView.findViewById(R.id.fragment_settings_checkbox_mute_audio);
+        checkBoxMuteAudio.setChecked(GlobalSettings.getInstance().getIsAudioMuted());
+
         // Initialize the show instructions checkbox
         CheckBox checkBoxShowInstructions = rootView.findViewById(R.id.fragment_settings_checkbox_show_instructions);
-        checkBoxShowInstructions.setChecked(LightningDotsApplication.settingShowInstructions);
+        checkBoxShowInstructions.setChecked(GlobalSettings.getInstance().getIsShowInstructions());
 
         // ---------- END Initialize the settings ---------- //
 
+
         // ---------- BEGIN Toggle the ad consent ---------- //
         LinearLayout linearLayoutAdConsent = rootView.findViewById(R.id.fragment_settings_linearlayout_settingsmenu_change_consent);
-        linearLayoutAdConsent.setVisibility(LightningDotsApplication.getUserIsFromEEA() ? View.VISIBLE : View.GONE);
+        linearLayoutAdConsent.setVisibility(GlobalSettings.getInstance().getIsUserFromEEA() ? View.VISIBLE : View.GONE);
         // ---------- END Toggle the ad consent ---------- //
 
         return rootView;
@@ -131,12 +134,33 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
 
     }
 
-    public void checkboxChanged_ShowInstructions(boolean isChecked) {
-        String methodName = CLASS_NAME + ".checkboxChanged_ShowInstructions";
+    public void onClickShowInstructions(boolean isChecked) {
+        String methodName = CLASS_NAME + ".onClickShowInstructions";
         UtilityFunctions.logDebug(methodName, "Entered");
 
+        Context context = getContext();
+        if (context == null) {
+            UtilityFunctions.logError(methodName, "context is null");
+            return;
+        }
+
         // Set the show instructions setting
-        LightningDotsApplication.setShowInstructions(Objects.requireNonNull(getContext()), isChecked);
+        GlobalSettings.getInstance().setIsShowInstructions(context, isChecked);
+
+    }
+
+    public void onClickMuteAudio(boolean isAudioMuted) {
+        String methodName = CLASS_NAME + ".onClickMuteAudio";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        Context context = getContext();
+        if (context == null) {
+            UtilityFunctions.logError(methodName, "context is null");
+            return;
+        }
+
+        // Set the show instructions setting
+        GlobalSettings.getInstance().setIsAudioMuted(context, isAudioMuted);
 
     }
 
@@ -154,7 +178,7 @@ public class FragmentSettings extends androidx.fragment.app.Fragment implements 
         UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if the user is an EEA user who wants no ads
-        if (LightningDotsApplication.getUserPrefersNoAds()) {
+        if (GlobalSettings.getInstance().getUserPrefersNoAds()) {
             // Launch the store activity
             Intent storeIntent = new Intent(getActivity(), ActivityStore.class);
             startActivity(storeIntent);

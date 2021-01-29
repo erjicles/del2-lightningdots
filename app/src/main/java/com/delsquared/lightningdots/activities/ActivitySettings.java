@@ -46,15 +46,15 @@ public class ActivitySettings extends FragmentActivity {
                 , 0);
     }
 
-    public void checkChanged_ShowInstructions(View view) {
-        String methodName = CLASS_NAME + ".checkChanged_ShowInstructions";
+    public void onClickShowInstructions(View view) {
+        String methodName = CLASS_NAME + ".onClickShowInstructions";
         UtilityFunctions.logDebug(methodName, "Entered");
 
         FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
         if (fragmentSettings != null) {
             CheckBox checkBoxShowInstructions = (CheckBox) view;
             boolean isChecked = checkBoxShowInstructions.isChecked();
-            fragmentSettings.checkboxChanged_ShowInstructions(isChecked);
+            fragmentSettings.onClickShowInstructions(isChecked);
         }
 
         // Track the button click
@@ -65,6 +65,26 @@ public class ActivitySettings extends FragmentActivity {
                 , getString(R.string.fragment_settings_checkbox_show_instructions)
                 , 0);
 
+    }
+
+    public void onClickMuteAudio(View view) {
+        String methodName = CLASS_NAME + ".onClickMuteAudio";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        FragmentSettings fragmentSettings = (FragmentSettings) getSupportFragmentManager().findFragmentById(R.id.container);
+        if (fragmentSettings != null) {
+            CheckBox checkBoxMuteAudio = (CheckBox) view;
+            boolean isAudioMuted = checkBoxMuteAudio.isChecked();
+            fragmentSettings.onClickMuteAudio(isAudioMuted);
+        }
+
+        // Track the button click
+        UtilityFunctions.sendEventTracker(
+                this
+                , getString(R.string.event_category_buttonclick)
+                , getString(R.string.event_actionid_settings_googleanalytics)
+                , getString(R.string.fragment_settings_checkbox_mute_audio)
+                , 0);
     }
 
     public void onClick_ChangeConsent(@SuppressWarnings("unused") View view) {

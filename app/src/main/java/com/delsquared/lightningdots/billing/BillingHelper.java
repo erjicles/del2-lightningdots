@@ -1,4 +1,4 @@
-package com.delsquared.lightningdots.billing_utilities;
+package com.delsquared.lightningdots.billing;
 
 import android.app.Activity;
 import android.app.Application;
@@ -21,7 +21,7 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.android.billingclient.api.SkuDetailsResponseListener;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.util.ArrayList;
@@ -186,8 +186,8 @@ public class BillingHelper implements
         UtilityFunctions.logDebug(methodName, "Entered");
 
         List<String> skus = new ArrayList<>();
-        skus.add(Constants.PRODUCT_SKU_SAY_THANKS);
-        skus.add(Constants.PRODUCT_SKU_REMOVE_ADS);
+        skus.add(BillingConstants.PRODUCT_SKU_SAY_THANKS);
+        skus.add(BillingConstants.PRODUCT_SKU_REMOVE_ADS);
 
         SkuDetailsParams params = SkuDetailsParams.newBuilder()
                 .setType(BillingClient.SkuType.INAPP)
@@ -344,9 +344,9 @@ public class BillingHelper implements
             // TODO: Verify validity:
             // https://developer.android.com/google/play/billing/integrate#process
 
-            if (sku.equals(Constants.PRODUCT_SKU_REMOVE_ADS)) {
+            if (sku.equals(BillingConstants.PRODUCT_SKU_REMOVE_ADS)) {
                 processNonConsumablePurchase(purchase);
-            } else if (sku.equals(Constants.PRODUCT_SKU_SAY_THANKS)) {
+            } else if (sku.equals(BillingConstants.PRODUCT_SKU_SAY_THANKS)) {
                 processConsumablePurchase(purchase);
             }
         }
@@ -521,13 +521,13 @@ public class BillingHelper implements
         String sku = purchase.getSku();
         UtilityFunctions.logInfo(methodName, "Granting purchase entitlement for sku: " + sku);
 
-        if (sku.equals(Constants.PRODUCT_SKU_REMOVE_ADS)) {
+        if (sku.equals(BillingConstants.PRODUCT_SKU_REMOVE_ADS)) {
 
             // The user bought the remove ads item
-            LightningDotsApplication.setHasPurchasedNoAds(true);
+            GlobalSettings.getInstance().setHasPurchasedNoAds(true);
 
         } else //noinspection StatementWithEmptyBody
-            if (sku.equals(Constants.PRODUCT_SKU_SAY_THANKS)) {
+            if (sku.equals(BillingConstants.PRODUCT_SKU_SAY_THANKS)) {
 
             // The user bought the say thanks item
             // TODO: create some sort of prize for this

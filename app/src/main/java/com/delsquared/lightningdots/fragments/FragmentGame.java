@@ -11,18 +11,17 @@ import android.view.ViewGroup;
 
 import com.delsquared.lightningdots.BuildConfig;
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.ads.AdHelper;
 import com.delsquared.lightningdots.database.LoaderHelperGameResult;
 import com.delsquared.lightningdots.game.LevelDefinitionLadderHelper;
 import com.delsquared.lightningdots.game.Game;
 import com.delsquared.lightningdots.game.GameResult;
 import com.delsquared.lightningdots.game.InterfaceGameCallback;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.graphics.SurfaceViewGame;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
 
 import java.util.Date;
 
@@ -146,7 +145,7 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
 
         }
 
-        // Load the next ad
+        // Begin loading interstitial ads
         startLoadingInterstitialAds();
 
     }
@@ -159,7 +158,6 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         super.onStop();
     }
 
-    @SuppressWarnings("EmptyMethod")
     @Override
     public void onDestroy() {
         String methodName = CLASS_NAME + ".onDestroy";
@@ -328,91 +326,43 @@ public class FragmentGame extends Fragment implements InterfaceGameCallback {
         LightningDotsApplication.numberOfGameTransitions++;
     }
 
+    public void startLoadingInterstitialAds() {
+        String methodName = CLASS_NAME + ".startLoadingInterstitialAds";
+        UtilityFunctions.logDebug(methodName, "Entered");
+
+        Context context = getContext();
+        if (context == null) {
+            UtilityFunctions.logError(methodName, "context is null", null);
+            return;
+        }
+
+        if (this.gameInterstitialAd != null) {
+            UtilityFunctions.logDebug(methodName, "gameInterstitialAd already exists");
+            AdHelper.loadInterstitialAd(this.gameInterstitialAd);
+            return;
+        }
+
+        // Get the interstitial ad, and begin loading the ads so it's ready when needed
+        this.gameInterstitialAd = AdHelper.getAndStartLoadingInterstitialAd(context);
+
+    }
+
     public void showInterstitialAd() {
         String methodName = CLASS_NAME + ".showInterstitialAd";
         UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if the user has purchased the no ads item
         // or if the user is a non-consenting EEU user
-        if (!LightningDotsApplication.getAreAdsEnabled()) {
+        if (!GlobalSettings.getInstance().getAreAdsEnabled()) {
+            UtilityFunctions.logInfo(methodName, "Ads are disabled");
             return;
         }
 
-        // Show the interstitial if it is ready
-        // and if this is a third click. Otherwise, proceed as usual without showing it
-        if (gameInterstitialAd != null
-                && gameInterstitialAd.isLoaded()) {
-            gameInterstitialAd.show();
+        if (gameInterstitialAd != null) {
+            AdHelper.showInterstitialAd(gameInterstitialAd);
+        } else {
+            UtilityFunctions.logDebug(methodName, "gameInterstitial ad is null, calling startLoadingInterstitialAds()");
+            startLoadingInterstitialAds();
         }
-    }
-
-    public void startLoadingInterstitialAds() {
-        String methodName = CLASS_NAME + ".startLoadingInterstitialAds";
-        UtilityFunctions.logDebug(methodName, "Entered");
-
-        // Check if the user has purchased the no ads item
-        // or if the user is a non-consenting EEU user
-        if (!LightningDotsApplication.getAreAdsEnabled()) {
-            UtilityFunctions.logInfo(methodName, "Interstitial ad loading skipped");
-            return;
-        }
-
-        MobileAds.initialize(getActivity(), initializationStatus -> {
-            // Create an interstitial ad. When a natural transition in the app occurs (such as a
-            // level ending in a game), show the interstitial. In this simple example, the press of a
-            // button is used instead.
-            //
-            // If the button is clicked before the interstitial is loaded, the user should proceed to
-            // the next part of the app (in this case, the next level).
-            //
-            // If the interstitial is finished loading, the user will view the interstitial before
-            // proceeding.
-            Context context = getContext();
-            if (context == null) {
-                UtilityFunctions.logError(methodName, "context is null", null);
-                return;
-            }
-            gameInterstitialAd = new InterstitialAd(context);
-            gameInterstitialAd.setAdUnitId(getString(R.string.ads_ad_unit_game_interstitials));
-
-            loadInterstitialAd();
-
-            // Set an AdListener.
-            gameInterstitialAd.setAdListener(new AdListener() {
-                @Override
-                public void onAdLoaded() {
-                    //Toast.makeText(MyActivity.this,
-                    //        "The interstitial is loaded", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onAdClosed() {
-                    loadInterstitialAd();
-                }
-            });
-        });
-
-    }
-
-    private void loadInterstitialAd() {
-        String methodName = CLASS_NAME + ".loadInterstitialAd";
-        UtilityFunctions.logDebug(methodName, "Entered");
-
-        if (gameInterstitialAd == null) {
-            UtilityFunctions.logError(methodName, "gameInterstitialAd is null", null);
-            return;
-        }
-        if (!LightningDotsApplication.getAreAdsEnabled()) {
-            UtilityFunctions.logInfo(methodName, "Ads are disabled, skipping");
-            return;
-        }
-
-        // Create an ad request.
-        // Global ad request configuration is set in ActivityMain constructor
-        AdRequest.Builder adRequestBuilder = new AdRequest.Builder();
-
-        // Start loading the ad now so that it is ready by the time the user is ready to go to
-        // the next level.
-        gameInterstitialAd.loadAd(adRequestBuilder.build());
     }
 }

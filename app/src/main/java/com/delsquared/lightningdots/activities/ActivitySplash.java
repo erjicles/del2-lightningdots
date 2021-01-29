@@ -11,9 +11,9 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.delsquared.lightningdots.R;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.utilities.EEAConsentManager;
 import com.delsquared.lightningdots.utilities.IEEAConsentListener;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 public class ActivitySplash extends Activity implements IEEAConsentListener {
@@ -40,7 +40,6 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
         // Get and execute the thread that gets the current terms of service version
         startGetVersions();
 
-
         // Initiate the splash wait
         new Handler().postDelayed(() -> {
 
@@ -48,6 +47,8 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
             finishSplash();
 
         }, SPLASH_TIME_OUT);
+
+
     }
 
     private void startGetVersions() {
@@ -123,7 +124,7 @@ public class ActivitySplash extends Activity implements IEEAConsentListener {
         UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if the user is an EEA user who wants no ads
-        if (LightningDotsApplication.getUserPrefersNoAds()) {
+        if (GlobalSettings.getInstance().getUserPrefersNoAds()) {
             // Launch the store activity
             Intent storeIntent = new Intent(ActivitySplash.this, ActivityStore.class);
             startActivity(storeIntent);

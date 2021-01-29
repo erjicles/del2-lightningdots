@@ -23,6 +23,24 @@
                 style="@style/MainMenuSection">
 
                 <LinearLayout
+                    android:id="@+id/fragment_settings_linearlayout_settingsmenu_mute_audio"
+                    style="@style/MainMenuSectionSubsection">
+
+                    <CheckBox
+                        android:id="@+id/fragment_settings_checkbox_mute_audio"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fragment_settings_checkbox_mute_audio"
+                        android:onClick="onClickMuteAudio"/>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/app_background_purple"/>
+
+                <LinearLayout
                     android:id="@+id/fragment_settings_linearlayout_settingsmenu_show_instructions"
                     style="@style/MainMenuSectionSubsection">
 
@@ -31,7 +49,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/fragment_settings_checkbox_show_instructions"
-                        android:onClick="checkChanged_ShowInstructions"/>
+                        android:onClick="onClickShowInstructions"/>
 
                 </LinearLayout>
 

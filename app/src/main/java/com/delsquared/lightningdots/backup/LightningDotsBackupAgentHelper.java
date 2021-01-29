@@ -6,11 +6,9 @@ import android.app.backup.BackupDataOutput;
 import android.app.backup.FileBackupHelper;
 import android.app.backup.SharedPreferencesBackupHelper;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 
 import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.database.GameSQLiteHelper;
-import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
 
 import java.io.IOException;
@@ -39,7 +37,7 @@ public class LightningDotsBackupAgentHelper extends BackupAgentHelper {
         FileBackupHelper databaseBackupHelper = new FileBackupHelper(this, "../databases/" + databaseName);
         addHelper(BACKUP_KEY_DATABASE, databaseBackupHelper);
 
-        Log.d(LightningDotsApplication.logTag, "Backup agent helper created.");
+        UtilityFunctions.logDebug(methodName,"Backup agent helper created.");
     }
 
     @Override

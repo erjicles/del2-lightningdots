@@ -1,6 +1,6 @@
-package com.delsquared.lightningdots.billing_utilities;
+package com.delsquared.lightningdots.billing;
 
-public abstract class Constants {
+public abstract class BillingConstants {
     // Products
     public static final String PRODUCT_SKU_REMOVE_ADS = "com.delsquared.lightningdots.products.remove_ads";
     @SuppressWarnings("unused")

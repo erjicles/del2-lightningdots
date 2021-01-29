@@ -14,17 +14,11 @@ import com.delsquared.lightningdots.R;
 import com.delsquared.lightningdots.fragments.AcceptTermsDialog;
 import com.delsquared.lightningdots.fragments.FragmentMain;
 import com.delsquared.lightningdots.game.Game;
+import com.delsquared.lightningdots.globals.GlobalSettings;
 import com.delsquared.lightningdots.utilities.LightningDotsApplication;
 import com.delsquared.lightningdots.utilities.UtilityFunctions;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.RequestConfiguration;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ActivityMain extends FragmentActivity implements
         AcceptTermsDialog.AcceptTermsDialogListener {
@@ -48,33 +42,8 @@ public class ActivityMain extends FragmentActivity implements
                     .commit();
         }
 
-        // Set global ad request configuration
-        // Add specific devices to test device list
-        List<String> testDeviceIds = new ArrayList<>();
-        testDeviceIds.add(AdRequest.DEVICE_ID_EMULATOR);
-        testDeviceIds.addAll(
-                Arrays.asList(
-                        getResources().getStringArray(R.array.test_device_ids_ads)
-                )
-        );
-        RequestConfiguration requestConfiguration = MobileAds.getRequestConfiguration()
-                .toBuilder()
-                .setTestDeviceIds(testDeviceIds)
-                .build();
-        MobileAds.setRequestConfiguration(requestConfiguration);
-
         // Handle showing the accept terms dialog
         toggleAcceptTermsDialog();
-
-        // ---------- BEGIN Load saved settings ---------- //
-        // Get the saved preferences reference
-        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.preferences_file_name), MODE_PRIVATE);
-
-        // Set the global settings flag from the saved prefs
-        LightningDotsApplication.settingShowInstructions =
-                sharedPref.getBoolean(getString(R.string.pref_setting_show_instructions), true);
-
-        // ---------- END Load saved settings ---------- //
 
         // Get the billing helper instance
         LightningDotsApplication application = (LightningDotsApplication)getApplication();
@@ -137,7 +106,7 @@ public class ActivityMain extends FragmentActivity implements
         UtilityFunctions.logDebug(methodName, "Entered");
 
         // Check if we should show the instructions
-        if (LightningDotsApplication.settingShowInstructions
+        if (GlobalSettings.getInstance().getIsShowInstructions()
                 && gameType == Game.GameType.AGILITY.ordinal()) {
 
             // Start the instructions activity

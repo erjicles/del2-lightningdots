@@ -195,6 +195,7 @@
     <string name="fragment_settings_textview_settings_title">Settings</string>
     <string name="fragment_settings_checkbox_show_instructions">Show instructions</string>
     <string name="fragment_settings_button_change_consent">Update ad consent</string>
+    <string name="fragment_settings_checkbox_mute_audio">Mute game sounds</string>
 
 
     <!-- About activity -->
@@ -237,6 +238,7 @@
     <string name="pref_legal_acceptedtermsversion">preference_legal_acceptedtermsversion</string>
     <string name="pref_legal_acceptedprivacyversion">preference_legal_acceptedprivacyversion</string>
     <string name="pref_setting_show_instructions">preference_setting_show_instructions</string>
+    <string name="pref_setting_mute_audio">preference_setting_mute_audio</string>
     <string name="fragment_main_textview_timeattack_achieved_highest_award_default">0 bolts</string>
     <string name="fragment_instructions_checkbox_nevershowthisagain_text">Never show this again</string>
     <string name="fragment_instructions_button_playnow_text">Play now</string>
