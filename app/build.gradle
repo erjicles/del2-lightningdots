@@ -8,8 +8,8 @@ android {
         applicationId "com.delsquared.lightningdots"
         minSdkVersion 22
         targetSdkVersion 30
-        versionCode 25
-        versionName "1.25.0"
+        versionCode 26
+        versionName "1.26.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
